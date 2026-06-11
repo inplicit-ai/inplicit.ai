@@ -56,10 +56,10 @@
   --space-section: 9rem;     /* 144px — standard section gap */
   --space-section-lg: 13rem; /* 208px — hero/feature gap */
 
-  /* Border radii — brutalist sharp */
-  --radius-ui: 2px;
-  --radius-card: 4px;
-  --radius-xl: 4px;
+  /* Border radii — rounded, matching OnePager */
+  --radius-ui: 6px;
+  --radius-card: 10px;
+  --radius-xl: 14px;
   --radius-full: 9999px;
 
   /* Easing */
@@ -72,31 +72,6 @@
   --section-padding: var(--space-section) var(--space-4);
 }
 
-/* ---- Dark — opt-in via [data-theme="dark"] ---- */
-[data-theme="dark"] {
-  --color-bg: #0a0a0a;
-  --color-surface: #111111;
-  --color-surface-elevated: #161616;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-subtle: rgba(255, 255, 255, 0.04);
-  --color-text-primary: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.55);
-  --color-text-tertiary: rgba(255, 255, 255, 0.28);
-  --color-accent: #f5a623;
-  --color-accent-dark: #d4891a;
-  --color-accent-light: rgba(245, 166, 35, 0.08);
-  --color-accent-muted: rgba(245, 166, 35, 0.18);
-
-  --color-cta-bg: #ffffff;
-  --color-cta-text: #000000;
-  --color-cta-icon-bg: rgba(0, 0, 0, 0.12);
-
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.9);
-}
 
 /* Base reset */
 *, *::before, *::after {
