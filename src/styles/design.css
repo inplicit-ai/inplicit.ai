@@ -1,32 +1,32 @@
 /* design.css — single source of truth for all design tokens */
 
-/* ---- Dark (The Void) — default ---- */
+/* ---- White — default ---- */
 :root {
   /* Colors */
-  --color-bg: #0a0a0a;
-  --color-surface: #111111;
-  --color-surface-elevated: #161616;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-subtle: rgba(255, 255, 255, 0.04);
-  --color-text-primary: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.55);
-  --color-text-tertiary: rgba(255, 255, 255, 0.28);
+  --color-bg: #ffffff;
+  --color-surface: #f9f9f9;
+  --color-surface-elevated: #f3f4f6;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-subtle: rgba(0, 0, 0, 0.04);
+  --color-text-primary: #000000;
+  --color-text-secondary: rgba(0, 0, 0, 0.55);
+  --color-text-tertiary: rgba(0, 0, 0, 0.3);
   --color-accent: #f5a623;
-  --color-accent-dark: #d4891a;
+  --color-accent-dark: #e8950f;
   --color-accent-light: rgba(245, 166, 35, 0.08);
   --color-accent-muted: rgba(245, 166, 35, 0.18);
 
-  /* CTA tokens — inverted from bg in each mode */
-  --color-cta-bg: #ffffff;
-  --color-cta-text: #000000;
-  --color-cta-icon-bg: rgba(0, 0, 0, 0.12);
+  /* CTA tokens */
+  --color-cta-bg: #000000;
+  --color-cta-text: #ffffff;
+  --color-cta-icon-bg: rgba(255, 255, 255, 0.15);
 
-  /* Shadows — near-invisible in dark mode */
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.9);
+  /* Shadows — diffuse, wide-spread, ultra-low opacity */
+  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -72,32 +72,30 @@
   --section-padding: var(--space-section) var(--space-4);
 }
 
-/* ---- White Enterprise — [data-theme="light"] ---- */
-[data-theme="light"] {
-  --color-bg: #ffffff;
-  --color-surface: #f9f9f9;
-  --color-surface-elevated: #f3f4f6;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-subtle: rgba(0, 0, 0, 0.04);
-  --color-text-primary: #000000;
-  --color-text-secondary: rgba(0, 0, 0, 0.55);
-  --color-text-tertiary: rgba(0, 0, 0, 0.3);
-  --color-accent: #d4891a;
-  --color-accent-dark: #b87515;
-  --color-accent-light: rgba(245, 166, 35, 0.06);
-  --color-accent-muted: rgba(245, 166, 35, 0.14);
+/* ---- Dark — opt-in via [data-theme="dark"] ---- */
+[data-theme="dark"] {
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface-elevated: #161616;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.55);
+  --color-text-tertiary: rgba(255, 255, 255, 0.28);
+  --color-accent: #f5a623;
+  --color-accent-dark: #d4891a;
+  --color-accent-light: rgba(245, 166, 35, 0.08);
+  --color-accent-muted: rgba(245, 166, 35, 0.18);
 
-  /* CTA tokens */
-  --color-cta-bg: #000000;
-  --color-cta-text: #ffffff;
-  --color-cta-icon-bg: rgba(255, 255, 255, 0.15);
+  --color-cta-bg: #ffffff;
+  --color-cta-text: #000000;
+  --color-cta-icon-bg: rgba(0, 0, 0, 0.12);
 
-  /* Shadows — diffuse, wide-spread, ultra-low opacity */
-  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.9);
 }
 
 /* Base reset */
@@ -119,6 +117,10 @@ html {
 body {
   min-height: 100vh;
   line-height: 1.6;
+  background:
+    radial-gradient(ellipse 900px 600px at 95% -5%, rgba(245, 166, 35, 0.18), transparent 65%),
+    var(--color-bg);
+  background-attachment: fixed;
 }
 
 a {
