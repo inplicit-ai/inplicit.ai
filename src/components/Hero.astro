@@ -343,8 +343,8 @@ function initBrain() {
   const brainGroup = new THREE.Group();
   scene.add(brainGroup);
 
-  // Edge line material — dark enough to read clearly on white bg
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0x2a2a38, transparent: true, opacity: 0.75 });
+  // Edge line material — dark, thick enough to read clearly on white bg
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x1e1e2a, transparent: true, opacity: 0.9 });
 
   // Ghost surface material — very subtle, gives 3D depth
   const surfaceMat = new THREE.MeshStandardMaterial({
@@ -363,7 +363,7 @@ function initBrain() {
     const box0 = new THREE.Box3().setFromObject(root);
     const c0 = box0.getCenter(new THREE.Vector3());
     const s0 = box0.getSize(new THREE.Vector3());
-    const scaleFactor = 3.0 / Math.max(s0.x, s0.y, s0.z);
+    const scaleFactor = 3.4 / Math.max(s0.x, s0.y, s0.z);
 
     root.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
@@ -377,7 +377,7 @@ function initBrain() {
         // Ghost surface (renders first, behind edges)
         brainGroup.add(new THREE.Mesh(geoCopy, surfaceMat));
         // Dark edge lines on top
-        brainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoCopy, 22), edgeMat));
+        brainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoCopy, 15), edgeMat));
       }
     });
   });

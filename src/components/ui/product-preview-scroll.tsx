@@ -51,7 +51,7 @@ export function ProductPreviewScroll({ lang }: { lang: "en" | "de" }) {
           <h2
             style={{
               fontSize: "clamp(2rem, 4vw, 3rem)",
-              fontWeight: 800,
+              fontWeight: 400,
               letterSpacing: "-0.03em",
               color: "var(--color-text-primary)",
               lineHeight: 1.1,
