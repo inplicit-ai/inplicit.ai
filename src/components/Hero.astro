@@ -31,7 +31,7 @@ const { lang = 'en' } = Astro.props;
 
       <p class="hero__sub">
         {lang === 'de'
-          ? 'Inplicit macht das implizite Wissen eurer Mitarbeitenden sichtbar — und verwandelt es in strategische Organisationsintelligenz.'
+          ? 'Inplicit macht das implizite Wissen eurer Mitarbeitenden sichtbar und verwandelt es in strategische Organisationsintelligenz.'
           : 'inplicit.ai gives every person in your organisation a voice. Understand what your workforce truly knows, thinks, and needs.'}
       </p>
 
@@ -47,7 +47,7 @@ const { lang = 'en' } = Astro.props;
           </i>
         </a>
         <a href="#how-it-works" class="hero__cta-secondary">
-          {lang === 'de' ? 'So funktioniert\'s' : 'How it works'}
+          {lang === 'de' ? "So funktioniert's" : 'How it works'}
         </a>
       </div>
 
@@ -72,90 +72,7 @@ const { lang = 'en' } = Astro.props;
 
     <div class="hero__visual" aria-hidden="true">
       <div class="hero__glow"></div>
-      <!-- Placeholder: replace with real brain image -->
-      <!-- <img src="/brain.png" class="hero__brain" alt="" /> -->
-      <svg class="hero__brain" viewBox="0 0 300 270" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="bg" cx="44%" cy="30%" r="72%">
-            <stop offset="0%" stop-color="#d2d2e0"/>
-            <stop offset="48%" stop-color="#8e8ea0"/>
-            <stop offset="100%" stop-color="#505064"/>
-          </radialGradient>
-          <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#8e8ea0"/>
-            <stop offset="100%" stop-color="#50505e"/>
-          </linearGradient>
-        </defs>
-
-        <!-- Brain: single organic silhouette with bumpy top contour -->
-        <path d="
-          M150 30
-          C157 30 166 28 174 32
-          C182 36 188 44 190 36
-          C192 28 200 24 210 28
-          C220 32 226 44 224 54
-          C234 52 244 58 248 70
-          C254 84 250 100 242 108
-          C250 114 256 126 254 140
-          C252 154 242 162 232 164
-          C228 178 218 190 204 198
-          C192 206 176 210 162 212
-          C158 212 154 212 150 212
-          C146 212 142 212 138 212
-          C124 210 108 206 96 198
-          C82 190 72 178 68 164
-          C58 162 48 154 46 140
-          C44 126 50 114 58 108
-          C50 100 46 84 52 70
-          C56 58 66 52 76 54
-          C74 44 80 32 90 28
-          C100 24 108 28 110 36
-          C112 44 118 36 126 32
-          C134 28 143 30 150 30 Z
-        " fill="url(#bg)"/>
-
-        <!-- Center fissure -->
-        <path d="M150 30 C149 90 148 148 149 192 C149 202 150 212 150 212" stroke="rgba(28,28,40,0.55)" stroke-width="2.5" fill="none"/>
-
-        <!-- Sulci right hemisphere -->
-        <path d="M192 52 C208 68 220 90 224 114 C228 138 222 162 210 180 C200 196 186 204 172 208" stroke="rgba(32,32,46,0.48)" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M220 100 C228 118 230 142 224 164 C218 184 206 198 190 206" stroke="rgba(32,32,46,0.38)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-        <path d="M240 140 C242 158 236 178 224 190" stroke="rgba(32,32,46,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-        <!-- Sulci left hemisphere -->
-        <path d="M108 52 C92 68 80 90 76 114 C72 138 78 162 90 180 C100 196 114 204 128 208" stroke="rgba(32,32,46,0.48)" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M80 100 C72 118 70 142 76 164 C82 184 94 198 110 206" stroke="rgba(32,32,46,0.38)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-        <path d="M60 140 C58 158 64 178 76 190" stroke="rgba(32,32,46,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-        <!-- Horizontal sulci -->
-        <path d="M60 128 C84 120 114 118 136 120 C142 120 148 121 150 121" stroke="rgba(32,32,46,0.28)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M240 128 C216 120 186 118 164 120 C158 120 152 121 150 121" stroke="rgba(32,32,46,0.28)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M68 165 C90 157 116 155 138 157 C144 157 149 158 150 158" stroke="rgba(32,32,46,0.22)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M232 165 C210 157 184 155 162 157 C156 157 151 158 150 158" stroke="rgba(32,32,46,0.22)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-        <!-- Brainstem -->
-        <rect x="134" y="212" width="32" height="36" rx="8" fill="url(#stemGrad)" opacity="0.7"/>
-
-        <!-- Amber circuit nodes -->
-        <circle cx="190" cy="68" r="5" fill="#f5a623" opacity="0.95"/>
-        <circle cx="226" cy="122" r="4.5" fill="#f5a623" opacity="0.85"/>
-        <circle cx="206" cy="188" r="4.5" fill="#f5a623" opacity="0.9"/>
-        <circle cx="110" cy="68" r="5" fill="#f5a623" opacity="0.95"/>
-        <circle cx="74" cy="122" r="4.5" fill="#f5a623" opacity="0.85"/>
-        <circle cx="94" cy="188" r="4.5" fill="#f5a623" opacity="0.9"/>
-        <circle cx="150" cy="46" r="5" fill="#f5a623" opacity="0.95"/>
-        <circle cx="150" cy="202" r="4" fill="#f5a623" opacity="0.75"/>
-
-        <!-- Circuit network lines -->
-        <polyline points="150,46 190,68 226,122 206,188 150,202 94,188 74,122 110,68 150,46"
-          stroke="#f5a623" stroke-width="1.3" opacity="0.4" fill="none" stroke-linejoin="round"/>
-        <line x1="150" y1="46" x2="150" y2="202" stroke="#f5a623" stroke-width="1" opacity="0.2"/>
-        <line x1="190" y1="68" x2="94" y2="188" stroke="#f5a623" stroke-width="0.9" opacity="0.16"/>
-        <line x1="110" y1="68" x2="206" y2="188" stroke="#f5a623" stroke-width="0.9" opacity="0.16"/>
-
-        <!-- Specular highlight -->
-        <ellipse cx="126" cy="72" rx="30" ry="16" fill="rgba(255,255,255,0.1)" transform="rotate(-22 126 72)"/>
-      </svg>
+      <canvas id="brain-canvas" class="hero__brain-canvas"></canvas>
     </div>
   </div>
 </section>
@@ -166,13 +83,13 @@ const { lang = 'en' } = Astro.props;
     min-height: 100svh;
     display: flex;
     align-items: flex-start;
-    padding-top: calc(var(--space-32) + 60px);
+    padding-top: calc(var(--space-6) + 64px);
     padding-bottom: var(--space-section);
   }
 
   @media (max-width: 767px) {
     .hero {
-      padding-top: calc(var(--space-24) + 56px);
+      padding-top: calc(var(--space-4) + 56px);
       padding-bottom: var(--space-16);
       min-height: 0;
     }
@@ -190,9 +107,7 @@ const { lang = 'en' } = Astro.props;
   }
 
   @media (max-width: 900px) {
-    .hero__inner {
-      grid-template-columns: 1fr;
-    }
+    .hero__inner { grid-template-columns: 1fr; }
     .hero__visual { display: none; }
   }
 
@@ -205,7 +120,7 @@ const { lang = 'en' } = Astro.props;
     max-width: 620px;
   }
 
-  /* Visual - brain */
+  /* Visual */
   .hero__visual {
     position: relative;
     display: flex;
@@ -216,17 +131,17 @@ const { lang = 'en' } = Astro.props;
 
   .hero__glow {
     position: absolute;
-    inset: -40px;
+    inset: -60px;
     border-radius: 50%;
-    background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(245, 166, 35, 0.22), transparent 70%);
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(245, 166, 35, 0.2), transparent 70%);
+    pointer-events: none;
   }
 
-  .hero__brain {
+  .hero__brain-canvas {
     width: 300px;
     height: 300px;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 8px 32px rgba(245, 166, 35, 0.12));
   }
 
   /* Badge */
@@ -262,8 +177,8 @@ const { lang = 'en' } = Astro.props;
 
   /* Headline */
   .hero__headline {
-    font-size: clamp(2.6rem, 6vw, 5rem);
-    font-weight: 800;
+    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+    font-weight: 900;
     line-height: 1.0;
     letter-spacing: -0.04em;
     margin-bottom: var(--space-6);
@@ -271,14 +186,16 @@ const { lang = 'en' } = Astro.props;
     opacity: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.04em;
+    gap: 0.02em;
   }
 
-  .hero__line1, .hero__line1b { color: var(--color-text-primary); }
-  .hero__line2 { color: var(--color-text-primary); opacity: 0.28; }
+  .hero__line1,
+  .hero__line1b { color: var(--color-text-primary); font-weight: 900; }
+  .hero__line2  { color: var(--color-text-primary); font-weight: 900; opacity: 0.25; }
 
   .hero__sub {
     font-size: clamp(var(--text-base), 1.8vw, var(--text-lg));
+    font-weight: 400;
     color: var(--color-text-secondary);
     line-height: 1.75;
     max-width: 520px;
@@ -409,3 +326,123 @@ const { lang = 'en' } = Astro.props;
     .hero__badge-dot { animation: none; }
   }
 </style>
+
+<script>
+import * as THREE from 'three';
+
+function displace(geo: THREE.BufferGeometry, amp: number) {
+  const pos = geo.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+    const r = Math.sqrt(x * x + y * y + z * z);
+    const noise = amp * (
+      0.45 * Math.sin(x * 5.3 + y * 3.7) +
+      0.30 * Math.cos(y * 8.1 + z * 5.9) +
+      0.20 * Math.sin(z * 11.0 + x * 7.3) +
+      0.10 * Math.cos(x * 14.0 + y * 11.0)
+    );
+    if (r > 0) pos.setXYZ(i, x + (x / r) * noise, y + (y / r) * noise, z + (z / r) * noise);
+  }
+  geo.computeVertexNormals();
+}
+
+function initBrain() {
+  const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
+  if (!canvas) return;
+
+  const W = 300, H = 300;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W, H);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50);
+  camera.position.set(0, 0.15, 5.4);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+
+  const key = new THREE.DirectionalLight(0xffffff, 1.5);
+  key.position.set(3, 5, 4);
+  scene.add(key);
+
+  const amber = new THREE.PointLight(0xf5a623, 1.3, 20);
+  amber.position.set(-3, 1, 5);
+  scene.add(amber);
+
+  const rim = new THREE.DirectionalLight(0xd0d0ff, 0.22);
+  rim.position.set(-4, -3, -3);
+  scene.add(rim);
+
+  const brain = new THREE.Group();
+  scene.add(brain);
+
+  const mat = new THREE.MeshStandardMaterial({ color: 0x8a8a9a, roughness: 0.88, metalness: 0.04 });
+
+  // Left hemisphere
+  const lGeo = new THREE.SphereGeometry(1, 64, 48);
+  displace(lGeo, 0.13);
+  const lMesh = new THREE.Mesh(lGeo, mat);
+  lMesh.scale.set(0.92, 0.88, 0.96);
+  lMesh.position.set(-0.48, 0, 0);
+  brain.add(lMesh);
+
+  // Right hemisphere
+  const rGeo = new THREE.SphereGeometry(1, 64, 48);
+  displace(rGeo, 0.13);
+  const rMesh = new THREE.Mesh(rGeo, mat);
+  rMesh.scale.set(0.92, 0.88, 0.96);
+  rMesh.position.set(0.48, 0, 0);
+  brain.add(rMesh);
+
+  // Brainstem
+  const stemMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.16, 0.1, 0.75, 12),
+    new THREE.MeshStandardMaterial({ color: 0x7a7a88, roughness: 0.9 })
+  );
+  stemMesh.position.set(0, -1.05, 0);
+  brain.add(stemMesh);
+
+  // Amber circuit nodes
+  const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
+  const nGeo = new THREE.SphereGeometry(0.05, 8, 8);
+  const nodeCoords: [number, number, number][] = [
+    [ 0,     0.92,  0.62],
+    [ 0.85,  0.32,  0.62],
+    [-0.85,  0.32,  0.62],
+    [ 0.82, -0.38,  0.52],
+    [-0.82, -0.38,  0.52],
+    [ 0.38,  0.72,  0.88],
+    [-0.38,  0.72,  0.88],
+    [ 0,    -0.72,  0.68],
+  ];
+
+  const nodes = nodeCoords.map(([x, y, z]) => {
+    const m = new THREE.Mesh(nGeo, nodeMat);
+    m.position.set(x, y, z);
+    brain.add(m);
+    return m;
+  });
+
+  // Connection lines
+  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.38 });
+  const edges: [number, number][] = [
+    [0,1],[0,2],[1,3],[2,4],[1,5],[2,6],[3,7],[4,7],[5,6],[0,5],[0,6],[3,4]
+  ];
+  edges.forEach(([a, b]) => {
+    const pts = [nodes[a].position.clone(), nodes[b].position.clone()];
+    brain.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+  });
+
+  let raf: number;
+  function animate() {
+    raf = requestAnimationFrame(animate);
+    brain.rotation.y += 0.004;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('beforeunload', () => cancelAnimationFrame(raf));
+}
+
+document.addEventListener('DOMContentLoaded', initBrain);
+</script>
