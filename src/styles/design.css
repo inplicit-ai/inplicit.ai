@@ -93,7 +93,7 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   background:
-    radial-gradient(ellipse 900px 600px at 95% -5%, rgba(245, 166, 35, 0.18), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 100% 78%, rgba(245, 166, 35, 0.22), transparent 60%),
     var(--color-bg);
   background-attachment: fixed;
 }
@@ -104,8 +104,7 @@ a {
 }
 
 h1, h2, h3 {
-  font-weight: 400 !important;
-  letter-spacing: -0.02em !important;
+  letter-spacing: -0.03em;
 }
 
 img {
