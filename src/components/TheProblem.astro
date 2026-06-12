@@ -6,33 +6,41 @@ const { lang = 'en' } = Astro.props;
 
 const cards = lang === 'de' ? [
   {
-    icon: `<path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v4m0 4h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
-    tag: 'Das Problem',
-    title: 'Wissen das niemand sieht',
-    body: '80 % des operativen Wissens wird nie dokumentiert. 42 % von dem, was ein Mitarbeitender weiß, kann kein Kollege abdecken.',
-    callout: 'Ob Prozessreibung, strategische Lücken oder Expertise, die beim nächsten Wechsel verloren geht: Es bleibt unsichtbar, bis jemand fragt.',
+    tag: 'Verborgenes Prozesswissen',
+    title: 'Organisationswissen steckt in Köpfen',
+    body: 'Viele Abläufe und Entscheidungen sind nicht sauber dokumentiert. Wenn Mitarbeitende gehen oder Teams wachsen, geht genau dieses Wissen leicht verloren.',
+    cta: 'Inplicit macht verborgenes Wissen durch KI-Interviews sichtbar und strukturiert nutzbar.',
   },
   {
-    icon: `<path d="M3 10h14M3 5h14M3 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
-    tag: 'Die Lücke',
-    title: 'Bestehende Tools hören nur, was sie fragen',
-    body: 'Umfragen stellen 12 Fragen und bekommen 12 Antworten. Consultants sprechen mit 20 Personen in 90 Tagen. Town Halls komprimieren Einblicke zu Konsens.',
-    callout: 'Transformationen scheitern nicht an schlechten Plänen, sondern an dem, was niemand ausgesprochen hat. Fortune-500-Unternehmen verlieren dadurch 31,5 Mrd. Dollar pro Jahr.',
+    tag: 'Fehlendes operatives Know-how',
+    title: 'Entscheidungen brauchen mehr internen Kontext',
+    body: 'Oft fehlt Management der Blick auf das, was operativ wirklich passiert. Dadurch werden wichtige Entscheidungen mit zu wenig Nähe zur Praxis getroffen.',
+    cta: 'Inplicit bringt die operative Realität strukturiert zur Entscheidungsebene.',
+  },
+  {
+    tag: 'Fehlende Kontext-Ebene',
+    title: 'KI braucht Unternehmensrealität',
+    body: 'Damit KI im Unternehmen sinnvoll hilft, braucht sie mehr als Dokumente. Sie braucht Kontext aus Menschen, Prozessen und gelebter Erfahrung.',
+    cta: 'Inplicit liefert die Kontext-Ebene und belastbares Organisationswissen, auf das KI-Systeme zugreifen können.',
   },
 ] : [
   {
-    icon: `<path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v4m0 4h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
-    tag: 'The problem',
-    title: 'Knowledge nobody sees',
-    body: '80% of operational knowledge is never documented. 42% of what each employee knows, no colleague can cover.',
-    callout: 'During a merger, a restructuring, a strategic pivot: that is exactly the knowledge that decides whether it works.',
+    tag: 'Hidden process knowledge',
+    title: 'Organisational knowledge lives in people\'s heads',
+    body: 'Many processes and decisions are never documented properly. When employees leave or teams grow, exactly this knowledge is easily lost.',
+    cta: 'inplicit makes hidden knowledge visible and structured through AI-led interviews.',
   },
   {
-    icon: `<path d="M3 10h14M3 5h14M3 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
-    tag: 'The gap',
-    title: 'Existing tools only hear what they ask',
-    body: 'Surveys ask 12 pre-set questions and get 12 pre-set answers. Consultants interview 20 people over 90 days. Town halls compress insight into consensus.',
-    callout: 'None of them surface what they didn\'t know to ask. That gap is where transformations quietly fail.',
+    tag: 'Missing operational context',
+    title: 'Decisions need more internal context',
+    body: 'Management often lacks visibility into what is actually happening operationally. This leads to important decisions being made without sufficient proximity to practice.',
+    cta: 'inplicit brings operational reality to the decision-making level in structured form.',
+  },
+  {
+    tag: 'Missing context layer',
+    title: 'AI needs organisational reality',
+    body: 'For AI to be genuinely useful in organisations, it needs more than documents. It needs context from people, processes, and lived experience.',
+    cta: 'inplicit delivers the context layer and reliable organisational knowledge that AI systems can draw on.',
   },
 ]
 ---
@@ -40,41 +48,22 @@ const cards = lang === 'de' ? [
 <section class="problem" id="the-problem">
   <div class="container">
     <p class="problem__eyebrow section-fade">
-      {lang === 'de' ? 'Das Problem' : 'The Problem'}
+      {lang === 'de' ? 'Probleme & Usecases' : 'Problems & use cases'}
     </p>
-
-    <h2 class="problem__heading section-fade">
-      <span class="problem__heading-line1">{lang === 'de' ? 'Was ungehört bleibt,' : 'What goes unheard'}</span>
-      <span class="problem__heading-line2">{lang === 'de' ? 'kostet.' : 'costs organisations everything.'}</span>
-    </h2>
 
     <div class="problem__cols">
       {cards.map((card, i) => (
         <div class="problem__card section-fade" style={`--delay: ${i * 80}ms`}>
-          <div class="problem__card-header">
-            <div class="problem__card-icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" set:html={card.icon} />
-            </div>
-            <span class="problem__card-tag">{card.tag}</span>
-          </div>
-
+          <div class="problem__card-tag">{card.tag}</div>
           <h3 class="problem__card-title">{card.title}</h3>
           <p class="problem__card-body">{card.body}</p>
-
-          <blockquote class="problem__card-callout">
-            {card.callout}
-          </blockquote>
+          <div class="problem__card-rule" aria-hidden="true"></div>
+          <p class="problem__card-cta">
+            <span class="problem__card-arrow" aria-hidden="true">→</span>
+            {card.cta}
+          </p>
         </div>
       ))}
-    </div>
-
-    <div class="problem__cta-wrap section-fade">
-      <a href="#request-pilot" class="problem__cta">
-        {lang === 'de' ? 'Jetzt lösen' : 'Solve it now'}
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
     </div>
   </div>
 </section>
@@ -83,7 +72,6 @@ const cards = lang === 'de' ? [
   .problem {
     padding: var(--space-section) 0;
     border-top: 1px solid var(--color-border);
-    background-color: var(--color-surface);
   }
 
   @media (max-width: 767px) {
@@ -96,155 +84,80 @@ const cards = lang === 'de' ? [
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-text-tertiary);
-    margin-bottom: var(--space-4);
-  }
-
-  .problem__heading {
-    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
-    font-weight: 400;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    display: flex;
-    flex-direction: column;
-    gap: 0.06em;
-    margin-bottom: var(--space-12);
-  }
-
-  .problem__heading-line1 { color: var(--color-text-primary); }
-  .problem__heading-line2 { color: var(--color-text-primary); opacity: 0.22; }
-
-  /* Cards grid */
-  .problem__cols {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
     margin-bottom: var(--space-10);
   }
 
-  @media (min-width: 768px) {
-    .problem__cols { grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  /* 3-column grid */
+  .problem__cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
   }
 
-  /* new-card style */
+  @media (max-width: 900px) {
+    .problem__cols { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  }
+
+  @media (max-width: 600px) {
+    .problem__cols { grid-template-columns: 1fr; gap: var(--space-6); }
+  }
+
+  /* Card */
   .problem__card {
-    position: relative;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-8);
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 18px;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    transition:
-      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.3s ease;
   }
 
-  /* Top shimmer line */
-  .problem__card::before {
-    content: '';
-    position: absolute;
-    inset-x: 0;
-    top: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08), transparent);
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
-  }
-
-  .problem__card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 42px -28px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(15, 23, 42, 0.05);
-    border-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .problem__card:hover::before { opacity: 1; }
-
-  @media (max-width: 767px) {
-    .problem__card { padding: var(--space-6); border-radius: 14px; }
-  }
-
-  /* Card header row */
-  .problem__card-header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .problem__card-icon {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-ui);
-    color: var(--color-text-secondary);
-    flex-shrink: 0;
-  }
-
+  /* Black pill tag */
   .problem__card-tag {
-    font-size: 11px;
-    font-weight: 600;
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 5px 10px;
+    background: var(--color-text-primary);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--color-text-tertiary);
+    border-radius: var(--radius-ui);
+    line-height: 1;
   }
 
   .problem__card-title {
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
     font-weight: 400;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
     color: var(--color-text-primary);
+    margin: 0;
   }
 
   .problem__card-body {
     font-size: var(--text-base);
     color: var(--color-text-secondary);
-    line-height: 1.8;
-  }
-
-  .problem__card-callout {
-    margin: 0;
-    font-size: var(--text-sm);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--color-text-secondary);
-    border-left: 2px solid var(--color-accent);
-    padding-left: var(--space-4);
     line-height: 1.75;
-    opacity: 0.85;
+    flex: 1;
   }
 
-  /* CTA */
-  .problem__cta-wrap { margin-top: var(--space-2); }
+  /* Amber separator line */
+  .problem__card-rule {
+    width: 32px;
+    height: 2px;
+    background: var(--color-accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
 
-  .problem__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-secondary);
+  /* Amber arrow CTA text */
+  .problem__card-cta {
     font-size: var(--text-sm);
     font-weight: 500;
-    border-radius: var(--radius-ui);
-    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth), gap 0.2s var(--ease-spring);
+    color: var(--color-accent);
+    line-height: 1.65;
   }
 
-  .problem__cta:hover {
-    color: var(--color-text-primary);
-    border-color: var(--color-text-tertiary);
-    gap: var(--space-3);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .problem__card { transition: none; }
-    .problem__card:hover { transform: none; }
+  .problem__card-arrow {
+    margin-right: var(--space-1);
   }
 </style>
