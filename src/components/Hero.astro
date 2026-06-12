@@ -144,9 +144,9 @@ const pills = lang === 'de'
 
   /* Headline */
   .hero__headline {
-    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    font-size: clamp(1.75rem, 3.6vw, 3.0rem);
     font-weight: 400;
-    line-height: 1.08;
+    line-height: 1.1;
     letter-spacing: -0.03em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
@@ -275,7 +275,7 @@ const pills = lang === 'de'
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 360px;
+    height: 420px;
   }
 
   .hero__glow {
@@ -287,8 +287,8 @@ const pills = lang === 'de'
   }
 
   .hero__brain-canvas {
-    width: 340px;
-    height: 340px;
+    width: 400px;
+    height: 400px;
     position: relative;
     z-index: 1;
     cursor: grab;
@@ -322,7 +322,7 @@ function initBrain() {
   const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
 
-  const W = 340, H = 340;
+  const W = 400, H = 400;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
@@ -356,11 +356,11 @@ function initBrain() {
   rim.position.set(0, -4, -3);
   scene.add(rim);
 
-  // Dark metallic material for the brain
+  // Grey metallic material — visible but not pitch black
   const brainMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a1a,
-    metalness: 0.72,
-    roughness: 0.38,
+    color: 0x4a4a52,
+    metalness: 0.45,
+    roughness: 0.55,
   });
 
   const loader = new GLTFLoader();
@@ -379,7 +379,7 @@ function initBrain() {
     const centre = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     brain.position.sub(centre);
-    brain.scale.setScalar(2.0 / Math.max(size.x, size.y, size.z));
+    brain.scale.setScalar(2.6 / Math.max(size.x, size.y, size.z));
 
     scene.add(brain);
   });
