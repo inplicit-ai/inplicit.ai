@@ -11,58 +11,151 @@ const { lang = 'en' } = Astro.props;
   <DottedSurface />
 
   <div class="hero__inner container">
-    <div class="hero__badge">
-      <span class="hero__badge-dot" aria-hidden="true"></span>
-      {lang === 'de' ? 'KI-gestützte Workforce Intelligence' : 'AI-powered workforce intelligence'}
-    </div>
+    <div class="hero__content">
+      <div class="hero__badge">
+        <span class="hero__badge-dot" aria-hidden="true"></span>
+        {lang === 'de' ? 'KI-gestützte Workforce Intelligence' : 'AI-powered workforce intelligence'}
+      </div>
 
-    <h1 class="hero__headline">
-      <span class="hero__line1">
-        {lang === 'de' ? 'Die Antworten sind' : 'The answers are'}
-      </span>
-      <span class="hero__line2">
-        {lang === 'de' ? 'bereits in Ihrem Unternehmen.' : 'already within your organization.'}
-      </span>
-    </h1>
-
-    <p class="hero__sub">
-      {lang === 'de'
-        ? 'Unsere KI-Agenten interviewen alle Mitarbeitenden - und liefern Ihnen direkt, was die Belegschaft wirklich weiß, denkt und braucht.'
-        : 'inplicit.ai gives every person in your organisation a voice. Understand what your workforce truly knows, thinks, and needs.'}
-    </p>
-
-    <div class="hero__actions">
-      <a href="#request-pilot" class="hero__cta-primary">
-        <span class="hero__cta-primary-label">
-          {lang === 'de' ? 'Zur Warteliste' : 'Join Waitlist'}
+      <h1 class="hero__headline">
+        <span class="hero__line1">
+          {lang === 'de' ? 'Euer wertvollstes' : 'The answers are'}
         </span>
-        <i class="hero__cta-primary-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </i>
-      </a>
-      <a href="#how-it-works" class="hero__cta-secondary">
-        {lang === 'de' ? 'Wie es funktioniert' : 'How it works'}
-      </a>
+        <span class="hero__line1b">
+          {lang === 'de' ? 'Wissen steckt' : 'already within'}
+        </span>
+        <span class="hero__line2">
+          {lang === 'de' ? 'in Köpfen.' : 'your organization.'}
+        </span>
+      </h1>
+
+      <p class="hero__sub">
+        {lang === 'de'
+          ? 'Inplicit macht das implizite Wissen eurer Mitarbeitenden sichtbar — und verwandelt es in strategische Organisationsintelligenz.'
+          : 'inplicit.ai gives every person in your organisation a voice. Understand what your workforce truly knows, thinks, and needs.'}
+      </p>
+
+      <div class="hero__actions">
+        <a href="#request-pilot" class="hero__cta-primary">
+          <span class="hero__cta-primary-label">
+            {lang === 'de' ? 'Zur Warteliste' : 'Join Waitlist'}
+          </span>
+          <i class="hero__cta-primary-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </i>
+        </a>
+        <a href="#how-it-works" class="hero__cta-secondary">
+          {lang === 'de' ? 'So funktioniert\'s' : 'How it works'}
+        </a>
+      </div>
+
+      <div class="hero__meta">
+        <span class="hero__meta-item hero__meta-item--check">
+          {lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}
+        </span>
+        <span class="hero__meta-sep" aria-hidden="true">·</span>
+        <span class="hero__meta-item hero__meta-item--check">
+          {lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}
+        </span>
+        <span class="hero__meta-sep" aria-hidden="true">·</span>
+        <span class="hero__meta-item hero__meta-item--check">
+          {lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}
+        </span>
+        <span class="hero__meta-sep" aria-hidden="true">·</span>
+        <span class="hero__meta-item hero__meta-item--check">
+          {lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}
+        </span>
+      </div>
     </div>
 
-    <div class="hero__meta">
-      <span class="hero__meta-item hero__meta-item--check">
-        {lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}
-      </span>
-      <span class="hero__meta-sep" aria-hidden="true">·</span>
-      <span class="hero__meta-item hero__meta-item--check">
-        {lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}
-      </span>
-      <span class="hero__meta-sep" aria-hidden="true">·</span>
-      <span class="hero__meta-item hero__meta-item--check">
-        {lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}
-      </span>
-      <span class="hero__meta-sep" aria-hidden="true">·</span>
-      <span class="hero__meta-item hero__meta-item--check">
-        {lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}
-      </span>
+    <div class="hero__visual" aria-hidden="true">
+      <div class="hero__glow"></div>
+      <!-- Placeholder: replace with real brain image -->
+      <!-- <img src="/brain.png" class="hero__brain" alt="" /> -->
+      <svg class="hero__brain" viewBox="0 0 300 270" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bg" cx="44%" cy="30%" r="72%">
+            <stop offset="0%" stop-color="#d2d2e0"/>
+            <stop offset="48%" stop-color="#8e8ea0"/>
+            <stop offset="100%" stop-color="#505064"/>
+          </radialGradient>
+          <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#8e8ea0"/>
+            <stop offset="100%" stop-color="#50505e"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Brain: single organic silhouette with bumpy top contour -->
+        <path d="
+          M150 30
+          C157 30 166 28 174 32
+          C182 36 188 44 190 36
+          C192 28 200 24 210 28
+          C220 32 226 44 224 54
+          C234 52 244 58 248 70
+          C254 84 250 100 242 108
+          C250 114 256 126 254 140
+          C252 154 242 162 232 164
+          C228 178 218 190 204 198
+          C192 206 176 210 162 212
+          C158 212 154 212 150 212
+          C146 212 142 212 138 212
+          C124 210 108 206 96 198
+          C82 190 72 178 68 164
+          C58 162 48 154 46 140
+          C44 126 50 114 58 108
+          C50 100 46 84 52 70
+          C56 58 66 52 76 54
+          C74 44 80 32 90 28
+          C100 24 108 28 110 36
+          C112 44 118 36 126 32
+          C134 28 143 30 150 30 Z
+        " fill="url(#bg)"/>
+
+        <!-- Center fissure -->
+        <path d="M150 30 C149 90 148 148 149 192 C149 202 150 212 150 212" stroke="rgba(28,28,40,0.55)" stroke-width="2.5" fill="none"/>
+
+        <!-- Sulci right hemisphere -->
+        <path d="M192 52 C208 68 220 90 224 114 C228 138 222 162 210 180 C200 196 186 204 172 208" stroke="rgba(32,32,46,0.48)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M220 100 C228 118 230 142 224 164 C218 184 206 198 190 206" stroke="rgba(32,32,46,0.38)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M240 140 C242 158 236 178 224 190" stroke="rgba(32,32,46,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Sulci left hemisphere -->
+        <path d="M108 52 C92 68 80 90 76 114 C72 138 78 162 90 180 C100 196 114 204 128 208" stroke="rgba(32,32,46,0.48)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M80 100 C72 118 70 142 76 164 C82 184 94 198 110 206" stroke="rgba(32,32,46,0.38)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M60 140 C58 158 64 178 76 190" stroke="rgba(32,32,46,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Horizontal sulci -->
+        <path d="M60 128 C84 120 114 118 136 120 C142 120 148 121 150 121" stroke="rgba(32,32,46,0.28)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M240 128 C216 120 186 118 164 120 C158 120 152 121 150 121" stroke="rgba(32,32,46,0.28)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M68 165 C90 157 116 155 138 157 C144 157 149 158 150 158" stroke="rgba(32,32,46,0.22)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M232 165 C210 157 184 155 162 157 C156 157 151 158 150 158" stroke="rgba(32,32,46,0.22)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Brainstem -->
+        <rect x="134" y="212" width="32" height="36" rx="8" fill="url(#stemGrad)" opacity="0.7"/>
+
+        <!-- Amber circuit nodes -->
+        <circle cx="190" cy="68" r="5" fill="#f5a623" opacity="0.95"/>
+        <circle cx="226" cy="122" r="4.5" fill="#f5a623" opacity="0.85"/>
+        <circle cx="206" cy="188" r="4.5" fill="#f5a623" opacity="0.9"/>
+        <circle cx="110" cy="68" r="5" fill="#f5a623" opacity="0.95"/>
+        <circle cx="74" cy="122" r="4.5" fill="#f5a623" opacity="0.85"/>
+        <circle cx="94" cy="188" r="4.5" fill="#f5a623" opacity="0.9"/>
+        <circle cx="150" cy="46" r="5" fill="#f5a623" opacity="0.95"/>
+        <circle cx="150" cy="202" r="4" fill="#f5a623" opacity="0.75"/>
+
+        <!-- Circuit network lines -->
+        <polyline points="150,46 190,68 226,122 206,188 150,202 94,188 74,122 110,68 150,46"
+          stroke="#f5a623" stroke-width="1.3" opacity="0.4" fill="none" stroke-linejoin="round"/>
+        <line x1="150" y1="46" x2="150" y2="202" stroke="#f5a623" stroke-width="1" opacity="0.2"/>
+        <line x1="190" y1="68" x2="94" y2="188" stroke="#f5a623" stroke-width="0.9" opacity="0.16"/>
+        <line x1="110" y1="68" x2="206" y2="188" stroke="#f5a623" stroke-width="0.9" opacity="0.16"/>
+
+        <!-- Specular highlight -->
+        <ellipse cx="126" cy="72" rx="30" ry="16" fill="rgba(255,255,255,0.1)" transform="rotate(-22 126 72)"/>
+      </svg>
     </div>
   </div>
 </section>
@@ -72,27 +165,68 @@ const { lang = 'en' } = Astro.props;
     position: relative;
     min-height: 100svh;
     display: flex;
-    align-items: center;
-    padding: var(--space-section-lg) 0 var(--space-section);
+    align-items: flex-start;
+    padding-top: calc(var(--space-32) + 60px);
+    padding-bottom: var(--space-section);
   }
 
   @media (max-width: 767px) {
     .hero {
-      padding: var(--space-32) 0 var(--space-24);
-      min-height: 90svh;
+      padding-top: calc(var(--space-24) + 56px);
+      padding-bottom: var(--space-16);
+      min-height: 0;
     }
   }
 
   .hero__inner {
     position: relative;
     z-index: 1;
-    max-width: 900px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-16);
+    align-items: center;
+    width: 100%;
     animation: hero-in 0.7s var(--ease-out) forwards;
+  }
+
+  @media (max-width: 900px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+    .hero__visual { display: none; }
   }
 
   @keyframes hero-in {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero__content {
+    max-width: 620px;
+  }
+
+  /* Visual - brain */
+  .hero__visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 340px;
+  }
+
+  .hero__glow {
+    position: absolute;
+    inset: -40px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(245, 166, 35, 0.22), transparent 70%);
+  }
+
+  .hero__brain {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 8px 32px rgba(245, 166, 35, 0.12));
   }
 
   /* Badge */
@@ -108,7 +242,7 @@ const { lang = 'en' } = Astro.props;
     text-transform: uppercase;
     padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-full);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.05s;
     opacity: 0;
   }
@@ -128,11 +262,11 @@ const { lang = 'en' } = Astro.props;
 
   /* Headline */
   .hero__headline {
-    font-size: clamp(var(--text-2xl), 8vw, var(--text-4xl));
+    font-size: clamp(2.6rem, 6vw, 5rem);
     font-weight: 800;
     line-height: 1.0;
     letter-spacing: -0.04em;
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
     opacity: 0;
     display: flex;
@@ -140,14 +274,14 @@ const { lang = 'en' } = Astro.props;
     gap: 0.04em;
   }
 
-  .hero__line1 { color: var(--color-text-primary); }
-  .hero__line2 { color: var(--color-text-primary); opacity: 0.32; }
+  .hero__line1, .hero__line1b { color: var(--color-text-primary); }
+  .hero__line2 { color: var(--color-text-primary); opacity: 0.28; }
 
   .hero__sub {
-    font-size: clamp(var(--text-base), 2vw, var(--text-lg));
+    font-size: clamp(var(--text-base), 1.8vw, var(--text-lg));
     color: var(--color-text-secondary);
     line-height: 1.75;
-    max-width: 560px;
+    max-width: 520px;
     margin-bottom: var(--space-10);
     animation: hero-in 0.7s var(--ease-out) forwards 0.18s;
     opacity: 0;
@@ -163,7 +297,7 @@ const { lang = 'en' } = Astro.props;
     opacity: 0;
   }
 
-  /* Primary CTA — monochromatic inversion */
+  /* Primary CTA */
   .hero__cta-primary {
     position: relative;
     overflow: hidden;

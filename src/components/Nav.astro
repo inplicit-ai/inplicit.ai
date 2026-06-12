@@ -19,6 +19,9 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
       <a href={toggleHref} class="nav__lang" aria-label={`Switch to ${toggleLabel}`}>
         {toggleLabel}
       </a>
+      <a href="https://dashboard-inplicit-ai.vercel.app/login" class="nav__login" target="_blank" rel="noopener noreferrer">
+        Login
+      </a>
       <a href="#request-pilot" class="nav__cta">
         <span class="nav__cta-label">{cta}</span>
         <i class="nav__cta-icon" aria-hidden="true">
@@ -100,6 +103,22 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
   }
 
   .nav__lang:hover { color: var(--color-text-primary); }
+
+  .nav__login {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-ui);
+    border: 1px solid var(--color-border);
+    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
+  }
+
+  .nav__login:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-tertiary);
+  }
 
   .nav__cta {
     position: relative;
