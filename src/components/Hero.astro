@@ -138,8 +138,8 @@ const { lang = 'en' } = Astro.props;
   }
 
   .hero__brain-canvas {
-    width: 300px;
-    height: 300px;
+    width: 340px;
+    height: 340px;
     position: relative;
     z-index: 1;
   }
@@ -177,10 +177,10 @@ const { lang = 'en' } = Astro.props;
 
   /* Headline */
   .hero__headline {
-    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
-    font-weight: 900;
-    line-height: 1.0;
-    letter-spacing: -0.04em;
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
     opacity: 0;
@@ -190,8 +190,8 @@ const { lang = 'en' } = Astro.props;
   }
 
   .hero__line1,
-  .hero__line1b { color: var(--color-text-primary); font-weight: 900; }
-  .hero__line2  { color: var(--color-text-primary); font-weight: 900; opacity: 0.25; }
+  .hero__line1b { color: var(--color-text-primary); font-weight: 700; }
+  .hero__line2  { color: var(--color-text-primary); font-weight: 700; opacity: 0.22; }
 
   .hero__sub {
     font-size: clamp(var(--text-base), 1.8vw, var(--text-lg));
@@ -329,114 +329,90 @@ const { lang = 'en' } = Astro.props;
 
 <script>
 import * as THREE from 'three';
-
-function displace(geo: THREE.BufferGeometry, amp: number) {
-  const pos = geo.attributes.position as THREE.BufferAttribute;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    const r = Math.sqrt(x * x + y * y + z * z);
-    const noise = amp * (
-      0.45 * Math.sin(x * 5.3 + y * 3.7) +
-      0.30 * Math.cos(y * 8.1 + z * 5.9) +
-      0.20 * Math.sin(z * 11.0 + x * 7.3) +
-      0.10 * Math.cos(x * 14.0 + y * 11.0)
-    );
-    if (r > 0) pos.setXYZ(i, x + (x / r) * noise, y + (y / r) * noise, z + (z / r) * noise);
-  }
-  geo.computeVertexNormals();
-}
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 function initBrain() {
   const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
 
-  const W = 300, H = 300;
+  const W = 340, H = 340;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50);
-  camera.position.set(0, 0.15, 5.4);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
+  camera.position.set(0, 0, 3.2);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  scene.add(new THREE.AmbientLight(0xffffff, 1.4));
 
-  const key = new THREE.DirectionalLight(0xffffff, 1.5);
-  key.position.set(3, 5, 4);
+  const key = new THREE.DirectionalLight(0xffffff, 2.0);
+  key.position.set(2, 4, 3);
   scene.add(key);
 
-  const amber = new THREE.PointLight(0xf5a623, 1.3, 20);
-  amber.position.set(-3, 1, 5);
+  const fill = new THREE.DirectionalLight(0xfff5e0, 0.6);
+  fill.position.set(-3, 0, 2);
+  scene.add(fill);
+
+  const amber = new THREE.PointLight(0xf5a623, 0.8, 12);
+  amber.position.set(0, 2, 3);
   scene.add(amber);
 
-  const rim = new THREE.DirectionalLight(0xd0d0ff, 0.22);
-  rim.position.set(-4, -3, -3);
-  scene.add(rim);
+  let brain: THREE.Object3D | null = null;
 
-  const brain = new THREE.Group();
-  scene.add(brain);
+  const loader = new GLTFLoader();
+  loader.load('/brain/scene.gltf', (gltf) => {
+    brain = gltf.scene;
 
-  const mat = new THREE.MeshStandardMaterial({ color: 0x8a8a9a, roughness: 0.88, metalness: 0.04 });
+    // Centre and scale the model to fit the canvas
+    const box = new THREE.Box3().setFromObject(brain);
+    const centre = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    brain.position.sub(centre);
+    brain.scale.setScalar(2.0 / maxDim);
 
-  // Left hemisphere
-  const lGeo = new THREE.SphereGeometry(1, 64, 48);
-  displace(lGeo, 0.13);
-  const lMesh = new THREE.Mesh(lGeo, mat);
-  lMesh.scale.set(0.92, 0.88, 0.96);
-  lMesh.position.set(-0.48, 0, 0);
-  brain.add(lMesh);
+    scene.add(brain);
+  });
 
-  // Right hemisphere
-  const rGeo = new THREE.SphereGeometry(1, 64, 48);
-  displace(rGeo, 0.13);
-  const rMesh = new THREE.Mesh(rGeo, mat);
-  rMesh.scale.set(0.92, 0.88, 0.96);
-  rMesh.position.set(0.48, 0, 0);
-  brain.add(rMesh);
-
-  // Brainstem
-  const stemMesh = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.16, 0.1, 0.75, 12),
-    new THREE.MeshStandardMaterial({ color: 0x7a7a88, roughness: 0.9 })
-  );
-  stemMesh.position.set(0, -1.05, 0);
-  brain.add(stemMesh);
-
-  // Amber circuit nodes
+  // Amber circuit nodes on top of the brain
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
-  const nGeo = new THREE.SphereGeometry(0.05, 8, 8);
+  const nGeo = new THREE.SphereGeometry(0.04, 8, 8);
   const nodeCoords: [number, number, number][] = [
-    [ 0,     0.92,  0.62],
-    [ 0.85,  0.32,  0.62],
-    [-0.85,  0.32,  0.62],
-    [ 0.82, -0.38,  0.52],
-    [-0.82, -0.38,  0.52],
-    [ 0.38,  0.72,  0.88],
-    [-0.38,  0.72,  0.88],
-    [ 0,    -0.72,  0.68],
+    [ 0,     0.82,  0.55],
+    [ 0.72,  0.28,  0.52],
+    [-0.72,  0.28,  0.52],
+    [ 0.70, -0.32,  0.42],
+    [-0.70, -0.32,  0.42],
+    [ 0.30,  0.62,  0.72],
+    [-0.30,  0.62,  0.72],
+    [ 0,    -0.62,  0.58],
   ];
 
+  const overlay = new THREE.Group();
   const nodes = nodeCoords.map(([x, y, z]) => {
     const m = new THREE.Mesh(nGeo, nodeMat);
     m.position.set(x, y, z);
-    brain.add(m);
+    overlay.add(m);
     return m;
   });
 
-  // Connection lines
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.38 });
+  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.32 });
   const edges: [number, number][] = [
-    [0,1],[0,2],[1,3],[2,4],[1,5],[2,6],[3,7],[4,7],[5,6],[0,5],[0,6],[3,4]
+    [0,1],[0,2],[1,3],[2,4],[1,5],[2,6],[3,7],[4,7],[5,6],[0,5],[0,6]
   ];
   edges.forEach(([a, b]) => {
     const pts = [nodes[a].position.clone(), nodes[b].position.clone()];
-    brain.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+    overlay.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
   });
+  scene.add(overlay);
 
   let raf: number;
   function animate() {
     raf = requestAnimationFrame(animate);
-    brain.rotation.y += 0.004;
+    if (brain) brain.rotation.y += 0.004;
+    overlay.rotation.y += 0.004;
     renderer.render(scene, camera);
   }
   animate();
