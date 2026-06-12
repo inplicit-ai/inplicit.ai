@@ -57,9 +57,9 @@
   --space-section-lg: 13rem; /* 208px — hero/feature gap */
 
   /* Border radii — rounded, matching OnePager */
-  --radius-ui: 20px;
-  --radius-card: 14px;
-  --radius-xl: 18px;
+  --radius-ui: 8px;
+  --radius-card: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
 
   /* Easing */

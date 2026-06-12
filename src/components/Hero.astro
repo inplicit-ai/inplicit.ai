@@ -131,8 +131,8 @@ const pills = lang === 'de'
   .hero__pill {
     display: inline-flex;
     align-items: center;
-    padding: 6px 14px;
-    border-radius: var(--radius-full);
+    padding: 5px 12px;
+    border-radius: var(--radius-card);
     border: 1px solid rgba(0,0,0,0.1);
     background: rgba(0,0,0,0.03);
     font-size: 11px;
@@ -326,101 +326,90 @@ function initBrain() {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
-  camera.position.set(0, 0, 3.2);
+  // Wider FOV + pulled back so brain never clips
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+  camera.position.set(0, 0, 4.5);
 
-  // OrbitControls for mouse drag
   const controls = new OrbitControls(camera, canvas);
   controls.enableZoom = false;
   controls.enablePan = false;
   controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.6;
-  controls.dampingFactor = 0.08;
+  controls.autoRotateSpeed = 0.5;
+  controls.dampingFactor = 0.1;
   controls.enableDamping = true;
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const brainGroup = new THREE.Group();
+  scene.add(brainGroup);
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
-  key.position.set(3, 5, 3);
-  scene.add(key);
-
-  const fill = new THREE.DirectionalLight(0xcccccc, 0.5);
-  fill.position.set(-3, -1, 2);
-  scene.add(fill);
-
-  const rim = new THREE.DirectionalLight(0x888888, 0.3);
-  rim.position.set(0, -4, -3);
-  scene.add(rim);
-
-  // Grey metallic material — visible but not pitch black
-  const brainMat = new THREE.MeshStandardMaterial({
-    color: 0x4a4a52,
-    metalness: 0.45,
-    roughness: 0.55,
-  });
+  // Edge line material — light grey, clearly visible on white bg
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x888896, transparent: true, opacity: 0.7 });
 
   const loader = new GLTFLoader();
   loader.load('/brain/scene.gltf', (gltf) => {
-    const brain = gltf.scene;
+    const root = gltf.scene;
 
-    // Override all mesh materials with dark metallic
-    brain.traverse((child) => {
+    // Centre the raw model first
+    const box0 = new THREE.Box3().setFromObject(root);
+    const c0 = box0.getCenter(new THREE.Vector3());
+    const s0 = box0.getSize(new THREE.Vector3());
+    root.position.sub(c0);
+    const scaleFactor = 2.2 / Math.max(s0.x, s0.y, s0.z);
+    root.scale.setScalar(scaleFactor);
+
+    // Convert every mesh to edges (angle threshold 20° keeps major sulci visible)
+    root.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
-        (child as THREE.Mesh).material = brainMat;
+        const mesh = child as THREE.Mesh;
+        const worldMat = new THREE.Matrix4();
+        mesh.updateWorldMatrix(true, false);
+        worldMat.copy(mesh.matrixWorld);
+
+        // Apply world transform to geometry so edges render in correct position
+        const geoCopy = mesh.geometry.clone().applyMatrix4(worldMat);
+        const edges = new THREE.EdgesGeometry(geoCopy, 22);
+        brainGroup.add(new THREE.LineSegments(edges, edgeMat));
       }
     });
-
-    // Centre and scale
-    const box = new THREE.Box3().setFromObject(brain);
-    const centre = box.getCenter(new THREE.Vector3());
-    const size = box.getSize(new THREE.Vector3());
-    brain.position.sub(centre);
-    brain.scale.setScalar(2.6 / Math.max(size.x, size.y, size.z));
-
-    scene.add(brain);
   });
 
-  // Amber circuit overlay
+  // Amber circuit nodes
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
-  const nGeo = new THREE.SphereGeometry(0.04, 8, 8);
+  const nGeo = new THREE.SphereGeometry(0.045, 8, 8);
   const nodeCoords: [number, number, number][] = [
-    [ 0,     0.82,  0.55],
-    [ 0.72,  0.28,  0.52],
-    [-0.72,  0.28,  0.52],
-    [ 0.70, -0.32,  0.42],
-    [-0.70, -0.32,  0.42],
-    [ 0.30,  0.62,  0.72],
-    [-0.30,  0.62,  0.72],
-    [ 0,    -0.62,  0.58],
+    [ 0,     0.82,  0.52],
+    [ 0.70,  0.26,  0.50],
+    [-0.70,  0.26,  0.50],
+    [ 0.68, -0.30,  0.40],
+    [-0.68, -0.30,  0.40],
+    [ 0.28,  0.60,  0.70],
+    [-0.28,  0.60,  0.70],
+    [ 0,    -0.60,  0.55],
   ];
-
-  const overlay = new THREE.Group();
+  const nodeGroup = new THREE.Group();
   const nodes = nodeCoords.map(([x, y, z]) => {
     const m = new THREE.Mesh(nGeo, nodeMat);
     m.position.set(x, y, z);
-    overlay.add(m);
+    nodeGroup.add(m);
     return m;
   });
-
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.28 });
-  const edges: [number, number][] = [[0,1],[0,2],[1,3],[2,4],[1,5],[2,6],[3,7],[4,7],[5,6],[0,5],[0,6]];
-  edges.forEach(([a, b]) => {
-    const pts = [nodes[a].position.clone(), nodes[b].position.clone()];
-    overlay.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.3 });
+  const edgePairs: [number, number][] = [[0,1],[0,2],[1,3],[2,4],[1,5],[2,6],[3,7],[4,7],[5,6],[0,5],[0,6]];
+  edgePairs.forEach(([a, b]) => {
+    nodeGroup.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([nodes[a].position.clone(), nodes[b].position.clone()]),
+      lineMat
+    ));
   });
-  scene.add(overlay);
+  scene.add(nodeGroup);
 
-  // Sync overlay rotation with OrbitControls camera (overlay orbits with the brain visually)
   let raf: number;
   function animate() {
     raf = requestAnimationFrame(animate);
     controls.update();
-    // Keep overlay aligned with camera azimuth so nodes stay on the brain surface
-    overlay.rotation.y = -controls.getAzimuthalAngle() * 0 + controls.getAzimuthalAngle();
+    // Sync node overlay with brain rotation
+    nodeGroup.rotation.copy(brainGroup.rotation);
     renderer.render(scene, camera);
   }
   animate();
