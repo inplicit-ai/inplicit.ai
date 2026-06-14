@@ -20,17 +20,17 @@ const heroBadges = isDE ? [
 ];
 
 const privacyPrinciples: Principle[] = isDE ? [
-  { icon: 'shield',  title: 'AV-Vertrag nach Art. 28 DSGVO',   body: 'Schriftlich fixiert, pro Unternehmen unterzeichnet — vor dem ersten Interview.' },
+  { icon: 'shield',  title: 'AV-Vertrag nach Art. 28 DSGVO',   body: 'Schriftlich fixiert, pro Unternehmen unterzeichnet - vor dem ersten Interview.' },
   { icon: 'user',    title: 'Pseudonymisierung auf Wunsch',     body: 'Transkripte werden vor der Auswertung pseudonymisiert. Das Unternehmen definiert den Grad der Anonymisierung.' },
   { icon: 'bell',    title: '48-Stunden-Meldefrist',            body: 'Sicherheitsvorfälle werden innerhalb von 48 Stunden nach erster Kenntnis gemeldet.' },
-  { icon: 'trash',   title: 'Datenlöschung auf Anfrage',        body: 'Alle Daten werden nach Vertragsende gelöscht oder zurückgegeben — auf Wunsch sofort.' },
-  { icon: 'lock',    title: 'Privacy by Design',                body: 'Datenschutz ist von Anfang an eingebaut — nicht nachträglich angeheftet.' },
+  { icon: 'trash',   title: 'Datenlöschung auf Anfrage',        body: 'Alle Daten werden nach Vertragsende gelöscht oder zurückgegeben - auf Wunsch sofort.' },
+  { icon: 'lock',    title: 'Privacy by Design',                body: 'Datenschutz ist von Anfang an eingebaut - nicht nachträglich angeheftet.' },
 ] : [
-  { icon: 'shield',  title: 'DPA under Art. 28 GDPR',           body: 'Signed in writing, per organisation — before the first interview.' },
+  { icon: 'shield',  title: 'DPA under Art. 28 GDPR',           body: 'Signed in writing, per organisation - before the first interview.' },
   { icon: 'user',    title: 'Pseudonymisation on request',       body: 'Transcripts are pseudonymised before analysis. The organisation defines the level of anonymisation.' },
   { icon: 'bell',    title: '48-hour incident reporting',        body: 'Security incidents are reported within 48 hours of first awareness.' },
-  { icon: 'trash',   title: 'Data deletion on request',          body: 'All data is deleted or returned after contract end — immediately on request.' },
-  { icon: 'lock',    title: 'Privacy by Design',                 body: 'Data protection is built in from day one — not bolted on after the fact.' },
+  { icon: 'trash',   title: 'Data deletion on request',          body: 'All data is deleted or returned after contract end - immediately on request.' },
+  { icon: 'lock',    title: 'Privacy by Design',                 body: 'Data protection is built in from day one - not bolted on after the fact.' },
 ];
 
 const aiPrinciples: Principle[] = isDE ? [
@@ -47,13 +47,13 @@ const faqItems = isDE ? [
   { q: 'Werden Mitarbeiterdaten für KI-Training verwendet?',          a: 'Nein. inplicit nutzt ausschließlich Modelle mit vertraglich zugesichertem Zero Data Retention. Interview-Inhalte und Organisationsdaten werden nicht für das Training von Modellen verwendet.' },
   { q: 'Wer hat Zugriff auf Interview-Inhalte?',                      a: 'Ausschließlich autorisierte Personen im Unternehmen. Inhalte werden nicht an Dritte weitergegeben. inplicit-Mitarbeitende haben nur für technisch notwendige Tätigkeiten Zugriff.' },
   { q: 'Wie ist die Anonymisierung von Interview-Inhalten geregelt?',  a: 'Auf Wunsch erfolgt eine Pseudonymisierung der Transkripte vor der Auswertung. Das Unternehmen legt den gewünschten Grad der Anonymisierung fest.' },
-  { q: 'Wie schnell werden Sicherheitsvorfälle gemeldet?',            a: 'Innerhalb von 48 Stunden nach erster Kenntnis — mit vollständiger Beschreibung des Vorfalls, betroffener Datenkategorien und ergriffener Maßnahmen.' },
+  { q: 'Wie schnell werden Sicherheitsvorfälle gemeldet?',            a: 'Innerhalb von 48 Stunden nach erster Kenntnis - mit vollständiger Beschreibung des Vorfalls, betroffener Datenkategorien und ergriffener Maßnahmen.' },
   { q: 'Ist ein AV-Vertrag verfügbar?',                               a: 'Ja. Der Auftragsverarbeitungsvertrag wird pro Unternehmen beim Onboarding unterzeichnet. Auf Anfrage kann das Dokument vorab zugesendet werden.' },
 ] : [
   { q: 'Is employee data used for AI training?',                      a: 'No. inplicit uses only models with contractually guaranteed zero data retention. Interview content and organisation data are not used to train any models.' },
   { q: 'Who has access to interview content?',                        a: 'Only authorised people within your organisation. Content is not shared with third parties. inplicit staff access is limited to technically necessary activities.' },
   { q: 'How is anonymisation of interview content handled?',          a: 'On request, transcripts are pseudonymised before analysis. The organisation defines the level of anonymisation required.' },
-  { q: 'How quickly are security incidents reported?',                a: 'Within 48 hours of first awareness — with a full description of the incident, affected data categories, and measures taken.' },
+  { q: 'How quickly are security incidents reported?',                a: 'Within 48 hours of first awareness - with a full description of the incident, affected data categories, and measures taken.' },
   { q: 'Is a data processing agreement available?',                   a: 'Yes. The DPA is signed per organisation at onboarding. It can be sent in advance upon request.' },
 ];
 ---
@@ -91,7 +91,7 @@ const faqItems = isDE ? [
 
     </div>
 
-    <!-- Compliance badge strip — Applications card style -->
+    <!-- Compliance badge strip - Applications card style -->
     <div class="tc-hero__strip section-fade">
       {heroBadges.map((b) => (
         <div class="tc-hero__badge">
@@ -123,8 +123,8 @@ const faqItems = isDE ? [
     </h2>
     <p class="tc-cell__text">
       {isDE
-        ? 'Der vollständige Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Wird pro Unternehmen beim Onboarding unterzeichnet — vor dem ersten Interview.'
-        : 'The full data processing agreement under Art. 28 GDPR. Signed per organisation at onboarding — before the first interview.'}
+        ? 'Der vollständige Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Wird pro Unternehmen beim Onboarding unterzeichnet - vor dem ersten Interview.'
+        : 'The full data processing agreement under Art. 28 GDPR. Signed per organisation at onboarding - before the first interview.'}
     </p>
     <a
       href="mailto:hello@inplicit.ai?subject=AV-Vertrag%20Anfrage"
@@ -147,7 +147,7 @@ const faqItems = isDE ? [
         ? 'Wir antworten persönlich. Für formale Anfragen, Audit-Wünsche oder Fragen zum AV-Vertrag:'
         : 'We respond personally. For formal requests, audit inquiries, or questions about the DPA:'}
     </p>
-    <!-- Contact person card — Applications card style -->
+    <!-- Contact person card - Applications card style -->
     <div class="tc-contact">
       <div class="tc-contact__avatar" aria-hidden="true">MA</div>
       <div class="tc-contact__info">
@@ -193,7 +193,7 @@ const faqItems = isDE ? [
   <div class="tc-pair__cell section-fade">
     <p class="tc-cell__eyebrow">{isDE ? 'KI-Transparenz' : 'AI Transparency'}</p>
     <h2 class="tc-cell__heading">
-      {isDE ? 'KI-Einsatz transparent und kontrolliert' : 'AI use — transparent and controlled'}
+      {isDE ? 'KI-Einsatz transparent und kontrolliert' : 'AI use - transparent and controlled'}
     </h2>
     <p class="tc-cell__text">
       {isDE
@@ -260,7 +260,7 @@ const faqItems = isDE ? [
   </div>
 </section>
 
-<!-- ─── CTA — same pattern as DemoCTA ─── -->
+<!-- ─── CTA - same pattern as DemoCTA ─── -->
 <section class="tc-cta section-fade">
   <div class="container">
     <div class="tc-cta__card">
@@ -356,7 +356,7 @@ const faqItems = isDE ? [
     margin-bottom: var(--space-8);
   }
 
-  /* AV-Vertrag button — primary CTA style */
+  /* AV-Vertrag button - primary CTA style */
   .tc-av-btn {
     display: inline-flex;
     align-items: center;
@@ -373,7 +373,7 @@ const faqItems = isDE ? [
 
   .tc-av-btn:hover { opacity: 0.85; }
 
-  /* Hero badge strip — Applications card style */
+  /* Hero badge strip - Applications card style */
   .tc-hero__strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -523,7 +523,7 @@ const faqItems = isDE ? [
     margin-bottom: var(--space-8);
   }
 
-  /* Doc download button — secondary style */
+  /* Doc download button - secondary style */
   .tc-doc-btn {
     display: inline-flex;
     align-items: center;
@@ -540,7 +540,7 @@ const faqItems = isDE ? [
 
   .tc-doc-btn:hover { border-color: var(--color-text-tertiary); }
 
-  /* Contact card — Applications card style */
+  /* Contact card - Applications card style */
   .tc-contact {
     display: flex;
     align-items: center;
@@ -593,7 +593,7 @@ const faqItems = isDE ? [
 
   .tc-contact__email:hover { opacity: 0.75; }
 
-  /* ── Principle cards — identical to DataPrivacy on main page ── */
+  /* ── Principle cards - identical to DataPrivacy on main page ── */
   .tc-principles {
     display: flex;
     flex-direction: column;
@@ -646,7 +646,7 @@ const faqItems = isDE ? [
     line-height: 1.6;
   }
 
-  /* ── FAQ layout (scoped — no native element selectors here) ── */
+  /* ── FAQ layout (scoped - no native element selectors here) ── */
   .tc-faq-section {
     padding: var(--space-section) 0;
     border-top: 1px solid var(--color-border);
@@ -697,7 +697,7 @@ const faqItems = isDE ? [
 
   .tc-faq__contact-link:hover { color: var(--color-text-primary); }
 
-  /* ── CTA — identical to DemoCTA ── */
+  /* ── CTA - identical to DemoCTA ── */
   .tc-cta {
     padding: var(--space-section) 0;
     border-top: 1px solid var(--color-border);
@@ -790,7 +790,7 @@ const faqItems = isDE ? [
 </style>
 
 <script>
-  // Height set via inline style — transition defined in design.css (CLAUDE.md Gotcha #2)
+  // Height set via inline style - transition defined in design.css (CLAUDE.md Gotcha #2)
   document.querySelectorAll('[data-faq-trigger]').forEach((btn) => {
     const wrap = btn.nextElementSibling as HTMLElement;
     wrap.style.height = '0px';

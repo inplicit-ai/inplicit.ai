@@ -102,7 +102,7 @@ function PlatformMockup({ isDE }: { isDE: boolean }) {
             fontWeight: 500,
           }}
         >
-          inplicit.ai — Workforce Intelligence Platform
+          inplicit.ai - Workforce Intelligence Platform
         </span>
       </div>
 

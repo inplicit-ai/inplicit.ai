@@ -139,8 +139,8 @@ function InterviewContent({ isDE }: { isDE: boolean }) {
         </p>
         <p style={cardBody}>
           {isDE
-            ? "Strukturierte KI-geführte Gespräche erfassen das verteilte Wissen quer durch Ihre gesamte Organisation — mit einer Tiefe, die klassische Befragungen nie erreichen."
-            : "Structured AI-led conversations capture the tacit knowledge distributed across your entire organisation — with a depth traditional surveys never reach."}
+            ? "Strukturierte KI-geführte Gespräche erfassen das verteilte Wissen quer durch Ihre gesamte Organisation - mit einer Tiefe, die klassische Befragungen nie erreichen."
+            : "Structured AI-led conversations capture the tacit knowledge distributed across your entire organisation - with a depth traditional surveys never reach."}
         </p>
       </div>
       <div style={{ ...card, padding: "16px 24px" }}>
@@ -208,8 +208,8 @@ function MapContent({ isDE }: { isDE: boolean }) {
         </p>
         <p style={cardBody}>
           {isDE
-            ? "Stille Signale werden zu validierten Venture Cases. Die Karte zeigt, wo Ihre Organisation Potenzial versteckt — und welche Ideen durch parallele Validierung an Kraft gewinnen."
-            : "Silent signals become validated venture cases. The map shows where your organisation hides potential — and which ideas gain strength through parallel validation."}
+            ? "Stille Signale werden zu validierten Venture Cases. Die Karte zeigt, wo Ihre Organisation Potenzial versteckt - und welche Ideen durch parallele Validierung an Kraft gewinnen."
+            : "Silent signals become validated venture cases. The map shows where your organisation hides potential - and which ideas gain strength through parallel validation."}
         </p>
       </div>
       <div style={card}>

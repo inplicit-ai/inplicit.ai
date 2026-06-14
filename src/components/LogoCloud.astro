@@ -1,0 +1,76 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+// Placeholder partner/customer names - swap these for real logo files
+// (drop SVG/PNG into src/assets and replace the <span> with an <img>).
+const logos = ['Partner A', 'Partner B', 'Partner C', 'Partner D', 'Partner E'];
+---
+
+<section class="logos">
+  <div class="container">
+    <p class="logos__label">
+      {isDE
+        ? 'Vertraut von 5+ Organisationen'
+        : 'Trusted by 5+ organisations'}
+    </p>
+    <div class="logos__row">
+      {logos.map((name) => (
+        <span class="logos__item">{name}</span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .logos {
+    padding: var(--space-12) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .logos__label {
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-10);
+  }
+
+  .logos__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-10) var(--space-16);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* Placeholder wordmark - replace with <img class="logos__img" .../> */
+  .logos__item {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text-tertiary);
+    opacity: 0.65;
+  }
+
+  /* Styling for real logo images once added */
+  .logos__img {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.7;
+    filter: grayscale(1);
+    transition: opacity 0.2s var(--ease-smooth);
+  }
+
+  .logos__img:hover { opacity: 1; }
+
+  @media (max-width: 767px) {
+    .logos { padding: var(--space-10) 0; }
+    .logos__row { gap: var(--space-6) var(--space-10); }
+  }
+</style>

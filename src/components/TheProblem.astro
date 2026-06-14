@@ -10,59 +10,69 @@ const cards = lang === 'de' ? [
     title: 'Organisationswissen steckt in Köpfen',
     body: 'Viele Abläufe und Entscheidungen sind nicht sauber dokumentiert. Wenn Mitarbeitende gehen oder Teams wachsen, geht genau dieses Wissen leicht verloren.',
     cta: 'Inplicit macht verborgenes Wissen durch KI-Interviews sichtbar und strukturiert nutzbar.',
+    grad: 'linear-gradient(135deg, #7a3e00 0%, #c47208 55%, #f5a623 100%)',
   },
   {
     tag: 'Fehlendes operatives Know-how',
     title: 'Entscheidungen brauchen mehr internen Kontext',
     body: 'Oft fehlt Management der Blick auf das, was operativ wirklich passiert. Dadurch werden wichtige Entscheidungen mit zu wenig Nähe zur Praxis getroffen.',
     cta: 'Inplicit bringt die operative Realität strukturiert zur Entscheidungsebene.',
+    grad: 'linear-gradient(150deg, #7a3e00 0%, #bf6e0a 50%, #e8830f 100%)',
   },
   {
     tag: 'Fehlende Kontext-Ebene',
     title: 'KI braucht Unternehmensrealität',
     body: 'Damit KI im Unternehmen sinnvoll hilft, braucht sie mehr als Dokumente. Sie braucht Kontext aus Menschen, Prozessen und gelebter Erfahrung.',
     cta: 'Inplicit liefert die Kontext-Ebene und belastbares Organisationswissen, auf das KI-Systeme zugreifen können.',
+    grad: 'linear-gradient(120deg, #7a3e00 0%, #c47208 50%, #f5a623 100%)',
   },
 ] : [
   {
     tag: 'Hidden process knowledge',
     title: 'Organisational knowledge lives in people\'s heads',
-    body: 'Many processes and decisions are never documented properly. When employees leave or teams grow, exactly this knowledge is easily lost.',
+    body: 'Many processes and decisions are never properly documented. When employees leave or teams grow, exactly this knowledge is easily lost.',
     cta: 'inplicit makes hidden knowledge visible and structured through AI-led interviews.',
+    grad: 'linear-gradient(135deg, #7a3e00 0%, #c47208 55%, #f5a623 100%)',
   },
   {
     tag: 'Missing operational context',
     title: 'Decisions need more internal context',
-    body: 'Management often lacks visibility into what is actually happening operationally. This leads to important decisions being made without sufficient proximity to practice.',
+    body: 'Management often lacks visibility into what is actually happening operationally. Important decisions get made without sufficient proximity to practice.',
     cta: 'inplicit brings operational reality to the decision-making level in structured form.',
+    grad: 'linear-gradient(150deg, #7a3e00 0%, #bf6e0a 50%, #e8830f 100%)',
   },
   {
     tag: 'Missing context layer',
     title: 'AI needs organisational reality',
-    body: 'For AI to be genuinely useful in organisations, it needs more than documents. It needs context from people, processes, and lived experience.',
+    body: 'For AI to be genuinely useful, it needs more than documents. It needs context from people, processes, and lived organisational experience.',
     cta: 'inplicit delivers the context layer and reliable organisational knowledge that AI systems can draw on.',
+    grad: 'linear-gradient(120deg, #7a3e00 0%, #c47208 50%, #f5a623 100%)',
   },
 ]
 ---
 
 <section class="problem" id="the-problem">
   <div class="container">
-    <p class="problem__eyebrow section-fade">
+    <p class="section-eyebrow section-fade">
       {lang === 'de' ? 'Probleme & Usecases' : 'Problems & use cases'}
     </p>
 
     <div class="problem__cols">
       {cards.map((card, i) => (
-        <div class="problem__card section-fade" style={`--delay: ${i * 80}ms`}>
-          <div class="problem__card-tag">{card.tag}</div>
-          <h3 class="problem__card-title">{card.title}</h3>
-          <p class="problem__card-body">{card.body}</p>
-          <div class="problem__card-rule" aria-hidden="true"></div>
-          <p class="problem__card-cta">
-            <span class="problem__card-arrow" aria-hidden="true">→</span>
-            {card.cta}
-          </p>
-        </div>
+        <article class="problem__card section-fade" style={`--delay: ${i * 80}ms`}>
+          <div class="problem__card-image" style={`background: ${card.grad}`} aria-hidden="true"></div>
+          <div class="problem__card-body-wrap">
+            <div class="problem__card-tag">{card.tag}</div>
+            <h3 class="problem__card-title">{card.title}</h3>
+            <p class="problem__card-body">{card.body}</p>
+            <div class="problem__card-footer">
+              <div class="problem__card-rule" aria-hidden="true"></div>
+              <p class="problem__card-cta">
+                <span aria-hidden="true">→ </span>{card.cta}
+              </p>
+            </div>
+          </div>
+        </article>
       ))}
     </div>
   </div>
@@ -87,53 +97,56 @@ const cards = lang === 'de' ? [
     margin-bottom: var(--space-10);
   }
 
-  /* 3-column grid — always 3 on desktop */
   .problem__cols {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-    align-items: start;
+    gap: var(--space-6);
+    align-items: stretch;
   }
 
   @media (max-width: 860px) {
     .problem__cols { grid-template-columns: 1fr 1fr; }
   }
-
   @media (max-width: 560px) {
     .problem__cols { grid-template-columns: 1fr; }
   }
 
-  /* Card — 21st.dev style */
+  /* Card shell */
   .problem__card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-    padding: var(--space-7);
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 18px;
-    position: relative;
     overflow: hidden;
-    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-  }
-
-  /* Top shimmer */
-  .problem__card::before {
-    content: '';
-    position: absolute;
-    inset-x: 0;
-    top: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(0,0,0,0.07), transparent);
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s cubic-bezier(0.22,1,0.36,1),
+                border-color 0.28s ease;
   }
 
   .problem__card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.05);
-    border-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -20px rgba(15,23,42,0.18), 0 0 0 1px rgba(15,23,42,0.05);
+    border-color: rgba(0,0,0,0.11);
   }
 
-  /* Black pill tag — exact OnePager style */
+  /* Gradient image area */
+  .problem__card-image {
+    width: 100%;
+    height: 160px;
+    flex-shrink: 0;
+  }
+
+  /* Content area */
+  .problem__card-body-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    flex: 1;
+  }
+
+  /* Black pill tag */
   .problem__card-tag {
     display: inline-flex;
     align-self: flex-start;
@@ -146,12 +159,11 @@ const cards = lang === 'de' ? [
     text-transform: uppercase;
     border-radius: 6px;
     line-height: 1.4;
-    margin-bottom: var(--space-1);
   }
 
   .problem__card-title {
     font-size: var(--text-lg);
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.2;
     color: var(--color-text-primary);
@@ -162,28 +174,31 @@ const cards = lang === 'de' ? [
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
     line-height: 1.8;
-    flex: 1;
   }
 
-  /* Amber separator line */
+  /* Footer: amber rule + CTA */
+  .problem__card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+
   .problem__card-rule {
     width: 28px;
     height: 2px;
     background: var(--color-accent);
     border-radius: 2px;
-    flex-shrink: 0;
-    margin-top: var(--space-1);
   }
 
-  /* Amber arrow CTA */
   .problem__card-cta {
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-accent);
     line-height: 1.65;
   }
-
-  .problem__card-arrow { margin-right: 3px; }
 
   @media (prefers-reduced-motion: reduce) {
     .problem__card { transition: none; }

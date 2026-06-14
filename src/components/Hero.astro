@@ -1,6 +1,4 @@
 ---
-import DottedSurface from './ui/DottedSurface.astro';
-
 export interface Props {
   lang?: 'en' | 'de';
 }
@@ -12,8 +10,6 @@ const pills = lang === 'de'
 ---
 
 <section class="hero" id="hero">
-  <DottedSurface />
-
   <div class="hero__inner container">
     <div class="hero__content">
 
@@ -60,13 +56,13 @@ const pills = lang === 'de'
       </div>
 
       <div class="hero__meta">
-        <span class="hero__meta-item">{lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item">{lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item">{lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item">{lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}</span>
       </div>
     </div>
 
@@ -80,12 +76,13 @@ const pills = lang === 'de'
 <style>
   .hero {
     position: relative;
-    min-height: 100svh;
     display: flex;
     align-items: flex-start;
     padding-top: calc(var(--space-6) + 64px);
-    padding-bottom: var(--space-section);
+    padding-bottom: var(--space-16);
+    overflow: hidden;
   }
+
 
   @media (max-width: 767px) {
     .hero {
@@ -262,9 +259,18 @@ const pills = lang === 'de'
   }
 
   .hero__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: var(--text-sm);
     color: var(--color-text-tertiary);
     font-weight: 400;
+  }
+
+  .hero__meta-check {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
 
   .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
@@ -278,12 +284,21 @@ const pills = lang === 'de'
     height: 420px;
   }
 
-  .hero__glow {
+  .hero::before {
+    content: '';
     position: absolute;
-    inset: -40px;
+    right: -180px;
+    bottom: -180px;
+    width: 780px;
+    height: 780px;
     border-radius: 50%;
-    background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(245, 166, 35, 0.14), transparent 68%);
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.62) 0%, rgba(245, 166, 35, 0.18) 45%, transparent 68%);
     pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero__glow {
+    display: none;
   }
 
   .hero__brain-canvas {
@@ -343,10 +358,10 @@ function initBrain() {
   const brainGroup = new THREE.Group();
   scene.add(brainGroup);
 
-  // Edge line material — dark, thick enough to read clearly on white bg
+  // Edge line material - dark, thick enough to read clearly on white bg
   const edgeMat = new THREE.LineBasicMaterial({ color: 0x1e1e2a, transparent: true, opacity: 0.9 });
 
-  // Ghost surface material — very subtle, gives 3D depth
+  // Ghost surface material - very subtle, gives 3D depth
   const surfaceMat = new THREE.MeshStandardMaterial({
     color: 0xd8d8e0,
     transparent: true,
@@ -382,7 +397,7 @@ function initBrain() {
     });
   });
 
-  // Amber nodes — attached to brainGroup so they rotate with it
+  // Amber nodes - attached to brainGroup so they rotate with it
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
   const nGeo = new THREE.SphereGeometry(0.05, 8, 8);
   // Spread around full sphere surface (front, back, sides, top, bottom)

@@ -44,6 +44,7 @@
   --space-2: 0.5rem;     /* 8px */
   --space-3: 0.75rem;    /* 12px */
   --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
   --space-6: 1.5rem;     /* 24px */
   --space-8: 2rem;       /* 32px */
   --space-10: 2.5rem;    /* 40px */
@@ -53,8 +54,8 @@
   --space-32: 8rem;      /* 128px */
   --space-40: 10rem;     /* 160px */
   --space-48: 12rem;     /* 192px */
-  --space-section: 9rem;     /* 144px — standard section gap */
-  --space-section-lg: 13rem; /* 208px — hero/feature gap */
+  --space-section: 5.5rem;   /* 88px — standard section gap */
+  --space-section-lg: 9rem;  /* 144px — hero/feature gap */
 
   /* Border radii — rounded, matching OnePager */
   --radius-ui: 8px;
@@ -92,10 +93,7 @@ html {
 body {
   min-height: 100vh;
   line-height: 1.6;
-  background:
-    radial-gradient(ellipse 800px 600px at 102% 82%, rgba(245, 166, 35, 0.38), transparent 58%),
-    var(--color-bg);
-  background-attachment: fixed;
+  background-color: var(--color-bg);
 }
 
 a {
@@ -123,6 +121,22 @@ img {
   .container {
     padding: 0 var(--space-8);
   }
+}
+
+/* Section eyebrow pill — shared across all sections */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.03);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
 }
 
 /* Section fade-in animation (Intersection Observer targets) */

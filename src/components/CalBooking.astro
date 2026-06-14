@@ -1,0 +1,242 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const CAL_LINK = 'inplicit/30min';
+---
+
+<section class="cal" id="book-demo">
+  <div class="container">
+    <div class="cal__inner">
+
+      <!-- Left: copy -->
+      <div class="cal__copy section-fade">
+        <p class="section-eyebrow">{isDE ? 'Demo buchen' : 'Book a demo'}</p>
+        <h2 class="cal__heading">
+          <span>{isDE ? 'Überzeugt?' : 'Seen enough?'}</span>
+          <span class="cal__heading-ghost">{isDE ? 'Sprecht mit uns.' : 'Talk to us.'}</span>
+        </h2>
+        <p class="cal__sub">
+          {isDE
+            ? 'Wählt einen Termin - wir zeigen euch live, wie Inplicit verborgenes Wissen in eurer Organisation sichtbar macht.'
+            : 'Pick a slot and we will show you live how Inplicit surfaces the knowledge your organisation already has.'}
+        </p>
+
+        <ul class="cal__points">
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {isDE ? 'Live-Einblick in eine echte Wissens-Map aus Mitarbeitendengesprächen' : 'A live look at a real knowledge map built from employee conversations'}
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {isDE ? 'Wir besprechen, wo in eurer Organisation ungenutztes Wissen liegt' : 'We discuss where untapped knowledge sits in your organisation'}
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {isDE ? 'Konkrete nächste Schritte für einen Pilot - unverbindlich' : 'Concrete next steps for a pilot - no obligation'}
+          </li>
+        </ul>
+
+        <div class="cal__founder">
+          <img class="cal__founder-photo" src="/martin.png" alt="Martin Auer" width="56" height="56" />
+          <div class="cal__founder-meta">
+            <p class="cal__founder-name">Martin Auer</p>
+            <p class="cal__founder-role">Co-Founder &amp; CEO</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Cal.com inline embed -->
+      <div class="cal__embed-wrap section-fade" style="--delay: 100ms">
+        <div id="cal-inline" class="cal__embed" data-cal-link={CAL_LINK}></div>
+        <div class="cal__mask" aria-hidden="true"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  const el = document.getElementById('cal-inline');
+  const calLink = el ? el.getAttribute('data-cal-link') : 'inplicit/demo';
+
+  (function (C, A, INIT) {
+    const p = (a, ar) => { a.q.push(ar); };
+    const d = C.document;
+    C.Cal = C.Cal || function () {
+      const cal = C.Cal;
+      const ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === INIT) {
+        const api = function () { p(api, arguments); };
+        const ns = ar[1];
+        api.q = api.q || [];
+        typeof ns === 'string' ? (cal.ns[ns] = api) && p(api, ar) : p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.eu/embed/embed.js', 'init');
+
+  Cal('init', { origin: 'https://cal.eu' });
+  Cal('inline', {
+    elementOrSelector: '#cal-inline',
+    calLink: calLink,
+    layout: 'month_view',
+    config: { theme: 'light', locale: document.documentElement.lang || 'de' },
+  });
+  Cal('ui', {
+    styles: { branding: { brandColor: '#f5a623' } },
+    hideEventTypeDetails: false,
+  });
+</script>
+
+<style>
+  .cal {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 767px) {
+    .cal { padding: var(--space-24) 0; }
+  }
+
+  /* Narrower calendar (Ontora-style smaller cells), right-aligned; the
+     free space is pushed into the gap between text and calendar */
+  .cal__inner {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 520px);
+    justify-content: space-between;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .cal__inner {
+      grid-template-columns: 1fr;
+      justify-content: stretch;
+    }
+  }
+
+  /* ── Copy ───────────────────────────────────────────── */
+  .cal__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--space-5);
+    color: var(--color-text-primary);
+  }
+
+  .cal__heading-ghost { opacity: 0.25; }
+
+  .cal__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    max-width: 420px;
+    margin-bottom: var(--space-8);
+  }
+
+  .cal__points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .cal__points li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Founder card ───────────────────────────────────── */
+  .cal__founder {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cal__founder-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 18%;
+    background: var(--color-accent-light, rgba(245, 166, 35, 0.15));
+    flex-shrink: 0;
+  }
+
+  .cal__founder-name {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .cal__founder-role {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Calendar embed ─────────────────────────────────── */
+  /* No outer frame - the Cal.com embed renders its own card */
+  .cal__embed-wrap {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Pin the Cal iframe to the wrap height so the slots column scrolls
+     inside the card instead of stretching the whole section */
+  .cal__embed-wrap :global(iframe.cal-embed) {
+    height: 100% !important;
+  }
+
+  .cal__embed,
+  .cal__embed :global(cal-inline) {
+    height: 100%;
+  }
+
+  /* Mask the Cal.com "Cal.eu" branding footer (rendered inside the
+     cross-origin iframe, so it can only be covered, not removed) */
+  .cal__mask {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 90px;
+    background: var(--color-bg);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .cal__embed {
+    width: 100%;
+  }
+</style>
