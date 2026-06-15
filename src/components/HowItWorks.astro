@@ -503,14 +503,14 @@ const steps = isDE ? [
     .hiw__right,
     .hiw__panels { display: contents; }
 
-    /* Steps stay expanded; no accordion interaction needed on mobile */
-    .hiw__inner .hiw__item-body { max-height: none; opacity: 1; margin-top: var(--space-3); }
-    .hiw__inner .hiw__item { cursor: default; }
-
-    /* Show every panel (not just the active one), stacked in normal flow */
+    /* Only the tapped (active) step shows its graphic, directly below it */
     .hiw__inner .hiw__panel {
       grid-area: auto;
       position: static;
+      display: none;
+    }
+    .hiw__inner .hiw__panel--active {
+      display: block;
       opacity: 1;
       pointer-events: auto;
     }
