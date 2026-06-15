@@ -475,7 +475,7 @@ const steps = isDE ? [
 
 <style>
   .hiw {
-    padding: var(--space-section) 0 var(--space-16);
+    padding: var(--space-section) 0 var(--space-4);
     border-top: 1px solid var(--color-border);
   }
 
@@ -492,14 +492,38 @@ const steps = isDE ? [
   }
 
   @media (max-width: 900px) {
+    /* Flatten the two columns into one flow so each step can sit directly
+       above its own graphic, in order */
     .hiw__inner {
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
     }
-    /* Hide the interactive preview panels on mobile and show every step
-       stacked with its description always expanded */
-    .hiw__right { display: none; }
-    .hiw__item-body { max-height: none; opacity: 1; margin-top: var(--space-3); }
-    .hiw__item { cursor: default; }
+    .hiw__accordion,
+    .hiw__right,
+    .hiw__panels { display: contents; }
+
+    /* Steps stay expanded; no accordion interaction needed on mobile */
+    .hiw__inner .hiw__item-body { max-height: none; opacity: 1; margin-top: var(--space-3); }
+    .hiw__inner .hiw__item { cursor: default; }
+
+    /* Show every panel (not just the active one), stacked in normal flow */
+    .hiw__inner .hiw__panel {
+      grid-area: auto;
+      position: static;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Interleave: step 0, graphic 0, step 1, graphic 1, ... */
+    .hiw__inner .hiw__item[data-step="0"] { order: 0; }
+    .hiw__inner .hiw__panel[data-step="0"] { order: 1; }
+    .hiw__inner .hiw__item[data-step="1"] { order: 2; }
+    .hiw__inner .hiw__panel[data-step="1"] { order: 3; }
+    .hiw__inner .hiw__item[data-step="2"] { order: 4; }
+    .hiw__inner .hiw__panel[data-step="2"] { order: 5; }
+    .hiw__inner .hiw__item[data-step="3"] { order: 6; }
+    .hiw__inner .hiw__panel[data-step="3"] { order: 7; }
   }
 
   /* ── Header (above the grid) ───────────────────────── */
