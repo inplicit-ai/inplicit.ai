@@ -495,7 +495,11 @@ const steps = isDE ? [
     .hiw__inner {
       grid-template-columns: 1fr;
     }
-    .hiw__right { order: -1; }
+    /* Hide the interactive preview panels on mobile and show every step
+       stacked with its description always expanded */
+    .hiw__right { display: none; }
+    .hiw__item-body { max-height: none; opacity: 1; margin-top: var(--space-3); }
+    .hiw__item { cursor: default; }
   }
 
   /* ── Header (above the grid) ───────────────────────── */

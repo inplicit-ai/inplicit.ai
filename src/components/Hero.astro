@@ -315,9 +315,6 @@ const pills = lang === 'de'
     .hero__sub { font-size: var(--text-base); }
     .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
-  }
-
-  @media (max-width: 479px) {
     .hero__actions { flex-direction: column; align-items: stretch; }
     .hero__cta-primary, .hero__cta-secondary { width: 100%; justify-content: center; }
   }
@@ -336,6 +333,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 function initBrain() {
   const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
+  // Skip on mobile: the visual is hidden there and OrbitControls' touch
+  // capture would otherwise block page scrolling.
+  if (window.innerWidth <= 900) return;
 
   const W = 400, H = 400;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
