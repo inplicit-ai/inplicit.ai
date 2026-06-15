@@ -4,8 +4,6 @@ export interface Props {
 }
 const { lang = 'en' } = Astro.props;
 
-import logoRaw from '../assets/logo.svg?raw';
-
 const year = new Date().getFullYear();
 
 const mainLinks = lang === 'de'
@@ -37,7 +35,7 @@ const legalLinks = lang === 'de'
 
     <div class="footer__top">
      <a href={lang === 'de' ? '/de/' : '/'} class="nav__logo" aria-label="inplicit.ai home">
-      <span class="nav__logo-mark" set:html={logoRaw} />
+      <img class="footer__logo-img" src="/logo-inverted.png" alt="inplicit.ai" width="794" height="232" />
     </a>
 
       <!-- <ul class="footer__social" role="list">
@@ -104,25 +102,10 @@ const legalLinks = lang === 'de'
 
   .nav__logo:hover { opacity: 0.7; }
 
-  .nav__logo-mark {
-    display: flex;
-    align-items: center;
-  }
-
-  .nav__logo-mark :global(svg) {
-    height: 26px;
+  .footer__logo-img {
+    height: 20px;
     width: auto;
-  }
-
-  /* Override black fills to follow theme */
-  .nav__logo-mark :global(svg path),
-  .nav__logo-mark :global(svg text) {
-    fill: var(--color-text-primary);
-  }
-
-  /* Keep the orange accent rect */
-  .nav__logo-mark :global(svg rect) {
-    fill: var(--color-accent);
+    display: block;
   }
 
   .footer__social {
