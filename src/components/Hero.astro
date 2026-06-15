@@ -105,7 +105,14 @@ const pills = lang === 'de'
 
   @media (max-width: 900px) {
     .hero__inner { grid-template-columns: 1fr; }
-    .hero__visual { display: none; }
+    /* Keep the brain visible but non-interactive so it never blocks scroll */
+    .hero__visual { height: 300px; }
+    .hero__brain-canvas {
+      width: 300px;
+      height: 300px;
+      pointer-events: none;
+      cursor: default;
+    }
   }
 
   @keyframes hero-in {
@@ -315,8 +322,7 @@ const pills = lang === 'de'
     .hero__sub { font-size: var(--text-base); }
     .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
-    .hero__actions { flex-direction: column; align-items: stretch; }
-    .hero__cta-primary, .hero__cta-secondary { width: 100%; justify-content: center; }
+    .hero__actions { flex-direction: column; align-items: flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -333,14 +339,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 function initBrain() {
   const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
-  // Skip on mobile: the visual is hidden there and OrbitControls' touch
-  // capture would otherwise block page scrolling.
-  if (window.innerWidth <= 900) return;
 
   const W = 400, H = 400;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W, H);
+  renderer.setSize(W, H, false);
 
   const scene = new THREE.Scene();
   // Wider FOV + pulled back so brain never clips
