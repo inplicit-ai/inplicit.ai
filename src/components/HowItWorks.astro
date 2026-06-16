@@ -492,11 +492,8 @@ const steps = isDE ? [
   }
 
   @media (max-width: 900px) {
-    /* Single column: steps, then the preview window full container width below.
-       Panels stay overlapped (grid-area 1/1) so the section height is fixed to
-       the tallest panel — swapping the active step never reflows the page. */
+    /* Single column: steps stacked above the full-width preview window. */
     .hiw__inner { grid-template-columns: 1fr; gap: var(--space-8); }
-    .hiw__right { position: static; top: auto; }
   }
 
   /* ── Header (above the grid) ───────────────────────── */
@@ -647,6 +644,21 @@ const steps = isDE ? [
   .hiw__panel--active {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* ── Mobile overrides (placed after the base rules so they actually win) ── */
+  @media (max-width: 900px) {
+    /* Preview stops sticking; it sits below the steps */
+    .hiw__right { position: static; top: auto; }
+    /* Show every description on mobile so the accordion height is fixed.
+       Cycling the active step then only swaps the highlight + preview graphic —
+       the section height never changes, so the page below never shifts. */
+    .hiw__item-body,
+    .hiw__item--active .hiw__item-body {
+      max-height: none;
+      opacity: 1;
+      margin-top: var(--space-3);
+    }
   }
 
   /* ── Shared mock shell ──────────────────────────────── */

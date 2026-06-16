@@ -95,36 +95,6 @@ const pills = lang === 'de'
     animation: hero-in 0.7s var(--ease-out) forwards;
   }
 
-  @media (max-width: 900px) {
-    /* Fill the viewport: text sits below the nav, brain drops to the fold so
-       it peeks over the edge and invites scrolling. */
-    .hero {
-      min-height: 100vh;
-      min-height: 100svh;
-      align-items: stretch;
-      padding-top: calc(var(--space-10) + 56px);
-      padding-bottom: 0;
-    }
-    .hero__inner {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: space-between;
-      gap: var(--space-10);
-    }
-    /* Pills are desktop-only */
-    .hero__pills { display: none; }
-    /* Brain sits at the bottom edge, slightly clipped by the fold */
-    .hero__visual { height: auto; margin-bottom: calc(-1 * var(--space-8)); }
-    .hero__brain-canvas {
-      width: 320px;
-      height: auto;
-      max-width: 100%;
-      pointer-events: none;
-      cursor: default;
-    }
-  }
-
   @keyframes hero-in {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -319,11 +289,6 @@ const pills = lang === 'de'
     z-index: 0;
   }
 
-  @media (max-width: 900px) {
-    /* Centered under the brain at the fold */
-    .hero::before { left: 50%; width: 720px; }
-  }
-
   .hero__brain-canvas {
     width: 400px;
     height: auto;        /* keep 1:1 from the 400×400 drawing buffer */
@@ -334,6 +299,33 @@ const pills = lang === 'de'
   }
 
   .hero__brain-canvas:active { cursor: grabbing; }
+
+  /* ── Mobile (placed after all base rules so these overrides actually win) ── */
+  @media (max-width: 900px) {
+    /* Fill the viewport: text sits below the nav, brain drops to the fold so
+       it peeks over the edge and invites scrolling. */
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      align-items: stretch;
+      padding-top: calc(var(--space-10) + 56px);
+      padding-bottom: 0;
+    }
+    .hero__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: var(--space-10);
+    }
+    /* Pills are desktop-only */
+    .hero__pills { display: none; }
+    /* Brain sits at the bottom edge, slightly clipped by the fold */
+    .hero__visual { height: auto; margin-bottom: calc(-1 * var(--space-8)); }
+    .hero__brain-canvas { width: 320px; pointer-events: none; cursor: default; }
+    /* Glow centered under the brain at the fold */
+    .hero::before { left: 50%; width: 720px; }
+  }
 
   @media (max-width: 767px) {
     .hero__sub { font-size: var(--text-base); }
