@@ -188,7 +188,7 @@ const facts: Fact[] = isDE ? [
   .usp__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-2);
+    gap: var(--space-3);
   }
 
   @media (min-width: 640px) {
@@ -200,12 +200,41 @@ const facts: Fact[] = isDE ? [
   }
 
   .usp__fact {
+    position: relative;
     display: flex;
     gap: var(--space-4);
     padding: var(--space-6);
-    transition: border-color 0.2s var(--ease-smooth);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    overflow: hidden;
+    transition: border-color 0.25s var(--ease-smooth),
+                box-shadow 0.25s var(--ease-smooth),
+                transform 0.25s var(--ease-smooth);
   }
-  
+
+  /* Orange accent bar that wipes across the bottom on hover */
+  .usp__fact::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-smooth);
+  }
+
+  .usp__fact:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 10px 30px rgba(245, 166, 35, 0.12);
+    transform: translateY(-3px);
+  }
+
+  .usp__fact:hover::after { transform: scaleX(1); }
+
   .usp__fact-icon {
     width: 36px;
     height: 36px;
@@ -217,6 +246,19 @@ const facts: Fact[] = isDE ? [
     color: var(--color-text-secondary);
     flex-shrink: 0;
     margin-top: 2px;
+    transition: color 0.25s var(--ease-smooth),
+                border-color 0.25s var(--ease-smooth),
+                background 0.25s var(--ease-smooth);
+  }
+
+  .usp__fact:hover .usp__fact-icon {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .usp__fact, .usp__fact:hover { transform: none; }
   }
 
   .usp__fact-body {
