@@ -492,38 +492,11 @@ const steps = isDE ? [
   }
 
   @media (max-width: 900px) {
-    /* Flatten the two columns into one flow so each step can sit directly
-       above its own graphic, in order */
-    .hiw__inner {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-6);
-    }
-    .hiw__accordion,
-    .hiw__right,
-    .hiw__panels { display: contents; }
-
-    /* Only the tapped (active) step shows its graphic, directly below it */
-    .hiw__inner .hiw__panel {
-      grid-area: auto;
-      position: static;
-      display: none;
-    }
-    .hiw__inner .hiw__panel--active {
-      display: block;
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* Interleave: step 0, graphic 0, step 1, graphic 1, ... */
-    .hiw__inner .hiw__item[data-step="0"] { order: 0; }
-    .hiw__inner .hiw__panel[data-step="0"] { order: 1; }
-    .hiw__inner .hiw__item[data-step="1"] { order: 2; }
-    .hiw__inner .hiw__panel[data-step="1"] { order: 3; }
-    .hiw__inner .hiw__item[data-step="2"] { order: 4; }
-    .hiw__inner .hiw__panel[data-step="2"] { order: 5; }
-    .hiw__inner .hiw__item[data-step="3"] { order: 6; }
-    .hiw__inner .hiw__panel[data-step="3"] { order: 7; }
+    /* Single column: steps, then the preview window full container width below.
+       Panels stay overlapped (grid-area 1/1) so the section height is fixed to
+       the tallest panel — swapping the active step never reflows the page. */
+    .hiw__inner { grid-template-columns: 1fr; gap: var(--space-8); }
+    .hiw__right { position: static; top: auto; }
   }
 
   /* ── Header (above the grid) ───────────────────────── */

@@ -181,8 +181,9 @@ const items: TrustItem[] = isDE ? [
     margin-bottom: var(--space-10);
   }
 
-  @media (min-width: 640px) {
-    .trust__grid { grid-template-columns: repeat(2, 1fr); }
+  /* 3 items → one clean row on desktop (a 2-col grid would orphan the 3rd) */
+  @media (min-width: 768px) {
+    .trust__grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   /* Card - matches Applications exactly */
