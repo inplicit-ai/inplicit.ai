@@ -200,16 +200,46 @@ const CAL_LINK = 'inplicit/30min';
   }
 
   /* ── Calendar embed ─────────────────────────────────── */
-  /* Let the Cal.com inline embed auto-size to its content so nothing is
-     clipped at the bottom; the card just frames it. */
+  /* Fixed-height card; the Cal embed scrolls inside it. */
   .cal__embed-wrap {
     position: relative;
-    min-height: 600px;
+    height: 600px;
     overflow: hidden;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-sm);
+  }
+
+  /* Pin the whole Cal chain to the wrap height so the embed scrolls
+     inside the card instead of stretching the section. !important is
+     needed because Cal's embed.js sets an inline height on cal-inline. */
+  .cal__embed {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .cal__embed :global(cal-inline) {
+    height: 100% !important;
+    display: block;
+    overflow: hidden;
+  }
+
+  .cal__embed-wrap :global(iframe.cal-embed) {
+    height: 100% !important;
+  }
+
+  /* Mask the Cal.com "Cal.eu" branding footer (rendered inside the
+     cross-origin iframe, so it can only be covered, not removed) */
+  .cal__mask {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 90px;
+    background: var(--color-bg);
+    pointer-events: none;
+    z-index: 10;
   }
 
   .cal__embed {
