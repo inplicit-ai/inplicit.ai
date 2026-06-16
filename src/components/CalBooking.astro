@@ -58,7 +58,6 @@ const CAL_LINK = 'inplicit/30min';
       <!-- Right: Cal.com inline embed -->
       <div class="cal__embed-wrap section-fade" style="--delay: 100ms">
         <div id="cal-inline" class="cal__embed" data-cal-link={CAL_LINK}></div>
-        <div class="cal__mask" aria-hidden="true"></div>
       </div>
 
     </div>
@@ -201,39 +200,16 @@ const CAL_LINK = 'inplicit/30min';
   }
 
   /* ── Calendar embed ─────────────────────────────────── */
-  /* No outer frame - the Cal.com embed renders its own card */
+  /* Let the Cal.com inline embed auto-size to its content so nothing is
+     clipped at the bottom; the card just frames it. */
   .cal__embed-wrap {
     position: relative;
-    height: 600px;
+    min-height: 600px;
     overflow: hidden;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-sm);
-  }
-
-  /* Pin the Cal iframe to the wrap height so the slots column scrolls
-     inside the card instead of stretching the whole section */
-  .cal__embed-wrap :global(iframe.cal-embed) {
-    height: 100% !important;
-  }
-
-  .cal__embed,
-  .cal__embed :global(cal-inline) {
-    height: 100%;
-  }
-
-  /* Mask the Cal.com "Cal.eu" branding footer (rendered inside the
-     cross-origin iframe, so it can only be covered, not removed) */
-  .cal__mask {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 90px;
-    background: var(--color-bg);
-    pointer-events: none;
-    z-index: 10;
   }
 
   .cal__embed {

@@ -245,14 +245,13 @@ const steps = isDE ? [
                     <path class="mock__synth-path mock__synth-path--2" d="M104 110 L185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     <path class="mock__synth-path mock__synth-path--3" d="M104 173 C160 173 162 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     <!-- Hub → output path -->
-                    <path class="mock__synth-path mock__synth-path--out" d="M215 110 L268 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="mock__synth-path mock__synth-path--out" d="M215 110 L262 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     <!-- Center hub: inplicit logo (centered in viewBox) -->
                     <image href={logoIconUrl} x="176" y="86" width="48" height="48"/>
-                    <!-- Output node -->
-                    <rect x="268" y="82" width="60" height="56" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-accent-muted)" stroke-width="1.5"/>
-                    <text x="298" y="107" text-anchor="middle" font-size="10" font-weight="700" fill="var(--color-accent)" font-family="Inter, sans-serif">{isDE ? 'Signale' : 'Insights'}</text>
-                    <text x="298" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter, sans-serif">{isDE ? 'generiert' : 'generated'}</text>
-                    <text x="298" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-text-primary)" font-family="Inter, sans-serif">14</text>
+                    <!-- Output node: big count + label -->
+                    <rect x="262" y="80" width="74" height="60" rx="10" fill="var(--color-surface-elevated)" stroke="var(--color-accent-muted)" stroke-width="1.5"/>
+                    <text x="299" y="114" text-anchor="middle" font-size="23" font-weight="800" fill="var(--color-accent)" font-family="Inter, sans-serif" letter-spacing="-0.04em">14</text>
+                    <text x="299" y="129" text-anchor="middle" font-size="8" font-weight="700" fill="var(--color-text-secondary)" font-family="Inter, sans-serif" letter-spacing="0.1em">{isDE ? 'SIGNALE' : 'INSIGHTS'}</text>
                   </svg>
                 </div>
                 <div class="mock__body" style="padding-top:0">
@@ -392,6 +391,8 @@ const steps = isDE ? [
   var panels = document.querySelectorAll('.hiw__panel');
   var active = 0;
   var timer = null;
+  // On mobile every graphic is shown stacked & static — no cycling, no swapping.
+  var isMobile = window.matchMedia('(max-width: 900px)').matches;
 
   function activate(idx, restart) {
     // Update accordion items
@@ -426,7 +427,7 @@ const steps = isDE ? [
 
     active = idx;
 
-    if (restart !== false) {
+    if (restart !== false && !isMobile) {
       clearTimeout(timer);
       timer = setTimeout(function () {
         activate((active + 1) % items.length);
@@ -445,7 +446,7 @@ const steps = isDE ? [
 
   // Step 04 stacked windows
   var stack = document.getElementById('hiw-stack');
-  if (stack) {
+  if (stack && !isMobile) {
     var winA = document.getElementById('win-a');
     var winB = document.getElementById('win-b');
     var aFront = true;
@@ -489,11 +490,6 @@ const steps = isDE ? [
     grid-template-columns: 1fr 1fr;
     gap: var(--space-16);
     align-items: start;
-  }
-
-  @media (max-width: 900px) {
-    /* Single column: steps stacked above the full-width preview window. */
-    .hiw__inner { grid-template-columns: 1fr; gap: var(--space-8); }
   }
 
   /* ── Header (above the grid) ───────────────────────── */
@@ -648,16 +644,47 @@ const steps = isDE ? [
 
   /* ── Mobile overrides (placed after the base rules so they actually win) ── */
   @media (max-width: 900px) {
-    /* Preview stops sticking; it sits below the steps */
-    .hiw__right { position: static; top: auto; }
-    /* Show every description on mobile so the accordion height is fixed.
-       Cycling the active step then only swaps the highlight + preview graphic —
-       the section height never changes, so the page below never shifts. */
+    /* One flat column: each graphic sits directly above its own step text,
+       all four shown stacked — nothing switches or reflows. */
+    .hiw__inner {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+    .hiw__accordion,
+    .hiw__right,
+    .hiw__panels { display: contents; }
+
+    /* Every graphic is visible and static (no overlap, no fade-cycling) */
+    .hiw__panel {
+      position: static;
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      transition: none;
+    }
+
+    /* Interleave graphic → text for each step */
+    .hiw__panel[data-step="0"] { order: 0; }
+    .hiw__item[data-step="0"]  { order: 1; }
+    .hiw__panel[data-step="1"] { order: 2; }
+    .hiw__item[data-step="1"]  { order: 3; }
+    .hiw__panel[data-step="2"] { order: 4; }
+    .hiw__item[data-step="2"]  { order: 5; }
+    .hiw__panel[data-step="3"] { order: 6; }
+    .hiw__item[data-step="3"]  { order: 7; }
+
+    /* All steps read as "active": full description, no greyed/cycling state */
+    .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
+    .hiw__item:last-child { border-bottom: none; }
+    .hiw__progress { display: none; }
+    .hiw__num,
+    .hiw__item-title { color: var(--color-text-primary); }
     .hiw__item-body,
     .hiw__item--active .hiw__item-body {
       max-height: none;
       opacity: 1;
-      margin-top: var(--space-3);
+      margin-top: var(--space-2);
     }
   }
 
