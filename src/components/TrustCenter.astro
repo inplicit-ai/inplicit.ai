@@ -11,12 +11,16 @@ const heroBadges = isDE ? [
   { label: 'DSGVO & AV-Vertrag',   sub: 'Art. 28 DSGVO, pro Unternehmen unterzeichnet' },
   { label: 'EU AI Act konform',     sub: 'Transparenz- und Kontrollpflichten erfüllt'   },
   { label: 'Betriebsrat-ready',     sub: 'Anforderungen vollständig erfüllt'            },
+  /* Temporarily disabled — "no training on interview data" claim
   { label: 'Zero Data Retention',   sub: 'Keine Mitarbeiterdaten im KI-Training'        },
+  */
 ] : [
   { label: 'GDPR & DPA',           sub: 'Art. 28 GDPR, signed per organisation'        },
   { label: 'EU AI Act compliant',   sub: 'Transparency and control obligations met'     },
   { label: 'Works-council ready',   sub: 'All requirements fully met'                  },
+  /* Temporarily disabled — "no training on interview data" claim
   { label: 'Zero Data Retention',   sub: 'No employee data in AI training'             },
+  */
 ];
 
 const privacyPrinciples: Principle[] = isDE ? [
@@ -34,23 +38,31 @@ const privacyPrinciples: Principle[] = isDE ? [
 ];
 
 const aiPrinciples: Principle[] = isDE ? [
+  /* Temporarily disabled — "no training on interview data" claim
   { icon: 'slash',   title: 'Kein Training auf Interview-Daten', body: 'Gespräche und Antworten Ihrer Mitarbeitenden fließen nicht in das Training von KI-Modellen. Vertraglich zugesichert.' },
+  */
   { icon: 'users',   title: 'Human-in-the-Loop',                 body: 'Kein Ergebnis wird automatisch versendet. Verantwortliche im Unternehmen entscheiden über die Weitergabe aller Erkenntnisse.' },
   { icon: 'check',   title: 'EU AI Act Konformität',             body: 'Transparenz- und Kontrollpflichten gemäß EU AI Act sind vollständig erfüllt.' },
 ] : [
+  /* Temporarily disabled — "no training on interview data" claim
   { icon: 'slash',   title: 'No training on interview data',     body: 'Conversations and employee responses do not flow into the training of AI models. Contractually guaranteed.' },
+  */
   { icon: 'users',   title: 'Human-in-the-Loop',                 body: 'No results are sent automatically. Responsible people within the organisation decide on the sharing of all insights.' },
   { icon: 'check',   title: 'EU AI Act compliance',              body: 'Transparency and control obligations under the EU AI Act are fully met.' },
 ];
 
 const faqItems = isDE ? [
+  /* Temporarily disabled — "no training on interview data" claim
   { q: 'Werden Mitarbeiterdaten für KI-Training verwendet?',          a: 'Nein. inplicit nutzt ausschließlich Modelle mit vertraglich zugesichertem Zero Data Retention. Interview-Inhalte und Organisationsdaten werden nicht für das Training von Modellen verwendet.' },
+  */
   { q: 'Wer hat Zugriff auf Interview-Inhalte?',                      a: 'Ausschließlich autorisierte Personen im Unternehmen. Inhalte werden nicht an Dritte weitergegeben. inplicit-Mitarbeitende haben nur für technisch notwendige Tätigkeiten Zugriff.' },
   { q: 'Wie ist die Anonymisierung von Interview-Inhalten geregelt?',  a: 'Auf Wunsch erfolgt eine Pseudonymisierung der Transkripte vor der Auswertung. Das Unternehmen legt den gewünschten Grad der Anonymisierung fest.' },
   { q: 'Wie schnell werden Sicherheitsvorfälle gemeldet?',            a: 'Innerhalb von 48 Stunden nach erster Kenntnis - mit vollständiger Beschreibung des Vorfalls, betroffener Datenkategorien und ergriffener Maßnahmen.' },
   { q: 'Ist ein AV-Vertrag verfügbar?',                               a: 'Ja. Der Auftragsverarbeitungsvertrag wird pro Unternehmen beim Onboarding unterzeichnet. Auf Anfrage kann das Dokument vorab zugesendet werden.' },
 ] : [
+  /* Temporarily disabled — "no training on interview data" claim
   { q: 'Is employee data used for AI training?',                      a: 'No. inplicit uses only models with contractually guaranteed zero data retention. Interview content and organisation data are not used to train any models.' },
+  */
   { q: 'Who has access to interview content?',                        a: 'Only authorised people within your organisation. Content is not shared with third parties. inplicit staff access is limited to technically necessary activities.' },
   { q: 'How is anonymisation of interview content handled?',          a: 'On request, transcripts are pseudonymised before analysis. The organisation defines the level of anonymisation required.' },
   { q: 'How quickly are security incidents reported?',                a: 'Within 48 hours of first awareness - with a full description of the incident, affected data categories, and measures taken.' },
