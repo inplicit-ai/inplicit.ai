@@ -84,14 +84,6 @@ const pills = lang === 'de'
   }
 
 
-  @media (max-width: 767px) {
-    .hero {
-      padding-top: calc(var(--space-4) + 56px);
-      padding-bottom: var(--space-16);
-      min-height: 0;
-    }
-  }
-
   .hero__inner {
     position: relative;
     z-index: 1;
@@ -104,32 +96,32 @@ const pills = lang === 'de'
   }
 
   @media (max-width: 900px) {
-    .hero__inner { grid-template-columns: 1fr; gap: var(--space-2); }
-    /* Pull the brain up so it sits right under the check-mark row */
-    .hero__visual { height: auto; margin-top: var(--space-2); }
-    /* Keep the brain visible but non-interactive so it never blocks scroll */
+    /* Fill the viewport: text sits below the nav, brain drops to the fold so
+       it peeks over the edge and invites scrolling. */
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      align-items: stretch;
+      padding-top: calc(var(--space-10) + 56px);
+      padding-bottom: 0;
+    }
+    .hero__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: var(--space-10);
+    }
+    /* Pills are desktop-only */
+    .hero__pills { display: none; }
+    /* Brain sits at the bottom edge, slightly clipped by the fold */
+    .hero__visual { height: auto; margin-bottom: calc(-1 * var(--space-8)); }
     .hero__brain-canvas {
-      width: 300px;
+      width: 320px;
       height: auto;
       max-width: 100%;
       pointer-events: none;
       cursor: default;
-    }
-    /* Anchor the amber glow to the brain so the gradient starts below the
-       checkmarks, not at the section bottom. */
-    .hero::before { display: none; }
-    .hero__glow {
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 460px;
-      height: 460px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245, 166, 35, 0.5) 0%, rgba(245, 166, 35, 0.16) 45%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
     }
   }
 
@@ -166,7 +158,7 @@ const pills = lang === 'de'
 
   /* Headline */
   .hero__headline {
-    font-size: clamp(1.75rem, 3.6vw, 3.0rem);
+    font-size: clamp(2.1rem, 4.4vw, 3.5rem);
     font-weight: 400;
     line-height: 1.1;
     letter-spacing: -0.03em;
@@ -309,21 +301,27 @@ const pills = lang === 'de'
     height: 420px;
   }
 
+  .hero__glow { display: none; }
+
+  /* Amber glow rises from the lower edge of the hero (biased toward the brain) */
   .hero::before {
     content: '';
     position: absolute;
-    right: -180px;
-    bottom: -180px;
-    width: 780px;
-    height: 780px;
+    left: 60%;
+    bottom: 0;
+    transform: translate(-50%, 48%);
+    width: 820px;
+    height: 560px;
+    max-width: 140%;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 166, 35, 0.62) 0%, rgba(245, 166, 35, 0.18) 45%, transparent 68%);
+    background: radial-gradient(ellipse, rgba(245, 166, 35, 0.5) 0%, rgba(245, 166, 35, 0.18) 42%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
 
-  .hero__glow {
-    display: none;
+  @media (max-width: 900px) {
+    /* Centered under the brain at the fold */
+    .hero::before { left: 50%; width: 720px; }
   }
 
   .hero__brain-canvas {
@@ -377,6 +375,13 @@ function initBrain() {
   controls.dampingFactor = 0.1;
   controls.enableDamping = true;
 
+  // Soft, even lighting so the ghost surface actually shades (MeshStandardMaterial
+  // needs lights — without them the surface renders black).
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc8c8d0, 1.4));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  keyLight.position.set(2, 3, 4);
+  scene.add(keyLight);
+
   const brainGroup = new THREE.Group();
   scene.add(brainGroup);
 
@@ -390,7 +395,7 @@ function initBrain() {
     opacity: 0.18,
     roughness: 0.9,
     metalness: 0.0,
-    side: THREE.FrontSide,
+    side: THREE.DoubleSide,   // no backface culling → no missing/flipped faces
   });
 
   const loader = new GLTFLoader();
@@ -410,6 +415,7 @@ function initBrain() {
           .applyMatrix4(mesh.matrixWorld)
           .applyMatrix4(new THREE.Matrix4().makeTranslation(-c0.x, -c0.y, -c0.z))
           .applyMatrix4(new THREE.Matrix4().makeScale(scaleFactor, scaleFactor, scaleFactor));
+        geoCopy.computeVertexNormals();   // consistent normals for even shading
 
         // Ghost surface (renders first, behind edges)
         brainGroup.add(new THREE.Mesh(geoCopy, surfaceMat));
