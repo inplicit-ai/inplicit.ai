@@ -391,8 +391,8 @@ const steps = isDE ? [
   var panels = document.querySelectorAll('.hiw__panel');
   var active = 0;
   var timer = null;
-  // On mobile every graphic is shown stacked & static — no cycling, no swapping.
-  var isMobile = window.matchMedia('(max-width: 900px)').matches;
+  // Every graphic is shown stacked & static at all sizes — no cycling, no swapping.
+  var isMobile = true;
 
   function activate(idx, restart) {
     // Update accordion items
@@ -642,50 +642,48 @@ const steps = isDE ? [
     pointer-events: auto;
   }
 
-  /* ── Mobile overrides (placed after the base rules so they actually win) ── */
-  @media (max-width: 900px) {
-    /* One flat column: each graphic sits directly above its own step text,
-       all four shown stacked — nothing switches or reflows. */
-    .hiw__inner {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-6);
-    }
-    .hiw__accordion,
-    .hiw__right,
-    .hiw__panels { display: contents; }
+  /* ── One flat column at ALL sizes (overrides the two-column base above) ──
+     Every macOS window is full layout width, with its step text directly
+     below it. All four are shown stacked — nothing switches or reflows. */
+  .hiw__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  .hiw__accordion,
+  .hiw__right,
+  .hiw__panels { display: contents; }
 
-    /* Every graphic is visible and static (no overlap, no fade-cycling) */
-    .hiw__panel {
-      position: static;
-      display: block;
-      opacity: 1;
-      pointer-events: auto;
-      transition: none;
-    }
+  /* Every graphic is visible and static (no overlap, no fade-cycling) */
+  .hiw__panel {
+    position: static;
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
 
-    /* Interleave graphic → text for each step */
-    .hiw__panel[data-step="0"] { order: 0; }
-    .hiw__item[data-step="0"]  { order: 1; }
-    .hiw__panel[data-step="1"] { order: 2; }
-    .hiw__item[data-step="1"]  { order: 3; }
-    .hiw__panel[data-step="2"] { order: 4; }
-    .hiw__item[data-step="2"]  { order: 5; }
-    .hiw__panel[data-step="3"] { order: 6; }
-    .hiw__item[data-step="3"]  { order: 7; }
+  /* Interleave graphic → text for each step */
+  .hiw__panel[data-step="0"] { order: 0; }
+  .hiw__item[data-step="0"]  { order: 1; }
+  .hiw__panel[data-step="1"] { order: 2; }
+  .hiw__item[data-step="1"]  { order: 3; }
+  .hiw__panel[data-step="2"] { order: 4; }
+  .hiw__item[data-step="2"]  { order: 5; }
+  .hiw__panel[data-step="3"] { order: 6; }
+  .hiw__item[data-step="3"]  { order: 7; }
 
-    /* All steps read as "active": full description, no greyed/cycling state */
-    .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
-    .hiw__item:last-child { border-bottom: none; }
-    .hiw__progress { display: none; }
-    .hiw__num,
-    .hiw__item-title { color: var(--color-text-primary); }
-    .hiw__item-body,
-    .hiw__item--active .hiw__item-body {
-      max-height: none;
-      opacity: 1;
-      margin-top: var(--space-2);
-    }
+  /* All steps read as "active": full description, no greyed/cycling state */
+  .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
+  .hiw__item:last-child { border-bottom: none; }
+  .hiw__progress { display: none; }
+  .hiw__num,
+  .hiw__item-title { color: var(--color-text-primary); }
+  .hiw__item-body,
+  .hiw__item--active .hiw__item-body {
+    max-height: none;
+    opacity: 1;
+    margin-top: var(--space-2);
   }
 
   /* ── Shared mock shell ──────────────────────────────── */
@@ -941,7 +939,8 @@ const steps = isDE ? [
   /* ── Synthesis graph (panel 2) ──────────────────────── */
   .mock__synth-body { display: flex; flex-direction: column; }
   .mock__synth-graph { padding: var(--space-4); border-bottom: 1px solid var(--color-border); }
-  .mock__synth-svg { width: 100%; height: auto; }
+  /* Cap + centre so a full-width window doesn't inflate the graph */
+  .mock__synth-svg { width: 100%; height: auto; max-width: 520px; margin: 0 auto; display: block; }
 
   /* Network graph */
   .mock--network .mock__network-wrap {
@@ -950,7 +949,7 @@ const steps = isDE ? [
     flex-direction: column;
     gap: var(--space-3);
   }
-  .mock__network-svg { width: 100%; height: auto; }
+  .mock__network-svg { width: 100%; height: auto; max-width: 560px; margin: 0 auto; display: block; }
   .mock__network-label {
     display: flex;
     align-items: center;
