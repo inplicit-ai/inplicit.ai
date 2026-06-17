@@ -1,6 +1,5 @@
 ---
 import logoIconRaw from '../assets/logo_icon.svg?raw';
-import logoIconUrl from '../assets/logo_icon.svg?url';
 
 export interface Props {
   lang?: 'en' | 'de';
@@ -20,7 +19,7 @@ const steps = isDE ? [
   { num: '05', title: 'Wissens-Chat',
     body: 'Frag deine Belegschaftsdaten in normaler Sprache. Antworten kommen mit Belegen zu einer anonymen Quelle zurück.' },
   { num: '06', title: 'Autonome Recherche', beta: true,
-    body: 'Wenn die Daten die Antwort noch nicht hergeben, holt Inplicit sie. Es startet eine gezielte Interview-Runde und bringt die Antwort zurück.' },
+    body: 'Wenn die Daten die Antwort noch nicht hergeben, holt Inplicit sie. Es startet eine gezielte Interview-Runde und meldet sich per E-Mail, sobald die Ergebnisse da sind.' },
 ] : [
   { num: '01', title: 'Setup',
     body: 'Describe what you want to learn and who gets asked. The setup agent turns it into a ready campaign in minutes.' },
@@ -33,8 +32,10 @@ const steps = isDE ? [
   { num: '05', title: 'Knowledge chat',
     body: 'Ask your workforce data in plain language. Answers come back with citations to an anonymous source.' },
   { num: '06', title: 'Autonomous research', beta: true,
-    body: 'If the data does not hold the answer yet, Inplicit goes and finds it. It runs a focused round of interviews and brings the answer back.' },
+    body: 'If the data does not hold the answer yet, Inplicit goes and finds it. It runs a focused round of interviews and emails you when the results are ready.' },
 ];
+
+const sendIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 ---
 
 <section class="hiw" id="how-it-works">
@@ -69,243 +70,158 @@ const steps = isDE ? [
         ))}
       </div>
 
-      <!-- ── Right: scene previews ────────────────────── -->
+      <!-- ── Right: scene previews (4:3 windows mirroring the dashboard) ── -->
       <div class="hiw__right">
         <div class="hiw__panels">
 
-          <!-- Scene 0: Setup — setup-agent chat -->
+          <!-- Scene 0: Setup — the setup agent (edda) chat -->
           <div class="hiw__panel hiw__panel--active" data-step="0">
-            <div class="mock">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Setup' : 'Setup'}</span>
+            <div class="scene" aria-hidden="true">
+              <div class="scene__head">
+                <span class="scene__avatar" set:html={logoIconRaw} />
+                <div>
+                  <div class="scene__head-title">edda</div>
+                  <div class="scene__head-sub">{isDE ? 'Kampagnen-Planer' : 'Campaign planner'}</div>
+                </div>
+                <span class="scene__dot" style="margin-left:auto"></span>
               </div>
-              <div class="mock__chat-body">
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-bubble">{isDE ? 'Was möchtest du von deinem Team erfahren?' : 'What do you want to learn from your team?'}</div>
+              <div class="chat">
+                <div class="chat__scroll">
+                  <div class="msg-user">{isDE ? 'Warum verlieren wir im Tagesgeschäft so viel Zeit?' : 'Why do we lose so much time in daily operations?'}</div>
+                  <div class="msg-agent">{isDE ? 'Ich habe einen Katalog mit 8 Fragen für Operations und Logistik entworfen. Möchtest du ihn ansehen?' : 'I drafted a catalog of 8 questions for Operations and Logistics. Want to review it?'}</div>
                 </div>
-                <div class="mock__msg mock__msg--user">
-                  <span class="mock__msg-avatar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                  <div class="mock__msg-bubble">{isDE ? 'Wo wir im Betrieb Zeit verlieren.' : 'Where we lose time in operations.'}</div>
-                </div>
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-col">
-                    <div class="mock__msg-bubble">{isDE ? '120 Personen eingeladen, je etwa 20 Minuten.' : '120 people invited, about 20 minutes each.'}</div>
-                    <span class="mock__ready">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                      {isDE ? 'Kampagne bereit' : 'Campaign ready'}
-                    </span>
+                <div class="composer">
+                  <div class="composer__chips">
+                    <span class="composer__chip">{isDE ? 'Fragen ansehen' : 'Review questions'}</span>
+                    <span class="composer__chip">{isDE ? 'Finance ergänzen' : 'Add Finance'}</span>
+                  </div>
+                  <div class="composer__input">
+                    <span class="composer__placeholder">{isDE ? 'Antworte oder bitte den Assistenten, den Katalog anzupassen…' : 'Reply or ask the assistant to adjust the catalog…'}</span>
+                    <span class="composer__send" set:html={sendIcon} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Scene 1: Conversations — interviewee view -->
+          <!-- Scene 1: Conversations — the interviewee voice room -->
           <div class="hiw__panel" data-step="1">
-            <div class="mock">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Interview' : 'Interview'}</span>
-                <span class="mock__status-dot" style="margin-left:auto"></span>
+            <div class="scene" aria-hidden="true">
+              <div class="iv__top">
+                <span class="scene__dot scene__dot--live"></span>
+                <span class="iv__clock">12:30 / 25:00</span>
+                <span class="iv__ai">{isDE ? 'KI-Agent · kein Mensch' : 'AI agent · not a human'}</span>
+                <span class="iv__end">{isDE ? 'Beenden' : 'End'}</span>
               </div>
-              <div class="mock__badges">
-                <span class="mock__badge">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  {isDE ? 'Anonym' : 'Anonymous'}
-                </span>
-                <span class="mock__badge">{isDE ? 'KI-Agent' : 'AI agent'}</span>
+              <div class="iv__stage">
+                <div class="orb"><span class="orb__ring"></span><span class="orb__core"></span></div>
+                <div class="iv__hud">
+                  <span class="iv__status"><span class="scene__dot scene__dot--live"></span>{isDE ? 'Hört zu' : 'Listening'}</span>
+                  <span class="iv__phase">{isDE ? 'Phase 1 · Offen' : 'Phase 1 · Open'}</span>
+                  <span class="iv__conn"><span class="iv__conn-dot"></span>{isDE ? 'Verbunden' : 'Connected'}</span>
+                </div>
               </div>
-              <div class="mock__chat-body" style="padding-top:var(--space-3)">
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-bubble">{isDE ? 'Erzähl von einem Moment diese Woche, der länger gedauert hat als nötig.' : 'Tell me about a moment this week that took longer than it should.'}</div>
-                </div>
-                <div class="mock__msg mock__msg--user">
-                  <span class="mock__msg-avatar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                  <div class="mock__msg-bubble">{isDE ? 'Jeder Auftragsexport braucht drei Tools und eine manuelle Prüfung.' : 'Every order export needs three tools and a manual check.'}</div>
-                </div>
-                <div class="mock__voice">
-                  <span class="mock__voice-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
-                  <span class="mock__voice-label">{isDE ? 'Hört zu' : 'Listening'}</span>
-                </div>
+              <div class="iv__bottom">
+                <span class="iv__mute"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></span>
+                <span class="iv__switch"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>{isDE ? 'Zu Chat wechseln' : 'Switch to chat'}</span>
               </div>
             </div>
           </div>
 
-          <!-- Scene 2: Synthesis -->
+          <!-- Scene 2: Synthesis — campaign overview metrics (no synthesis screen exists) -->
           <div class="hiw__panel" data-step="2">
-            <div class="mock mock--synthesis">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Synthese läuft' : 'Synthesis running'}</span>
+            <div class="scene" aria-hidden="true">
+              <div class="scene__head">
+                <div class="scene__head-title">{isDE ? 'Kampagne · Operations' : 'Campaign · Operations'}</div>
+                <span class="live-pill" style="margin-left:auto"><span class="scene__dot scene__dot--live"></span>Live</span>
               </div>
-              <div class="mock__synth-body">
-                <div class="mock__synth-graph" aria-hidden="true">
-                  <svg class="mock__synth-svg" viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="30" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
-                    <rect x="8" y="93" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
-                    <rect x="8" y="156" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
-                    <text x="56" y="52" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Gespräche' : 'Conversations'}</text>
-                    <text x="56" y="115" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Dokumente' : 'Documents'}</text>
-                    <text x="56" y="178" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Systeme' : 'Systems'}</text>
-                    <path class="mock__synth-path mock__synth-path--1" d="M104 47 C160 47 162 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="mock__synth-path mock__synth-path--2" d="M104 110 L185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="mock__synth-path mock__synth-path--3" d="M104 173 C160 173 162 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="mock__synth-path mock__synth-path--out" d="M215 110 L262 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <image href={logoIconUrl} x="176" y="86" width="48" height="48"/>
-                    <rect x="262" y="80" width="74" height="60" rx="10" fill="var(--color-surface-elevated)" stroke="var(--color-accent-muted)" stroke-width="1.5"/>
-                    <text x="299" y="114" text-anchor="middle" font-size="23" font-weight="800" fill="var(--color-accent)" font-family="Inter, sans-serif" letter-spacing="-0.04em">14</text>
-                    <text x="299" y="129" text-anchor="middle" font-size="8" font-weight="700" fill="var(--color-text-secondary)" font-family="Inter, sans-serif" letter-spacing="0.1em">{isDE ? 'SIGNALE' : 'INSIGHTS'}</text>
-                  </svg>
-                </div>
-                <div class="mock__body" style="padding-top:0">
-                  <div class="mock__wf-item mock__wf-item--done">
-                    <div class="mock__wf-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
-                    <div class="mock__wf-content">
-                      <span class="mock__wf-title">{isDE ? 'Gespräche gelesen' : 'Conversations read'}</span>
-                      <span class="mock__wf-sub">{isDE ? '1.247 Stimmen' : '1,247 voices'}</span>
-                    </div>
-                    <span class="mock__wf-status mock__wf-status--done">{isDE ? 'Fertig' : 'Done'}</span>
-                  </div>
-                  <div class="mock__wf-item mock__wf-item--active">
-                    <div class="mock__wf-icon mock__wf-icon--spin"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></div>
-                    <div class="mock__wf-content">
-                      <span class="mock__wf-title">{isDE ? 'Signale extrahiert' : 'Signals extracted'}</span>
-                      <span class="mock__wf-sub">{isDE ? 'Probleme, Ideen, Chancen' : 'Problems, ideas, opportunities'}</span>
-                    </div>
-                    <span class="mock__wf-status mock__wf-status--active">{isDE ? 'Aktiv' : 'Active'}</span>
-                  </div>
-                  <div class="mock__wf-item mock__wf-item--pending">
-                    <div class="mock__wf-icon mock__wf-icon--pending"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></div>
-                    <div class="mock__wf-content">
-                      <span class="mock__wf-title">{isDE ? 'Muster gruppiert' : 'Patterns grouped'}</span>
-                      <span class="mock__wf-sub">{isDE ? 'Verwandte Signale verbinden' : 'Connecting related signals'}</span>
-                    </div>
-                    <span class="mock__wf-status">{isDE ? 'Ausstehend' : 'Pending'}</span>
-                  </div>
-                </div>
+              <div class="ov__grid">
+                <div class="metric"><span class="metric__label">{isDE ? 'Teilnehmer' : 'Participants'}</span><span class="metric__value">120</span></div>
+                <div class="metric"><span class="metric__label">{isDE ? 'Abgeschlossen' : 'Completed'}</span><span class="metric__value">86</span></div>
+                <div class="metric"><span class="metric__label">Insights</span><span class="metric__value metric__value--accent">14</span></div>
+                <div class="metric"><span class="metric__label">{isDE ? 'Hypothesen' : 'Hypotheses'}</span><span class="metric__value">5</span></div>
               </div>
             </div>
           </div>
 
-          <!-- Scene 3: Suggestions — triad cards -->
+          <!-- Scene 3: Suggestions — the insights triad card -->
           <div class="hiw__panel" data-step="3">
-            <div class="mock mock--triads">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Vorschläge' : 'Suggestions'}</span>
-              </div>
-              <div class="mock__body">
-
-                <div class="triad">
-                  <div class="triad__row triad__row--problem">
-                    <span class="triad__label">{isDE ? 'Problem' : 'Problem'}</span>
-                    <span class="triad__text">{isDE ? 'Auftragsexport braucht drei Tools und eine manuelle Prüfung.' : 'Order export needs three tools and a manual check.'}</span>
+            <div class="scene" aria-hidden="true">
+              <div class="scene__head"><div class="scene__head-title">Insights</div></div>
+              <div class="ins">
+                <div class="ins__card">
+                  <div class="ins__cardhead">
+                    <div class="ins__badges"><span class="dept">Operations</span><span class="dept">{isDE ? 'Offene Phase' : 'Open phase'}</span></div>
+                    <span class="ins__rank">#1</span>
                   </div>
-                  <div class="triad__row triad__row--idea">
-                    <span class="triad__label">{isDE ? 'Idee' : 'Idea'}<span class="triad__origin">{isDE ? 'Vom Team' : 'From the team'}</span></span>
-                    <span class="triad__text">{isDE ? 'Eine Export-Ansicht, die die drei Quellen zusammenführt.' : 'One export view that merges the three sources.'}</span>
-                  </div>
-                  <div class="triad__row triad__row--opp">
-                    <span class="triad__label">{isDE ? 'Chance' : 'Opportunity'}</span>
-                    <span class="triad__text">{isDE ? 'Etwa 4 Stunden pro Woche pro Mitarbeiter.' : 'About 4 hours a week per operator.'}</span>
-                  </div>
-                  <div class="triad__foot">
-                    <span class="conf conf--high">{isDE ? 'Hoch' : 'High'}</span>
-                    <span class="triad__quote">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      {isDE ? 'Zitat ansehen' : 'View quote'}
-                    </span>
+                  <div class="ins__rows">
+                    <div class="ins__row"><span class="tlabel tlabel--problem">Problem</span><span class="ttext">{isDE ? 'Auftragsexport braucht drei Tools und eine manuelle Prüfung.' : 'Order export needs three tools and a manual check.'}</span></div>
+                    <div class="ins__row"><span class="tlabel tlabel--idea">{isDE ? 'Idee' : 'Idea'}</span><span class="ttext">{isDE ? 'Eine Export-Ansicht, die die drei Quellen zusammenführt.' : 'One export view that merges the three sources.'}</span></div>
+                    <div class="ins__row"><span class="tlabel tlabel--opp">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Etwa 4 Stunden pro Woche pro Mitarbeiter.' : 'About 4 hours a week per operator.'}</span></div>
                   </div>
                 </div>
-
-                <div class="triad">
-                  <div class="triad__row triad__row--problem">
-                    <span class="triad__label">{isDE ? 'Problem' : 'Problem'}</span>
-                    <span class="triad__text">{isDE ? 'Neue Mitarbeitende warten Tage auf Systemzugang.' : 'New hires wait days for system access.'}</span>
+                <div class="ins__card">
+                  <div class="ins__cardhead">
+                    <div class="ins__badges"><span class="dept">HR</span><span class="dept">{isDE ? 'Offene Phase' : 'Open phase'}</span></div>
+                    <span class="ins__rank">#2</span>
                   </div>
-                  <div class="triad__row triad__row--idea">
-                    <span class="triad__label">{isDE ? 'Idee' : 'Idea'}<span class="triad__origin">Inplicit</span></span>
-                    <span class="triad__text">{isDE ? 'Zugang aus dem unterschriebenen Vertrag auslösen.' : 'Trigger access from the signed contract.'}</span>
-                  </div>
-                  <div class="triad__row triad__row--opp">
-                    <span class="triad__label">{isDE ? 'Chance' : 'Opportunity'}</span>
-                    <span class="triad__text">{isDE ? 'Schnellere erste Woche, weniger Leerlauf.' : 'Faster first week, less idle time.'}</span>
-                  </div>
-                  <div class="triad__foot">
-                    <span class="conf conf--mid">{isDE ? 'Mittel' : 'Medium'}</span>
-                    <span class="triad__quote">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      {isDE ? 'Zitat ansehen' : 'View quote'}
-                    </span>
+                  <div class="ins__rows">
+                    <div class="ins__row"><span class="tlabel tlabel--problem">Problem</span><span class="ttext">{isDE ? 'Neue Mitarbeitende warten Tage auf Systemzugang.' : 'New hires wait days for system access.'}</span></div>
+                    <div class="ins__row"><span class="tlabel tlabel--idea">{isDE ? 'Idee (AI)' : 'Idea (AI)'}</span><span class="ttext">{isDE ? 'Zugang aus dem unterschriebenen Vertrag auslösen.' : 'Trigger access from the signed contract.'}</span></div>
+                    <div class="ins__row"><span class="tlabel tlabel--opp">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Schnellere erste Woche, weniger Leerlauf.' : 'Faster first week, less idle time.'}</span></div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
 
-          <!-- Scene 4: Knowledge chat -->
+          <!-- Scene 4: Knowledge chat — RAG with citations -->
           <div class="hiw__panel" data-step="4">
-            <div class="mock">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Wissens-Chat' : 'Knowledge chat'}</span>
-              </div>
-              <div class="mock__chat-body">
-                <div class="mock__msg mock__msg--user">
-                  <span class="mock__msg-avatar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                  <div class="mock__msg-bubble">{isDE ? 'Hat jemand in Legal Onboarding-Probleme erwähnt?' : 'Did anyone in legal mention onboarding pain?'}</div>
+            <div class="scene" aria-hidden="true">
+              <div class="scene__head"><div class="scene__head-title">{isDE ? 'Wissens-Chat' : 'Knowledge chat'}</div><span class="scene__dot" style="margin-left:auto"></span></div>
+              <div class="chat">
+                <div class="chat__scroll">
+                  <div class="msg-user">{isDE ? 'Hat jemand im Rechtsbereich Onboarding-Probleme erwähnt?' : 'Did anyone in Legal mention onboarding pain?'}</div>
+                  <div class="msg-agent">
+                    {isDE ? 'Ja. Zwei Personen im Rechtsbereich beschreiben einen langsamen Zugangsprozess in ihrer ersten Woche.' : 'Yes. Two people in Legal describe a slow access process in their first week.'}
+                    <div class="cites">
+                      <span class="cites__label">{isDE ? 'Quellen' : 'Sources'}</span>
+                      <span class="cite">ANON-3F2 · #14</span>
+                      <span class="cite">ANON-9K1 · #7</span>
+                    </div>
+                    <div class="ai-note">{isDE ? 'KI-generiert aus anonymisierten Interviewdaten' : 'AI-generated from anonymized interview data'}</div>
+                  </div>
                 </div>
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-col">
-                    <div class="mock__msg-bubble">{isDE ? 'Ja. Zwei Personen in Legal beschreiben einen langsamen Zugangsprozess in ihrer ersten Woche.' : 'Yes. Two people in Legal describe a slow access process in their first week.'}</div>
-                    <span class="mock__cite">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      ANON-3F2 · Legal
-                    </span>
+                <div class="composer">
+                  <div class="composer__input">
+                    <span class="composer__placeholder">{isDE ? 'Frag zu dieser Kampagne…' : 'Ask about this campaign…'}</span>
+                    <span class="composer__send" set:html={sendIcon} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Scene 5: Autonomous research (Beta) -->
+          <!-- Scene 5: Autonomous research (Beta) — loop closes via a fresh round -->
           <div class="hiw__panel" data-step="5">
-            <div class="mock">
-              <div class="mock__chrome">
-                <div class="mock__dots"><span class="mock__dot mock__dot--r"></span><span class="mock__dot mock__dot--y"></span><span class="mock__dot mock__dot--g"></span></div>
-                <span class="mock__title">{isDE ? 'Wissens-Chat' : 'Knowledge chat'}</span>
-                <span class="mock__beta">Beta</span>
-              </div>
-              <div class="mock__chat-body">
-                <div class="mock__msg mock__msg--user">
-                  <span class="mock__msg-avatar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                  <div class="mock__msg-bubble">{isDE ? 'Wie regeln Nachtschichten die Übergabe?' : 'How do night shifts handle handover?'}</div>
-                </div>
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-bubble">{isDE ? 'Noch keine Antwort in den Daten. Ich starte eine gezielte Interview-Runde.' : 'No answer in the data yet. Starting a focused interview round.'}</div>
-                </div>
-                <div class="mock__research">
-                  <span class="mock__research-pulse"></span>
-                  <div class="mock__wf-content">
-                    <span class="mock__research-text">{isDE ? 'Befrage 8 Personen in der Logistik' : 'Interviewing 8 people in Logistics'}</span>
-                    <span class="mock__research-sub">{isDE ? '5 von 8 abgeschlossen' : '5 of 8 completed'}</span>
+            <div class="scene" aria-hidden="true">
+              <div class="scene__head"><div class="scene__head-title">{isDE ? 'Wissens-Chat' : 'Knowledge chat'}</div><span class="scene__beta" style="margin-left:auto">Beta</span></div>
+              <div class="chat">
+                <div class="chat__scroll">
+                  <div class="msg-user">{isDE ? 'Wie regeln Nachtschichten die Übergabe?' : 'How do night shifts handle handover?'}</div>
+                  <div class="msg-agent">{isDE ? 'Noch keine Antwort in den Daten. Ich starte eine gezielte Interview-Runde und melde mich per E-Mail, sobald die Ergebnisse da sind.' : 'No answer in the data yet. I will run a focused interview round and email you when the results are ready.'}</div>
+                  <div class="research">
+                    <span class="research__pulse"></span>
+                    <div class="research__text">
+                      <div class="research__title">{isDE ? 'Befrage 8 Personen in der Logistik' : 'Interviewing 8 people in Logistics'}</div>
+                      <div class="research__sub">{isDE ? '5 von 8 abgeschlossen' : '5 of 8 completed'}</div>
+                    </div>
                   </div>
                 </div>
-                <div class="mock__msg mock__msg--agent">
-                  <span class="mock__msg-icon" set:html={logoIconRaw} />
-                  <div class="mock__msg-col">
-                    <div class="mock__msg-bubble">{isDE ? 'Die Übergabe läuft über ein gemeinsames Heft. Zwei Schichten wünschen ein digitales Log.' : 'Handover runs over a shared notebook. Two shifts ask for a digital log.'}</div>
-                    <span class="mock__cite">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      {isDE ? '8 Stimmen · Logistik' : '8 voices · Logistics'}
-                    </span>
+                <div class="composer">
+                  <div class="composer__input">
+                    <span class="composer__placeholder">{isDE ? 'Frag zu dieser Kampagne…' : 'Ask about this campaign…'}</span>
+                    <span class="composer__send" set:html={sendIcon} />
                   </div>
                 </div>
               </div>
@@ -329,8 +245,7 @@ const steps = isDE ? [
   var panels = document.querySelectorAll('.hiw__panel');
   var active = 0;
   var timer = null;
-  // Only desktop (>=1024px) cycles the preview; tablet (zig-zag) and mobile
-  // (stacked) show every scene static.
+  // Only desktop (>=1024px) cycles the preview; tablet and mobile show all scenes static.
   var isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
   function activate(idx, restart) {
@@ -371,7 +286,6 @@ const steps = isDE ? [
     item.addEventListener('click', function () { activate(i); });
   });
 
-  // Start after first paint so the initial styles don't transition/flash in.
   var section = document.getElementById('how-it-works');
   requestAnimationFrame(function () {
     if (section) section.classList.add('is-ready');
@@ -390,13 +304,12 @@ const steps = isDE ? [
     .hiw { padding: var(--space-24) 0 var(--space-32); }
   }
 
-  /* Prevent a colour / progress-bar flash on load: hold the active styling
-     until the script marks the section ready (one frame after first paint). */
+  /* Hold active styling until the script flags the section ready (no load flash). */
   .hiw:not(.is-ready) .hiw__progress { display: none; }
   .hiw:not(.is-ready) .hiw__num,
   .hiw:not(.is-ready) .hiw__item-title { transition: none; }
 
-  /* ── Desktop: step list | one cycling preview, with a clear gap ── */
+  /* ── Desktop: step list | one cycling preview ── */
   .hiw__inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -404,14 +317,8 @@ const steps = isDE ? [
     align-items: start;
   }
 
-  .hiw__header {
-    margin-bottom: var(--space-12);
-    max-width: 50%;
-  }
-
-  @media (max-width: 900px) {
-    .hiw__header { max-width: 100%; }
-  }
+  .hiw__header { margin-bottom: var(--space-12); max-width: 50%; }
+  @media (max-width: 900px) { .hiw__header { max-width: 100%; } }
 
   .hiw__heading {
     font-size: clamp(var(--text-xl), 4vw, 2.75rem);
@@ -446,10 +353,8 @@ const steps = isDE ? [
 
   .hiw__progress {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 2px;
-    height: 0%;
+    left: 0; top: 0;
+    width: 2px; height: 0%;
     background: var(--color-accent);
     border-radius: 0 2px 2px 0;
   }
@@ -487,10 +392,8 @@ const steps = isDE ? [
   .hiw__beta {
     display: inline-block;
     margin-left: var(--space-2);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--color-accent);
     background: var(--color-accent-light);
     border: 1px solid var(--color-accent-muted);
@@ -500,73 +403,39 @@ const steps = isDE ? [
   }
 
   .hiw__item-body {
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
+    overflow: hidden; max-height: 0; opacity: 0;
     transition: max-height 0.35s ease, opacity 0.3s ease;
     margin-top: 0;
   }
 
-  .hiw__item--active .hiw__item-body {
-    max-height: 160px;
-    opacity: 1;
-    margin-top: var(--space-3);
-  }
+  .hiw__item--active .hiw__item-body { max-height: 160px; opacity: 1; margin-top: var(--space-3); }
 
-  .hiw__item-body p {
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    line-height: 1.75;
-  }
+  .hiw__item-body p { font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.75; }
 
-  /* ── Right column: the cycling preview ── */
+  /* ── Right column: cycling preview ── */
   .hiw__right { position: sticky; top: 100px; }
   .hiw__panels { display: grid; }
 
-  .hiw__panel {
-    grid-area: 1 / 1;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-  }
-
+  .hiw__panel { grid-area: 1 / 1; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
   .hiw__panel--active { opacity: 1; pointer-events: auto; }
 
-  /* Shared by the non-desktop layouts: all scenes visible & static. */
+  /* Non-desktop: all scenes visible & static. */
   @media (max-width: 1023px) {
     .hiw__accordion,
     .hiw__right,
     .hiw__panels { display: contents; }
-    .hiw__panel {
-      position: static;
-      display: block;
-      opacity: 1;
-      pointer-events: auto;
-      transition: none;
-    }
+    .hiw__panel { position: static; display: block; opacity: 1; pointer-events: auto; transition: none; }
     .hiw__item { border-top: none; }
     .hiw__item:last-child { border-bottom: none; }
     .hiw__progress { display: none; }
-    .hiw__num,
-    .hiw__item-title { color: var(--color-text-primary); }
+    .hiw__num, .hiw__item-title { color: var(--color-text-primary); }
     .hiw__item-body,
-    .hiw__item--active .hiw__item-body {
-      max-height: none;
-      opacity: 1;
-      margin-top: var(--space-2);
-      overflow: visible;
-    }
+    .hiw__item--active .hiw__item-body { max-height: none; opacity: 1; margin-top: var(--space-2); overflow: visible; }
   }
 
-  /* ── iPad: zig-zag, each step a row, text and scene swap sides ── */
+  /* iPad: zig-zag, each step a row, text and scene swap sides. */
   @media (min-width: 768px) and (max-width: 1023px) {
-    .hiw__inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--space-8);
-      row-gap: var(--space-12);
-      align-items: center;
-    }
+    .hiw__inner { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--space-8); row-gap: var(--space-12); align-items: center; }
     .hiw__item { padding: 0; }
     .hiw__item[data-step="0"]  { grid-column: 1; grid-row: 1; }
     .hiw__panel[data-step="0"] { grid-column: 2; grid-row: 1; }
@@ -582,293 +451,170 @@ const steps = isDE ? [
     .hiw__item[data-step="5"]  { grid-column: 2; grid-row: 6; }
   }
 
-  /* ── Mobile: stacked single column, scenes full width ── */
+  /* Mobile: stacked, scenes full width. */
   @media (max-width: 767px) {
     .hiw__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-6); }
     .hiw__item { padding: var(--space-4) 0 0; }
-    .hiw__panel[data-step="0"] { order: 0; }
-    .hiw__item[data-step="0"]  { order: 1; }
-    .hiw__panel[data-step="1"] { order: 2; }
-    .hiw__item[data-step="1"]  { order: 3; }
-    .hiw__panel[data-step="2"] { order: 4; }
-    .hiw__item[data-step="2"]  { order: 5; }
-    .hiw__panel[data-step="3"] { order: 6; }
-    .hiw__item[data-step="3"]  { order: 7; }
-    .hiw__panel[data-step="4"] { order: 8; }
-    .hiw__item[data-step="4"]  { order: 9; }
-    .hiw__panel[data-step="5"] { order: 10; }
-    .hiw__item[data-step="5"]  { order: 11; }
+    .hiw__panel[data-step="0"] { order: 0; } .hiw__item[data-step="0"] { order: 1; }
+    .hiw__panel[data-step="1"] { order: 2; } .hiw__item[data-step="1"] { order: 3; }
+    .hiw__panel[data-step="2"] { order: 4; } .hiw__item[data-step="2"] { order: 5; }
+    .hiw__panel[data-step="3"] { order: 6; } .hiw__item[data-step="3"] { order: 7; }
+    .hiw__panel[data-step="4"] { order: 8; } .hiw__item[data-step="4"] { order: 9; }
+    .hiw__panel[data-step="5"] { order: 10; } .hiw__item[data-step="5"] { order: 11; }
   }
 
-  /* ── Shared mock shell ──────────────────────────────── */
-  .mock {
-    background-color: var(--color-surface);
+  /* ── Scene window: a 4:3 viewport into the real app ── */
+  .scene {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
-    overflow: hidden;
     font-family: var(--font-family);
   }
 
-  .mock__chrome {
+  .scene__head {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--color-border);
-    background-color: var(--color-surface-elevated);
-  }
-
-  .mock__dots { display: flex; gap: 5px; flex-shrink: 0; }
-  .mock__dot { width: 9px; height: 9px; border-radius: 50%; }
-  .mock__dot--r { background: #ef4444; }
-  .mock__dot--y { background: #f59e0b; }
-  .mock__dot--g { background: #22c55e; }
-
-  .mock__title { font-size: 11px; color: var(--color-text-tertiary); font-weight: 500; }
-
-  .mock__beta {
-    margin-left: auto;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    background: var(--color-accent-light);
-    border: 1px solid var(--color-accent-muted);
-    padding: 1px 6px;
-    border-radius: var(--radius-full);
-  }
-
-  .mock__body {
-    padding: var(--space-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .mock__status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #22c55e; flex-shrink: 0; animation: pulse-dot 2s ease-in-out infinite; }
-  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-  /* ── Chat (scenes 0, 1, 4, 5) ───────────────────────── */
-  .mock__chat-body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-  .mock__msg { display: flex; align-items: flex-end; gap: var(--space-2); }
-  .mock__msg--user { flex-direction: row-reverse; }
-
-  .mock__msg-icon { width: 22px; height: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .mock__msg-icon :global(svg) { display: block; width: 22px; height: 22px; }
-  .mock__msg-icon :global(path) { fill: #000000; }
-  .mock__msg-icon :global(rect) { fill: var(--color-accent); }
-
-  .mock__msg-avatar {
-    width: 22px; height: 22px;
-    border-radius: 50%;
     background: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
+  }
+
+  .scene__head-title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  .scene__head-sub { font-size: 10px; color: var(--color-text-tertiary); }
+
+  .scene__avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-accent-light); border: 1px solid var(--color-accent-muted);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .scene__avatar :global(svg) { width: 17px; height: 17px; display: block; }
+  .scene__avatar :global(path) { fill: #000000; }
+  .scene__avatar :global(rect) { fill: var(--color-accent); }
+
+  .scene__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-tertiary); flex-shrink: 0; }
+  .scene__dot--live { background: var(--color-accent); animation: pulse-dot 1.8s ease-in-out infinite; }
+
+  .scene__beta {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-accent); background: var(--color-accent-light);
+    border: 1px solid var(--color-accent-muted); padding: 1px 6px; border-radius: var(--radius-full);
+  }
+
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* ── Chat (setup, knowledge, loop) ── */
+  .chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .chat__scroll {
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    gap: var(--space-3); padding: var(--space-4);
+  }
+
+  .msg-user {
+    align-self: flex-end; max-width: 82%;
+    background: var(--color-cta-bg); color: var(--color-cta-text);
+    padding: 8px 11px; border-radius: 12px 12px 3px 12px;
+    font-size: 11.5px; line-height: 1.5;
+  }
+  .msg-agent {
+    align-self: flex-start; max-width: 94%;
+    font-size: 11.5px; line-height: 1.6; color: var(--color-text-primary);
+  }
+
+  .cites { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--color-border-subtle); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .cites__label { font-size: 10px; font-weight: 600; color: var(--color-text-tertiary); }
+  .cite {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--color-text-secondary);
+    background: var(--color-surface-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-full); padding: 1px 7px;
+  }
+  .ai-note { margin-top: 6px; font-size: 10px; color: var(--color-text-tertiary); }
+
+  .composer { flex-shrink: 0; padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-border); background: var(--color-bg); }
+  .composer__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .composer__chip { font-size: 10px; color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 3px 9px; background: var(--color-surface); white-space: nowrap; }
+  .composer__input {
+    display: flex; align-items: center; gap: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    background: var(--color-surface); padding: 6px 6px 6px 11px;
+  }
+  .composer__placeholder { flex: 1; font-size: 11.5px; color: var(--color-text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .composer__send {
+    width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0;
+    background: var(--color-cta-bg); color: var(--color-cta-text);
     display: flex; align-items: center; justify-content: center;
-    color: var(--color-text-tertiary);
-    flex-shrink: 0;
   }
+  .composer__send :global(svg) { width: 14px; height: 14px; display: block; }
 
-  .mock__msg-bubble {
-    max-width: 78%;
-    padding: 8px 11px;
-    font-size: 11.5px;
-    line-height: 1.5;
-    color: var(--color-text-primary);
+  /* ── Interview voice room ── */
+  .iv__top { flex-shrink: 0; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); }
+  .iv__clock { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+  .iv__ai { margin: 0 auto; font-size: 10px; color: var(--color-text-tertiary); }
+  .iv__end { font-size: 10px; font-weight: 600; color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-ui); padding: 3px 8px; }
+
+  .iv__stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-4); padding: var(--space-4); }
+
+  .orb { position: relative; width: 92px; height: 92px; display: grid; place-items: center; }
+  .orb__core {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffd591, var(--color-accent));
+    animation: orb-core 2.6s ease-in-out infinite;
   }
+  .orb__ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--color-accent-muted); animation: orb-ring 2.6s ease-in-out infinite; }
+  @keyframes orb-core { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  @keyframes orb-ring { 0%, 100% { transform: scale(0.82); opacity: 0.7; } 50% { transform: scale(1.06); opacity: 0.2; } }
 
-  .mock__msg--agent .mock__msg-bubble { background: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: 10px 10px 10px 2px; }
-  .mock__msg--user .mock__msg-bubble { background: var(--color-accent); color: #000000; border-radius: 10px 10px 2px 10px; }
+  .iv__hud { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; justify-content: center; }
+  .iv__status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--color-accent); }
+  .iv__phase { font-size: 10px; color: var(--color-text-secondary); background: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 1px 7px; }
+  .iv__conn { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--color-text-tertiary); }
+  .iv__conn-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
 
-  .mock__msg-col { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; max-width: 78%; }
-  .mock__msg-col .mock__msg-bubble { max-width: 100%; }
+  .iv__bottom { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-3); border-top: 1px solid var(--color-border); }
+  .iv__mute { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .iv__switch { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-ui); padding: 6px 10px; }
 
-  .mock__ready { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #22c55e; }
-  .mock__ready svg { width: 13px; height: 13px; }
+  /* ── Overview metrics (synthesis) ── */
+  .live-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--color-accent); background: var(--color-accent-light); border: 1px solid var(--color-accent-muted); border-radius: var(--radius-full); padding: 2px 8px; }
+  .ov__grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--color-border); }
+  .metric { background: var(--color-surface); padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: 3px; justify-content: center; }
+  .metric__label { font-size: 10px; font-weight: 500; color: var(--color-text-tertiary); }
+  .metric__value { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; color: var(--color-text-primary); font-variant-numeric: tabular-nums; line-height: 1; }
+  .metric__value--accent { color: var(--color-accent); }
 
-  .mock__cite {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 10px; font-weight: 600;
-    color: var(--color-accent);
-    background: var(--color-accent-light);
-    border: 1px solid var(--color-accent-muted);
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-  }
+  /* ── Insights triad cards (suggestions) ── */
+  .ins { flex: 1; min-height: 0; overflow: hidden; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .ins__card { border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-bg); padding: var(--space-3) var(--space-4); flex-shrink: 0; }
+  .ins__cardhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
+  .ins__badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dept { font-size: 9px; font-weight: 600; color: var(--color-text-secondary); background: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 1px 7px; }
+  .ins__rank { font-size: 11px; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
+  .ins__rows { display: flex; flex-direction: column; }
+  .ins__row { display: flex; flex-direction: column; gap: 3px; padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); }
+  .ins__row:first-child { border-top: none; padding-top: 0; }
+  .ins__row:last-child { padding-bottom: 0; }
+  .tlabel { align-self: flex-start; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: var(--radius-full); padding: 1px 7px; border: 1px solid; }
+  .tlabel--problem { color: #d4452f; background: rgba(212, 69, 47, 0.07); border-color: rgba(212, 69, 47, 0.2); }
+  .tlabel--idea { color: #2f6f8f; background: rgba(47, 111, 143, 0.07); border-color: rgba(47, 111, 143, 0.2); }
+  .tlabel--opp { color: var(--color-accent); background: var(--color-accent-light); border-color: var(--color-accent-muted); }
+  .ttext { font-size: 11.5px; line-height: 1.4; color: var(--color-text-primary); }
 
-  /* ── Interview badges + voice (scene 1) ─────────────── */
-  .mock__badges { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-4) 0; }
-  .mock__badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 10px; font-weight: 600;
-    color: var(--color-text-secondary);
-    background: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-  }
-
-  .mock__voice { display: flex; align-items: center; gap: var(--space-2); padding-top: var(--space-1); }
-  .mock__voice-bars { display: flex; align-items: center; gap: 3px; height: 20px; }
-  .mock__voice-bars span {
-    width: 3px; height: 8px; border-radius: 2px;
-    background: var(--color-accent);
-    animation: voice-bar 1s ease-in-out infinite;
-  }
-  .mock__voice-bars span:nth-child(2) { animation-delay: 0.12s; }
-  .mock__voice-bars span:nth-child(3) { animation-delay: 0.24s; }
-  .mock__voice-bars span:nth-child(4) { animation-delay: 0.36s; }
-  .mock__voice-bars span:nth-child(5) { animation-delay: 0.48s; }
-  .mock__voice-bars span:nth-child(6) { animation-delay: 0.30s; }
-  .mock__voice-bars span:nth-child(7) { animation-delay: 0.18s; }
-  .mock__voice-label { font-size: 11px; font-weight: 600; color: var(--color-accent); }
-
-  @keyframes voice-bar {
-    0%, 100% { transform: scaleY(0.5); }
-    50% { transform: scaleY(1.8); }
-  }
-
-  /* ── Synthesis (scene 2) ────────────────────────────── */
-  .mock__synth-body { display: flex; flex-direction: column; }
-  .mock__synth-graph { padding: var(--space-4); border-bottom: 1px solid var(--color-border); }
-  .mock__synth-svg { width: 100%; height: auto; max-width: 440px; margin: 0 auto; display: block; }
-
-  @media (max-width: 767px) {
-    .mock__synth-svg { max-width: none; }
-  }
-
-  .mock__synth-path { animation: dash-flow 0.7s linear infinite; }
-  .mock__synth-path--2 { animation-delay: 0.1s; }
-  .mock__synth-path--3 { animation-delay: 0.2s; }
-  .mock__synth-path--out { animation-delay: 0.15s; }
-
-  @keyframes dash-flow {
-    from { stroke-dashoffset: 16; }
-    to   { stroke-dashoffset: 0; }
-  }
-
-  /* ── Workflow items (synthesis checklist) ───────────── */
-  .mock__wf-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-2);
-    border-bottom: 1px solid var(--color-border-subtle);
-  }
-  .mock__wf-item:last-child { border-bottom: none; }
-
-  .mock__wf-icon {
-    width: 26px; height: 26px;
-    border-radius: var(--radius-ui);
-    background-color: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    color: var(--color-text-tertiary);
-  }
-
-  .mock__wf-item--done .mock__wf-icon { background-color: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-  .mock__wf-item--active .mock__wf-icon { background-color: var(--color-accent-light); border-color: var(--color-accent-muted); color: var(--color-accent); }
-  .mock__wf-icon--spin svg { animation: spin 1.5s linear infinite; }
-
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-  .mock__wf-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .mock__wf-title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
-  .mock__wf-sub { font-size: 11px; color: var(--color-text-tertiary); }
-  .mock__wf-item--pending .mock__wf-title, .mock__wf-item--pending .mock__wf-sub { color: var(--color-text-tertiary); }
-
-  .mock__wf-status { font-size: 11px; font-weight: 600; color: var(--color-text-tertiary); flex-shrink: 0; }
-  .mock__wf-status--done { color: #22c55e; }
-  .mock__wf-status--active { color: var(--color-accent); }
-
-  /* ── Triad cards (scene 3) ──────────────────────────── */
-  .triad {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-bg);
-    overflow: hidden;
-  }
-
-  .triad__row {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding: var(--space-3);
-    border-bottom: 1px solid var(--color-border-subtle);
-  }
-
-  .triad__label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-  }
-
-  .triad__row--idea .triad__label { color: var(--color-accent); }
-
-  .triad__text { font-size: 12px; line-height: 1.4; color: var(--color-text-primary); }
-
-  .triad__origin {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--color-text-secondary);
-    background: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    padding: 0 5px;
-    border-radius: var(--radius-full);
-  }
-
-  .triad__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-2) var(--space-3);
-    background: var(--color-surface-elevated);
-  }
-
-  .triad__quote {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-  }
-
-  .conf { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: var(--radius-full); letter-spacing: 0.03em; }
-  .conf--high { color: #22c55e; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
-  .conf--mid  { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
-
-  /* ── Research row (scene 5, Beta) ───────────────────── */
-  .mock__research {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
-    border: 1px dashed var(--color-accent-muted);
-    border-radius: var(--radius-card);
-    background: var(--color-accent-light);
-  }
-  .mock__research-pulse {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    flex-shrink: 0;
-    animation: pulse-dot 1.4s ease-in-out infinite;
-  }
-  .mock__research-text { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
-  .mock__research-sub { font-size: 10px; color: var(--color-text-secondary); }
+  /* ── Research row (loop, Beta) ── */
+  .research { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 1px dashed var(--color-accent-muted); border-radius: var(--radius-card); background: var(--color-accent-light); }
+  .research__pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; animation: pulse-dot 1.4s ease-in-out infinite; }
+  .research__title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .research__sub { font-size: 10px; color: var(--color-text-secondary); }
 
   @media (prefers-reduced-motion: reduce) {
-    .mock__wf-icon--spin svg, .mock__status-dot,
-    .mock__synth-path, .mock__voice-bars span, .mock__research-pulse { animation: none; }
+    .scene__dot--live, .orb__core, .orb__ring, .research__pulse { animation: none; }
     .hiw__panel { transition: none; }
     .hiw__item-body { transition: none; }
     .hiw__progress { transition: none !important; }
