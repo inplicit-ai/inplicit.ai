@@ -442,8 +442,12 @@ const steps = isDE ? [
     });
   });
 
-  // Start
-  activate(0);
+  // Start after first paint so the initial styles don't transition/flash in.
+  var section = document.getElementById('how-it-works');
+  requestAnimationFrame(function () {
+    if (section) section.classList.add('is-ready');
+    activate(0);
+  });
 
   // Step 04 stacked windows
   var stack = document.getElementById('hiw-stack');
@@ -485,12 +489,19 @@ const steps = isDE ? [
     .hiw { padding: var(--space-24) 0 var(--space-32); }
   }
 
-  /* ── Layout: stacked column so the preview window is full layout width.
-        Desktop = steps then one cycling preview; mobile = graphic-per-step. ── */
+  /* Prevent a colour / progress-bar flash on load: hold the active styling
+     until the script marks the section ready (one frame after first paint). */
+  .hiw:not(.is-ready) .hiw__progress { display: none; }
+  .hiw:not(.is-ready) .hiw__num,
+  .hiw:not(.is-ready) .hiw__item-title { transition: none; }
+
+  /* ── Two columns on desktop: step list | cycling preview (with a clear gap).
+        Mobile collapses to one column (graphic above each step). ── */
   .hiw__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-10);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: start;
   }
 
   /* ── Header (above the grid) ───────────────────────── */
@@ -621,9 +632,10 @@ const steps = isDE ? [
     line-height: 1.75;
   }
 
-  /* ── Right panels (full-width preview below the steps) ── */
+  /* ── Right column: the cycling preview ── */
   .hiw__right {
-    position: relative;
+    position: sticky;
+    top: 100px;
   }
 
   .hiw__panels {
@@ -642,22 +654,10 @@ const steps = isDE ? [
     pointer-events: auto;
   }
 
-  /* ── Steps: all descriptions stay visible (keeps the section height stable);
-        the active step is highlighted as the preview cycles ── */
-  .hiw__item-title { color: var(--color-text-primary); }
-  .hiw__item--active .hiw__num { color: var(--color-accent); }
-  .hiw__item-body,
-  .hiw__item--active .hiw__item-body {
-    max-height: none;
-    opacity: 1;
-    margin-top: var(--space-2);
-    overflow: visible;
-  }
-
   /* ── Mobile: graphic above each step text, all four shown, no cycling ──
-     (Desktop keeps the bordered step list + overlapping cycling preview.) */
+     (Desktop keeps the original two-column accordion + cycling preview.) */
   @media (max-width: 900px) {
-    .hiw__inner { gap: var(--space-6); }
+    .hiw__inner { display: flex; flex-direction: column; gap: var(--space-6); }
     .hiw__accordion,
     .hiw__right,
     .hiw__panels { display: contents; }
@@ -676,11 +676,19 @@ const steps = isDE ? [
     .hiw__item[data-step="2"]  { order: 5; }
     .hiw__panel[data-step="3"] { order: 6; }
     .hiw__item[data-step="3"]  { order: 7; }
-    /* borderless, no progress indicator on mobile (all shown) */
+    /* borderless list, every description shown, no cycling indicator */
     .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
     .hiw__item:last-child { border-bottom: none; }
     .hiw__progress { display: none; }
-    .hiw__num { color: var(--color-text-primary); }
+    .hiw__num,
+    .hiw__item-title { color: var(--color-text-primary); }
+    .hiw__item-body,
+    .hiw__item--active .hiw__item-body {
+      max-height: none;
+      opacity: 1;
+      margin-top: var(--space-2);
+      overflow: visible;
+    }
   }
 
   /* ── Shared mock shell ──────────────────────────────── */

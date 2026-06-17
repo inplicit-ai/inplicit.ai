@@ -5,7 +5,7 @@ export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
-const cta = lang === 'de' ? 'Zur Warteliste' : 'Join Waitlist';
+const cta = lang === 'de' ? 'Demo buchen' : 'Book demo';
 const toggleHref = lang === 'de' ? '/' : '/de/';
 const toggleLabel = lang === 'de' ? 'EN' : 'DE';
 ---
@@ -22,7 +22,7 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
       <a href="https://dashboard-inplicit-ai.vercel.app/login" class="nav__login" target="_blank" rel="noopener noreferrer">
         Login
       </a>
-      <a href="#request-pilot" class="nav__cta">
+      <a href="#book-demo" class="nav__cta">
         <span class="nav__cta-label">{cta}</span>
         <i class="nav__cta-icon" aria-hidden="true">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
