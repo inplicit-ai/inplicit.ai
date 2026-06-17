@@ -1056,6 +1056,25 @@ const steps = isDE ? [
   .mock__opp-conf--high { color: #22c55e; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
   .mock__opp-conf--mid  { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
 
+  /* Mobile: output step shows both result windows full-width & stacked
+     (no offset/peek) so every macOS window is the same layout width */
+  @media (max-width: 900px) {
+    .hiw__stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: 0;
+    }
+    .hiw__stack-win,
+    .hiw__stack-win--front,
+    .hiw__stack-win--back {
+      transform: none;
+      opacity: 1;
+      z-index: auto;
+      cursor: default;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mock__wf-icon--spin svg, .mock__status-dot,
     .mock__typing-dots span, .mock__synth-path { animation: none; }
