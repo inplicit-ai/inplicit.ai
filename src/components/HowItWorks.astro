@@ -391,9 +391,9 @@ const steps = isDE ? [
   var panels = document.querySelectorAll('.hiw__panel');
   var active = 0;
   var timer = null;
-  // Desktop cycles through one full-width preview (+ swaps the output windows);
-  // mobile shows every graphic stacked & static.
-  var isMobile = window.matchMedia('(max-width: 900px)').matches;
+  // Only desktop (>=1024px) cycles the preview + swaps the output windows;
+  // tablet (zig-zag) and mobile (stacked) show every graphic static.
+  var isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
   function activate(idx, restart) {
     // Update accordion items
@@ -654,10 +654,9 @@ const steps = isDE ? [
     pointer-events: auto;
   }
 
-  /* ── Mobile: graphic above each step text, all four shown, no cycling ──
-     (Desktop keeps the original two-column accordion + cycling preview.) */
-  @media (max-width: 900px) {
-    .hiw__inner { display: flex; flex-direction: column; gap: var(--space-6); }
+  /* Shared by the non-desktop layouts: all four panels visible & static,
+     every description shown, no cycling indicator. */
+  @media (max-width: 1023px) {
     .hiw__accordion,
     .hiw__right,
     .hiw__panels { display: contents; }
@@ -668,16 +667,7 @@ const steps = isDE ? [
       pointer-events: auto;
       transition: none;
     }
-    .hiw__panel[data-step="0"] { order: 0; }
-    .hiw__item[data-step="0"]  { order: 1; }
-    .hiw__panel[data-step="1"] { order: 2; }
-    .hiw__item[data-step="1"]  { order: 3; }
-    .hiw__panel[data-step="2"] { order: 4; }
-    .hiw__item[data-step="2"]  { order: 5; }
-    .hiw__panel[data-step="3"] { order: 6; }
-    .hiw__item[data-step="3"]  { order: 7; }
-    /* borderless list, every description shown, no cycling indicator */
-    .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
+    .hiw__item { border-top: none; }
     .hiw__item:last-child { border-bottom: none; }
     .hiw__progress { display: none; }
     .hiw__num,
@@ -689,6 +679,41 @@ const steps = isDE ? [
       margin-top: var(--space-2);
       overflow: visible;
     }
+  }
+
+  /* ── iPad / tablet: zig-zag — each step is a row, text & window swap sides ── */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hiw__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--space-8);
+      row-gap: var(--space-12);
+      align-items: center;
+    }
+    .hiw__item { padding: 0; }
+    /* row 1: text | window — row 2: window | text — and so on */
+    .hiw__item[data-step="0"]  { grid-column: 1; grid-row: 1; }
+    .hiw__panel[data-step="0"] { grid-column: 2; grid-row: 1; }
+    .hiw__panel[data-step="1"] { grid-column: 1; grid-row: 2; }
+    .hiw__item[data-step="1"]  { grid-column: 2; grid-row: 2; }
+    .hiw__item[data-step="2"]  { grid-column: 1; grid-row: 3; }
+    .hiw__panel[data-step="2"] { grid-column: 2; grid-row: 3; }
+    .hiw__panel[data-step="3"] { grid-column: 1; grid-row: 4; }
+    .hiw__item[data-step="3"]  { grid-column: 2; grid-row: 4; }
+  }
+
+  /* ── Mobile: everything stacked in one column; windows are full width ── */
+  @media (max-width: 767px) {
+    .hiw__inner { display: flex; flex-direction: column; gap: var(--space-6); }
+    .hiw__item { padding: var(--space-4) 0 0; }
+    .hiw__panel[data-step="0"] { order: 0; }
+    .hiw__item[data-step="0"]  { order: 1; }
+    .hiw__panel[data-step="1"] { order: 2; }
+    .hiw__item[data-step="1"]  { order: 3; }
+    .hiw__panel[data-step="2"] { order: 4; }
+    .hiw__item[data-step="2"]  { order: 5; }
+    .hiw__panel[data-step="3"] { order: 6; }
+    .hiw__item[data-step="3"]  { order: 7; }
   }
 
   /* ── Shared mock shell ──────────────────────────────── */
@@ -943,11 +968,9 @@ const steps = isDE ? [
 
   /* ── Synthesis graph (panel 2) ──────────────────────── */
   .mock__synth-body { display: flex; flex-direction: column; }
-  .mock__synth-graph { padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--color-border); }
-  /* Short, centred illustration so the window height ≈ the step list */
-  .mock__synth-svg { width: 100%; height: 120px; display: block; }
-  /* Tighten the synthesis checklist (this panel is the tallest) */
-  .mock--synthesis .mock__wf-item { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+  .mock__synth-graph { padding: var(--space-4); border-bottom: 1px solid var(--color-border); }
+  /* Readable, centred illustration */
+  .mock__synth-svg { width: 100%; height: auto; max-width: 440px; margin: 0 auto; display: block; }
 
   /* Network graph */
   .mock--network .mock__network-wrap {
@@ -956,7 +979,7 @@ const steps = isDE ? [
     flex-direction: column;
     gap: var(--space-3);
   }
-  .mock__network-svg { width: 100%; height: 190px; display: block; }
+  .mock__network-svg { width: 100%; height: auto; max-width: 480px; margin: 0 auto; display: block; }
   .mock__network-label {
     display: flex;
     align-items: center;
