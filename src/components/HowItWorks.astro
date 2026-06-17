@@ -980,6 +980,13 @@ const steps = isDE ? [
     gap: var(--space-3);
   }
   .mock__network-svg { width: 100%; height: auto; max-width: 480px; margin: 0 auto; display: block; }
+
+  /* Mobile only: illustrations fill the full window width (drop the centred cap) */
+  @media (max-width: 767px) {
+    .mock__synth-svg,
+    .mock__network-svg { max-width: none; }
+  }
+
   .mock__network-label {
     display: flex;
     align-items: center;
