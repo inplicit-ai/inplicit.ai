@@ -1,0 +1,214 @@
+---
+import logoIconUrl from '../assets/logo_icon.svg?url';
+export interface Props { type: string; }
+const { type } = Astro.props;
+
+const departments = [
+  { name: 'Betrieb', n: 18 },
+  { name: 'Vertrieb', n: 15 },
+  { name: 'IT', n: 10 },
+  { name: 'Personal', n: 9 },
+];
+const questions = [
+  'Wo verlieren wir die meiste Zeit?',
+  'Welche Abläufe bremsen den Betrieb aus?',
+  'Kommt das neue Rollout wirklich an?',
+  'Was sollten wir zuerst automatisieren?',
+  'Wo hakt es im Onboarding?',
+];
+const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
+---
+
+{type === 'savings' && (
+  <div class="viz hbars" aria-hidden="true">
+    <div class="hbars__metric">
+      <span class="hbars__label">Zeit bis zur Erkenntnis</span>
+      <div class="hbars__row">
+        <span class="hbars__name">Klassisch</span>
+        <div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div>
+        <span class="hbars__val">4-6 Monate</span>
+      </div>
+      <div class="hbars__row">
+        <span class="hbars__name acc">inplicit</span>
+        <div class="hbars__track"><i class="hbars__fill hbars__fill--acc" style="--w:22%"></i></div>
+        <span class="hbars__val acc">3-4 Tage</span>
+      </div>
+    </div>
+    <div class="hbars__metric">
+      <span class="hbars__label">Kosten</span>
+      <div class="hbars__row">
+        <span class="hbars__name">Beratung</span>
+        <div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div>
+        <span class="hbars__val">€500k+</span>
+      </div>
+      <div class="hbars__row">
+        <span class="hbars__name acc">inplicit</span>
+        <div class="hbars__track"><i class="hbars__fill hbars__fill--acc" style="--w:14%"></i></div>
+        <span class="hbars__val acc">ab €30k</span>
+      </div>
+    </div>
+  </div>
+)}
+
+{type === 'departments' && (
+  <div class="viz dept" data-questions={JSON.stringify(questions)} aria-hidden="true">
+    <div class="dept__chat">
+      <span class="dept__chat-mark"></span>
+      <span class="dept__chat-q">{questions[0]}</span>
+    </div>
+    <span class="dept__status">Gesamte Belegschaft · Antworten in Stunden</span>
+    <div class="org">
+      <span class="org__top">C-Level</span>
+      <svg class="org__lines" viewBox="0 0 1000 56" preserveAspectRatio="none">
+        {departments.map((_, i) => (
+          <path class="org__path" data-i={i} d={`M ${125 + i * 250} 56 L ${125 + i * 250} 28 L 500 28 L 500 0`} />
+        ))}
+      </svg>
+      <div class="org__row">
+        {departments.map((d) => (
+          <div class="org__dept" data-dept={d.name}>
+            <span class="org__name">{d.name}</span>
+            <div class="org__dots">
+              {Array.from({ length: d.n }).map(() => <span></span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+{type === 'context' && (
+  <div class="viz ctx" aria-hidden="true">
+    <svg class="ctx__svg" viewBox="0 0 340 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="ctx__spokes" stroke="var(--color-accent)" stroke-width="1.4" stroke-dasharray="3 6">
+        {[0, 1, 2].map((i) => <line x1="92" y1={38 + i * 38} x2="170" y2="75" />)}
+        {aiTools.map((_, i) => <line x1="170" y1="75" x2="250" y2={24 + i * 34} />)}
+      </g>
+      {['Gespräche', 'Dokumente', 'Systeme'].map((s, i) => (
+        <g>
+          <circle cx="92" cy={38 + i * 38} r="3.5" fill="var(--color-accent)" />
+          <text x="84" y={42 + i * 38} text-anchor="end" font-size="11" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{s}</text>
+        </g>
+      ))}
+      {aiTools.map((t, i) => (
+        <g>
+          <circle cx="250" cy={24 + i * 34} r="3.5" fill="var(--color-accent)" />
+          <text x="258" y={28 + i * 34} text-anchor="start" font-size="11" fill="var(--color-text-primary)" font-family="Inter, sans-serif">{t}</text>
+        </g>
+      ))}
+      <circle cx="170" cy="75" r="24" fill="var(--color-bg)" stroke="var(--color-border)" />
+      <image href={logoIconUrl} x="154" y="59" width="32" height="32" />
+    </svg>
+  </div>
+)}
+
+<style>
+  .viz { width: 100%; color: var(--color-accent); }
+
+  /* ── savings: horizontal bar chart ───────────────────── */
+  .hbars { display: flex; flex-direction: column; gap: 20px; }
+  .hbars__label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-tertiary); margin-bottom: 9px; }
+  .hbars__row { display: flex; align-items: center; gap: 10px; font-size: 11px; margin-bottom: 7px; }
+  .hbars__row:last-child { margin-bottom: 0; }
+  .hbars__name { width: 56px; flex-shrink: 0; color: var(--color-text-tertiary); }
+  .hbars__name.acc { color: var(--color-accent); font-weight: 600; }
+  .hbars__track { flex: 1; height: 9px; border-radius: 5px; background: var(--color-accent-light); overflow: hidden; }
+  .hbars__fill { display: block; height: 100%; border-radius: 5px; }
+  .hbars__fill--gray { width: var(--w); background: var(--color-text-tertiary); opacity: 0.35; }
+  /* orange starts full, then shrinks to its small width on reveal */
+  .hbars__fill--acc { width: 100%; background: var(--color-accent); transition: width 1.1s var(--ease-smooth); }
+  .hbars__val { width: 50px; flex-shrink: 0; text-align: right; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
+  .hbars__val.acc { color: var(--color-accent); font-weight: 700; }
+  :global(.is-visible) .hbars__fill--acc { width: var(--w); }
+
+  /* ── departments: SVG org chart, path lights up to C-Level ── */
+  .dept { display: flex; flex-direction: column; gap: 6px; }
+  .dept__chat { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface); }
+  .dept__chat-mark { width: 16px; height: 16px; border-radius: 5px; background: var(--color-accent); flex-shrink: 0; }
+  .dept__chat-q { font-size: 12px; color: var(--color-text-primary); transition: opacity 0.25s ease; }
+  .dept__status { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; transition: opacity 0.25s ease; }
+
+  .org { display: flex; flex-direction: column; }
+  .org__top { text-align: center; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); transition: color 0.3s ease; }
+  .org__lines { width: 100%; height: 38px; }
+  .org__path { fill: none; stroke: var(--color-border); stroke-width: 1.5px; vector-effect: non-scaling-stroke; transition: stroke 0.3s ease; }
+  .org__row { display: flex; }
+  .org__dept { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .org__name { font-size: 11px; color: var(--color-text-secondary); transition: color 0.3s ease; }
+  .org__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 64px; }
+  .org__dots span { width: 8px; height: 8px; border-radius: 2px; background: var(--color-border); transition: background-color 0.4s ease; }
+
+  /* whole workforce: everything lights */
+  .dept.is-all .org__top, .dept.is-all .org__name { color: var(--color-accent); }
+  .dept.is-all .org__path { stroke: var(--color-accent); }
+  .dept.is-all .org__dots span { background: var(--color-accent); }
+
+  /* single department: only that path runs orange up to C-Level */
+  .dept.is-single .org__top { color: var(--color-accent); }
+  .org__path.is-active { stroke: var(--color-accent); stroke-width: 2px; }
+  .org__dept.is-active .org__name { color: var(--color-accent); font-weight: 600; }
+  .org__dept.is-active .org__dots span { background: var(--color-accent); }
+
+  /* ── context: inplicit logo centre ───────────────────── */
+  .ctx { display: flex; justify-content: center; }
+  .ctx__svg { width: 100%; max-width: 340px; height: auto; }
+  .ctx__spokes line { animation: ctxFlow 1.1s linear infinite; }
+  @keyframes ctxFlow { to { stroke-dashoffset: -9; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hbars__fill--acc { transition: none; }
+    .ctx__spokes line { animation: none; }
+  }
+</style>
+
+<script>
+  function runDept(card: Element) {
+    const q = card.querySelector('.dept__chat-q') as HTMLElement | null;
+    const status = card.querySelector('.dept__status') as HTMLElement | null;
+    const depts = [...card.querySelectorAll('.org__dept')] as HTMLElement[];
+    const paths = [...card.querySelectorAll('.org__path')] as SVGElement[];
+    if (!q || !depts.length) return;
+    let questions: string[] = [];
+    try { questions = JSON.parse(card.getAttribute('data-questions') || '[]'); } catch {}
+    let step = 0;
+    const tick = () => {
+      q.style.opacity = '0';
+      if (status) status.style.opacity = '0';
+      setTimeout(() => {
+        if (step === 0) {
+          card.classList.add('is-all');
+          card.classList.remove('is-single');
+          depts.forEach((d) => d.classList.remove('is-active'));
+          paths.forEach((p) => p.classList.remove('is-active'));
+          if (status) status.textContent = 'Gesamte Belegschaft · Antworten in Stunden';
+        } else {
+          card.classList.remove('is-all');
+          card.classList.add('is-single');
+          depts.forEach((d, i) => d.classList.toggle('is-active', i === step - 1));
+          paths.forEach((p, i) => p.classList.toggle('is-active', i === step - 1));
+          if (status) status.textContent = 'Gezielt an die richtigen Menschen: ' + (depts[step - 1].getAttribute('data-dept') || '');
+        }
+        q.textContent = questions[step] || '';
+        q.style.opacity = '1';
+        if (status) status.style.opacity = '1';
+        step = (step + 1) % (depts.length + 1);
+      }, 220);
+    };
+    // Start the cycle on the whole-workforce phase when scrolled into view
+    let started = false;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !started) {
+          started = true;
+          step = 0;
+          tick();
+          setInterval(tick, 2600);
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(card);
+  }
+  document.querySelectorAll('.dept').forEach(runDept);
+</script>

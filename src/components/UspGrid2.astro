@@ -1,0 +1,67 @@
+---
+import UspIcon from './UspIcon.astro';
+import UspViz from './UspViz.astro';
+export interface Props { facts: { icon: string; viz: string; title: string; body: string }[]; }
+const { facts } = Astro.props;
+---
+
+<div class="g2">
+  {facts.map((f) => (
+    <article class="g2__card">
+      <div class="g2__head">
+        <span class="g2__icon"><UspIcon name={f.icon} /></span>
+        <h3 class="g2__title">{f.title}</h3>
+      </div>
+      <p class="g2__text">{f.body}</p>
+      <div class="g2__viz"><UspViz type={f.viz} /></div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .g2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); align-items: stretch; }
+  @media (max-width: 959px) { .g2 { grid-template-columns: 1fr; } }
+
+  .g2__card {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    padding: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-3);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth), transform 0.3s var(--ease-smooth);
+  }
+  .g2__head { display: flex; align-items: center; gap: var(--space-3); }
+  .g2__icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    color: var(--color-text-secondary);
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+  }
+  .g2__title { font-size: var(--text-base); font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }
+  .g2__text { font-size: var(--text-base); color: var(--color-text-secondary); line-height: 1.6; }
+
+  .g2__viz { margin-top: auto; padding-top: var(--space-6); }
+
+  .g2__card:hover {
+    border-color: var(--color-text-tertiary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+  .g2__card:hover .g2__icon { color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-light); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .g2__card:hover { transform: none; }
+  }
+</style>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.g2__card').forEach((c) => io.observe(c));
+</script>

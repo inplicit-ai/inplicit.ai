@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import UspGrid2 from '../components/UspGrid2.astro';
+
+const facts = [
+  { icon: 'coins', viz: 'savings', title: 'Spart Zeit und Geld', body: 'Erkenntnisse in Tagen statt Monaten, zu einem Bruchteil klassischer Beratungskosten.' },
+  { icon: 'users', viz: 'departments', title: 'Skalierbar auf die gesamte Belegschaft', body: 'Ein lebendiger digitaler Zwilling eurer Organisation: die gesamte Belegschaft in Stunden befragt, oder gezielt die richtigen Menschen.' },
+  { icon: 'cpu',   viz: 'context', title: 'Die Kontext-Ebene für eure KI-Tools', body: 'Inplicit liefert strukturierten, geprüften menschlichen Kontext, auf den eure KI-Agenten und Workflows direkt zugreifen können.' },
+];
+---
+
+<Layout title="USP animation preview" lang="de">
+  <main class="prev">
+    <div class="container">
+      <span class="section-eyebrow">Warum inplicit</span>
+      <h2 class="prev__h">
+        <span>Alles, was Sie brauchen,</span>
+        <span class="prev__h-ghost">um Ihre Organisation wirklich zu verstehen.</span>
+      </h2>
+      <UspGrid2 facts={facts} />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .prev { padding: 120px 0 160px; }
+  .prev__h { font-size: clamp(var(--text-xl), 4vw, var(--text-2xl)); font-weight: 400; letter-spacing: -0.04em; line-height: 1.1; color: var(--color-text-primary); margin-bottom: var(--space-10); max-width: 720px; display: flex; flex-direction: column; gap: 0.08em; }
+  .prev__h-ghost { color: var(--color-text-primary); opacity: 0.3; }
+</style>

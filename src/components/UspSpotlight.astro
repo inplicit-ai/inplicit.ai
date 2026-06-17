@@ -1,0 +1,106 @@
+---
+import UspIcon from './UspIcon.astro';
+import UspViz from './UspViz.astro';
+export interface Props { facts: { icon: string; viz: string; title: string; body: string }[]; }
+const { facts } = Astro.props;
+---
+
+<div class="spot" id="usp-spotlight">
+  {facts.map((f, i) => (
+    <article class={`spot__card${i === 0 ? ' is-active' : ''}`} data-i={i}>
+      <div class="spot__head">
+        <span class="spot__icon"><UspIcon name={f.icon} /></span>
+        <h3 class="spot__title">{f.title}</h3>
+      </div>
+      <div class="spot__reveal">
+        <p class="spot__text">{f.body}</p>
+        <div class="spot__viz"><UspViz type={f.viz} /></div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .spot {
+    display: flex;
+    gap: var(--space-3);
+    align-items: stretch;
+    min-height: 320px;
+  }
+  .spot__card {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    padding: var(--space-6);
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: flex-grow 0.5s var(--ease-smooth), border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  }
+  .spot__card.is-active {
+    flex: 3.4;
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 36px rgba(245, 166, 35, 0.12);
+  }
+  .spot__head { display: flex; align-items: center; gap: var(--space-3); }
+  .spot__icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    color: var(--color-text-secondary);
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+  }
+  .spot__card.is-active .spot__icon {
+    color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-light);
+  }
+  .spot__title {
+    font-size: var(--text-base); font-weight: 600; line-height: 1.35;
+    color: var(--color-text-primary);
+  }
+  /* Collapsed cards: title rotates vertical to save width */
+  .spot__card:not(.is-active) .spot__head { flex-direction: column; align-items: flex-start; gap: var(--space-4); height: 100%; }
+  .spot__card:not(.is-active) .spot__title { writing-mode: vertical-rl; transform: rotate(180deg); color: var(--color-text-secondary); }
+
+  .spot__reveal {
+    margin-top: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-6);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.4s var(--ease-smooth) 0.15s, transform 0.4s var(--ease-smooth) 0.15s;
+  }
+  .spot__card.is-active .spot__reveal { opacity: 1; transform: none; }
+  .spot__card:not(.is-active) .spot__reveal { display: none; }
+  .spot__text { font-size: var(--text-base); color: var(--color-text-secondary); line-height: 1.6; max-width: 460px; }
+  .spot__viz { margin-top: auto; }
+
+  @media (max-width: 767px) {
+    .spot { flex-direction: column; min-height: 0; }
+    .spot__card, .spot__card.is-active { flex: none; }
+    .spot__card:not(.is-active) .spot__head { flex-direction: row; align-items: center; height: auto; }
+    .spot__card:not(.is-active) .spot__title { writing-mode: horizontal-tb; transform: none; }
+    .spot__card:not(.is-active) .spot__reveal { display: flex; }
+  }
+</style>
+
+<script>
+  const root = document.getElementById('usp-spotlight');
+  if (root) {
+    const cards = [...root.querySelectorAll('.spot__card')] as HTMLElement[];
+    let active = 0;
+    let timer: number | undefined;
+    const setActive = (i: number) => {
+      active = i;
+      cards.forEach((c, j) => c.classList.toggle('is-active', j === i));
+    };
+    const start = () => { timer = window.setInterval(() => setActive((active + 1) % cards.length), 3500); };
+    const stop = () => { if (timer) window.clearInterval(timer); };
+    cards.forEach((c, i) => {
+      c.addEventListener('mouseenter', () => { stop(); setActive(i); });
+      c.addEventListener('mouseleave', start);
+    });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) start();
+  }
+</script>
