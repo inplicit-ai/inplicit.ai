@@ -391,8 +391,9 @@ const steps = isDE ? [
   var panels = document.querySelectorAll('.hiw__panel');
   var active = 0;
   var timer = null;
-  // Every graphic is shown stacked & static at all sizes — no cycling, no swapping.
-  var isMobile = true;
+  // Desktop cycles through one full-width preview (+ swaps the output windows);
+  // mobile shows every graphic stacked & static.
+  var isMobile = window.matchMedia('(max-width: 900px)').matches;
 
   function activate(idx, restart) {
     // Update accordion items
@@ -484,12 +485,12 @@ const steps = isDE ? [
     .hiw { padding: var(--space-24) 0 var(--space-32); }
   }
 
-  /* ── Two-column layout ─────────────────────────────── */
+  /* ── Layout: stacked column so the preview window is full layout width.
+        Desktop = steps then one cycling preview; mobile = graphic-per-step. ── */
   .hiw__inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-16);
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
   }
 
   /* ── Header (above the grid) ───────────────────────── */
@@ -620,10 +621,9 @@ const steps = isDE ? [
     line-height: 1.75;
   }
 
-  /* ── Right panels ───────────────────────────────────── */
+  /* ── Right panels (full-width preview below the steps) ── */
   .hiw__right {
-    position: sticky;
-    top: 100px;
+    position: relative;
   }
 
   .hiw__panels {
@@ -642,48 +642,44 @@ const steps = isDE ? [
     pointer-events: auto;
   }
 
-  /* ── One flat column at ALL sizes (overrides the two-column base above) ──
-     Every macOS window is full layout width, with its step text directly
-     below it. All four are shown stacked — nothing switches or reflows. */
-  .hiw__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-  }
-  .hiw__accordion,
-  .hiw__right,
-  .hiw__panels { display: contents; }
-
-  /* Every graphic is visible and static (no overlap, no fade-cycling) */
-  .hiw__panel {
-    position: static;
-    display: block;
-    opacity: 1;
-    pointer-events: auto;
-    transition: none;
-  }
-
-  /* Interleave graphic → text for each step */
-  .hiw__panel[data-step="0"] { order: 0; }
-  .hiw__item[data-step="0"]  { order: 1; }
-  .hiw__panel[data-step="1"] { order: 2; }
-  .hiw__item[data-step="1"]  { order: 3; }
-  .hiw__panel[data-step="2"] { order: 4; }
-  .hiw__item[data-step="2"]  { order: 5; }
-  .hiw__panel[data-step="3"] { order: 6; }
-  .hiw__item[data-step="3"]  { order: 7; }
-
-  /* All steps read as "active": full description, no greyed/cycling state */
+  /* ── Steps: all descriptions stay visible (keeps the section height stable);
+        the active step is highlighted as the preview cycles ── */
   .hiw__item { border-top: none; padding: var(--space-4) 0 0; }
   .hiw__item:last-child { border-bottom: none; }
-  .hiw__progress { display: none; }
-  .hiw__num,
   .hiw__item-title { color: var(--color-text-primary); }
+  .hiw__item--active .hiw__num { color: var(--color-accent); }
   .hiw__item-body,
   .hiw__item--active .hiw__item-body {
     max-height: none;
     opacity: 1;
     margin-top: var(--space-2);
+    overflow: visible;
+  }
+
+  /* ── Mobile: graphic above each step text, all four shown, no cycling ──
+     (Desktop keeps the overlapping cycling preview defined in the base rules.) */
+  @media (max-width: 900px) {
+    .hiw__inner { gap: var(--space-6); }
+    .hiw__accordion,
+    .hiw__right,
+    .hiw__panels { display: contents; }
+    .hiw__panel {
+      position: static;
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      transition: none;
+    }
+    .hiw__panel[data-step="0"] { order: 0; }
+    .hiw__item[data-step="0"]  { order: 1; }
+    .hiw__panel[data-step="1"] { order: 2; }
+    .hiw__item[data-step="1"]  { order: 3; }
+    .hiw__panel[data-step="2"] { order: 4; }
+    .hiw__item[data-step="2"]  { order: 5; }
+    .hiw__panel[data-step="3"] { order: 6; }
+    .hiw__item[data-step="3"]  { order: 7; }
+    .hiw__progress { display: none; }
+    .hiw__num { color: var(--color-text-primary); }
   }
 
   /* ── Shared mock shell ──────────────────────────────── */
