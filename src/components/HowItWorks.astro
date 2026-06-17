@@ -1026,10 +1026,11 @@ const steps = isDE ? [
   @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   /* ── Stacked windows (panel 3) ──────────────────────── */
+  /* No horizontal inset → the front window is full layout width like the other
+     panels; the back card peeks below (slightly scaled) without overflowing. */
   .hiw__stack {
     display: grid;
-    padding-right: 16px;
-    padding-bottom: 16px;
+    padding-bottom: 18px;
   }
 
   .hiw__stack-win {
@@ -1038,8 +1039,8 @@ const steps = isDE ? [
     transition: transform 0.55s var(--ease-spring), opacity 0.38s var(--ease-smooth);
   }
 
-  .hiw__stack-win--front { z-index: 2; transform: translate(0,0); opacity: 1; cursor: default; }
-  .hiw__stack-win--back  { z-index: 1; transform: translate(16px,16px); opacity: 0.46; cursor: pointer; }
+  .hiw__stack-win--front { z-index: 2; transform: none; opacity: 1; cursor: default; }
+  .hiw__stack-win--back  { z-index: 1; transform: translateY(18px) scale(0.965); transform-origin: top center; opacity: 0.46; cursor: pointer; }
 
   .mock--output .mock__wf-item, .mock--opps .mock__wf-item {
     transition: background 0.18s ease, padding-left 0.18s ease;
@@ -1055,25 +1056,6 @@ const steps = isDE ? [
   .mock__opp-conf { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-full); flex-shrink: 0; letter-spacing: 0.03em; }
   .mock__opp-conf--high { color: #22c55e; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
   .mock__opp-conf--mid  { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
-
-  /* Mobile: output step shows both result windows full-width & stacked
-     (no offset/peek) so every macOS window is the same layout width */
-  @media (max-width: 900px) {
-    .hiw__stack {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-      padding: 0;
-    }
-    .hiw__stack-win,
-    .hiw__stack-win--front,
-    .hiw__stack-win--back {
-      transform: none;
-      opacity: 1;
-      z-index: auto;
-      cursor: default;
-    }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .mock__wf-icon--spin svg, .mock__status-dot,
