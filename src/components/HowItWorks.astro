@@ -704,7 +704,9 @@ const steps = isDE ? [
 
   /* ── Mobile: everything stacked in one column; windows are full width ── */
   @media (max-width: 767px) {
-    .hiw__inner { display: flex; flex-direction: column; gap: var(--space-6); }
+    /* align-items:stretch is required — otherwise the panels inherit the base
+       grid's align-items:start and shrink to their content width. */
+    .hiw__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-6); }
     .hiw__item { padding: var(--space-4) 0 0; }
     .hiw__panel[data-step="0"] { order: 0; }
     .hiw__item[data-step="0"]  { order: 1; }
