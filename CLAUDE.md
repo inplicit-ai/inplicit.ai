@@ -192,6 +192,27 @@ The CSS `transition` property (defined on a class) still applies to inline-style
 
 Class toggling is still correct for **boolean state** (visible/hidden, active/inactive) where no smooth transition is needed.
 
+### 3. "The whole CSS is missing" in dev = stale Vite HMR, not a code bug
+
+**Symptom:** after editing a component (especially a large rewrite of its `<style>` block), the page on `localhost` (`npm run dev`) renders a chunk of the component **unstyled** — raw text, layout collapsed, and any inline SVG with no width/height blown up to full size. The rest of the page still looks styled.
+
+**Cause:** Astro scopes each component's `<style>` and serves it as a Vite virtual module in dev. After repeated edits the HMR module graph for that scoped style desyncs, so the browser holds a stale or partial stylesheet. The disconnect banner / "css connection" feeling is the Vite HMR socket.
+
+**It is almost never a real bug.** Verify before chasing it:
+```bash
+npm run build
+# then grep the emitted chunk for the rule you think is missing, e.g.
+grep -oE "\.scene\[data-astro-cid-[a-z0-9]+\]\{[^}]*\}" dist/_astro/*.css | head
+```
+If the rule is present and correctly scoped in `dist/`, the code is fine and only the dev server is stale.
+
+**Fix:** restart the dev server (full restart, not just save) or hard-reload the page. `npm run preview` (serves the real build) is the source of truth, the live HMR state is not.
+
+**Guardrails that make a CSS dropout harmless instead of alarming:**
+- Always give inline / `set:html` SVGs explicit `width` and `height` attributes. A `<svg viewBox="…">` with no dimensions expands to fill its box when its CSS is missing (the "giant arrow" failure). With explicit attributes it stays small regardless of CSS.
+- The global `img { max-width: 100% }` in `design.css` does **not** cover inline `<svg>`, so the point above matters.
+- Truly critical, always-on styling can live in `design.css` (loaded globally via `Layout.astro`) instead of a scoped block. This is why the FAQ styles were moved to `design.css` ("guaranteed global load via Layout"). Reserve this for shared/critical rules, not every component.
+
 ---
 
 ## Open Hypotheses (product, not website)

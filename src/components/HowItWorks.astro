@@ -35,7 +35,8 @@ const steps = isDE ? [
     body: 'If the data does not hold the answer yet, Inplicit goes and finds it. It runs a focused round of interviews and emails you when the results are ready.' },
 ];
 
-const sendIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+// Explicit width/height so the icon never balloons if scoped CSS fails to load.
+const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 ---
 
 <section class="hiw" id="how-it-works">
