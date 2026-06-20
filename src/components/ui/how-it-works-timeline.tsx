@@ -83,13 +83,13 @@ function DeployContent({ isDE }: { isDE: boolean }) {
         "Nahtlose Verbindung zu Slack, Teams oder E-Mail",
         "Konfiguration von Interviewabläufen und -tiefe",
         "Festlegung von Umfang, Abteilung und Zielgruppe",
-        "Pilot-Review mit dem implicit.ai-Team",
+        "Pilot-Review mit dem inplicit.ai-Team",
       ]
     : [
         "Connect to Slack, Teams, or email in minutes",
         "Configure interview flows and depth",
         "Set scope, department, and target audience",
-        "Pilot review with the implicit.ai team",
+        "Pilot review with the inplicit.ai team",
       ];
 
   return (
@@ -101,8 +101,8 @@ function DeployContent({ isDE }: { isDE: boolean }) {
         </p>
         <p style={cardBody}>
           {isDE
-            ? "Keine Umstrukturierung. Keine neuen Tools für Ihre Mitarbeitenden. Implicit.ai integriert sich in die Kommunikationsinfrastruktur, die Ihre Organisation bereits nutzt."
-            : "No restructuring. No new tools for your employees. Implicit.ai plugs into the communication infrastructure your organisation already uses."}
+            ? "Keine Umstrukturierung. Keine neuen Tools für Ihre Mitarbeitenden. Inplicit.ai integriert sich in die Kommunikationsinfrastruktur, die Ihre Organisation bereits nutzt."
+            : "No restructuring. No new tools for your employees. Inplicit.ai plugs into the communication infrastructure your organisation already uses."}
         </p>
       </div>
       <div style={{ ...card, padding: "16px 24px" }}>
