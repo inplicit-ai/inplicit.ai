@@ -1,5 +1,4 @@
 ---
-import logoIconUrl from '../assets/logo_icon.svg?url';
 export interface Props { type: string; }
 const { type } = Astro.props;
 
@@ -20,33 +19,16 @@ const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
 ---
 
 {type === 'savings' && (
-  <div class="viz hbars" aria-hidden="true">
-    <div class="hbars__metric">
-      <span class="hbars__label">Zeit bis zur Erkenntnis</span>
-      <div class="hbars__row">
-        <span class="hbars__name">Klassisch</span>
-        <div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div>
-        <span class="hbars__val">4-6 Monate</span>
-      </div>
-      <div class="hbars__row">
-        <span class="hbars__name acc">inplicit</span>
-        <div class="hbars__track"><i class="hbars__fill hbars__fill--acc" style="--w:22%"></i></div>
-        <span class="hbars__val acc">3-4 Tage</span>
-      </div>
-    </div>
-    <div class="hbars__metric">
-      <span class="hbars__label">Kosten</span>
-      <div class="hbars__row">
-        <span class="hbars__name">Beratung</span>
-        <div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div>
-        <span class="hbars__val">€500k+</span>
-      </div>
-      <div class="hbars__row">
-        <span class="hbars__name acc">inplicit</span>
-        <div class="hbars__track"><i class="hbars__fill hbars__fill--acc" style="--w:14%"></i></div>
-        <span class="hbars__val acc">ab €30k</span>
-      </div>
-    </div>
+  <div class="viz red" aria-hidden="true">
+    <svg viewBox="0 0 320 132" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="red__area" d="M40 28 C 120 34, 150 92, 280 100 L280 116 L40 116 Z" fill="var(--color-accent)" />
+      <path class="red__line" d="M40 28 C 120 34, 150 92, 280 100" stroke="var(--color-accent)" stroke-width="2" />
+      <circle cx="40" cy="28" r="4" fill="var(--color-text-tertiary)" />
+      <circle class="red__ping" cx="280" cy="100" r="6" fill="none" stroke="var(--color-accent)" />
+      <circle cx="280" cy="100" r="6" fill="var(--color-accent)" />
+      <text x="48" y="22" text-anchor="start" font-size="11" fill="var(--color-text-tertiary)" font-family="Inter, sans-serif">Monate · €500k+</text>
+      <text x="272" y="90" text-anchor="end" font-size="12" font-weight="700" fill="var(--color-accent)" font-family="Inter, sans-serif">Tage · ab €30k</text>
+    </svg>
   </div>
 )}
 
@@ -80,47 +62,35 @@ const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
 
 {type === 'context' && (
   <div class="viz ctx" aria-hidden="true">
-    <svg class="ctx__svg" viewBox="0 0 340 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g class="ctx__spokes" stroke="var(--color-accent)" stroke-width="1.4" stroke-dasharray="3 6">
-        {[0, 1, 2].map((i) => <line x1="92" y1={38 + i * 38} x2="170" y2="75" />)}
-        {aiTools.map((_, i) => <line x1="170" y1="75" x2="250" y2={24 + i * 34} />)}
-      </g>
-      {['Gespräche', 'Dokumente', 'Systeme'].map((s, i) => (
-        <g>
-          <circle cx="92" cy={38 + i * 38} r="3.5" fill="var(--color-accent)" />
-          <text x="84" y={42 + i * 38} text-anchor="end" font-size="11" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{s}</text>
-        </g>
-      ))}
-      {aiTools.map((t, i) => (
-        <g>
-          <circle cx="250" cy={24 + i * 34} r="3.5" fill="var(--color-accent)" />
-          <text x="258" y={28 + i * 34} text-anchor="start" font-size="11" fill="var(--color-text-primary)" font-family="Inter, sans-serif">{t}</text>
-        </g>
-      ))}
-      <circle cx="170" cy="75" r="24" fill="var(--color-bg)" stroke="var(--color-border)" />
-      <image href={logoIconUrl} x="154" y="59" width="32" height="32" />
-    </svg>
+    <div class="ctx__stack">
+      <span class="ctx__label">Organisationskontext</span>
+      <div class="ctx__layer ctx__layer--human">
+        <span>Menschlicher Kontext</span>
+        <em>+ inplicit</em>
+      </div>
+      <div class="ctx__layer ctx__layer--base">Daten &amp; Systeme</div>
+    </div>
+    <div class="ctx__pipe" aria-hidden="true"></div>
+    <div class="ctx__ai">
+      {aiTools.map((t) => <span class="ctx__chip">{t}</span>)}
+    </div>
   </div>
 )}
 
 <style>
   .viz { width: 100%; color: var(--color-accent); }
 
-  /* ── savings: horizontal bar chart ───────────────────── */
-  .hbars { display: flex; flex-direction: column; gap: 20px; }
-  .hbars__label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-tertiary); margin-bottom: 9px; }
-  .hbars__row { display: flex; align-items: center; gap: 10px; font-size: 11px; margin-bottom: 7px; }
-  .hbars__row:last-child { margin-bottom: 0; }
-  .hbars__name { width: 56px; flex-shrink: 0; color: var(--color-text-tertiary); }
-  .hbars__name.acc { color: var(--color-accent); font-weight: 600; }
-  .hbars__track { flex: 1; height: 9px; border-radius: 5px; background: var(--color-accent-light); overflow: hidden; }
-  .hbars__fill { display: block; height: 100%; border-radius: 5px; }
-  .hbars__fill--gray { width: var(--w); background: var(--color-text-tertiary); opacity: 0.35; }
-  /* orange starts full, then shrinks to its small width on reveal */
-  .hbars__fill--acc { width: 100%; background: var(--color-accent); transition: width 1.1s var(--ease-smooth); }
-  .hbars__val { width: 50px; flex-shrink: 0; text-align: right; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
-  .hbars__val.acc { color: var(--color-accent); font-weight: 700; }
-  :global(.is-visible) .hbars__fill--acc { width: var(--w); }
+  /* ── savings: a single descending curve = less time & cost ── */
+  .red { display: flex; justify-content: center; }
+  .red svg { width: 100%; max-width: 320px; height: auto; }
+  .red__area { opacity: 0; }
+  .red__line { fill: none; stroke-dasharray: 360; stroke-dashoffset: 360; }
+  :global(.is-visible) .red__line { animation: draw 1.6s var(--ease-smooth) forwards; }
+  :global(.is-visible) .red__area { animation: areaIn 1s ease 0.7s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes areaIn { to { opacity: 0.07; } }
+  .red__ping { transform-box: fill-box; transform-origin: center; animation: ping 3.2s ease-out infinite; }
+  @keyframes ping { 0% { transform: scale(1); opacity: 0.4; } 70%, 100% { transform: scale(1.9); opacity: 0; } }
 
   /* ── departments: SVG org chart, path lights up to C-Level ── */
   .dept { display: flex; flex-direction: column; gap: 6px; }
@@ -128,7 +98,6 @@ const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
   .dept__chat-mark { width: 16px; height: 16px; border-radius: 5px; background: var(--color-accent); flex-shrink: 0; }
   .dept__chat-q { font-size: 12px; color: var(--color-text-primary); transition: opacity 0.25s ease; }
   .dept__status { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; transition: opacity 0.25s ease; }
-
   .org { display: flex; flex-direction: column; }
   .org__top { text-align: center; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); transition: color 0.3s ease; }
   .org__lines { width: 100%; height: 38px; }
@@ -138,27 +107,38 @@ const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
   .org__name { font-size: 11px; color: var(--color-text-secondary); transition: color 0.3s ease; }
   .org__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 64px; }
   .org__dots span { width: 8px; height: 8px; border-radius: 2px; background: var(--color-border); transition: background-color 0.4s ease; }
-
-  /* whole workforce: everything lights */
   .dept.is-all .org__top, .dept.is-all .org__name { color: var(--color-accent); }
   .dept.is-all .org__path { stroke: var(--color-accent); }
   .dept.is-all .org__dots span { background: var(--color-accent); }
-
-  /* single department: only that path runs orange up to C-Level */
   .dept.is-single .org__top { color: var(--color-accent); }
   .org__path.is-active { stroke: var(--color-accent); stroke-width: 2px; }
   .org__dept.is-active .org__name { color: var(--color-accent); font-weight: 600; }
   .org__dept.is-active .org__dots span { background: var(--color-accent); }
 
-  /* ── context: inplicit logo centre ───────────────────── */
-  .ctx { display: flex; justify-content: center; }
-  .ctx__svg { width: 100%; max-width: 340px; height: auto; }
-  .ctx__spokes line { animation: ctxFlow 1.1s linear infinite; }
-  @keyframes ctxFlow { to { stroke-dashoffset: -9; } }
+  /* ── context: inplicit adds the human layer to the org context ── */
+  .ctx { display: flex; align-items: center; gap: 10px; }
+  .ctx__stack { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .ctx__label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-tertiary); }
+  .ctx__layer { border-radius: 8px; padding: 11px 12px; font-size: 12px; }
+  .ctx__layer--human {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1px solid var(--color-accent); background: var(--color-accent-light);
+    color: var(--color-accent); font-weight: 600;
+    animation: layerIn 0.7s var(--ease-smooth) both, humanPulse 3s ease-in-out 0.8s infinite;
+  }
+  .ctx__layer--human em { font-style: normal; font-size: 10px; opacity: 0.8; }
+  .ctx__layer--base { border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-secondary); }
+  @keyframes layerIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  @keyframes humanPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); } 50% { box-shadow: 0 0 0 4px var(--color-accent-light); } }
+  .ctx__pipe { width: 26px; height: 2px; flex-shrink: 0; background-image: repeating-linear-gradient(90deg, var(--color-accent) 0 4px, transparent 4px 9px); background-size: 13px 2px; animation: flow 0.9s linear infinite; }
+  @keyframes flow { to { background-position: 13px 0; } }
+  .ctx__ai { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  .ctx__chip { font-size: 11px; padding: 4px 9px; border-radius: 6px; border: 1px solid var(--color-border); color: var(--color-text-primary); text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
-    .hbars__fill--acc { transition: none; }
-    .ctx__spokes line { animation: none; }
+    .viz * { animation: none !important; }
+    .red__line { stroke-dashoffset: 0; }
+    .red__area { opacity: 0.07; }
   }
 </style>
 
@@ -195,16 +175,11 @@ const aiTools = ['Claude', 'Gemini', 'Copilot', 'GPT'];
         step = (step + 1) % (depts.length + 1);
       }, 220);
     };
-    // Start the cycle on the whole-workforce phase when scrolled into view
     let started = false;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting && !started) {
-          started = true;
-          step = 0;
-          tick();
-          setInterval(tick, 2600);
-          io.disconnect();
+          started = true; step = 0; tick(); setInterval(tick, 2600); io.disconnect();
         }
       });
     }, { threshold: 0.4 });
