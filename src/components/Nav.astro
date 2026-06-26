@@ -8,6 +8,8 @@ const { lang = 'en' } = Astro.props;
 const cta = lang === 'de' ? 'Demo buchen' : 'Book demo';
 const toggleHref = lang === 'de' ? '/' : '/de/';
 const toggleLabel = lang === 'de' ? 'EN' : 'DE';
+const researchHref = lang === 'de' ? '/de/research' : '/research';
+const researchLabel = lang === 'de' ? 'Forschung' : 'Research';
 ---
 
 <nav class="nav" id="nav">
@@ -16,6 +18,7 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
       <span class="nav__logo-mark" set:html={logoRaw} />
     </a>
     <div class="nav__actions">
+      <a href={researchHref} class="nav__link">{researchLabel}</a>
       <a href={toggleHref} class="nav__lang" aria-label={`Switch to ${toggleLabel}`}>
         {toggleLabel}
       </a>
@@ -91,6 +94,19 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
     align-items: center;
     gap: var(--space-2);
   }
+
+  .nav__link {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.01em;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-ui);
+    transition: color 0.15s var(--ease-smooth);
+  }
+  .nav__link:hover { color: var(--color-text-primary); }
+
+  @media (max-width: 520px) { .nav__link { display: none; } }
 
   .nav__lang {
     font-size: var(--text-sm);

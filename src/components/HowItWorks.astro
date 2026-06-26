@@ -293,6 +293,11 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
       </div>
 
     </div>
+
+    <a class="hiw__more" href={isDE ? '/de/how-it-works' : '/how-it-works'}>
+      {isDE ? 'Mehr erfahren' : 'Learn more'}
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </div>
 </section>
 
@@ -490,7 +495,23 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     font-weight: 400; letter-spacing: -0.04em; line-height: 1.0;
     display: flex; flex-direction: column; gap: 0; color: var(--color-text-primary);
   }
-  .hiw__heading-ghost { opacity: 0.25; }
+  .hiw__heading-ghost { font-family: var(--font-display); font-style: italic; }
+
+  .hiw__more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-12);
+    height: 44px;
+    padding: 0 var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-ui);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
+  }
+  .hiw__more:hover { color: var(--color-text-primary); border-color: var(--color-text-tertiary); }
 
   /* ── Step list ──────────────────────────────────────── */
   .hiw__accordion { display: flex; flex-direction: column; }

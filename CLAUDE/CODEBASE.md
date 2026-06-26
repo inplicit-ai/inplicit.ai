@@ -39,8 +39,12 @@ Website/
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
             ├── privacy.astro    ← GDPR Datenschutzerklärung (DE + EN) ⚠ placeholders
             ├── terms.astro      ← Terms of Service (EN only)
+            ├── research.astro   ← EN coming-soon (uses ComingSoon.astro)
+            ├── how-it-works.astro ← EN coming-soon detail page (uses ComingSoon.astro)
             └── de/
-                └── index.astro  ← DE landing (same components, lang="de")
+                ├── index.astro  ← DE landing (same components, lang="de")
+                ├── research.astro ← DE coming-soon
+                └── how-it-works.astro ← DE coming-soon detail page
 ```
 
 ---
@@ -73,6 +77,8 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `/imprint` | `pages/imprint.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/privacy` | `pages/privacy.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/terms` | `pages/terms.astro` | EN only; ⚠ city placeholder in governing law clause |
+| `/research`, `/de/research` | `pages/research.astro`, `pages/de/research.astro` | Coming-soon stub via `ComingSoon.astro`; linked from Nav |
+| `/how-it-works`, `/de/how-it-works` | `pages/how-it-works.astro`, `pages/de/how-it-works.astro` | Coming-soon stub; linked from HowItWorks "Learn more" |
 
 ---
 
