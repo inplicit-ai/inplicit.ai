@@ -9,16 +9,8 @@ const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
 const themes = isDE
-  ? [
-      { label: 'Prozesswissen', desc: 'Wie Abläufe wirklich funktionieren, inklusive Workarounds und Reibung.' },
-      { label: 'Operatives Know-how', desc: 'Erfahrungswissen aus dem Tagesgeschäft, das selten dokumentiert ist.' },
-      { label: 'Innovationspotenziale', desc: 'Ungenutzte Chancen und Ideen aus Sicht der Beteiligten.' },
-    ]
-  : [
-      { label: 'Process knowledge', desc: 'How work really gets done, including workarounds and friction.' },
-      { label: 'Operational know-how', desc: 'Hands-on experience from daily work, rarely written down.' },
-      { label: 'Innovation potential', desc: 'Untapped opportunities and ideas from the people involved.' },
-    ];
+  ? ['Prozesswissen', 'Operatives Know-how', 'Innovationspotenzial']
+  : ['Process knowledge', 'Operational know-how', 'Innovation potential'];
 
 const questions = isDE
   ? [
@@ -45,13 +37,13 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
       <h1 class="hero__headline">
         {isDE ? (
           <>
-            <span class="hero__lead">Euer wertvollstes Wissen</span>
-            <span class="hero__line">steckt in <em>Köpfen.</em></span>
+            <span class="hero__line">Euer <em>wertvollstes Wissen</em></span>
+            <span class="hero__line">steckt in Köpfen.</span>
             <span class="hero__line hero__line--ghost">Wir machen es sichtbar.</span>
           </>
         ) : (
           <>
-            <span class="hero__lead">The answers are</span>
+            <span class="hero__line">The answers are</span>
             <span class="hero__line"><em>already within</em></span>
             <span class="hero__line hero__line--ghost">your organization.</span>
           </>
@@ -96,19 +88,19 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
             </div>
             <span class="scene__dot scene__dot--live" style="margin-left:auto"></span>
           </div>
-          <div class="hero__ask">
-            <p class="hero__ask-q">{isDE ? 'Was möchtest du erfahren?' : 'What do you want to learn?'}</p>
-            <div class="composer__input">
-              <span class="composer__placeholder" id="hero-rotator" data-questions={JSON.stringify(questions)}>{questions[0]}</span>
-              <span class="composer__send" set:html={sendIcon} />
+          <div class="hero__chat">
+            <div class="hero__empty">
+              <span class="hero__empty-mark" set:html={logoIconRaw} />
+              <p class="hero__empty-hint">{isDE ? 'Frag alles. Jede Antwort zitiert eine anonyme Quelle.' : 'Ask anything. Every answer cites an anonymous source.'}</p>
             </div>
-            <div class="hero__themes">
-              {themes.map(t => (
-                <div class="hero__theme">
-                  <span class="hero__theme-label">{t.label}</span>
-                  <span class="hero__theme-desc">{t.desc}</span>
-                </div>
-              ))}
+            <div class="composer">
+              <div class="composer__chips">
+                {themes.map(t => <span class="composer__chip">{t}</span>)}
+              </div>
+              <div class="composer__input">
+                <span class="composer__placeholder"><span id="hero-rotator" data-questions={JSON.stringify(questions)}></span><span class="hero__caret"></span></span>
+                <span class="composer__send" set:html={sendIcon} />
+              </div>
             </div>
           </div>
         </div>
@@ -128,20 +120,30 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   el.textContent = qs[0];
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced || qs.length < 2) return;
-  el.style.transition = 'opacity 0.4s ease';
-  var i = 0, timer = null;
-  function cycle() {
-    el.style.opacity = '0';
-    setTimeout(function () {
-      i = (i + 1) % qs.length;
-      el.textContent = qs[i];
-      el.style.opacity = '1';
-    }, 400);
+
+  var qi = 0, ci = qs[0].length, deleting = false, paused = false, timer = null;
+  function schedule(ms) { timer = setTimeout(tick, ms); }
+  function tick() {
+    if (paused) return;
+    var q = qs[qi];
+    if (!deleting) {
+      ci++;
+      el.textContent = q.slice(0, ci);
+      if (ci >= q.length) { deleting = true; schedule(1700); return; }
+      schedule(46 + Math.random() * 42);
+    } else {
+      ci--;
+      el.textContent = q.slice(0, ci);
+      if (ci <= 0) { deleting = false; qi = (qi + 1) % qs.length; schedule(380); return; }
+      schedule(26);
+    }
   }
-  function start() { if (!timer) timer = setInterval(cycle, 3200); }
-  function stop() { if (timer) { clearInterval(timer); timer = null; } }
-  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
-  start();
+  document.addEventListener('visibilitychange', function () {
+    paused = document.hidden;
+    if (!paused && !timer) schedule(200);
+    if (paused && timer) { clearTimeout(timer); timer = null; }
+  });
+  schedule(1600); // let it read the first question, then start typing
 })();
 </script>
 
@@ -159,7 +161,7 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 1fr minmax(320px, 400px);
+    grid-template-columns: 1fr minmax(300px, 380px);
     gap: var(--space-16);
     align-items: center;
     width: 100%;
@@ -173,8 +175,13 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
 
   .hero__content { max-width: 600px; }
 
-  /* ── Headline: a sans lead-in over an editorial serif statement (font mix) ── */
+  /* ── Headline: Inter, one size, only the accent in serif italic ── */
   .hero__headline {
+    font-family: var(--font-family);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
     opacity: 0;
@@ -182,25 +189,13 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     flex-direction: column;
     gap: 0;
   }
-
-  .hero__lead {
-    font-family: var(--font-family);
-    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-3);
-  }
-
-  .hero__line {
+  .hero__line { color: var(--color-text-primary); }
+  .hero__line em {
     font-family: var(--font-display);
-    font-size: clamp(2.6rem, 5.6vw, 4.4rem);
+    font-style: italic;
     font-weight: 400;
-    line-height: 1.02;
-    letter-spacing: -0.015em;
-    color: var(--color-text-primary);
+    letter-spacing: -0.005em;
   }
-  .hero__line em { font-style: italic; }
   .hero__line--ghost { opacity: 0.34; }
 
   .hero__sub {
@@ -209,22 +204,17 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     color: var(--color-text-secondary);
     line-height: 1.75;
     max-width: 500px;
-    margin: var(--space-6) 0 var(--space-10);
+    margin-bottom: var(--space-10);
     animation: hero-in 0.7s var(--ease-out) forwards 0.18s;
     opacity: 0;
   }
 
   /* Actions */
   .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
     margin-bottom: var(--space-10);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.26s;
-    opacity: 0;
+    animation: hero-in 0.7s var(--ease-out) forwards 0.26s; opacity: 0;
   }
-
   .hero__cta-primary {
     position: relative; overflow: hidden; display: inline-flex; align-items: center;
     height: 46px; padding: 0 var(--space-8);
@@ -242,7 +232,6 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     background-color: var(--color-cta-icon-bg); transition: width 0.4s var(--ease-spring);
   }
   .hero__cta-primary:hover .hero__cta-primary-icon { width: calc(100% - 8px); }
-
   .hero__cta-secondary {
     display: inline-flex; align-items: center; height: 46px; padding: 0 var(--space-6);
     color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: 500;
@@ -260,9 +249,8 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
   .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
 
-  /* ── Visual: a portrait (3:4) product window ── */
+  /* ── Visual: portrait (3:4) app window — Inter only, mirrors the dashboard ── */
   .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; }
-
   .hero__window {
     width: 100%;
     border-radius: var(--radius-card);
@@ -270,10 +258,7 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     animation: hero-in 0.8s var(--ease-out) forwards 0.32s, hero-float 7s ease-in-out 1.1s infinite;
     opacity: 0;
   }
-  @keyframes hero-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-7px); }
-  }
+  @keyframes hero-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 
   .scene {
     aspect-ratio: 3 / 4;
@@ -299,27 +284,27 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   .scene__dot--live { background: var(--color-accent); animation: hero-pulse 1.8s ease-in-out infinite; }
   @keyframes hero-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  .hero__ask { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--space-4) var(--space-5); }
+  .hero__chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .hero__empty { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); text-align: center; padding: var(--space-5); }
+  .hero__empty-mark { width: 34px; height: 34px; opacity: 0.45; display: block; }
+  .hero__empty-mark :global(svg) { width: 34px; height: 34px; display: block; }
+  .hero__empty-mark :global(path) { fill: var(--color-text-primary); }
+  .hero__empty-mark :global(rect) { fill: var(--color-accent); }
+  .hero__empty-hint { font-size: 12px; line-height: 1.5; color: var(--color-text-tertiary); max-width: 24ch; }
 
-  /* serif echo of the headline inside the product window (font mix) */
-  .hero__ask-q { font-family: var(--font-display); font-size: clamp(1.2rem, 2.4vw, 1.5rem); line-height: 1.1; color: var(--color-text-primary); }
-
+  .composer { flex-shrink: 0; padding: var(--space-3) var(--space-4) var(--space-4); border-top: 1px solid var(--color-border); background: var(--color-bg); }
+  .composer__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-3); }
+  .composer__chip { font-size: 10px; color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 3px 9px; background: var(--color-surface); white-space: nowrap; }
   .composer__input {
     display: flex; align-items: center; gap: var(--space-2);
-    border: 1px solid var(--color-border); border-radius: var(--radius-ui); background: var(--color-bg); padding: 9px 9px 9px 12px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui); background: var(--color-surface); padding: 9px 9px 9px 12px;
   }
-  .composer__placeholder { flex: 1; font-size: 12.5px; color: var(--color-text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .composer__placeholder { flex: 1; min-width: 0; display: inline-flex; align-items: center; font-size: 12.5px; color: var(--color-text-secondary); }
+  #hero-rotator { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hero__caret { display: inline-block; width: 1.5px; height: 1.05em; background: var(--color-accent); margin-left: 2px; flex-shrink: 0; animation: caret-blink 1s step-end infinite; }
+  @keyframes caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   .composer__send { width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0; background: var(--color-cta-bg); color: var(--color-cta-text); display: flex; align-items: center; justify-content: center; }
   .composer__send :global(svg) { width: 14px; height: 14px; display: block; }
-
-  .hero__themes { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-1); }
-  .hero__theme {
-    flex: 1; display: flex; flex-direction: column; gap: 3px; justify-content: center;
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-border); border-radius: var(--radius-ui); background: var(--color-bg);
-  }
-  .hero__theme-label { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
-  .hero__theme-desc { font-size: 11px; line-height: 1.45; color: var(--color-text-tertiary); }
 
   /* ── Tablet / mobile ── */
   @media (max-width: 900px) {
@@ -327,22 +312,21 @@ const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     .hero__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-10); }
     .hero__content { max-width: 100%; }
     .hero__visual { justify-content: center; }
-    .hero__window { width: 100%; max-width: 380px; }
+    .hero__window { width: 100%; max-width: 340px; }
   }
 
   @media (max-width: 767px) {
-    .hero__lead { font-size: var(--text-base); margin-bottom: var(--space-2); }
-    .hero__line { font-size: clamp(2.1rem, 11vw, 2.9rem); }
-    .hero__sub { font-size: var(--text-base); margin: var(--space-5) 0 var(--space-8); }
+    .hero__line { font-size: clamp(2rem, 11vw, 2.8rem); }
+    .hero__sub { font-size: var(--text-base); margin-bottom: var(--space-8); }
     .hero__actions { flex-direction: column; align-items: stretch; gap: var(--space-2); }
     .hero__cta-primary, .hero__cta-secondary { width: 100%; justify-content: center; }
     .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
-    .hero__window { max-width: 320px; }
+    .hero__window { max-width: 300px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero__inner, .hero__headline, .hero__sub, .hero__actions, .hero__meta, .hero__window { animation: none; opacity: 1; }
-    .scene__dot--live { animation: none; }
+    .scene__dot--live, .hero__caret { animation: none; }
   }
 </style>
