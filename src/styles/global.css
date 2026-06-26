@@ -1,3 +1,0 @@
-/* Tailwind removed: it was unused on the website and its `.container` utility
-   collided with our own `.container` (design.css), making the layout stretch to
-   1280/1536px on wide screens in the production build. Our reset lives in design.css. */
