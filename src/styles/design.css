@@ -2,23 +2,29 @@
 
 /* ---- White — default ---- */
 :root {
-  /* Colors */
-  --color-bg: #ffffff;
-  --color-surface: #f9f9f9;
-  --color-surface-elevated: #f3f4f6;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-subtle: rgba(0, 0, 0, 0.04);
-  --color-text-primary: #000000;
-  --color-text-secondary: rgba(0, 0, 0, 0.55);
-  --color-text-tertiary: rgba(0, 0, 0, 0.3);
+  /* Colors — warm paper base, warm-charcoal ink, amber signal */
+  --color-bg: #faf8f4;
+  --color-surface: #f4f1ea;
+  --color-surface-elevated: #efeae0;
+  --color-border: rgba(26, 23, 20, 0.10);
+  --color-border-subtle: rgba(26, 23, 20, 0.05);
+  --color-text-primary: #1a1714;
+  --color-text-secondary: rgba(26, 23, 20, 0.58);
+  --color-text-tertiary: rgba(26, 23, 20, 0.34);
   --color-accent: #f5a623;
   --color-accent-dark: #e8950f;
-  --color-accent-light: rgba(245, 166, 35, 0.08);
-  --color-accent-muted: rgba(245, 166, 35, 0.18);
+  --color-accent-light: rgba(245, 166, 35, 0.10);
+  --color-accent-muted: rgba(245, 166, 35, 0.22);
+  /* Ember range (gradient depth) + warm dark canvas (optional dark sections) */
+  --color-ember: #d8741f;
+  --color-ember-deep: #b5531a;
+  --color-canvas-dark: #1a1714;
+  --color-on-dark: #f4f1ea;
+  --grain-opacity: 0.035;
 
   /* CTA tokens */
-  --color-cta-bg: #000000;
-  --color-cta-text: #ffffff;
+  --color-cta-bg: #1a1714;
+  --color-cta-text: #faf8f4;
   --color-cta-icon-bg: rgba(255, 255, 255, 0.15);
 
   /* Shadows — diffuse, wide-spread, ultra-low opacity */
@@ -30,6 +36,7 @@
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --text-xs: 0.75rem;    /* 12px */
   --text-sm: 0.875rem;   /* 14px */
   --text-base: 1rem;     /* 16px */
@@ -98,6 +105,19 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   background-color: var(--color-bg);
+}
+
+/* Film grain — kills the flat-SaaS sheen. Static, fixed, pointer-safe, very low opacity. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 a {

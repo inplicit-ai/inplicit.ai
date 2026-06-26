@@ -1,28 +1,46 @@
 ---
+import GradientField from './ui/GradientField.astro';
+import logoIconRaw from '../assets/logo_icon.svg?raw';
+
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
 
-const pills = lang === 'de'
-  ? ['Prozesswissen', 'Operatives Know-how', 'Innovationspotential']
+const themes = isDE
+  ? ['Prozesswissen', 'Operatives Know-how', 'Innovationspotenzial']
   : ['Process knowledge', 'Operational know-how', 'Innovation potential'];
+
+// Real questions an admin would ask the workforce data (rotate in the prompt box).
+const questions = isDE
+  ? [
+      'Wo verlieren wir im Betrieb Zeit?',
+      'Welches Erfahrungswissen ist nirgends dokumentiert?',
+      'Wo sehen Mitarbeitende ungenutzte Chancen?',
+      'Was sind die häufigsten Schmerzpunkte?',
+    ]
+  : [
+      'Where do we lose time in operations?',
+      'What hands-on knowledge is documented nowhere?',
+      'Where do people see untapped opportunities?',
+      'What are the most-named pain points?',
+    ];
+
+const sendIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 ---
 
 <section class="hero" id="hero">
+  <GradientField />
   <div class="hero__inner container">
     <div class="hero__content">
 
-      <div class="hero__pills">
-        {pills.map(p => <span class="hero__pill">{p}</span>)}
-      </div>
-
       <h1 class="hero__headline">
-        {lang === 'de' ? (
+        {isDE ? (
           <>
             <span class="hero__line">Euer <strong>wertvollstes Wissen</strong></span>
             <span class="hero__line">steckt in Köpfen.</span>
-            <span class="hero__line hero__line--ghost">Wir machen es sichtbar und nutzbar.</span>
+            <span class="hero__line hero__line--ghost">Wir machen es sichtbar.</span>
           </>
         ) : (
           <>
@@ -34,44 +52,87 @@ const pills = lang === 'de'
       </h1>
 
       <p class="hero__sub">
-        {lang === 'de'
+        {isDE
           ? 'Inplicit macht das implizite Wissen eurer Mitarbeitenden sichtbar und verwandelt es in strategische Organisationsintelligenz.'
           : 'inplicit.ai gives every person in your organisation a voice. Understand what your workforce truly knows, thinks, and needs.'}
       </p>
 
       <div class="hero__actions">
         <a href="#book-demo" class="hero__cta-primary">
-          <span class="hero__cta-primary-label">
-            {lang === 'de' ? 'Demo buchen' : 'Book demo'}
-          </span>
+          <span class="hero__cta-primary-label">{isDE ? 'Demo buchen' : 'Book demo'}</span>
           <i class="hero__cta-primary-icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </i>
         </a>
-        <a href="#how-it-works" class="hero__cta-secondary">
-          {lang === 'de' ? "So funktioniert's" : 'How it works'}
-        </a>
+        <a href="#how-it-works" class="hero__cta-secondary">{isDE ? "So funktioniert's" : 'How it works'}</a>
       </div>
 
       <div class="hero__meta">
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'DSGVO-konform' : 'GDPR compliant'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}</span>
-        <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Daten in der EU' : 'Data in EU'}</span>
       </div>
     </div>
 
-    <div class="hero__visual" aria-hidden="true">
-      <div class="hero__glow"></div>
-      <canvas id="brain-canvas" class="hero__brain-canvas"></canvas>
+    <div class="hero__visual">
+      <div class="hero__window" aria-hidden="true">
+        <div class="scene">
+          <div class="scene__head">
+            <span class="scene__avatar" set:html={logoIconRaw} />
+            <div>
+              <div class="scene__head-title">Inplicit</div>
+              <div class="scene__head-sub">{isDE ? 'Frag deine Belegschaft' : 'Ask your workforce'}</div>
+            </div>
+            <span class="scene__dot scene__dot--live" style="margin-left:auto"></span>
+          </div>
+          <div class="hero__ask">
+            <div class="composer">
+              <div class="composer__chips">
+                {themes.map(t => <span class="composer__chip">{t}</span>)}
+              </div>
+              <div class="composer__input">
+                <span class="composer__placeholder" id="hero-rotator" data-questions={JSON.stringify(questions)}>{questions[0]}</span>
+                <span class="composer__send" set:html={sendIcon} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
+
+<script is:inline>
+(function () {
+  var el = document.getElementById('hero-rotator');
+  if (!el) return;
+  var qs;
+  try { qs = JSON.parse(el.getAttribute('data-questions') || '[]'); } catch (e) { qs = []; }
+  if (!qs.length) return;
+  el.textContent = qs[0];
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || qs.length < 2) return;
+  el.style.transition = 'opacity 0.4s ease';
+  var i = 0, timer = null;
+  function cycle() {
+    el.style.opacity = '0';
+    setTimeout(function () {
+      i = (i + 1) % qs.length;
+      el.textContent = qs[i];
+      el.style.opacity = '1';
+    }, 400);
+  }
+  function start() { if (!timer) timer = setInterval(cycle, 3200); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+  start();
+})();
+</script>
 
 <style>
   .hero {
@@ -83,12 +144,11 @@ const pills = lang === 'de'
     overflow: hidden;
   }
 
-
   .hero__inner {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr minmax(360px, 440px);
     gap: var(--space-16);
     align-items: center;
     width: 100%;
@@ -100,38 +160,15 @@ const pills = lang === 'de'
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .hero__content { max-width: 620px; }
+  .hero__content { max-width: 600px; }
 
-  /* Pills */
-  .hero__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.05s;
-    opacity: 0;
-  }
-
-  .hero__pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 12px;
-    border-radius: var(--radius-card);
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(0,0,0,0.03);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-  }
-
-  /* Headline */
+  /* Headline — editorial serif, one italic accent word */
   .hero__headline {
-    font-size: clamp(2.1rem, 4.4vw, 3.5rem);
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 5.4vw, 4.2rem);
     font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
     opacity: 0;
@@ -141,23 +178,15 @@ const pills = lang === 'de'
   }
 
   .hero__line { display: block; color: var(--color-text-primary); }
-
-  .hero__line strong {
-    font-weight: 700;
-    color: var(--color-text-primary);
-  }
-
-  .hero__line--ghost {
-    color: var(--color-text-primary);
-    opacity: 0.18;
-  }
+  .hero__line strong { font-style: italic; font-weight: 400; }
+  .hero__line--ghost { color: var(--color-text-primary); opacity: 0.32; }
 
   .hero__sub {
     font-size: clamp(var(--text-base), 1.7vw, var(--text-lg));
     font-weight: 400;
     color: var(--color-text-secondary);
     line-height: 1.75;
-    max-width: 520px;
+    max-width: 500px;
     margin-bottom: var(--space-10);
     animation: hero-in 0.7s var(--ease-out) forwards 0.18s;
     opacity: 0;
@@ -189,142 +218,95 @@ const pills = lang === 'de'
     border-radius: var(--radius-ui);
     transition: opacity 0.2s var(--ease-smooth);
   }
-
   .hero__cta-primary:hover { opacity: 0.85; }
   .hero__cta-primary:active { transform: scale(0.97); }
 
-  .hero__cta-primary-label {
-    margin-right: var(--space-10);
-    transition: opacity 0.4s var(--ease-smooth);
-    white-space: nowrap;
-  }
-
+  .hero__cta-primary-label { margin-right: var(--space-10); transition: opacity 0.4s var(--ease-smooth); white-space: nowrap; }
   .hero__cta-primary:hover .hero__cta-primary-label { opacity: 0; }
 
   .hero__cta-primary-icon {
-    position: absolute;
-    right: 4px;
-    top: 4px;
-    bottom: 4px;
-    border-radius: var(--radius-ui);
-    z-index: 1;
-    display: grid;
-    width: 25%;
-    place-items: center;
-    background-color: var(--color-cta-icon-bg);
-    transition: width 0.4s var(--ease-spring);
+    position: absolute; right: 4px; top: 4px; bottom: 4px;
+    border-radius: var(--radius-ui); z-index: 1; display: grid; width: 25%; place-items: center;
+    background-color: var(--color-cta-icon-bg); transition: width 0.4s var(--ease-spring);
   }
-
   .hero__cta-primary:hover .hero__cta-primary-icon { width: calc(100% - 8px); }
 
   .hero__cta-secondary {
-    display: inline-flex;
-    align-items: center;
-    height: 44px;
-    padding: 0 var(--space-6);
-    color: var(--color-text-secondary);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    border-radius: var(--radius-ui);
-    border: 1px solid var(--color-border);
+    display: inline-flex; align-items: center; height: 44px; padding: 0 var(--space-6);
+    color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: 500;
+    border-radius: var(--radius-ui); border: 1px solid var(--color-border);
     transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
   }
-
-  .hero__cta-secondary:hover {
-    color: var(--color-text-primary);
-    border-color: var(--color-text-tertiary);
-  }
+  .hero__cta-secondary:hover { color: var(--color-text-primary); border-color: var(--color-text-tertiary); }
 
   /* Meta */
   .hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.34s;
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    animation: hero-in 0.7s var(--ease-out) forwards 0.34s; opacity: 0;
+  }
+  .hero__meta-item { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-sm); color: var(--color-text-tertiary); font-weight: 400; }
+  .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
+  .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
+
+  /* Visual — floating product window */
+  .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; }
+
+  .hero__window {
+    width: 100%;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-xl);
+    animation: hero-in 0.8s var(--ease-out) forwards 0.32s, hero-float 7s ease-in-out 1.1s infinite;
     opacity: 0;
   }
 
-  .hero__meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: var(--text-sm);
-    color: var(--color-text-tertiary);
-    font-weight: 400;
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
   }
 
-  .hero__meta-check {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
+  /* Product window vocabulary (copied from HowItWorks; scoped classes can't cross components) */
+  .scene {
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-card); font-family: var(--font-family);
   }
-
-  .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
-
-  /* Visual */
-  .hero__visual {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 420px;
+  .scene__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); background: var(--color-surface-elevated);
   }
-
-  .hero__glow { display: none; }
-
-  /* Amber glow rises from the lower edge of the hero (biased toward the brain) */
-  .hero::before {
-    content: '';
-    position: absolute;
-    left: 60%;
-    bottom: 0;
-    transform: translate(-50%, 48%);
-    width: 820px;
-    height: 560px;
-    max-width: 140%;
-    border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(245, 166, 35, 0.5) 0%, rgba(245, 166, 35, 0.18) 42%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+  .scene__head-title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  .scene__head-sub { font-size: 10px; color: var(--color-text-tertiary); }
+  .scene__avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-accent-light); border: 1px solid var(--color-accent-muted);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
+  .scene__avatar :global(svg) { width: 17px; height: 17px; display: block; }
+  .scene__avatar :global(path) { fill: var(--color-text-primary); }
+  .scene__avatar :global(rect) { fill: var(--color-accent); }
+  .scene__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-tertiary); flex-shrink: 0; }
+  .scene__dot--live { background: var(--color-accent); animation: hero-pulse 1.8s ease-in-out infinite; }
+  @keyframes hero-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  .hero__brain-canvas {
-    width: 400px;
-    height: auto;        /* keep 1:1 from the 400×400 drawing buffer */
-    max-width: 100%;     /* never overflow its column / the viewport */
-    position: relative;
-    z-index: 1;
-    cursor: grab;
+  .hero__ask { padding: var(--space-5) var(--space-4) var(--space-6); }
+
+  .composer__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-3); }
+  .composer__chip { font-size: 10px; color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 3px 9px; background: var(--color-bg); white-space: nowrap; }
+  .composer__input {
+    display: flex; align-items: center; gap: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui); background: var(--color-bg); padding: 8px 8px 8px 12px;
   }
+  .composer__placeholder { flex: 1; font-size: 12.5px; color: var(--color-text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .composer__send { width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0; background: var(--color-cta-bg); color: var(--color-cta-text); display: flex; align-items: center; justify-content: center; }
+  .composer__send :global(svg) { width: 14px; height: 14px; display: block; }
 
-  .hero__brain-canvas:active { cursor: grabbing; }
-
-  /* ── Mobile (placed after all base rules so these overrides actually win) ── */
+  /* ── Tablet / mobile: stack the window below the text ── */
   @media (max-width: 900px) {
-    /* Fill the viewport: text sits below the nav, brain drops to the fold so
-       it peeks over the edge and invites scrolling. */
-    .hero {
-      min-height: 100vh;
-      min-height: 100svh;
-      align-items: stretch;
-      padding-top: calc(var(--space-10) + 56px);
-      padding-bottom: 0;
-    }
-    .hero__inner {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: space-between;
-      gap: var(--space-10);
-    }
-    /* Pills are desktop-only */
-    .hero__pills { display: none; }
-    /* Brain sits at the bottom edge, slightly clipped by the fold */
-    .hero__visual { height: auto; margin-bottom: calc(-1 * var(--space-8)); }
-    .hero__brain-canvas { width: 320px; pointer-events: none; cursor: default; }
-    /* Glow centered under the brain at the fold */
-    .hero::before { left: 50%; width: 720px; }
+    .hero { padding-top: calc(var(--space-10) + 56px); padding-bottom: var(--space-16); }
+    .hero__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-10); }
+    .hero__content { max-width: 100%; }
+    .hero__visual { justify-content: stretch; }
+    .hero__window { max-width: 460px; }
   }
 
   @media (max-width: 767px) {
@@ -332,134 +314,11 @@ const pills = lang === 'de'
     .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
     .hero__actions { flex-direction: column; align-items: flex-start; }
+    .hero__window { max-width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__inner, .hero__pills, .hero__headline,
-    .hero__sub, .hero__actions, .hero__meta { animation: none; opacity: 1; }
+    .hero__inner, .hero__headline, .hero__sub, .hero__actions, .hero__meta, .hero__window { animation: none; opacity: 1; }
+    .scene__dot--live { animation: none; }
   }
 </style>
-
-<script>
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-function initBrain() {
-  const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
-  if (!canvas) return;
-
-  const W = 400, H = 400;
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W, H, false);
-
-  const scene = new THREE.Scene();
-  // Wider FOV + pulled back so brain never clips
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(0, 0, 4.5);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableZoom = false;
-  controls.enablePan = false;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.5;
-  controls.dampingFactor = 0.1;
-  controls.enableDamping = true;
-
-  // Soft, even lighting so the ghost surface actually shades (MeshStandardMaterial
-  // needs lights — without them the surface renders black).
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xc8c8d0, 1.4));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  keyLight.position.set(2, 3, 4);
-  scene.add(keyLight);
-
-  const brainGroup = new THREE.Group();
-  scene.add(brainGroup);
-
-  // Edge line material - dark, thick enough to read clearly on white bg
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0x1e1e2a, transparent: true, opacity: 0.9 });
-
-  // Ghost surface material - very subtle, gives 3D depth
-  const surfaceMat = new THREE.MeshStandardMaterial({
-    color: 0xd8d8e0,
-    transparent: true,
-    opacity: 0.18,
-    roughness: 0.9,
-    metalness: 0.0,
-    side: THREE.DoubleSide,   // no backface culling → no missing/flipped faces
-  });
-
-  const loader = new GLTFLoader();
-  loader.load('/brain/scene.gltf', (gltf) => {
-    const root = gltf.scene;
-
-    const box0 = new THREE.Box3().setFromObject(root);
-    const c0 = box0.getCenter(new THREE.Vector3());
-    const s0 = box0.getSize(new THREE.Vector3());
-    const scaleFactor = 3.4 / Math.max(s0.x, s0.y, s0.z);
-
-    root.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.updateWorldMatrix(true, false);
-        const geoCopy = mesh.geometry.clone()
-          .applyMatrix4(mesh.matrixWorld)
-          .applyMatrix4(new THREE.Matrix4().makeTranslation(-c0.x, -c0.y, -c0.z))
-          .applyMatrix4(new THREE.Matrix4().makeScale(scaleFactor, scaleFactor, scaleFactor));
-        geoCopy.computeVertexNormals();   // consistent normals for even shading
-
-        // Ghost surface (renders first, behind edges)
-        brainGroup.add(new THREE.Mesh(geoCopy, surfaceMat));
-        // Dark edge lines on top
-        brainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoCopy, 15), edgeMat));
-      }
-    });
-  });
-
-  // Amber nodes - attached to brainGroup so they rotate with it
-  const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
-  const nGeo = new THREE.SphereGeometry(0.05, 8, 8);
-  // Spread around full sphere surface (front, back, sides, top, bottom)
-  const nodeCoords: [number, number, number][] = [
-    [ 0,     0.90,  0.20],   // top
-    [ 0.75,  0.30,  0.45],   // right front
-    [-0.75,  0.30,  0.45],   // left front
-    [ 0.72,  0.30, -0.40],   // right back
-    [-0.72,  0.30, -0.40],   // left back
-    [ 0.30,  0.65, -0.55],   // upper back
-    [-0.30,  0.65, -0.55],   // upper back left
-    [ 0,    -0.70,  0.00],   // bottom centre
-    [ 0.60, -0.40, -0.35],   // lower back right
-    [-0.60, -0.40, -0.35],   // lower back left
-  ];
-  const nodes = nodeCoords.map(([x, y, z]) => {
-    const m = new THREE.Mesh(nGeo, nodeMat);
-    m.position.set(x, y, z);
-    brainGroup.add(m);
-    return m;
-  });
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.3 });
-  const edgePairs: [number, number][] = [
-    [0,1],[0,2],[1,3],[2,4],[3,5],[4,6],[1,2],[5,6],[7,8],[7,9],[3,8],[4,9],[0,5],[0,6]
-  ];
-  edgePairs.forEach(([a, b]) => {
-    brainGroup.add(new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints([nodes[a].position.clone(), nodes[b].position.clone()]),
-      lineMat
-    ));
-  });
-
-  let raf: number;
-  function animate() {
-    raf = requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('beforeunload', () => cancelAnimationFrame(raf));
-}
-
-document.addEventListener('DOMContentLoaded', initBrain);
-</script>
