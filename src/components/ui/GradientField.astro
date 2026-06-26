@@ -86,7 +86,11 @@
     gl.uniform3fv(gl.getUniformLocation(prog, 'cAmber'), cAmber);
     gl.uniform3fv(gl.getUniformLocation(prog, 'cEmber'), cEmber);
 
+    // Canvas is created in JS, so it never gets Astro's scoped data-astro-cid
+    // attribute — scoped CSS can't reach it. Style it inline instead so it
+    // reliably fills the host at any height (CLAUDE.md: absolute children need explicit width).
     canvas.className = 'gradient-field__canvas';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:block;';
     host.appendChild(canvas);
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     function resize() {
@@ -96,6 +100,9 @@
     }
     resize();
     window.addEventListener('resize', resize);
+    // Track the host's own size — the hero grows taller after fonts swap and the
+    // product window lays out, long after the initial resize() above.
+    if ('ResizeObserver' in window) { new ResizeObserver(resize).observe(host); }
 
     var running = true, raf = 0;
     function tick(t) {
@@ -131,14 +138,7 @@
       radial-gradient(80% 90% at 18% 22%, rgba(245, 166, 35, 0.05), transparent 70%),
       var(--color-bg);
   }
-  .gradient-field__canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .gradient-field__canvas { display: none; }
-  }
+  /* The canvas is created + styled inline in JS (it can't receive scoped CSS).
+     Under reduced-motion the script returns early and no canvas is created,
+     so only the CSS fallback paint above is shown. */
 </style>

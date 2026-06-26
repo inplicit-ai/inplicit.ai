@@ -39,7 +39,7 @@ All tokens live in `/src/styles/design.css`. Never hardcode these values.
 | `--color-accent` | `#f5a623` |
 | `--color-accent-dark` | `#d4891a` |
 | `--font-family` | Inter (Google Fonts) |
-| `--max-width` | `1200px` |
+| `--max-width` | `1080px` |
 | `--radius-ui` | `4px` |
 | `--radius-card` | `8px` |
 
