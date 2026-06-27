@@ -1,26 +1,26 @@
 ---
-import '../styles/design.css';
-import Nav from '../components/Nav.astro';
-import CalBooking from '../components/CalBooking.astro';
+import '../../styles/design.css';
+import Nav from '../../components/Nav.astro';
+import CalBooking from '../../components/CalBooking.astro';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <title>Book a call · Inplicit</title>
+    <title>Termin buchen · Inplicit</title>
     <meta name="robots" content="noindex, nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <Nav lang="en" langToggleHref="/de/call" />
+    <Nav lang="de" langToggleHref="/call" />
     <main>
-      <CalBooking lang="en" />
+      <CalBooking lang="de" />
     </main>
     <script>
       const observer = new IntersectionObserver(

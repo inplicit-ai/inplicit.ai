@@ -3,10 +3,11 @@ import logoRaw from '../assets/logo.svg?raw';
 
 export interface Props {
   lang?: 'en' | 'de';
+  langToggleHref?: string;
 }
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', langToggleHref } = Astro.props;
 const cta = lang === 'de' ? 'Demo buchen' : 'Book demo';
-const toggleHref = lang === 'de' ? '/' : '/de/';
+const toggleHref = langToggleHref ?? (lang === 'de' ? '/' : '/de/');
 const toggleLabel = lang === 'de' ? 'EN' : 'DE';
 ---
 
