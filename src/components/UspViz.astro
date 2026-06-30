@@ -55,7 +55,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
 {type === 'context' && (
   <div class="viz ctx" aria-hidden="true">
-    <svg class="ctx__svg" viewBox="0 0 440 186" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="ctx__svg" viewBox="-10 0 355 186" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <!-- Claude: Anthropic flower mark (cls-2 path from Claude_AI_logo.svg) -->
         <symbol id="viz-claude" viewBox="0 0 143 149">
@@ -117,7 +117,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
       <!-- MCP circle at center-right of Organisationskontext, fan-out origin -->
       <circle cx="236" cy="93" r="12" fill="var(--color-text-primary)"/>
-      <text x="236" y="96.5" text-anchor="middle" dominant-baseline="middle" font-size="7" font-weight="700" fill="var(--color-bg)" font-family="Inter,sans-serif">MCP</text>
+      <text x="236" y="93" text-anchor="middle" dominant-baseline="middle" font-size="7" font-weight="700" fill="var(--color-bg)" font-family="Inter,sans-serif">MCP</text>
 
       <!-- Fan-out dashed lines: FROM MCP circle edge → AI tools -->
       <g class="ctx__out-spokes" stroke="var(--color-border)" stroke-width="1.2" stroke-dasharray="3 5">
@@ -201,7 +201,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
   /* context */
   .ctx { display: flex; justify-content: center; align-items: center; }
-  .ctx__svg { width: 100%; max-width: 440px; height: auto; display: block; margin: 0 auto; }
+  .ctx__svg { width: 100%; height: auto; }
   .ctx__out-spokes line { animation: ctxFlow 1.2s linear infinite; animation-play-state: paused; }
   .ctx__out-spokes line:nth-child(2) { animation-delay: 0.15s; }
   .ctx__out-spokes line:nth-child(3) { animation-delay: 0.3s; }
