@@ -3,183 +3,104 @@
 ---
 
 <div class="bviz" aria-hidden="true">
-  <svg class="bviz__svg" viewBox="0 0 380 520" xmlns="http://www.w3.org/2000/svg">
+  <!-- SVG stage: honeycomb bg + dotted trail + flower -->
+  <svg class="bviz__stage" viewBox="0 0 380 520" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <!-- Subtle honeycomb tile -->
       <pattern id="bviz-hex" x="0" y="0" width="36" height="41.6" patternUnits="userSpaceOnUse">
         <path d="M18,0 L36,10.4 L36,31.2 L18,41.6 L0,31.2 L0,10.4 Z"
               fill="none" stroke="var(--color-accent)" stroke-width="0.7" opacity="0.13"/>
       </pattern>
-
-      <!-- Trail-reveal mask: a single solid stroke that draws itself,
-           masking the dotted decorative trail underneath -->
       <mask id="bviz-trail-mask">
         <path id="bviz-mask-p"
-              d="M 440,95 C 290,-25 25,185 155,308 S 375,398 192,455"
-              stroke="white" stroke-width="10" fill="none"
+              d="M 440,70 C 290,-40 20,160 150,295 S 370,395 192,455"
+              stroke="white" stroke-width="12" fill="none"
               stroke-linecap="round" stroke-linejoin="round"/>
       </mask>
-
-      <!-- Bee body clip (stripes don't bleed outside body ellipse) -->
-      <clipPath id="bviz-bc">
-        <ellipse cx="0" cy="0" rx="23" ry="31"/>
-      </clipPath>
     </defs>
 
-    <!-- Honeycomb background -->
     <rect width="380" height="520" fill="url(#bviz-hex)"/>
 
-    <!-- Dotted flight trail (revealed progressively by JS) -->
+    <!-- Dotted trail (progressively revealed by JS) -->
     <path class="bviz__trail"
-          d="M 440,95 C 290,-25 25,185 155,308 S 375,398 192,455"
+          d="M 440,70 C 290,-40 20,160 150,295 S 370,395 192,455"
           fill="none" stroke="var(--color-accent)"
-          stroke-width="2" stroke-dasharray="7 7"
-          stroke-linecap="round" opacity="0.45"
+          stroke-width="2.5" stroke-dasharray="7 7"
+          stroke-linecap="round" opacity="0.5"
           mask="url(#bviz-trail-mask)"/>
 
-    <!-- ── Flower (landing spot) ── -->
-    <g class="bviz__flower" transform="translate(192,430)">
-      <!-- Petals (7, rotated) -->
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(51.4)"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(102.9)"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(154.3)"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(205.7)"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(257.1)"/>
-      <ellipse cx="0" cy="-24" rx="10" ry="17" fill="#fde04a" opacity="0.9" transform="rotate(308.6)"/>
-      <!-- Orange centre -->
+    <!-- Flower -->
+    <g class="bviz__flower" transform="translate(192,428)">
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(51.4)"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(102.9)"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(154.3)"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(205.7)"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(257.1)"/>
+      <ellipse cx="0" cy="-22" rx="10" ry="17" fill="#fde04a" opacity="0.92" transform="rotate(308.6)"/>
       <circle cx="0" cy="0" r="14" fill="var(--color-accent)"/>
       <circle cx="-4" cy="-4" r="5" fill="rgba(255,255,255,0.18)"/>
-      <!-- Stem -->
       <line x1="0" y1="14" x2="0" y2="82" stroke="#5a8c3e" stroke-width="5" stroke-linecap="round"/>
-      <!-- Leaves -->
       <ellipse cx="-19" cy="48" rx="15" ry="6" fill="#5a8c3e" transform="rotate(-35,-19,48)"/>
       <ellipse cx="19" cy="60" rx="15" ry="6" fill="#5a8c3e" transform="rotate(35,19,60)"/>
     </g>
-
-    <!-- ── Bee (SMIL animateMotion along flight path) ── -->
-    <g id="bviz-bee" class="bviz__bee-g" opacity="0">
-
-      <!-- Wings (behind body, animated independently) -->
-      <g class="bviz__wing-l" transform="translate(-2, -8)">
-        <ellipse cx="-34" cy="-10" rx="27" ry="13"
-                 fill="rgba(210,232,255,0.72)" stroke="rgba(160,200,240,0.45)" stroke-width="1"/>
-      </g>
-      <g class="bviz__wing-r" transform="translate(2, -8)">
-        <ellipse cx="34" cy="-10" rx="27" ry="13"
-                 fill="rgba(210,232,255,0.72)" stroke="rgba(160,200,240,0.45)" stroke-width="1"/>
-      </g>
-
-      <!-- Body -->
-      <g transform="translate(0,22)">
-        <ellipse cx="0" cy="0" rx="23" ry="31" fill="#F5A623"/>
-        <!-- Stripes (clipped to body ellipse) -->
-        <rect x="-26" y="-12" width="52" height="10" fill="#2D1400" opacity="0.7"
-              clip-path="url(#bviz-bc)"/>
-        <rect x="-26" y="4" width="52" height="10" fill="#2D1400" opacity="0.7"
-              clip-path="url(#bviz-bc)"/>
-        <!-- Sheen -->
-        <ellipse cx="-7" cy="-12" rx="7" ry="12" fill="white" opacity="0.12"
-                 clip-path="url(#bviz-bc)"/>
-      </g>
-
-      <!-- Stinger -->
-      <path d="M-5,52 Q0,64 5,52" fill="#2D1400" opacity="0.65"/>
-
-      <!-- Head -->
-      <circle cx="0" cy="-28" r="25" fill="#F5A623"/>
-      <ellipse cx="-7" cy="-36" rx="7" ry="10" fill="white" opacity="0.12"/>
-
-      <!-- Eyes -->
-      <circle cx="-9"  cy="-31" r="9" fill="white"/>
-      <circle cx="9"   cy="-31" r="9" fill="white"/>
-      <circle cx="-8"  cy="-30" r="5.2" fill="#180800"/>
-      <circle cx="10"  cy="-30" r="5.2" fill="#180800"/>
-      <!-- Eye highlights -->
-      <circle cx="-7"  cy="-32" r="2.2" fill="white"/>
-      <circle cx="11"  cy="-32" r="2.2" fill="white"/>
-      <circle cx="-11" cy="-28" r="1.1" fill="rgba(255,255,255,0.55)"/>
-      <circle cx="7"   cy="-28" r="1.1" fill="rgba(255,255,255,0.55)"/>
-
-      <!-- Blush -->
-      <circle cx="-16" cy="-22" r="5.5" fill="rgba(235,120,80,0.22)"/>
-      <circle cx="16"  cy="-22" r="5.5" fill="rgba(235,120,80,0.22)"/>
-
-      <!-- Smile -->
-      <path d="M-8,-17 Q0,-11 8,-17"
-            stroke="#2D1400" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-
-      <!-- Antennae -->
-      <path d="M-7,-52 Q-17,-65 -25,-70"
-            stroke="#2D1400" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <path d="M7,-52 Q17,-65 25,-70"
-            stroke="#2D1400" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <circle cx="-25" cy="-70" r="3.8" fill="#F5A623" stroke="#2D1400" stroke-width="1"/>
-      <circle cx="25"  cy="-70" r="3.8" fill="#F5A623" stroke="#2D1400" stroke-width="1"/>
-
-      <!-- SMIL: motion along flight path -->
-      <animateMotion id="bviz-motion" begin="indefinite"
-        dur="4.5s" fill="freeze" rotate="none" calcMode="spline"
-        keyTimes="0;1" keySplines="0.4,0,0.3,1"
-        path="M 440,95 C 290,-25 25,185 155,308 S 375,398 192,455"/>
-    </g>
   </svg>
+
+  <!-- Bee (real illustration, 2-frame sprite for wing flap) -->
+  <div class="bviz__bee-wrap" id="bviz-bee">
+    <div class="bviz__bee-sprite">
+      <img class="bviz__frame bviz__frame--1" src="/bee/bee1.svg" alt="" width="180" height="180" loading="eager" decoding="async"/>
+      <img class="bviz__frame bviz__frame--2" src="/bee/bee2.svg" alt="" width="180" height="180" loading="eager" decoding="async"/>
+    </div>
+  </div>
 </div>
 
 <script is:inline>
 (function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var bee     = document.getElementById('bviz-bee');
-  var motion  = document.getElementById('bviz-motion');
   var maskP   = document.getElementById('bviz-mask-p');
   var flower  = document.querySelector('.bviz__flower');
-  var wl      = document.querySelector('.bviz__wing-l');
-  var wr      = document.querySelector('.bviz__wing-r');
+  var frames  = document.querySelectorAll('.bviz__frame');
 
-  if (!bee || !motion || !maskP) return;
+  if (!bee || !maskP) return;
 
   if (reduced) {
-    bee.setAttribute('opacity', '1');
-    // Place bee at flower
-    bee.setAttribute('transform', 'translate(192,430)');
+    bee.style.offsetDistance = '100%';
+    bee.style.opacity = '1';
+    if (flower) flower.classList.add('bviz__flower--land');
     return;
   }
 
-  // ── Trail reveal setup (JS measures path length for clean draw) ──
+  // Trail reveal
   var len = Math.ceil(maskP.getTotalLength());
   maskP.style.strokeDasharray = len;
   maskP.style.strokeDashoffset = len;
 
-  // ── Intersection observer — start animation on scroll into view ──
   var started = false;
   var io = new IntersectionObserver(function (entries) {
     if (started || !entries[0].isIntersecting) return;
     started = true;
     io.disconnect();
 
-    // Show bee (it appears off-screen at path start x=440, outside viewBox)
-    bee.setAttribute('opacity', '1');
+    bee.style.opacity = '1';
+    bee.classList.add('bviz__bee-wrap--fly');
 
-    // Start SMIL motion
-    motion.beginElement();
-
-    // Draw trail (slight offset so it trails a little behind the bee)
+    // Draw trail slightly behind the bee
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        maskP.style.transition = 'stroke-dashoffset 4.2s linear 0.25s';
+        maskP.style.transition = 'stroke-dashoffset 4.2s linear 0.2s';
         maskP.style.strokeDashoffset = '0';
       });
     });
 
-    // Flower wobble on landing (0s delay + 4.5s fly = 4.5s total)
+    // Landing
     setTimeout(function () {
       if (flower) flower.classList.add('bviz__flower--land');
-      // Slow wings to idle
-      if (wl) wl.style.animationDuration = '0.7s';
-      if (wr) wr.style.animationDuration = '0.7s';
-    }, 4500);
+      // Slow wing flap to idle
+      frames.forEach(function (f) { f.style.animationDuration = '0.6s'; });
+    }, 4600);
 
-  }, { threshold: 0.25 });
+  }, { threshold: 0.2 });
 
   var root = document.querySelector('.bviz');
   if (root) io.observe(root);
@@ -192,54 +113,92 @@
     width: 100%;
     aspect-ratio: 380 / 520;
   }
-  .bviz__svg {
+  .bviz__stage {
     width: 100%;
     height: 100%;
     display: block;
     overflow: visible;
   }
 
-  /* ── Wings: scaleX flap simulates wing going edge-on ── */
-  .bviz__wing-l {
-    transform-box: fill-box;
-    transform-origin: 100% 55%;
-    animation: bviz-flap 0.13s ease-in-out infinite alternate;
+  /* ── Bee follows flight path ── */
+  .bviz__bee-wrap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 180px;
+    height: 180px;
+    margin-left: -90px;
+    margin-top: -90px;
+    opacity: 0;
+    offset-path: path("M 440,70 C 290,-40 20,160 150,295 S 370,395 192,455");
+    offset-distance: 0%;
+    offset-rotate: 0deg;
+    /* JS adds this class to start motion */
   }
-  .bviz__wing-r {
-    transform-box: fill-box;
-    transform-origin: 0% 55%;
-    animation: bviz-flap 0.13s ease-in-out 0.065s infinite alternate;
+  .bviz__bee-wrap--fly {
+    transition: opacity 0.2s ease;
+    animation: bviz-fly 4.5s cubic-bezier(0.4, 0, 0.3, 1) forwards,
+               bviz-bob 0.55s ease-in-out infinite;
   }
-  @keyframes bviz-flap {
-    from { transform: scaleX(1); }
-    to   { transform: scaleX(0.07); }
+  @keyframes bviz-fly {
+    to { offset-distance: 100%; }
+  }
+  @keyframes bviz-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
   }
 
-  /* ── Flower: gentle idle sway, then wobble on landing ── */
+  /* ── 2-frame sprite wing flap ── */
+  .bviz__bee-sprite {
+    position: relative;
+    width: 180px;
+    height: 180px;
+  }
+  .bviz__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Remove white background from illustration */
+    mix-blend-mode: multiply;
+  }
+  .bviz__frame--1 {
+    animation: bviz-sprite 0.14s steps(1) infinite;
+  }
+  .bviz__frame--2 {
+    animation: bviz-sprite 0.14s steps(1) 0.07s infinite;
+  }
+  @keyframes bviz-sprite {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* ── Flower ── */
   .bviz__flower {
     transform-box: fill-box;
-    transform-origin: 50% 95%;
+    transform-origin: 50% 96%;
     animation: bviz-sway 3.5s ease-in-out infinite;
   }
   .bviz__flower--land {
-    animation: bviz-land-wobble 1s ease-in-out forwards,
-               bviz-sway 3.5s ease-in-out 1s infinite;
+    animation: bviz-wobble 0.9s ease-in-out forwards,
+               bviz-sway 3.5s ease-in-out 0.9s infinite;
   }
   @keyframes bviz-sway {
-    0%,100% { transform: rotate(0deg); }
-    50%     { transform: rotate(4deg); }
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(3.5deg); }
   }
-  @keyframes bviz-land-wobble {
+  @keyframes bviz-wobble {
     0%   { transform: rotate(0deg); }
-    15%  { transform: rotate(-14deg); }
-    38%  { transform: rotate(9deg); }
+    16%  { transform: rotate(-13deg); }
+    38%  { transform: rotate(8deg); }
     58%  { transform: rotate(-5deg); }
     76%  { transform: rotate(3deg); }
     100% { transform: rotate(0deg); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bviz__wing-l, .bviz__wing-r { animation: none; }
+    .bviz__frame--1, .bviz__frame--2 { animation: none; }
+    .bviz__frame--2 { opacity: 0; }
     .bviz__flower { animation: none; }
   }
 </style>
