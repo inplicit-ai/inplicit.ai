@@ -8,8 +8,6 @@ const { lang = 'en' } = Astro.props;
 const cta = lang === 'de' ? 'Demo buchen' : 'Book demo';
 const toggleHref = lang === 'de' ? '/' : '/de/';
 const toggleLabel = lang === 'de' ? 'EN' : 'DE';
-const researchHref = lang === 'de' ? '/de/research' : '/research';
-const researchLabel = lang === 'de' ? 'Forschung' : 'Research';
 ---
 
 <nav class="nav" id="nav">
@@ -18,7 +16,6 @@ const researchLabel = lang === 'de' ? 'Forschung' : 'Research';
       <span class="nav__logo-mark" set:html={logoRaw} />
     </a>
     <div class="nav__actions">
-      <a href={researchHref} class="nav__link">{researchLabel}</a>
       <a href={toggleHref} class="nav__lang" aria-label={`Switch to ${toggleLabel}`}>
         {toggleLabel}
       </a>
@@ -95,18 +92,6 @@ const researchLabel = lang === 'de' ? 'Forschung' : 'Research';
     gap: var(--space-2);
   }
 
-  .nav__link {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    letter-spacing: 0.01em;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-ui);
-    transition: color 0.15s var(--ease-smooth);
-  }
-  .nav__link:hover { color: var(--color-text-primary); }
-
-  @media (max-width: 520px) { .nav__link { display: none; } }
 
   .nav__lang {
     font-size: var(--text-sm);
@@ -194,4 +179,19 @@ const researchLabel = lang === 'de' ? 'Forschung' : 'Research';
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
   }
+</script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.nav__cta')?.addEventListener('click', function () {
+      window.posthog?.capture('nav_demo_cta_clicked');
+    });
+    document.querySelector('.nav__login')?.addEventListener('click', function () {
+      window.posthog?.capture('nav_login_clicked');
+    });
+    document.querySelector('.nav__lang')?.addEventListener('click', function () {
+      var currentLang = document.documentElement.lang || 'en';
+      window.posthog?.capture('language_switched', { from_lang: currentLang, to_lang: currentLang === 'de' ? 'en' : 'de' });
+    });
+  });
 </script>

@@ -26,7 +26,8 @@ Website/
         │   └── Layout.astro     ← root shell: meta/SEO, Inter font, global CSS
         ├── components/
         │   ├── Nav.astro        ← sticky nav, logo SVG, theme toggle, CTA
-        │   ├── Hero.astro       ← full-viewport, 64px headline, fade-up anim
+        │   ├── Hero.astro       ← headline + CTAs, fade-up anim; hosts HeroNetworkViz
+        │   ├── HeroNetworkViz.astro ← isometric "role → role-context" extraction animation
         │   ├── HowItWorks.astro ← 01/02/03/04 numbered steps (2-col grid)
         │   ├── TheProblem.astro ← 2-col Kodak framing (signal + aggregation)
         │   ├── Applications.astro ← 4-card gallery of use-case applications
@@ -39,12 +40,8 @@ Website/
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
             ├── privacy.astro    ← GDPR Datenschutzerklärung (DE + EN) ⚠ placeholders
             ├── terms.astro      ← Terms of Service (EN only)
-            ├── research.astro   ← EN coming-soon (uses ComingSoon.astro)
-            ├── how-it-works.astro ← EN coming-soon detail page (uses ComingSoon.astro)
             └── de/
-                ├── index.astro  ← DE landing (same components, lang="de")
-                ├── research.astro ← DE coming-soon
-                └── how-it-works.astro ← DE coming-soon detail page
+                └── index.astro  ← DE landing (same components, lang="de")
 ```
 
 ---
@@ -77,8 +74,6 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `/imprint` | `pages/imprint.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/privacy` | `pages/privacy.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/terms` | `pages/terms.astro` | EN only; ⚠ city placeholder in governing law clause |
-| `/research`, `/de/research` | `pages/research.astro`, `pages/de/research.astro` | Coming-soon stub via `ComingSoon.astro`; linked from Nav |
-| `/how-it-works`, `/de/how-it-works` | `pages/how-it-works.astro`, `pages/de/how-it-works.astro` | Coming-soon stub; linked from HowItWorks "Learn more" |
 
 ---
 

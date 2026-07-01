@@ -102,6 +102,17 @@ const CAL_LINK = 'inplicit/30min';
     styles: { branding: { brandColor: '#f5a623' } },
     hideEventTypeDetails: false,
   });
+
+  var calSection = document.getElementById('book-demo');
+  if (calSection) {
+    var calObserver = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        window.posthog?.capture('cal_booking_section_viewed');
+        calObserver.disconnect();
+      }
+    }, { threshold: 0.2 });
+    calObserver.observe(calSection);
+  }
 </script>
 
 <style>
@@ -144,7 +155,7 @@ const CAL_LINK = 'inplicit/30min';
     color: var(--color-text-primary);
   }
 
-  .cal__heading-ghost { font-family: var(--font-display); font-style: italic; }
+  .cal__heading-ghost { opacity: 0.25; }
 
   .cal__sub {
     font-size: var(--text-base);

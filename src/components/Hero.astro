@@ -65,6 +65,14 @@ const isDE = lang === 'de';
   </div>
 </section>
 
+<script is:inline>
+document.querySelector('.hero__cta-primary')?.addEventListener('click', function () {
+  window.posthog?.capture('hero_demo_cta_clicked');
+});
+document.querySelector('.hero__cta-secondary')?.addEventListener('click', function () {
+  window.posthog?.capture('hero_how_it_works_clicked');
+});
+</script>
 
 <style>
   .hero {
@@ -109,10 +117,8 @@ const isDE = lang === 'de';
   }
   .hero__line { color: var(--color-text-primary); }
   .hero__line em {
-    font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 400;
-    letter-spacing: -0.005em;
   }
   .hero__line--ghost { opacity: 0.34; }
 
