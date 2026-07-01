@@ -11,27 +11,27 @@ const isDE = lang === 'de';
 const steps = isDE ? [
   { num: '01', title: 'Setup',
     body: 'Beschreibe, was du erfahren willst und wer befragt wird. Der Setup-Agent macht daraus in Minuten eine fertige Kampagne.' },
-  { num: '02', title: 'Gespräche',
-    body: 'Deine Leute sprechen mit dem Agenten. Ein Sprachgespräch von etwa 20 Minuten, anonym, wann es ihnen passt. Sie wissen, dass sie mit einer KI sprechen.' },
+  { num: '02', title: 'Interviews',
+    body: 'Deine Mitarbeitenden sprechen mit unserem KI-Agenten. Ein Gespräch von etwa 20 Minuten, anonym, wann es ihnen passt. Sie wissen, dass sie mit einer KI sprechen.' },
   { num: '03', title: 'Synthese',
-    body: 'Jedes Gespräch wird zu strukturierten Signalen. Das System liest die Transkripte und indexiert, was die Belegschaft weiß.' },
-  { num: '04', title: 'Vorschläge',
-    body: 'Sieh das Problem, die Idee deiner Leute und die Geschäftschance dahinter. Jede Karte führt zum genauen Zitat.' },
+    body: 'Jedes Interview wird zu strukturierten Signalen. Das System liest die Transkripte und indexiert, was die Belegschaft weiß.' },
+  { num: '04', title: 'Lösungsvorschläge',
+    body: 'Sieh das Problem, den Vorschlag deiner Mitarbeitenden und die Chance dahinter. Jede Karte führt zum genauen Zitat.' },
   { num: '05', title: 'Wissens-Chat',
-    body: 'Frag deine Belegschaftsdaten in normaler Sprache. Antworten kommen mit Belegen zu einer anonymen Quelle zurück.' },
+    body: 'Durchsuche das Wissen und den Kontext deiner Organisation in normaler Sprache. Antworten kommen mit Belegen zu einer anonymen Quelle zurück.' },
   { num: '06', title: 'Autonome Recherche', beta: true,
     body: 'Wenn die Daten die Antwort noch nicht hergeben, holt Inplicit sie. Es startet eine gezielte Interview-Runde und meldet sich per E-Mail, sobald die Ergebnisse da sind.' },
 ] : [
   { num: '01', title: 'Setup',
     body: 'Describe what you want to learn and who gets asked. The setup agent turns it into a ready campaign in minutes.' },
-  { num: '02', title: 'Conversations',
-    body: 'Your people talk to the agent. A voice conversation of about 20 minutes, anonymous, on their own schedule. They are told they speak with an AI.' },
+  { num: '02', title: 'Interviews',
+    body: 'Your workforce talks to our AI agent. A conversation of about 20 minutes, anonymous, on their own schedule. They are told they speak with an AI.' },
   { num: '03', title: 'Synthesis',
-    body: 'Every conversation becomes structured signals. The system reads the transcripts and indexes what the workforce knows.' },
-  { num: '04', title: 'Suggestions',
-    body: 'See the problem, the idea your people already have, and the business opportunity behind it. Every card links to the exact quote.' },
+    body: 'Every interview becomes structured signals. The system reads the transcripts and indexes what the workforce knows.' },
+  { num: '04', title: 'Solution suggestions',
+    body: 'See the problem, the solution your workforce suggests, and the opportunity behind it. Every card links to the exact quote.' },
   { num: '05', title: 'Knowledge chat',
-    body: 'Ask your workforce data in plain language. Answers come back with citations to an anonymous source.' },
+    body: "Search your organisation's knowledge and context in plain language. Answers come back with citations to an anonymous source." },
   { num: '06', title: 'Autonomous research', beta: true,
     body: 'If the data does not hold the answer yet, Inplicit goes and finds it. It runs a focused round of interviews and emails you when the results are ready.' },
 ];
@@ -96,16 +96,17 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                   </div>
                   <div class="msg msg--agent">
                     <span class="msg__av msg__av--agent" set:html={logoIconRaw} />
-                    <div class="msg__bubble msg__bubble--agent">{isDE ? 'Ich habe einen Katalog mit 8 Fragen für Operations und Logistik entworfen. Möchtest du ihn ansehen?' : 'I drafted a catalog of 8 questions for Operations and Logistics. Want to review it?'}</div>
+                    <div class="msg__bubble msg__bubble--agent">{isDE ? 'Ich habe eine Interview-Kampagne mit 8 Fragen rund ums Tagesgeschäft entworfen. Möchtest du sie ansehen?' : 'I drafted an interview campaign of 8 questions around daily operations. Want to review it?'}</div>
                   </div>
                 </div>
                 <div class="composer">
                   <div class="composer__chips">
                     <span class="composer__chip">{isDE ? 'Fragen ansehen' : 'Review questions'}</span>
-                    <span class="composer__chip">{isDE ? 'Finance ergänzen' : 'Add Finance'}</span>
+                    <span class="composer__chip">{isDE ? 'Fokus setzen' : 'Narrow the focus'}</span>
+                    <span class="composer__chip">{isDE ? 'Kontext ergänzen' : 'Add context'}</span>
                   </div>
                   <div class="composer__input">
-                    <span class="composer__placeholder">{isDE ? 'Antworte oder bitte den Assistenten, den Katalog anzupassen…' : 'Reply or ask the assistant to adjust the catalog…'}</span>
+                    <span class="composer__placeholder">{isDE ? 'Antworte oder bitte den Assistenten, die Interview-Kampagne anzupassen…' : 'Reply or ask the assistant to adjust the interview campaign…'}</span>
                     <span class="composer__send" set:html={sendIcon} />
                   </div>
                 </div>
@@ -150,7 +151,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                     <rect x="8" y="30" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
                     <rect x="8" y="93" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
                     <rect x="8" y="156" width="96" height="34" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
-                    <text x="56" y="52" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Gespräche' : 'Conversations'}</text>
+                    <text x="56" y="52" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Interviews' : 'Interviews'}</text>
                     <text x="56" y="115" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Dokumente' : 'Documents'}</text>
                     <text x="56" y="178" text-anchor="middle" font-size="11" font-weight="500" fill="var(--color-text-secondary)" font-family="Inter, sans-serif">{isDE ? 'Systeme' : 'Systems'}</text>
                     <path class="synth__path synth__path--1" d="M104 47 C160 47 162 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
@@ -166,7 +167,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                 <div class="synth__list">
                   <div class="synth__step synth__step--done">
                     <span class="synth__ic"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    <span class="synth__txt">{isDE ? 'Gespräche gelesen' : 'Conversations read'}</span>
+                    <span class="synth__txt">{isDE ? 'Interviews gelesen' : 'Interviews read'}</span>
                     <span class="synth__tag synth__tag--done">{isDE ? 'Fertig' : 'Done'}</span>
                   </div>
                   <div class="synth__step synth__step--active">

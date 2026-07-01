@@ -206,6 +206,13 @@ const cards: AppCard[] = isDE ? [
     border-radius: var(--radius-ui);
     color: var(--color-text-secondary);
     flex-shrink: 0;
+    transition: color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth), background 0.2s var(--ease-smooth);
+  }
+
+  .apps__card:hover .apps__card-icon {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
   }
 
   .apps__card-tag {
