@@ -1,6 +1,6 @@
 ---
 import GradientField from './ui/GradientField.astro';
-import HeroNetworkViz from './HeroNetworkViz.astro';
+import HeroBeeViz from './HeroBeeViz.astro';
 
 export interface Props {
   lang?: 'en' | 'de';
@@ -59,7 +59,7 @@ const isDE = lang === 'de';
     </div>
 
     <div class="hero__visual">
-      <HeroNetworkViz lang={lang} />
+      <HeroBeeViz />
     </div>
 
   </div>
