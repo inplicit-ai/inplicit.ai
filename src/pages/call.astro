@@ -1,5 +1,6 @@
 ---
 import '../styles/design.css';
+import '@fontsource-variable/inter';
 
 const CAL_LINK = 'inplicit/30min';
 ---
@@ -13,49 +14,59 @@ const CAL_LINK = 'inplicit/30min';
     <link rel="icon" href="/favicon.ico" />
     <title>Book a call · Inplicit</title>
     <meta name="robots" content="noindex, nofollow" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <!-- Inter self-hosted via @fontsource-variable/inter (no Google Fonts) -->
   </head>
   <body>
     <main>
+      <div id="cal-placeholder">
+        <p>The booking calendar is provided by Cal.com (hosted in the EU). Loading it connects to their servers and may set cookies.</p>
+        <button type="button" id="cal-load">Load calendar</button>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
       <div id="cal-inline" data-cal-link={CAL_LINK}></div>
     </main>
 
     <script is:inline>
-      (function (C, A, INIT) {
-        const p = (a, ar) => { a.q.push(ar); };
-        const d = C.document;
-        C.Cal = C.Cal || function () {
-          const cal = C.Cal;
-          const ar = arguments;
-          if (!cal.loaded) {
-            cal.ns = {};
-            cal.q = cal.q || [];
-            d.head.appendChild(d.createElement('script')).src = A;
-            cal.loaded = true;
-          }
-          if (ar[0] === INIT) {
-            const api = function () { p(api, arguments); };
-            const ns = ar[1];
-            api.q = api.q || [];
-            typeof ns === 'string' ? (cal.ns[ns] = api) && p(api, ar) : p(cal, ar);
-            return;
-          }
-          p(cal, ar);
-        };
-      })(window, 'https://app.cal.eu/embed/embed.js', 'init');
+      function loadCal() {
+        (function (C, A, INIT) {
+          const p = (a, ar) => { a.q.push(ar); };
+          const d = C.document;
+          C.Cal = C.Cal || function () {
+            const cal = C.Cal;
+            const ar = arguments;
+            if (!cal.loaded) {
+              cal.ns = {};
+              cal.q = cal.q || [];
+              d.head.appendChild(d.createElement('script')).src = A;
+              cal.loaded = true;
+            }
+            if (ar[0] === INIT) {
+              const api = function () { p(api, arguments); };
+              const ns = ar[1];
+              api.q = api.q || [];
+              typeof ns === 'string' ? (cal.ns[ns] = api) && p(api, ar) : p(cal, ar);
+              return;
+            }
+            p(cal, ar);
+          };
+        })(window, 'https://app.cal.eu/embed/embed.js', 'init');
 
-      Cal('init', { origin: 'https://cal.eu' });
-      Cal('inline', {
-        elementOrSelector: '#cal-inline',
-        calLink: 'inplicit/30min',
-        layout: 'month_view',
-        config: { theme: 'light', locale: 'de' },
-      });
-      Cal('ui', {
-        styles: { branding: { brandColor: '#f5a623' } },
-        hideEventTypeDetails: false,
+        Cal('init', { origin: 'https://cal.eu' });
+        Cal('inline', {
+          elementOrSelector: '#cal-inline',
+          calLink: 'inplicit/30min',
+          layout: 'month_view',
+          config: { theme: 'light', locale: 'de' },
+        });
+        Cal('ui', {
+          styles: { branding: { brandColor: '#f5a623' } },
+          hideEventTypeDetails: false,
+        });
+      }
+
+      document.getElementById('cal-load')?.addEventListener('click', function () {
+        document.getElementById('cal-placeholder')?.remove();
+        loadCal();
       });
     </script>
   </body>
@@ -87,5 +98,41 @@ const CAL_LINK = 'inplicit/30min';
 
   #cal-inline iframe.cal-embed {
     height: 100% !important;
+  }
+
+  #cal-placeholder {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+
+  #cal-placeholder p {
+    font-size: var(--text-sm);
+    line-height: 1.65;
+    max-width: 360px;
+  }
+
+  #cal-placeholder button {
+    padding: var(--space-3) var(--space-6);
+    border: none;
+    border-radius: var(--radius-ui);
+    background: var(--color-cta-bg);
+    color: var(--color-cta-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #cal-placeholder a {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    text-decoration: underline;
   }
 </style>

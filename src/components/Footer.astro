@@ -67,11 +67,20 @@ const legalLinks = lang === 'de'
         {legalLinks.map((link) => (
           <a href={link.href} class="footer__legal-link">{link.label}</a>
         ))}
+        <button type="button" class="footer__legal-link footer__legal-btn" data-consent-open>
+          {lang === 'de' ? 'Cookie-Einstellungen' : 'Cookie settings'}
+        </button>
       </nav>
     </div>
 
   </div>
 </footer>
+
+<script>
+  document.querySelector('[data-consent-open]')?.addEventListener('click', () => {
+    window.dispatchEvent(new Event('implicit:open-consent'));
+  });
+</script>
 
 <style>
   .footer {
@@ -169,6 +178,14 @@ const legalLinks = lang === 'de'
   }
 
   .footer__legal-link:hover { color: rgba(255, 255, 255, 0.6); }
+
+  .footer__legal-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
 
   @media (max-width: 640px) {
     .footer__bottom { flex-direction: column; align-items: flex-start; }
