@@ -1,0 +1,144 @@
+---
+/*
+ * GradientField — a slow, living warm gradient for light hero/section backgrounds.
+ * A full-bleed WebGL fragment shader (simplex-noise blend of paper -> amber -> ember,
+ * token-driven, low-contrast so text stays readable). Falls back to a layered CSS
+ * radial-gradient (also the pre-JS paint) when WebGL is unavailable or reduced-motion
+ * is set. Drop inside a `position: relative` parent. Modeled on the AgentOrb WebGL pattern.
+ */
+---
+
+<div class="gradient-field" aria-hidden="true"></div>
+
+<script is:inline>
+(function () {
+  var hosts = document.querySelectorAll('.gradient-field');
+  if (!hosts.length) return;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return; // CSS fallback paint stays
+
+  function hexToVec3(hex) {
+    hex = (hex || '').trim().replace('#', '');
+    if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    var n = parseInt(hex, 16);
+    if (isNaN(n) || hex.length < 6) return [1, 1, 1];
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  }
+  var cs = getComputedStyle(document.documentElement);
+  var cPaper = hexToVec3(cs.getPropertyValue('--color-bg') || '#faf8f4');
+  var cAmber = hexToVec3(cs.getPropertyValue('--color-accent') || '#f5a623');
+  var cEmber = hexToVec3(cs.getPropertyValue('--color-ember') || '#d8741f');
+
+  var VERT = 'precision highp float;\n' +
+    'attribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUv;\n' +
+    'void main(){ vUv = uv; gl_Position = vec4(position, 0.0, 1.0); }';
+
+  var FRAG = `
+  precision highp float;
+  uniform float iTime;
+  uniform vec2 iResolution;
+  uniform vec3 cPaper;
+  uniform vec3 cAmber;
+  uniform vec3 cEmber;
+  varying vec2 vUv;
+  vec3 hash33(vec3 p3){ p3=fract(p3*vec3(0.1031,0.11369,0.13787)); p3+=dot(p3,p3.yxz+19.19); return -1.0+2.0*fract(vec3(p3.x+p3.y,p3.x+p3.z,p3.y+p3.z)*p3.zyx); }
+  float snoise3(vec3 p){ const float K1=0.333333333; const float K2=0.166666667; vec3 i=floor(p+(p.x+p.y+p.z)*K1); vec3 d0=p-(i-(i.x+i.y+i.z)*K2); vec3 e=step(vec3(0.0),d0-d0.yzx); vec3 i1=e*(1.0-e.zxy); vec3 i2=1.0-e.zxy*(1.0-e); vec3 d1=d0-(i1-K2); vec3 d2=d0-(i2-K1); vec3 d3=d0-0.5; vec4 h=max(0.6-vec4(dot(d0,d0),dot(d1,d1),dot(d2,d2),dot(d3,d3)),0.0); vec4 n=h*h*h*h*vec4(dot(d0,hash33(i)),dot(d1,hash33(i+i1)),dot(d2,hash33(i+i2)),dot(d3,hash33(i+1.0))); return dot(vec4(31.316),n); }
+  float fbm(vec3 p){ float v=0.0; float a=0.5; for(int i=0;i<4;i++){ v+=a*snoise3(p); p*=2.0; a*=0.5; } return v; }
+  void main(){
+    vec2 uv = vUv;
+    float asp = iResolution.x / max(iResolution.y, 1.0);
+    vec2 p = vec2(uv.x * asp, uv.y);
+    float t = iTime * 0.06;
+    float n  = fbm(vec3(p * 1.5, t)) * 0.5 + 0.5;
+    float n2 = fbm(vec3(p * 0.8 + 7.0, t * 0.7)) * 0.5 + 0.5;
+    // Keep the left calmer (text column); blooms drift toward the right.
+    float right = smoothstep(0.1, 0.95, uv.x);
+    vec3 col = cPaper;
+    float amber = smoothstep(0.45, 0.9, n) * mix(0.35, 1.0, right);
+    float ember = smoothstep(0.62, 0.97, n2) * right;
+    col = mix(col, cAmber, amber * 0.5);
+    col = mix(col, cEmber, ember * 0.3);
+    gl_FragColor = vec4(col, 1.0);
+  }`;
+
+  hosts.forEach(function (host) {
+    var canvas = document.createElement('canvas');
+    var gl = null;
+    try {
+      var opts = { alpha: false, antialias: true, premultipliedAlpha: false };
+      gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
+    } catch (e) { gl = null; }
+    if (!gl) return; // CSS fallback paint stays
+
+    function compile(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; }
+    var vs = compile(gl.VERTEX_SHADER, VERT), fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    if (!vs || !fs) return;
+    var prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    var posLoc = gl.getAttribLocation(prog, 'position'), uvLoc = gl.getAttribLocation(prog, 'uv');
+    var pb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW); gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+    var ub = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, ub); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 2,0, 0,2]), gl.STATIC_DRAW); gl.enableVertexAttribArray(uvLoc); gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 0, 0);
+
+    var uTime = gl.getUniformLocation(prog, 'iTime'), uRes = gl.getUniformLocation(prog, 'iResolution');
+    gl.uniform3fv(gl.getUniformLocation(prog, 'cPaper'), cPaper);
+    gl.uniform3fv(gl.getUniformLocation(prog, 'cAmber'), cAmber);
+    gl.uniform3fv(gl.getUniformLocation(prog, 'cEmber'), cEmber);
+
+    // Canvas is created in JS, so it never gets Astro's scoped data-astro-cid
+    // attribute — scoped CSS can't reach it. Style it inline instead so it
+    // reliably fills the host at any height (CLAUDE.md: absolute children need explicit width).
+    canvas.className = 'gradient-field__canvas';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:block;';
+    host.appendChild(canvas);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize() {
+      var w = host.clientWidth || 1, h = host.clientHeight || 1;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    // Track the host's own size — the hero grows taller after fonts swap and the
+    // product window lays out, long after the initial resize() above.
+    if ('ResizeObserver' in window) { new ResizeObserver(resize).observe(host); }
+
+    var running = true, raf = 0;
+    function tick(t) {
+      if (!running) return;
+      raf = requestAnimationFrame(tick);
+      gl.useProgram(prog);
+      gl.uniform1f(uTime, t * 0.001);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    function start() { running = true; if (!raf) raf = requestAnimationFrame(tick); }
+    function stop() { running = false; if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { es[0].isIntersecting ? start() : stop(); }, { threshold: 0 }).observe(host);
+    }
+    raf = requestAnimationFrame(tick);
+  });
+})();
+</script>
+
+<style>
+  .gradient-field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* CSS fallback paint — also the pre-JS / reduced-motion look. */
+    background:
+      radial-gradient(58% 70% at 80% 34%, var(--color-accent-light), transparent 70%),
+      radial-gradient(46% 58% at 92% 82%, rgba(216, 116, 31, 0.16), transparent 72%),
+      radial-gradient(80% 90% at 18% 22%, rgba(245, 166, 35, 0.05), transparent 70%),
+      var(--color-bg);
+  }
+  /* The canvas is created + styled inline in JS (it can't receive scoped CSS).
+     Under reduced-motion the script returns early and no canvas is created,
+     so only the CSS fallback paint above is shown. */
+</style>

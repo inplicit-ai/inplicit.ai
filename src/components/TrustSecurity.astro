@@ -119,13 +119,6 @@ const items: TrustItem[] = isDE ? [
       ))}
     </div>
 
-    <div class="trust__cta-wrap section-fade">
-      <button class="trust__cta-link trust__cta-link--soon" type="button" disabled aria-disabled="true">
-        {isDE ? 'Trust Center' : 'Trust Center'}
-        <span class="trust__cta-soon">{isDE ? 'Bald verfügbar' : 'Coming soon'}</span>
-      </button>
-    </div>
-
   </div>
 </section>
 
@@ -230,53 +223,5 @@ const items: TrustItem[] = isDE ? [
 
   @media (max-width: 767px) {
     .trust__card { padding: var(--space-6); }
-  }
-
-  /* CTA link - matches hero secondary CTA */
-  .trust__cta-wrap {
-    display: flex;
-  }
-
-  .trust__cta-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    height: 48px;
-    color: var(--color-text-secondary);
-    font-size: var(--text-base);
-    font-weight: 500;
-    border-radius: var(--radius-ui);
-    border: 1px solid var(--color-border);
-    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
-  }
-
-  .trust__cta-link:hover {
-    color: var(--color-text-primary);
-    border-color: var(--color-text-tertiary);
-  }
-
-  /* Coming-soon state — non-interactive */
-  .trust__cta-link--soon {
-    font-family: var(--font-family);
-    color: var(--color-text-tertiary);
-    cursor: not-allowed;
-  }
-
-  .trust__cta-link--soon:hover {
-    color: var(--color-text-tertiary);
-    border-color: var(--color-border);
-  }
-
-  .trust__cta-soon {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    background: var(--color-accent-light);
-    border: 1px solid var(--color-accent-muted);
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
   }
 </style>

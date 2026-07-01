@@ -1,0 +1,177 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+
+const t = lang === 'de'
+  ? {
+      region: 'Cookie-Einwilligung',
+      title: 'Cookie-Präferenzen',
+      body: 'Wir verwenden Cookies, um den Website-Traffic zu analysieren und die Nutzung von inplicit.ai zu verstehen. Analyse-Cookies werden ausschließlich mit Ihrer Einwilligung gesetzt. Ihre Auswahl können Sie jederzeit über „Cookie-Einstellungen“ im Footer widerrufen.',
+      privacy: 'Datenschutzerklärung',
+      decline: 'Ablehnen',
+      accept: 'Akzeptieren',
+    }
+  : {
+      region: 'Cookie consent',
+      title: 'Cookie preferences',
+      body: 'We use cookies to analyse site traffic and understand how inplicit.ai is used. Analytics cookies are set only with your consent. You can withdraw your choice at any time via “Cookie settings” in the footer.',
+      privacy: 'Privacy Policy',
+      decline: 'Decline',
+      accept: 'Accept',
+    };
+---
+
+<section id="consent-banner" class="consent" role="dialog" aria-modal="false" aria-label={t.region} inert>
+  <div class="consent__card">
+    <div class="consent__text">
+      <p class="consent__title">{t.title}</p>
+      <p class="consent__body">
+        {t.body}{' '}
+        <a href="/privacy" class="consent__link">{t.privacy}</a>
+      </p>
+    </div>
+    <div class="consent__actions">
+      <button type="button" class="consent__btn consent__btn--ghost" data-consent="decline">{t.decline}</button>
+      <button type="button" class="consent__btn consent__btn--solid" data-consent="accept">{t.accept}</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const KEY = 'implicit_consent';
+  const VERSION = 1;
+  const TTL = 31536000000; // 12 months in ms — consent must be refreshed, not indefinite
+  const banner = document.getElementById('consent-banner');
+
+  if (banner) {
+    const show = () => { banner.removeAttribute('inert'); banner.classList.add('is-visible'); };
+    const hide = () => { banner.setAttribute('inert', ''); banner.classList.remove('is-visible'); };
+
+    const apply = (status: 'granted' | 'denied') => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ status, v: VERSION, ts: Date.now() }));
+      } catch (e) { /* private mode */ }
+      const consent = (window as any).__implicitConsent;
+      if (status === 'granted') {
+        consent?.init?.();
+        (window as any).posthog?.opt_in_capturing?.();
+      } else {
+        consent?.stop?.();
+      }
+    };
+
+    // A stored choice only counts if it matches the current version and hasn't expired.
+    const hasValidChoice = (): boolean => {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return false;
+        const c = JSON.parse(raw);
+        return !!c && c.v === VERSION
+          && (c.status === 'granted' || c.status === 'denied')
+          && (Date.now() - c.ts) < TTL;
+      } catch (e) { return false; }
+    };
+
+    if (!hasValidChoice()) show();
+
+    banner.querySelector('[data-consent="accept"]')?.addEventListener('click', () => { apply('granted'); hide(); });
+    banner.querySelector('[data-consent="decline"]')?.addEventListener('click', () => { apply('denied'); hide(); });
+
+    // Re-open from the footer "Cookie settings" link (consent withdrawal, GDPR Art. 7(3)).
+    window.addEventListener('implicit:open-consent', show);
+  }
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    right: var(--space-4);
+    z-index: 10000;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-spring);
+  }
+
+  .consent.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .consent__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .consent__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .consent__body {
+    font-size: var(--text-sm);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+
+  .consent__link {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .consent__actions {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .consent__btn {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-ui);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: opacity 0.15s var(--ease-smooth), background-color 0.15s var(--ease-smooth);
+  }
+
+  /* Filled secondary — equal visual weight to Accept so neither choice is nudged
+     (EDPB 03/2022 on deceptive design: reject must be as easy and as prominent). */
+  .consent__btn--ghost {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  .consent__btn--ghost:hover { background: var(--color-bg); }
+
+  .consent__btn--solid {
+    background: var(--color-cta-bg);
+    color: var(--color-cta-text);
+  }
+
+  .consent__btn--solid:hover { opacity: 0.88; }
+
+  @media (min-width: 480px) {
+    .consent__actions { justify-content: flex-end; }
+    .consent__btn { flex: 0 0 auto; min-width: 120px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .consent { transition: opacity 0.2s linear; transform: none; }
+    .consent.is-visible { transform: none; }
+  }
+</style>

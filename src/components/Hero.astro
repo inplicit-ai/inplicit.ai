@@ -1,77 +1,78 @@
 ---
+import GradientField from './ui/GradientField.astro';
+import HeroNetworkViz from './HeroNetworkViz.astro';
+
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
 
-const pills = lang === 'de'
-  ? ['Prozesswissen', 'Operatives Know-how', 'Innovationspotential']
-  : ['Process knowledge', 'Operational know-how', 'Innovation potential'];
 ---
 
 <section class="hero" id="hero">
+  <GradientField />
   <div class="hero__inner container">
     <div class="hero__content">
 
-      <div class="hero__pills">
-        {pills.map(p => <span class="hero__pill">{p}</span>)}
-      </div>
-
       <h1 class="hero__headline">
-        {lang === 'de' ? (
+        {isDE ? (
           <>
-            <span class="hero__line">Euer <strong>wertvollstes Wissen</strong></span>
-            <span class="hero__line">steckt in Köpfen.</span>
-            <span class="hero__line hero__line--ghost">Wir machen es sichtbar und nutzbar.</span>
+            <span class="hero__line">Dein</span>
+            <span class="hero__line"><em>Organisations-Kontext</em></span>
+            <span class="hero__line hero__line--ghost">sichtbar gemacht.</span>
           </>
         ) : (
           <>
-            <span class="hero__line">The answers are</span>
-            <span class="hero__line"><strong>already within</strong></span>
-            <span class="hero__line hero__line--ghost">your organization.</span>
+            <span class="hero__line">Your organisation's</span>
+            <span class="hero__line"><em>context,</em> made</span>
+            <span class="hero__line hero__line--ghost">visible.</span>
           </>
         )}
       </h1>
 
       <p class="hero__sub">
-        {lang === 'de'
-          ? 'Inplicit macht das implizite Wissen eurer Mitarbeitenden sichtbar und verwandelt es in strategische Organisationsintelligenz.'
-          : 'inplicit.ai gives every person in your organisation a voice. Understand what your workforce truly knows, thinks, and needs.'}
+        {isDE
+          ? 'Knapp 80 % des Wissens deiner Organisation steckt in den Köpfen deiner Mitarbeitenden. Wir helfen dir dabei, es sichtbar und nutzbar zu machen.'
+          : 'Almost 80 % of your organisation\'s knowledge lives in the minds of your employees. We help you make it visible and actionable.'}
       </p>
 
       <div class="hero__actions">
         <a href="#book-demo" class="hero__cta-primary">
-          <span class="hero__cta-primary-label">
-            {lang === 'de' ? 'Demo buchen' : 'Book demo'}
-          </span>
+          <span class="hero__cta-primary-label">{isDE ? 'Demo buchen' : 'Book demo'}</span>
           <i class="hero__cta-primary-icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </i>
         </a>
-        <a href="#how-it-works" class="hero__cta-secondary">
-          {lang === 'de' ? "So funktioniert's" : 'How it works'}
-        </a>
+        <a href="#how-it-works" class="hero__cta-secondary">{isDE ? "So funktioniert's" : 'How it works'}</a>
       </div>
 
       <div class="hero__meta">
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'DSGVO-konform' : 'GDPR compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'DSGVO-konform' : 'GDPR compliant'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
         <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'Daten in Frankfurt (EU)' : 'Data in EU'}</span>
-        <span class="hero__meta-sep" aria-hidden="true">·</span>
-        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{lang === 'de' ? 'EU AI Act konform' : 'EU AI Act compliant'}</span>
+        <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Daten in der EU' : 'Data in EU'}</span>
       </div>
     </div>
 
-    <div class="hero__visual" aria-hidden="true">
-      <div class="hero__glow"></div>
-      <canvas id="brain-canvas" class="hero__brain-canvas"></canvas>
+    <div class="hero__visual">
+      <HeroNetworkViz lang={lang} />
     </div>
+
   </div>
 </section>
+
+<script is:inline>
+document.querySelector('.hero__cta-primary')?.addEventListener('click', function () {
+  window.posthog?.capture('hero_demo_cta_clicked');
+});
+document.querySelector('.hero__cta-secondary')?.addEventListener('click', function () {
+  window.posthog?.capture('hero_how_it_works_clicked');
+});
+</script>
 
 <style>
   .hero {
@@ -83,12 +84,11 @@ const pills = lang === 'de'
     overflow: hidden;
   }
 
-
   .hero__inner {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr minmax(300px, 380px);
     gap: var(--space-16);
     align-items: center;
     width: 100%;
@@ -100,37 +100,13 @@ const pills = lang === 'de'
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .hero__content { max-width: 620px; }
+  .hero__content { max-width: 600px; }
 
-  /* Pills */
-  .hero__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.05s;
-    opacity: 0;
-  }
-
-  .hero__pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 12px;
-    border-radius: var(--radius-card);
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(0,0,0,0.03);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-  }
-
-  /* Headline */
   .hero__headline {
-    font-size: clamp(2.1rem, 4.4vw, 3.5rem);
+    font-family: var(--font-family);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
     font-weight: 400;
-    line-height: 1.1;
+    line-height: 1.08;
     letter-spacing: -0.03em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
@@ -139,327 +115,81 @@ const pills = lang === 'de'
     flex-direction: column;
     gap: 0;
   }
-
-  .hero__line { display: block; color: var(--color-text-primary); }
-
-  .hero__line strong {
-    font-weight: 700;
-    color: var(--color-text-primary);
+  .hero__line { color: var(--color-text-primary); }
+  .hero__line em {
+    font-style: normal;
+    font-weight: 400;
   }
-
-  .hero__line--ghost {
-    color: var(--color-text-primary);
-    opacity: 0.18;
-  }
+  .hero__line--ghost { opacity: 0.34; }
 
   .hero__sub {
     font-size: clamp(var(--text-base), 1.7vw, var(--text-lg));
     font-weight: 400;
     color: var(--color-text-secondary);
     line-height: 1.75;
-    max-width: 520px;
+    max-width: 500px;
     margin-bottom: var(--space-10);
     animation: hero-in 0.7s var(--ease-out) forwards 0.18s;
     opacity: 0;
   }
 
-  /* Actions */
   .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
     margin-bottom: var(--space-10);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.26s;
-    opacity: 0;
+    animation: hero-in 0.7s var(--ease-out) forwards 0.26s; opacity: 0;
   }
-
   .hero__cta-primary {
-    position: relative;
-    overflow: hidden;
-    display: inline-flex;
-    align-items: center;
-    height: 44px;
-    padding: 0 var(--space-8);
-    background-color: var(--color-cta-bg);
-    color: var(--color-cta-text);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    border-radius: var(--radius-ui);
-    transition: opacity 0.2s var(--ease-smooth);
+    position: relative; overflow: hidden; display: inline-flex; align-items: center;
+    height: 46px; padding: 0 var(--space-8);
+    background-color: var(--color-cta-bg); color: var(--color-cta-text);
+    font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em;
+    border-radius: var(--radius-ui); transition: opacity 0.2s var(--ease-smooth);
   }
-
   .hero__cta-primary:hover { opacity: 0.85; }
   .hero__cta-primary:active { transform: scale(0.97); }
-
-  .hero__cta-primary-label {
-    margin-right: var(--space-10);
-    transition: opacity 0.4s var(--ease-smooth);
-    white-space: nowrap;
-  }
-
+  .hero__cta-primary-label { margin-right: var(--space-10); transition: opacity 0.4s var(--ease-smooth); white-space: nowrap; }
   .hero__cta-primary:hover .hero__cta-primary-label { opacity: 0; }
-
   .hero__cta-primary-icon {
-    position: absolute;
-    right: 4px;
-    top: 4px;
-    bottom: 4px;
-    border-radius: var(--radius-ui);
-    z-index: 1;
-    display: grid;
-    width: 25%;
-    place-items: center;
-    background-color: var(--color-cta-icon-bg);
-    transition: width 0.4s var(--ease-spring);
+    position: absolute; right: 4px; top: 4px; bottom: 4px;
+    border-radius: var(--radius-ui); z-index: 1; display: grid; width: 25%; place-items: center;
+    background-color: var(--color-cta-icon-bg); transition: width 0.4s var(--ease-spring);
   }
-
   .hero__cta-primary:hover .hero__cta-primary-icon { width: calc(100% - 8px); }
-
   .hero__cta-secondary {
-    display: inline-flex;
-    align-items: center;
-    height: 44px;
-    padding: 0 var(--space-6);
-    color: var(--color-text-secondary);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    border-radius: var(--radius-ui);
-    border: 1px solid var(--color-border);
+    display: inline-flex; align-items: center; height: 46px; padding: 0 var(--space-6);
+    color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: 500;
+    border-radius: var(--radius-ui); border: 1px solid var(--color-border);
     transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
   }
+  .hero__cta-secondary:hover { color: var(--color-text-primary); border-color: var(--color-text-tertiary); }
 
-  .hero__cta-secondary:hover {
-    color: var(--color-text-primary);
-    border-color: var(--color-text-tertiary);
-  }
-
-  /* Meta */
   .hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    animation: hero-in 0.7s var(--ease-out) forwards 0.34s;
-    opacity: 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    animation: hero-in 0.7s var(--ease-out) forwards 0.34s; opacity: 0;
   }
-
-  .hero__meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: var(--text-sm);
-    color: var(--color-text-tertiary);
-    font-weight: 400;
-  }
-
-  .hero__meta-check {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
-  }
-
+  .hero__meta-item { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-sm); color: var(--color-text-tertiary); font-weight: 400; }
+  .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
   .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
 
-  /* Visual */
-  .hero__visual {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 420px;
-  }
+  .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; }
 
-  .hero__glow { display: none; }
-
-  /* Amber glow rises from the lower edge of the hero (biased toward the brain) */
-  .hero::before {
-    content: '';
-    position: absolute;
-    left: 82%;
-    bottom: 0;
-    transform: translate(-50%, 36%);
-    width: 760px;
-    height: 560px;
-    max-width: 140%;
-    border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(245, 166, 35, 0.5) 0%, rgba(245, 166, 35, 0.18) 42%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .hero__brain-canvas {
-    width: 400px;
-    height: auto;        /* keep 1:1 from the 400×400 drawing buffer */
-    max-width: 100%;     /* never overflow its column / the viewport */
-    position: relative;
-    z-index: 1;
-    cursor: grab;
-  }
-
-  .hero__brain-canvas:active { cursor: grabbing; }
-
-  /* ── Mobile (placed after all base rules so these overrides actually win) ── */
   @media (max-width: 900px) {
-    /* Fill the viewport: text sits below the nav, brain drops to the fold so
-       it peeks over the edge and invites scrolling. */
-    .hero {
-      min-height: 100vh;
-      min-height: 100svh;
-      align-items: stretch;
-      padding-top: calc(var(--space-10) + 56px);
-      padding-bottom: 0;
-    }
-    .hero__inner {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: space-between;
-      gap: var(--space-10);
-    }
-    /* Pills are desktop-only */
-    .hero__pills { display: none; }
-    /* Brain sits at the bottom edge, slightly clipped by the fold */
-    .hero__visual { height: auto; margin-bottom: calc(-1 * var(--space-8)); }
-    .hero__brain-canvas { width: 320px; pointer-events: none; cursor: default; }
-    /* Glow centered under the brain at the fold */
-    .hero::before { left: 50%; width: 720px; }
+    .hero { padding-top: calc(var(--space-10) + 56px); padding-bottom: var(--space-16); }
+    .hero__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-10); }
+    .hero__content { max-width: 100%; }
+    .hero__visual { justify-content: center; max-width: 340px; margin: 0 auto; }
   }
 
   @media (max-width: 767px) {
-    .hero__sub { font-size: var(--text-base); }
+    .hero__line { font-size: clamp(2rem, 11vw, 2.8rem); }
+    .hero__sub { font-size: var(--text-base); margin-bottom: var(--space-8); }
+    .hero__actions { flex-direction: column; align-items: stretch; gap: var(--space-2); }
+    .hero__cta-primary, .hero__cta-secondary { width: 100%; justify-content: center; }
     .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
-    .hero__actions { flex-direction: column; align-items: flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__inner, .hero__pills, .hero__headline,
-    .hero__sub, .hero__actions, .hero__meta { animation: none; opacity: 1; }
+    .hero__inner, .hero__headline, .hero__sub, .hero__actions, .hero__meta { animation: none; opacity: 1; }
   }
 </style>
-
-<script>
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-function initBrain() {
-  const canvas = document.getElementById('brain-canvas') as HTMLCanvasElement | null;
-  if (!canvas) return;
-
-  const W = 400, H = 400;
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W, H, false);
-
-  const scene = new THREE.Scene();
-  // Wider FOV + pulled back so brain never clips
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(0, 0, 4.5);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableZoom = false;
-  controls.enablePan = false;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.5;
-  controls.dampingFactor = 0.1;
-  controls.enableDamping = true;
-
-  // Soft, even lighting so the ghost surface actually shades (MeshStandardMaterial
-  // needs lights — without them the surface renders black).
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xc8c8d0, 1.4));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  keyLight.position.set(2, 3, 4);
-  scene.add(keyLight);
-
-  const brainGroup = new THREE.Group();
-  scene.add(brainGroup);
-
-  // Edge line material - dark, thick enough to read clearly on white bg
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0x1e1e2a, transparent: true, opacity: 0.9 });
-
-  // Ghost surface material - very subtle, gives 3D depth
-  const surfaceMat = new THREE.MeshStandardMaterial({
-    color: 0xd8d8e0,
-    transparent: true,
-    opacity: 0.18,
-    roughness: 0.9,
-    metalness: 0.0,
-    side: THREE.DoubleSide,   // no backface culling → no missing/flipped faces
-  });
-
-  const loader = new GLTFLoader();
-  loader.load('/brain/scene.gltf', (gltf) => {
-    const root = gltf.scene;
-
-    const box0 = new THREE.Box3().setFromObject(root);
-    const c0 = box0.getCenter(new THREE.Vector3());
-    const s0 = box0.getSize(new THREE.Vector3());
-    const scaleFactor = 3.4 / Math.max(s0.x, s0.y, s0.z);
-
-    root.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.updateWorldMatrix(true, false);
-        const geoCopy = mesh.geometry.clone()
-          .applyMatrix4(mesh.matrixWorld)
-          .applyMatrix4(new THREE.Matrix4().makeTranslation(-c0.x, -c0.y, -c0.z))
-          .applyMatrix4(new THREE.Matrix4().makeScale(scaleFactor, scaleFactor, scaleFactor));
-        geoCopy.computeVertexNormals();   // consistent normals for even shading
-
-        // Ghost surface (renders first, behind edges)
-        brainGroup.add(new THREE.Mesh(geoCopy, surfaceMat));
-        // Dark edge lines on top
-        brainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoCopy, 15), edgeMat));
-      }
-    });
-  });
-
-  // Amber nodes - attached to brainGroup so they rotate with it
-  const nodeMat = new THREE.MeshBasicMaterial({ color: 0xf5a623 });
-  const nGeo = new THREE.SphereGeometry(0.05, 8, 8);
-  // Spread around full sphere surface (front, back, sides, top, bottom)
-  const nodeCoords: [number, number, number][] = [
-    [ 0,     0.90,  0.20],   // top
-    [ 0.75,  0.30,  0.45],   // right front
-    [-0.75,  0.30,  0.45],   // left front
-    [ 0.72,  0.30, -0.40],   // right back
-    [-0.72,  0.30, -0.40],   // left back
-    [ 0.30,  0.65, -0.55],   // upper back
-    [-0.30,  0.65, -0.55],   // upper back left
-    [ 0,    -0.70,  0.00],   // bottom centre
-    [ 0.60, -0.40, -0.35],   // lower back right
-    [-0.60, -0.40, -0.35],   // lower back left
-  ];
-  const nodes = nodeCoords.map(([x, y, z]) => {
-    const m = new THREE.Mesh(nGeo, nodeMat);
-    m.position.set(x, y, z);
-    brainGroup.add(m);
-    return m;
-  });
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xf5a623, transparent: true, opacity: 0.3 });
-  const edgePairs: [number, number][] = [
-    [0,1],[0,2],[1,3],[2,4],[3,5],[4,6],[1,2],[5,6],[7,8],[7,9],[3,8],[4,9],[0,5],[0,6]
-  ];
-  edgePairs.forEach(([a, b]) => {
-    brainGroup.add(new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints([nodes[a].position.clone(), nodes[b].position.clone()]),
-      lineMat
-    ));
-  });
-
-  let raf: number;
-  function animate() {
-    raf = requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('beforeunload', () => cancelAnimationFrame(raf));
-}
-
-document.addEventListener('DOMContentLoaded', initBrain);
-</script>

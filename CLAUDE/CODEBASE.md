@@ -26,14 +26,16 @@ Website/
         │   └── Layout.astro     ← root shell: meta/SEO, Inter font, global CSS
         ├── components/
         │   ├── Nav.astro        ← sticky nav, logo SVG, theme toggle, CTA
-        │   ├── Hero.astro       ← full-viewport, 64px headline, fade-up anim
+        │   ├── Hero.astro       ← headline + CTAs, fade-up anim; hosts HeroNetworkViz
+        │   ├── HeroNetworkViz.astro ← isometric "role → role-context" extraction animation
         │   ├── HowItWorks.astro ← 01/02/03/04 numbered steps (2-col grid)
         │   ├── TheProblem.astro ← 2-col Kodak framing (signal + aggregation)
         │   ├── Applications.astro ← 4-card gallery of use-case applications
         │   ├── ValidationLoop.astro ← 5-stage Listen→Converge card flow
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)
-        │   └── Footer.astro     ← legal links + copyright year (dynamic)
+        │   ├── ConsentBanner.astro ← GDPR cookie consent gate for PostHog (bilingual)
+        │   └── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
         └── pages/
             ├── index.astro      ← EN landing (composes all components)
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
@@ -75,6 +77,18 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `/terms` | `pages/terms.astro` | EN only; ⚠ city placeholder in governing law clause |
 
 ---
+
+## Privacy & Consent (GDPR/TTDSG — do not regress)
+
+- **Fonts are self-hosted** via `@fontsource-variable/inter` (imported in `Layout.astro` + `call.astro`).
+  Never re-add Google Fonts `<link>`s — remote loading transmits visitor IPs to Google (LG München I, 3 O 17493/20).
+- **PostHog is consent-gated**: the snippet is injected only inside `window.__implicitConsent.init()`, called
+  on Accept or for a still-valid stored consent. Before consent `window.posthog` is undefined, so every
+  `window.posthog?.capture()` is a safe no-op. Consent is stored as versioned JSON with a 12-month expiry.
+- **Cal.com embeds are click-to-load** (`CalBooking.astro`, `call.astro`): no connection to cal.eu until the
+  user clicks "Load calendar". Do not auto-run the Cal loader on page load.
+- Consent withdrawal: footer "Cookie settings" → dispatches `implicit:open-consent` → `ConsentBanner` reopens.
+- ⚠ Verify in the PostHog project dashboard that **Session Replay is OFF** — the privacy policy states it is not used.
 
 ## Scroll Animations
 

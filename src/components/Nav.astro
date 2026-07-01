@@ -93,6 +93,7 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
     gap: var(--space-2);
   }
 
+
   .nav__lang {
     display: inline-flex;
     align-items: center;
@@ -185,4 +186,19 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
   }
+</script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.nav__cta')?.addEventListener('click', function () {
+      window.posthog?.capture('nav_demo_cta_clicked');
+    });
+    document.querySelector('.nav__login')?.addEventListener('click', function () {
+      window.posthog?.capture('nav_login_clicked');
+    });
+    document.querySelector('.nav__lang')?.addEventListener('click', function () {
+      var currentLang = document.documentElement.lang || 'en';
+      window.posthog?.capture('language_switched', { from_lang: currentLang, to_lang: currentLang === 'de' ? 'en' : 'de' });
+    });
+  });
 </script>
