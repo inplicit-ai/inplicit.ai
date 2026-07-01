@@ -33,8 +33,8 @@ const isDE = lang === 'de';
 
       <p class="hero__sub">
         {isDE
-          ? 'Knapp 80 % des Wissens deiner Organisation steckt in den Köpfen deiner Mitarbeitenden. Wir helfen dir dabei, es sichtbar und nutzbar zu machen.'
-          : 'Almost 80 % of your organisation\'s knowledge lives in the minds of your employees. We help you make it visible and actionable.'}
+          ? 'Das Wissen eurer Organisation steckt überall — in Köpfen, Gesprächen, Erfahrungen. Inplicit sammelt es ein und macht es sichtbar und nutzbar für euch.'
+          : 'Your organisation\'s knowledge is everywhere — in heads, conversations, lived experience. Inplicit collects it and makes it visible and usable for you.'}
       </p>
 
       <div class="hero__actions">
@@ -73,14 +73,14 @@ const isDE = lang === 'de';
     align-items: flex-start;
     padding-top: calc(var(--space-6) + 64px);
     padding-bottom: var(--space-16);
-    overflow: hidden;
+    overflow: visible;
   }
 
   .hero__inner {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 1fr minmax(300px, 380px);
+    grid-template-columns: 1fr minmax(320px, 420px);
     gap: var(--space-16);
     align-items: center;
     width: 100%;
@@ -165,7 +165,7 @@ const isDE = lang === 'de';
   .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
   .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
 
-  .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; }
+  .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; overflow: visible; }
 
   @media (max-width: 900px) {
     .hero { padding-top: calc(var(--space-10) + 56px); padding-bottom: var(--space-16); }
