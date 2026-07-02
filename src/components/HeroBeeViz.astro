@@ -3,9 +3,23 @@
 ---
 
 <div class="bviz" aria-hidden="true">
+
+  <!-- Dashed trail SVG — same coordinate space as the offset-path -->
+  <svg class="bviz__trail-svg" viewBox="0 0 420 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path id="bviz-trail"
+          d="M 40,440 C -20,220 120,20 300,80"
+          fill="none"
+          stroke="var(--color-accent)"
+          stroke-width="2.5"
+          stroke-dasharray="8 7"
+          stroke-linecap="round"
+          opacity="0.55"/>
+  </svg>
+
   <div class="bviz__flowers" id="bviz-flowers">
     <img src="/bee/flowers.svg" alt="" width="600" height="600" loading="eager" decoding="async" class="bviz__flowers-img"/>
   </div>
+
   <div class="bviz__bee" id="bviz-bee">
     <img src="/bee/bee.svg" alt="" width="110" height="110" loading="eager" decoding="async" class="bviz__bee-img"/>
   </div>
@@ -16,13 +30,22 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var bee     = document.getElementById('bviz-bee');
   var flowers = document.getElementById('bviz-flowers');
+  var trail   = document.getElementById('bviz-trail');
   if (!bee) return;
 
   if (reduced) {
     bee.style.opacity = '1';
     bee.style.offsetDistance = '100%';
     if (flowers) flowers.classList.add('bviz__flowers--sway');
+    if (trail) trail.style.strokeDashoffset = '0';
     return;
+  }
+
+  // Hide trail until animation starts
+  if (trail) {
+    var len = Math.ceil(trail.getTotalLength());
+    trail.style.strokeDasharray = len + ' ' + len;
+    trail.style.strokeDashoffset = len;
   }
 
   var started = false;
@@ -30,13 +53,27 @@
     if (started || !entries[0].isIntersecting) return;
     started = true;
     io.disconnect();
+
     if (flowers) flowers.classList.add('bviz__flowers--sway');
+
     bee.style.opacity = '1';
     bee.classList.add('bviz__bee--fly');
+
+    // Trail draws slightly behind the bee
+    if (trail) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          trail.style.transition = 'stroke-dashoffset 3.2s cubic-bezier(.4,0,.6,1) 0.15s';
+          trail.style.strokeDashoffset = '0';
+        });
+      });
+    }
+
     setTimeout(function () {
       if (flowers) flowers.classList.add('bviz__flowers--land');
       bee.classList.add('bviz__bee--idle');
     }, 3600);
+
   }, { threshold: 0.15 });
 
   var root = document.querySelector('.bviz');
@@ -52,15 +89,20 @@
     overflow: visible;
   }
 
-  /* ── Flowers: big, rooted at bottom-right edge ──
-     bviz is ~420px wide.
-     width:600px, right:-80px → left = 420+80-600 = -100px (slight overlap into gap)
-     bottom:-80px → stems root below section.
-     Flower heads (32% from top) land at bviz y≈92.
-  ── */
+  /* ── Dashed trail SVG overlay ── */
+  .bviz__trail-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* ── Flowers: large, stems rooted at section bottom edge ── */
   .bviz__flowers {
     position: absolute;
-    bottom: -80px;
+    bottom: 0;
     right: -80px;
     width: 600px;
     transform-origin: 50% 100%;
@@ -91,16 +133,12 @@
     100% { transform: rotate(0deg); }
   }
 
-  /* ── Bee: arcs from lower-left, lands on yellow flower head ──
-     Offset-path anchor = center of bee element (55px from edge).
-     Path ends at bviz (290, 92) = yellow flower head.
-  ── */
+  /* ── Bee motion ── */
   .bviz__bee {
     position: absolute;
     top: 0; left: 0;
     width: 110px; height: 110px;
     opacity: 0;
-    /* anchor = center of bee element; path endpoint = where bee center lands */
     offset-anchor: 50% 50%;
     offset-path: path("M 40,440 C -20,220 120,20 300,80");
     offset-distance: 0%;
@@ -128,21 +166,24 @@
     50%      { transform: translateY(-5px); }
   }
 
+  /* ── Wing flap: strong squish mimicking real flap ── */
   .bviz__bee-img {
     width: 100%; height: 100%;
     object-fit: contain;
     mix-blend-mode: multiply;
-    animation: bviz-flap 0.11s ease-in-out infinite alternate;
+    animation: bviz-flap 0.09s ease-in-out infinite alternate;
+    transform-origin: 50% 65%;
   }
   .bviz__bee--idle .bviz__bee-img {
-    animation-duration: 0.45s;
+    animation-duration: 0.42s;
   }
   @keyframes bviz-flap {
-    from { transform: scaleY(1); }
-    to   { transform: scaleY(0.86); }
+    0%   { transform: scaleX(1)    scaleY(1); }
+    100% { transform: scaleX(1.08) scaleY(0.72); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .bviz__flowers, .bviz__bee-img { animation: none; }
+    #bviz-trail { stroke-dashoffset: 0 !important; }
   }
 </style>
