@@ -253,10 +253,11 @@ const LCo = { x: 578.80, y: 586.55 };
       })}
     </g>
 
-    <!-- Communication sparks flitting along the links (light grey, low saturation) -->
+    <!-- Communication sparks flitting along the links (light grey, low saturation).
+         Visible from the very start, alongside the grey base network. -->
     <g class="nv-sparks">
       {sparks.map((sp) => (
-        <circle r="1.9" style="fill: var(--color-text-tertiary);">
+        <circle r="1.9" style="fill: var(--color-text-secondary);">
           <animateMotion path={sp.d} dur={sp.dur} begin={sp.begin} repeatCount="indefinite" calcMode="linear"/>
         </circle>
       ))}
@@ -544,7 +545,7 @@ const LCo = { x: 578.80, y: 586.55 };
     transform: scale(0.4);
     animation: nv-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.7s forwards;
   }
-  .nv-sparks   { opacity: 0; animation: nv-in 0.6s ease-out 1.5s forwards; }
+  .nv-sparks   { opacity: 0; animation: nv-in 0.6s ease-out 1.2s forwards; }
   .nviz-labels { opacity: 0; animation: nv-in 1.0s ease-out 1.4s forwards; }
 
   @keyframes nv-in { to { opacity: 1; } }
