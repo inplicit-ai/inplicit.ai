@@ -7,53 +7,145 @@ export interface Props {
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-const R = 22;
+// ── Large organisation as an organic cluster network ──
+// Every circle is one employee (avatar). Grey photos first → the whole org
+// turns orange (the digital twin). The leadership team sits at the centre and
+// each exec heads a department cluster. Communication sparks flit along links.
+function mulberry32(seed: number) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(20260706);
+const rand = (a: number, b: number) => a + rnd() * (b - a);
 
-const nodes = [
-  { cx: 165, cy: 148, role: 'CEO' },
-  { cx: 82,  cy: 240, role: 'CTO' },
-  { cx: 248, cy: 240, role: 'CPO' },
-  { cx: 30,  cy: 340, role: '' },
-  { cx: 118, cy: 340, role: '' },
-  { cx: 212, cy: 340, role: '' },
-  { cx: 300, cy: 340, role: '' },
-  { cx: 165, cy: 422, role: '' },
-];
+const VW = 330, VH = 460, CX = 165, CY = 210;
+const clampX = (v: number) => Math.max(18, Math.min(VW - 18, v));
+const clampY = (v: number) => Math.max(18, Math.min(VH - 18, v));
 
 const photos = [
-  'photo-1560250097-0b93528c311a',
-  'photo-1507003211169-0a1dd7228f2d',
-  'photo-1494790108377-be9c29b29330',
-  'photo-1500648767791-00dcc994a43e',
-  'photo-1438761681033-6461ffad8d80',
-  'photo-1472099645785-5658abf4ff4e',
-  'photo-1573497019940-1c28c88b4f3e',
-  'photo-1570295999919-56ceb5ecca61',
+  'photo-1560250097-0b93528c311a', 'photo-1507003211169-0a1dd7228f2d',
+  'photo-1494790108377-be9c29b29330', 'photo-1500648767791-00dcc994a43e',
+  'photo-1438761681033-6461ffad8d80', 'photo-1472099645785-5658abf4ff4e',
+  'photo-1573497019940-1c28c88b4f3e', 'photo-1570295999919-56ceb5ecca61',
+  'photo-1519345182560-3f2917c472ef', 'photo-1506794778202-cad84cf45f1d',
+  'photo-1544005313-94ddf0286df2', 'photo-1524504388940-b1c1722653e1',
+  'photo-1531123897727-8f129e1688ce', 'photo-1489424731084-a5d8b219a5bb',
 ];
 
-const edges: [number, number][] = [
-  [0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[4,7],[5,7],
-];
+// Leadership team at the centre — slots ordered [top, right, bottom, left]
+// (long titles go top/bottom where there is vertical room for the label).
+const execTitles = isDE
+  ? ['Geschäftsführer', 'COO', 'Finanzvorstand', 'CTO']
+  : ['CEO', 'COO', 'CFO', 'CTO'];
 
-const BADGE_ICONS = [
-  // lightbulb
-  `<circle cy="-1.5" r="3" fill="none" stroke="white" stroke-width="1.2"/>
-   <path d="M-2,1.5 L2,1.5 M-1.4,3 L1.4,3" stroke="white" stroke-width="1.2" stroke-linecap="round"/>`,
-  // gear
-  `<circle r="2.2" fill="none" stroke="white" stroke-width="1.1"/>
-   <circle r="0.9" fill="white"/>
-   <path d="M0,-4 L0,-3 M0,3 L0,4 M-4,0 L-3,0 M3,0 L4,0 M-2.8,-2.8 L-2.1,-2.1 M2.1,-2.1 L2.8,-2.8 M-2.1,2.1 L-2.8,2.8 M2.8,2.8 L2.1,2.1" stroke="white" stroke-width="1.1" stroke-linecap="round"/>`,
-  // lightning
-  `<path d="M1.2,-4.5 L-1.2,0.2 L0.6,0.2 L-1.2,4.5 L2.2,-0.5 L0.4,-0.5 Z" fill="white"/>`,
-  // chat bubble
-  `<rect x="-3.8" y="-3.5" width="7.6" height="5" rx="1.5" fill="none" stroke="white" stroke-width="1.2"/>
-   <path d="M-1.5,1.5 L-3,3.5 L1,1.5" fill="white"/>`,
-  // bar chart
-  `<rect x="-3.5" y="-1.5" width="1.7" height="5" fill="white"/>
-   <rect x="-0.85" y="-3.5" width="1.7" height="7" fill="white"/>
-   <rect x="1.8" y="0" width="1.7" height="3.5" fill="white"/>`,
-];
+type Node = { x: number; y: number; r: number; role: string; photo: string; ang: number; exec: boolean };
+const nodes: Node[] = [];
 
+const edges: [number, number][] = [];
+const seen = new Set<string>();
+function addEdge(a: number, b: number) {
+  if (a === b) return;
+  const k = a < b ? `${a}-${b}` : `${b}-${a}`;
+  if (seen.has(k)) return;
+  seen.add(k);
+  edges.push([a, b]);
+}
+
+// Executives — a tight, mutually connected core near the centre
+const execIdx: number[] = [];
+for (let i = 0; i < execTitles.length; i++) {
+  const ang = -Math.PI / 2 + (i / execTitles.length) * Math.PI * 2;
+  const x = clampX(CX + Math.cos(ang) * 48);
+  const y = clampY(CY + Math.sin(ang) * 46);
+  const idx = nodes.length;
+  nodes.push({ x, y, r: 13, role: execTitles[i], photo: photos[idx % photos.length], ang, exec: true });
+  execIdx.push(idx);
+}
+for (let i = 0; i < execIdx.length; i++)
+  for (let j = i + 1; j < execIdx.length; j++) addEdge(execIdx[i], execIdx[j]);
+
+// Each exec heads a department cluster fanning outward
+execIdx.forEach((eIdx) => {
+  const e = nodes[eIdx];
+  const members: number[] = [];
+  const k = Math.round(rand(8, 11));
+  for (let m = 0; m < k; m++) {
+    const a = e.ang + rand(-1.0, 1.0);
+    const rad = rand(42, 94);
+    const mx = clampX(e.x + Math.cos(a) * rad);
+    const my = clampY(e.y + Math.sin(a) * rad);
+    const mIdx = nodes.length;
+    nodes.push({ x: mx, y: my, r: rand(6.5, 9), role: '', photo: photos[mIdx % photos.length], ang: a, exec: false });
+    addEdge(eIdx, mIdx);
+    members.push(mIdx);
+  }
+  // a few intra-cluster peer links
+  members.forEach((mi) => {
+    if (rnd() < 0.4) addEdge(mi, members[Math.floor(rnd() * members.length)]);
+  });
+});
+
+// informal cross-cluster links (the messy web)
+for (let k = 0; k < 12; k++) {
+  addEdge(Math.floor(rnd() * nodes.length), Math.floor(rnd() * nodes.length));
+}
+
+// Label placement: push exec titles outward from the centre to avoid overlap
+function labelPos(n: Node) {
+  if (Math.abs(Math.sin(n.ang)) > 0.7) {
+    return Math.sin(n.ang) < 0
+      ? { x: n.x, y: n.y - n.r - 6, anchor: 'middle' }   // top
+      : { x: n.x, y: n.y + n.r + 12, anchor: 'middle' };  // bottom
+  }
+  return Math.cos(n.ang) >= 0
+    ? { x: n.x + n.r + 5, y: n.y + 3, anchor: 'start' }    // right
+    : { x: n.x - n.r - 5, y: n.y + 3, anchor: 'end' };     // left
+}
+
+// Communication sparks — fast pulses; exec links always spark, plus a subset
+type Spark = { d: string; dur: string; begin: string };
+const execSet = new Set(execIdx);
+const sparks: Spark[] = [];
+edges.forEach(([a, b]) => {
+  if (execSet.has(a) || execSet.has(b) || rnd() < 0.4) {
+    const rev = rnd() < 0.5;
+    const p1 = rev ? b : a, p2 = rev ? a : b;
+    sparks.push({
+      d: `M ${nodes[p1].x},${nodes[p1].y} L ${nodes[p2].x},${nodes[p2].y}`,
+      dur: `${rand(0.32, 0.7).toFixed(2)}s`,
+      begin: `${rand(0, 1.1).toFixed(2)}s`,
+    });
+  }
+});
+
+// Radial "interview" wave: nodes turn orange from the centre outward.
+const maxDist = Math.max(...nodes.map((n) => Math.hypot(n.x - CX, n.y - CY)));
+function twinDelay(n: Node) {
+  return +((Math.hypot(n.x - CX, n.y - CY) / maxDist) * 1.5 + 1.8).toFixed(2);
+}
+
+// Person glyph (white) that replaces the photo in the digital twin, scaled to r
+function personIcon(cx: number, cy: number, r: number) {
+  const s = r / 22;
+  return `<circle cx="${cx}" cy="${(cy - 7 * s).toFixed(1)}" r="${(6.5 * s).toFixed(1)}" fill="white"/>
+<path d="M${(cx - 12 * s).toFixed(1)},${(cy + 17 * s).toFixed(1)} Q${(cx - 11 * s).toFixed(1)},${(cy + 5 * s).toFixed(1)} ${cx},${(cy + 5 * s).toFixed(1)} Q${(cx + 11 * s).toFixed(1)},${(cy + 5 * s).toFixed(1)} ${(cx + 12 * s).toFixed(1)},${(cy + 17 * s).toFixed(1)}" fill="white"/>`;
+}
+
+// Microphone glyph (white), drawn inside the black "interviewed" badge
+function micIcon(s: number) {
+  return `<g transform="scale(${s.toFixed(3)})" stroke="white" stroke-width="0.9" stroke-linecap="round" fill="none">
+<rect x="-1.3" y="-3.4" width="2.6" height="4.6" rx="1.3" fill="white" stroke="none"/>
+<path d="M-2.2,-0.3 A2.2,2.2 0 0 0 2.2,-0.3"/>
+<line x1="0" y1="1.9" x2="0" y2="3.4"/>
+<line x1="-1.4" y1="3.4" x2="1.4" y2="3.4"/>
+</g>`;
+}
+
+// ── Scene copy (chat popup) ──
 const questions = isDE
   ? ['Wo verlieren wir im Betrieb Zeit?', 'Was sind die größten Schmerzpunkte?', 'Wo sehen Mitarbeitende ungenutzte Chancen?']
   : ['Where do we lose time in operations?', 'What are the most-named pain points?', 'Where do people see untapped opportunities?'];
@@ -68,11 +160,6 @@ const userMsg = isDE
 
 const sendIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`;
 
-function personIcon(cx: number, cy: number) {
-  return `<circle cx="${cx}" cy="${cy - 7}" r="6.5" fill="white" opacity="0.88"/>
-<path d="M${cx-12},${cy+17} Q${cx-11},${cy+5} ${cx},${cy+5} Q${cx+11},${cy+5} ${cx+12},${cy+17}" fill="white" opacity="0.88"/>`;
-}
-
 // InplicitLoader path + initial circle positions (from InplicitLoader.tsx)
 const SQUARE_PATH = "M925.999 829.575L251.424 926L155 251.424L829.575 155L925.999 829.575Z";
 const LCw = { x: 501.10, y: 501.13 };
@@ -84,56 +171,94 @@ const LCo = { x: 578.80, y: 586.55 };
   <!-- ── Network SVG ── -->
   <svg class="nviz__svg" viewBox="0 0 330 460" xmlns="http://www.w3.org/2000/svg" role="presentation">
     <defs>
-      {nodes.map((_, i) => (
+      {nodes.map((n, i) => (
         <clipPath id={`nclip-${i}`}>
-          <circle cx={nodes[i].cx} cy={nodes[i].cy} r={R} />
+          <circle cx={n.x} cy={n.y} r={n.r} />
         </clipPath>
       ))}
     </defs>
 
-    <g class="nviz-gray">
-      {edges.map(([a, b]) => (
-        <line x1={nodes[a].cx} y1={nodes[a].cy} x2={nodes[b].cx} y2={nodes[b].cy}
-          style="stroke: var(--color-border);" stroke-width="1.5"/>
-      ))}
-      {nodes.map((n, i) => (
-        <g>
-          <circle cx={n.cx} cy={n.cy} r={R}
-            style="fill: var(--color-surface-elevated); stroke: var(--color-border);" stroke-width="1"/>
-          <image
-            href={`https://images.unsplash.com/${photos[i]}?w=88&h=88&fit=crop&crop=faces&auto=format&q=80`}
-            x={n.cx - R} y={n.cy - R} width={R*2} height={R*2}
-            clip-path={`url(#nclip-${i})`} preserveAspectRatio="xMidYMid slice"
-            style="opacity: 0.55;"/>
-          {n.role && (
-            <text x={n.cx} y={n.cy + R + 11} text-anchor="middle"
-              style="fill: var(--color-text-tertiary);" font-size="7.5" font-weight="700"
-              font-family="Inter,sans-serif" letter-spacing="0.07em">{n.role}</text>
-          )}
-        </g>
-      ))}
+    <!-- Base layer: every employee as an avatar (real org — recedes as twin builds).
+         Photos appear first, then the connecting lines draw in. -->
+    <g class="nviz-base">
+      <g class="nv-edges">
+        {edges.map(([a, b]) => (
+          <line x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
+            style="stroke: var(--color-text-primary); opacity: 0.09;" stroke-width="1"/>
+        ))}
+      </g>
+      <g class="nv-nodes">
+        {nodes.map((n, i) => (
+          <g>
+            <circle cx={n.x} cy={n.y} r={n.r}
+              style="fill: var(--color-surface-elevated); stroke: var(--color-border);" stroke-width="1"/>
+            <image
+              href={`https://images.unsplash.com/${n.photo}?w=88&h=88&fit=crop&crop=faces&auto=format&q=80`}
+              x={n.x - n.r} y={n.y - n.r} width={n.r * 2} height={n.r * 2}
+              clip-path={`url(#nclip-${i})`} preserveAspectRatio="xMidYMid slice"
+              style="opacity: 0.92;"/>
+          </g>
+        ))}
+      </g>
     </g>
 
+    <!-- Digital twin: photos → person icons turning orange from the centre out,
+         each node interviewed (mic badge). Orange lines appear AFTER the nodes and
+         connect to the Inplicit logo. The whole twin (incl. logo) lifts / floats. -->
     <g class="nviz-orange">
-      {edges.map(([a, b], i) => (
-        <line x1={nodes[a].cx} y1={nodes[a].cy} x2={nodes[b].cx} y2={nodes[b].cy}
-          class="nviz-oline"
-          style={`stroke: var(--color-accent); opacity: 0.5; animation-delay: ${(i*0.1+2.8).toFixed(2)}s`}
-          stroke-width="1.5"/>
-      ))}
-      {nodes.map((n, i) => (
-        <g class="nviz-onode" style={`animation-delay: ${(i*0.14+2.2).toFixed(2)}s`}>
-          <circle cx={n.cx} cy={n.cy} r={R} style="fill: var(--color-accent);"/>
-          <Fragment set:html={personIcon(n.cx, n.cy)}/>
-          <circle cx={n.cx} cy={n.cy} r={R+3} fill="none"
-            style="stroke: var(--color-accent);" stroke-width="2" opacity="0.5"/>
-          <g class="nviz-badge" style={`animation-delay: ${(i*0.14+2.7).toFixed(2)}s`}>
-            <circle cx={n.cx+19} cy={n.cy-19} r={8.5} style="fill: var(--color-text-primary);"/>
-            <g transform={`translate(${n.cx+19},${n.cy-19})`}>
-              <Fragment set:html={BADGE_ICONS[i % BADGE_ICONS.length]}/>
+      <!-- Orange links — fade in only after the nodes have turned orange -->
+      <g class="nv-oedges">
+        {execIdx.map((e) => (
+          <line x1={CX} y1={CY} x2={nodes[e].x} y2={nodes[e].y}
+            style="stroke: var(--color-accent); opacity: 0.6;" stroke-width="1.4"/>
+        ))}
+        {edges.map(([a, b]) => (
+          <line x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
+            style="stroke: var(--color-accent); opacity: 0.45;" stroke-width="1"/>
+        ))}
+      </g>
+
+      {nodes.map((n) => {
+        const bx = n.x + n.r * 0.72, by = n.y - n.r * 0.72;
+        const badgeR = Math.max(5.5, n.r * 0.52);
+        return (
+          <g class="nv-onode" style={`animation-delay: ${twinDelay(n)}s`}>
+            <circle cx={n.x} cy={n.y} r={n.r} style="fill: var(--color-accent);"/>
+            <Fragment set:html={personIcon(n.x, n.y, n.r)}/>
+            <g class="nv-badge" style={`animation-delay: ${(twinDelay(n) + 0.25).toFixed(2)}s`}>
+              <circle cx={bx} cy={by} r={badgeR} style="fill: var(--color-text-primary);"/>
+              <g transform={`translate(${bx.toFixed(1)},${by.toFixed(1)})`} set:html={micIcon(badgeR / 6.5)}/>
             </g>
           </g>
-        </g>
+        );
+      })}
+
+      <!-- Inplicit at the very centre — the reason every node turns orange.
+           Inside the twin group so it lifts / floats away with the rest. -->
+      <g class="nv-inplicit">
+        <circle cx={CX} cy={CY} r="16" style="fill: var(--color-bg); stroke: var(--color-border);" stroke-width="1"/>
+        <g transform={`translate(${CX - 12}, ${CY - 12}) scale(0.24)`} set:html={logoIconRaw}/>
+      </g>
+    </g>
+
+    <!-- Labels: leadership team (drawn on top so they stay legible) -->
+    <g class="nviz-labels">
+      {nodes.filter((n) => n.role).map((n) => {
+        const p = labelPos(n);
+        return (
+          <text x={p.x} y={p.y} text-anchor={p.anchor}
+            style="fill: var(--color-text-primary); paint-order: stroke; stroke: var(--color-bg); font-family: var(--font-family);"
+            stroke-width="2.4" font-size="8" font-weight="700" letter-spacing="0.02em">{n.role}</text>
+        );
+      })}
+    </g>
+
+    <!-- Communication sparks flitting along the links (light grey, low saturation) -->
+    <g class="nv-sparks">
+      {sparks.map((sp) => (
+        <circle r="1.9" style="fill: var(--color-text-tertiary);">
+          <animateMotion path={sp.d} dur={sp.dur} begin={sp.begin} repeatCount="indefinite" calcMode="linear"/>
+        </circle>
       ))}
     </g>
   </svg>
@@ -222,6 +347,8 @@ const LCo = { x: 578.80, y: 586.55 };
 
   if (reduced) {
     // skip straight to chat state
+    var rsvg = document.querySelector('.nviz__svg');
+    if (rsvg) rsvg.style.opacity = '0';
     scene.style.cssText += 'opacity:1;transform:none;transition:none;';
     stEmpty.style.display  = 'none';
     compE.style.display    = 'none';
@@ -260,20 +387,6 @@ const LCo = { x: 578.80, y: 586.55 };
     if (!rotEl) return;
     var qs; try { qs = JSON.parse(rotEl.getAttribute('data-qs') || '[]'); } catch(e) { qs = []; }
     if (qs.length < 2) return;
-    var qi = 0, ci = 0, del = false;
-    function tick() {
-      var q = qs[qi];
-      if (!del) {
-        rotEl.textContent = q.slice(0, ++ci);
-        rTimer = ci >= q.length ? setTimeout(tick, 1900) : setTimeout(tick, 50 + Math.random()*35);
-      } else {
-        rotEl.textContent = q.slice(0, --ci);
-        if (ci <= 0) { del = false; qi = (qi+1) % qs.length; rTimer = setTimeout(tick, 420); }
-        else rTimer = setTimeout(tick, 28);
-      }
-      del = !del && ci >= qs[qi < qs.length ? qi : 0].length ? true : del;
-    }
-    // re-written without the bug:
     clearTimeout(rTimer);
     var qi2 = 0, ci2 = 0, deleting = false;
     function tick2() {
@@ -291,25 +404,10 @@ const LCo = { x: 578.80, y: 586.55 };
     rTimer = setTimeout(tick2, 1200);
   }
 
-  // ── Typing animation ──
-  function typeIn(elId, caretId, delay) {
-    setTimeout(function () {
-      var el    = document.getElementById(elId);
-      var caret = document.getElementById(caretId);
-      if (!el) return;
-      var text = el.getAttribute('data-text') || '';
-      var i = 0;
-      function go() {
-        el.textContent = text.slice(0, i++);
-        if (i <= text.length) setTimeout(go, 32 + Math.random()*28);
-        else if (caret) { caret.style.animation = 'none'; caret.style.opacity = '0'; }
-      }
-      go();
-    }, delay);
-  }
-
-  // ── Phase 1 → 2: show popup at 6 s ──
+  // ── Phase 1 → 2: fade the network out, show the chat card at 6 s ──
+  var netSvg = document.querySelector('.nviz__svg');
   setTimeout(function () {
+    if (netSvg) netSvg.style.opacity = '0';
     scene.style.opacity   = '1';
     scene.style.transform = 'translateY(0)';
     lraf = requestAnimationFrame(loaderTick);
@@ -326,8 +424,11 @@ const LCo = { x: 578.80, y: 586.55 };
     compC.style.display  = 'flex';
     compC.classList.remove('nviz-hidden');
 
-    // 1. Agent types in bubble
-    typeIn('nviz-agent-text', 'nviz-agent-caret', 400);
+    // 1. Agent message appears instantly (no typing effect)
+    var agentEl = document.getElementById('nviz-agent-text');
+    if (agentEl) agentEl.textContent = agentEl.getAttribute('data-text') || '';
+    var agentCaret = document.querySelector('.chat__agent-bubble .chat__caret');
+    if (agentCaret) agentCaret.style.display = 'none';
 
     // 2. After agent done (~3.5 s), user types in the INPUT field
     setTimeout(function () {
@@ -380,13 +481,17 @@ const LCo = { x: 578.80, y: 586.55 };
     height: auto;
     display: block;
     overflow: visible;
+    transition: opacity 0.6s ease;
   }
 
   /* Popup: absolute overlay exactly covering the SVG */
   .scene {
     position: absolute;
+    /* Centered card — stays a fixed size even when the network graphic grows */
     inset: 0;
-    width: 100%;
+    margin: auto;
+    width: min(94%, 340px);
+    height: min(88%, 476px);
     display: flex;
     flex-direction: column;
     background: var(--color-bg);
@@ -405,39 +510,53 @@ const LCo = { x: 578.80, y: 586.55 };
   .nviz-hidden { display: none !important; }
 
   /* ── Network layer animations ── */
-  .nviz-gray {
-    opacity: 0;
-    animation: nv-in 1.1s ease-out 0.5s forwards;
-  }
+  /* Real org: profile photos appear first, then the lines; recedes as twin builds */
+  .nviz-base { animation: nv-recede 1.6s ease-out 2.6s forwards; }
+  .nv-nodes  { opacity: 0; animation: nv-in 0.9s ease-out 0.3s forwards; }
+  .nv-edges  { opacity: 0; animation: nv-in 1.0s ease-out 1.2s forwards; }
+  /* Digital twin: whole layer (incl. Inplicit logo) lifts off and floats */
   .nviz-orange {
-    opacity: 0;
-    animation: nv-lift 4.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.8s forwards;
+    animation: nv-lift 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.9s forwards,
+               nv-float 4s ease-in-out 5.3s infinite;
+    transform: translateY(0);
   }
-  @keyframes nv-in { to { opacity: 1; } }
-  @keyframes nv-lift {
-    0%   { opacity: 0; transform: translateY(0); }
-    16%  { opacity: 1; transform: translateY(0); }
-    52%  { opacity: 1; transform: translateY(-12px); }
-    100% { opacity: 1; transform: translateY(-46px); }
-  }
-  .nviz-onode {
+  /* Orange links appear only after the nodes have turned orange */
+  .nv-oedges { opacity: 0; animation: nv-in 0.9s ease-out 3.7s forwards; }
+  /* Each employee node pops orange, radially from the centre outward */
+  .nv-onode {
     opacity: 0;
     transform-box: fill-box;
     transform-origin: center;
     transform: scale(0.3);
     animation: nv-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
-  @keyframes nv-pop { to { opacity: 1; transform: scale(1); } }
-  .nviz-oline {
-    opacity: 0;
-    animation: nv-in 0.5s ease-out forwards;
-  }
-  .nviz-badge {
+  .nv-badge {
     opacity: 0;
     transform-box: fill-box;
     transform-origin: center;
     transform: scale(0);
     animation: nv-pop 0.4s cubic-bezier(0.34, 1.8, 0.64, 1) forwards;
+  }
+  .nv-inplicit {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.4);
+    animation: nv-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.7s forwards;
+  }
+  .nv-sparks   { opacity: 0; animation: nv-in 0.6s ease-out 1.5s forwards; }
+  .nviz-labels { opacity: 0; animation: nv-in 1.0s ease-out 1.4s forwards; }
+
+  @keyframes nv-in { to { opacity: 1; } }
+  @keyframes nv-pop { to { opacity: 1; transform: scale(1); } }
+  @keyframes nv-recede { to { opacity: 0.18; } }
+  @keyframes nv-lift {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-16px); }
+  }
+  @keyframes nv-float {
+    0%, 100% { transform: translateY(-16px); }
+    50%      { transform: translateY(-22px); }
   }
 
   /* ── Scene head ── */
@@ -585,11 +704,11 @@ const LCo = { x: 578.80, y: 586.55 };
   .scene__send :global(svg) { width: 14px; height: 14px; display: block; }
 
   @media (prefers-reduced-motion: reduce) {
-    .nviz-gray, .nviz-orange { animation: none; opacity: 1; }
-    .nviz-orange { transform: translateY(-46px); }
-    .nviz-onode  { animation: none; opacity: 1; transform: scale(1); }
-    .nviz-oline  { animation: none; opacity: 0.5; }
-    .nviz-badge  { animation: none; opacity: 1; transform: scale(1); }
+    .nviz-base, .nv-nodes, .nv-edges, .nviz-labels { animation: none; opacity: 1; }
+    .nviz-orange { animation: none; transform: none; }
+    .nv-oedges { animation: none; opacity: 1; }
+    .nv-onode, .nv-badge, .nv-inplicit { animation: none; opacity: 1; transform: scale(1); }
+    .nv-sparks { display: none; }
     .scene { opacity: 1; transform: none; transition: none; }
     .scene__live, .chat__caret, .scene__caret { animation: none; }
   }
