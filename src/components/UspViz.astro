@@ -11,9 +11,9 @@ const roles = [
   { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',        photo: 'photo-1560250097-0b93528c311a', q: 'Als Schichtleiter koordinierst du gerade den Hallenumbau – wo verlierst du im Tagesablauf am meisten Zeit?' },
   { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',            photo: 'photo-1507003211169-0a1dd7228f2d', q: 'Im Vertrieb für Region Ost: an welcher Stelle im Abschluss stockt es bei dir am häufigsten?' },
   { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',         photo: 'photo-1500648767791-00dcc994a43e', q: 'Ihr migriert gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?' },
-  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: 'photo-1438761681033-6461ffad8d80', q: 'Beim neuen Onboarding-Rollout, den du betreust: wo hakt es im Ablauf für dich am meisten?' },
+  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: 'photo-1472099645785-5658abf4ff4e', q: 'Beim neuen Onboarding-Rollout, den du betreust: wo hakt es im Ablauf für dich am meisten?' },
   { role: 'Teamleiterin',         ctx: 'Strategy & Ops · Rollout Nord', photo: 'photo-1494790108377-be9c29b29330', q: 'Als Teamleiterin steckst du gerade im Rollout Nord – an welcher Übergabe geht bei euch am meisten Zeit verloren?' },
-  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: 'photo-1472099645785-5658abf4ff4e', q: 'In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?' },
+  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: 'photo-1438761681033-6461ffad8d80', q: 'In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?' },
 ];
 
 // Scaled SQUARE path for InplicitLoader at S=44/1080
@@ -40,9 +40,19 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     <div class="dept__chat"><span class="dept__chat-mark"></span><span class="dept__chat-q">{deptQuestions[0]}</span></div>
     <span class="dept__status">Gesamte Belegschaft, Antworten in Stunden</span>
     <div class="org">
-      <span class="org__top">C-Level</span>
-      <svg class="org__lines" viewBox="0 0 1000 56" preserveAspectRatio="none">
-        {departments.map((_, i) => <path class="org__path" data-i={i} d={`M ${125 + i * 250} 56 L ${125 + i * 250} 28 L 500 28 L 500 0`} />)}
+      <span class="org__top">Geschäftsführung</span>
+      <div class="org__tier-dots org__gf">{Array.from({ length: 3 }).map(() => <span></span>)}</div>
+      <svg class="org__lines org__lines--a" viewBox="0 0 1000 30" preserveAspectRatio="none">
+        {departments.map((_, i) => <path class="org__path-top" d={`M 500 0 L 500 15 L ${125 + i * 250} 15 L ${125 + i * 250} 30`} />)}
+      </svg>
+      <span class="org__tier-label">Middle Management</span>
+      <div class="org__row org__row--mm">
+        {departments.map(() => (
+          <div class="org__mm-node"><div class="org__tier-dots">{Array.from({ length: 3 }).map(() => <span></span>)}</div></div>
+        ))}
+      </div>
+      <svg class="org__lines org__lines--b" viewBox="0 0 1000 20" preserveAspectRatio="none">
+        {departments.map((_, i) => <path class="org__path" data-i={i} d={`M ${125 + i * 250} 0 L ${125 + i * 250} 20`} />)}
       </svg>
       <div class="org__row">
         {departments.map((d) => (
@@ -83,69 +93,88 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
         </symbol>
       </defs>
 
-      <!-- LEFT: inplicit box (orange border) -->
-      <rect x="3" y="18" width="90" height="150" rx="8" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="1.8"/>
-      <!-- InplicitLoader animation (44x44 scaled, centered in box at translate(26,26)) -->
-      <g transform="translate(26,26)">
-        <path d={SQ} fill="var(--color-text-primary)"/>
-        <circle class="ctx__loader-w" cx="20.41" cy="20.38" r="5.23" fill="var(--color-bg)"/>
-        <circle class="ctx__loader-o" cx="23.59" cy="23.90" r="5.23" fill="var(--color-accent)"/>
+      <!-- LEFT: inplicit box (orange border) — opens first -->
+      <g class="ctx__g-inplicit">
+        <rect x="3" y="18" width="90" height="150" rx="8" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="1.8"/>
+        <!-- InplicitLoader animation (44x44 scaled, centered in box at translate(26,26)) -->
+        <g transform="translate(26,26)">
+          <path d={SQ} fill="var(--color-text-primary)"/>
+          <circle class="ctx__loader-w" cx="20.41" cy="20.38" r="5.23" fill="var(--color-bg)"/>
+          <circle class="ctx__loader-o" cx="23.59" cy="23.90" r="5.23" fill="var(--color-accent)"/>
+        </g>
+        <!-- inplicit label below logo -->
+        <line x1="13" y1="78" x2="83" y2="78" stroke="var(--color-accent-muted)" stroke-width="1"/>
+        <text x="48" y="93" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif">inplicit</text>
+        <text x="48" y="108" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Menschliche</text>
+        <text x="48" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Kontext-Ebene</text>
+        <text x="48" y="136" text-anchor="middle" font-size="8" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">durch KI-Interviews</text>
       </g>
-      <!-- inplicit label below logo -->
-      <line x1="13" y1="78" x2="83" y2="78" stroke="var(--color-accent-muted)" stroke-width="1"/>
-      <text x="48" y="93" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif">inplicit</text>
-      <text x="48" y="108" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Menschliche</text>
-      <text x="48" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Kontext-Ebene</text>
-      <text x="48" y="136" text-anchor="middle" font-size="8" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">durch KI-Interviews</text>
-      <!-- Connector: inplicit → orange "impliziter Kontext" box, via a magnifying-glass
-           node (mirrors the MCP circle on the right). Inplicit surfaces the hidden,
-           in-people's-heads knowledge and feeds it into the org context. -->
-      <line x1="93" y1="141" x2="120" y2="141" stroke="var(--color-accent-muted)" stroke-width="1.2"/>
-      <circle cx="106" cy="141" r="9" fill="var(--color-text-primary)"/>
-      <circle cx="104.5" cy="139.5" r="2.7" fill="none" stroke="var(--color-bg)" stroke-width="1.3"/>
-      <line x1="106.4" y1="141.4" x2="108.5" y2="143.5" stroke="var(--color-bg)" stroke-width="1.3" stroke-linecap="round"/>
 
       <!-- CENTER: Organisationskontext box -->
-      <rect x="112" y="12" width="118" height="162" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2"/>
-      <text x="171" y="32" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Organisations-</text>
-      <text x="171" y="46" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">kontext</text>
-      <line x1="120" y1="53" x2="222" y2="53" stroke="var(--color-border)" stroke-width="1"/>
-      <!-- Expliziter Kontext section -->
-      <text x="171" y="66" text-anchor="middle" font-size="7.5" font-weight="600" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif" letter-spacing="0.08em">EXPLIZITER KONTEXT</text>
-      <text x="171" y="80" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Dokumente</text>
-      <text x="171" y="93" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Systeme</text>
-      <text x="171" y="106" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Tools & Meetings</text>
-      <line x1="120" y1="113" x2="222" y2="113" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3"/>
-      <!-- Impliziter Kontext section (orange, contributed by inplicit) -->
-      <rect x="120" y="117" width="102" height="49" rx="5" fill="var(--color-accent-light)" stroke="var(--color-accent-muted)" stroke-width="1"/>
-      <text x="171" y="131" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif" letter-spacing="0.08em">IMPLIZITER KONTEXT</text>
-      <text x="171" y="145" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">aus Interviews mit</text>
-      <text x="171" y="158" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Mitarbeitenden</text>
-
-      <!-- MCP circle at center-right of Organisationskontext, fan-out origin -->
-      <circle cx="236" cy="93" r="12" fill="var(--color-text-primary)"/>
-      <text x="236" y="93" text-anchor="middle" dominant-baseline="middle" font-size="7" font-weight="700" fill="var(--color-bg)" font-family="Inter,sans-serif">MCP</text>
-
-      <!-- Fan-out dashed lines: FROM MCP circle edge → AI tools -->
-      <g class="ctx__out-spokes" stroke="var(--color-border)" stroke-width="1.2" stroke-dasharray="3 5">
-        <line x1="248" y1="93" x2="265" y2="38"/>
-        <line x1="248" y1="93" x2="265" y2="78"/>
-        <line x1="248" y1="93" x2="265" y2="118"/>
-        <line x1="248" y1="93" x2="265" y2="158"/>
+      <g class="ctx__g-org">
+        <rect x="112" y="12" width="118" height="162" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2"/>
+        <text x="171" y="32" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Organisations-</text>
+        <text x="171" y="46" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">kontext</text>
+        <line x1="120" y1="53" x2="222" y2="53" stroke="var(--color-border)" stroke-width="1"/>
+        <!-- Expliziter Kontext section -->
+        <text x="171" y="66" text-anchor="middle" font-size="7.5" font-weight="600" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif" letter-spacing="0.08em">EXPLIZITER KONTEXT</text>
+        <text x="171" y="80" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Dokumente</text>
+        <text x="171" y="93" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Systeme</text>
+        <text x="171" y="106" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Tools & Meetings</text>
+        <line x1="120" y1="113" x2="222" y2="113" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3"/>
+        <!-- Impliziter Kontext section (orange, contributed by inplicit) -->
+        <rect x="120" y="117" width="102" height="49" rx="5" fill="var(--color-accent-light)" stroke="var(--color-accent-muted)" stroke-width="1"/>
+        <text x="171" y="129" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif" letter-spacing="0.08em">IMPLIZITER KONTEXT</text>
+        <text x="171" y="141" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Praxiswissen</text>
+        <text x="171" y="152" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Echte Abläufe</text>
+        <text x="171" y="163" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Erfahrungswissen</text>
       </g>
 
-      <!-- AI tools: real brand logos (all black) + labels -->
-      <use href="#viz-claude"  x="265" y="31" width="14" height="14"/>
-      <text x="283" y="42" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Claude</text>
+      <!-- RIGHT: MCP hands the context off to the AI tools -->
+      <g class="ctx__g-mcp">
+        <!-- MCP circle at center-right of Organisationskontext, fan-out origin -->
+        <circle cx="236" cy="93" r="12" fill="var(--color-text-primary)"/>
+        <text x="236" y="93" text-anchor="middle" dominant-baseline="middle" font-size="7" font-weight="700" fill="var(--color-bg)" font-family="Inter,sans-serif">MCP</text>
 
-      <use href="#viz-gemini"  x="265" y="71" width="14" height="14"/>
-      <text x="283" y="82" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Gemini</text>
+        <!-- Fan-out dashed lines: FROM MCP circle edge → AI tools (flowing) -->
+        <g class="ctx__out-spokes" stroke="var(--color-border)" stroke-width="1.2" stroke-dasharray="3 5">
+          <line x1="248" y1="93" x2="265" y2="38"/>
+          <line x1="248" y1="93" x2="265" y2="78"/>
+          <line x1="248" y1="93" x2="265" y2="118"/>
+          <line x1="248" y1="93" x2="265" y2="158"/>
+        </g>
 
-      <use href="#viz-chatgpt" x="265" y="111" width="14" height="14"/>
-      <text x="283" y="122" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">ChatGPT</text>
+        <!-- Moving packets: context travels fast from MCP out to each tool -->
+        <g class="ctx__flow" fill="var(--color-accent)">
+          <circle r="2"><animateMotion path="M 248,93 L 265,38"  dur="0.85s" begin="0s"    repeatCount="indefinite" calcMode="linear"/></circle>
+          <circle r="2"><animateMotion path="M 248,93 L 265,78"  dur="0.85s" begin="0.2s"  repeatCount="indefinite" calcMode="linear"/></circle>
+          <circle r="2"><animateMotion path="M 248,93 L 265,118" dur="0.85s" begin="0.4s"  repeatCount="indefinite" calcMode="linear"/></circle>
+          <circle r="2"><animateMotion path="M 248,93 L 265,158" dur="0.85s" begin="0.6s"  repeatCount="indefinite" calcMode="linear"/></circle>
+        </g>
 
-      <use href="#viz-copilot" x="265" y="151" width="14" height="14"/>
-      <text x="283" y="162" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Copilot</text>
+        <!-- AI tools: real brand logos (all black) + labels -->
+        <use href="#viz-claude"  x="265" y="31" width="14" height="14"/>
+        <text x="283" y="42" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Claude</text>
+
+        <use href="#viz-gemini"  x="265" y="71" width="14" height="14"/>
+        <text x="283" y="82" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Gemini</text>
+
+        <use href="#viz-chatgpt" x="265" y="111" width="14" height="14"/>
+        <text x="283" y="122" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">ChatGPT</text>
+
+        <use href="#viz-copilot" x="265" y="151" width="14" height="14"/>
+        <text x="283" y="162" font-size="11" fill="var(--color-text-primary)" font-family="Inter,sans-serif">Copilot</text>
+      </g>
+
+      <!-- Connector (drawn LAST so it sits on top): inplicit centre-right → orange
+           "impliziter Kontext" box, via a magnifying-glass node. Inplicit surfaces
+           the hidden, in-people's-heads knowledge and feeds it into the org context. -->
+      <g class="ctx__connector">
+        <line x1="93" y1="93" x2="120" y2="130" stroke="var(--color-accent)" stroke-width="1.3" stroke-linecap="round"/>
+        <circle cx="103" cy="107" r="9" fill="var(--color-text-primary)"/>
+        <circle cx="101.9" cy="105.9" r="2.7" fill="none" stroke="var(--color-bg)" stroke-width="1.4"/>
+        <line x1="103.6" y1="107.6" x2="105.4" y2="109.4" stroke="var(--color-bg)" stroke-width="1.4" stroke-linecap="round"/>
+      </g>
     </svg>
   </div>
 )}
@@ -202,16 +231,23 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   .dept__status { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; transition: opacity 0.25s ease; }
   .org { display: flex; flex-direction: column; }
   .org__top { text-align: center; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); transition: color 0.3s ease; }
-  .org__lines { width: 100%; height: 38px; }
-  .org__path { fill: none; stroke: var(--color-border); stroke-width: 1.5px; vector-effect: non-scaling-stroke; transition: stroke 0.3s ease; }
+  .org__tier-label { text-align: center; font-size: 10px; color: var(--color-text-tertiary); transition: color 0.3s ease; }
+  .org__tier-dots { display: flex; justify-content: center; gap: 3px; margin: 4px 0; }
+  .org__tier-dots span { width: 8px; height: 8px; border-radius: 2px; background: var(--color-border); transition: background-color 0.4s ease; }
+  .org__row--mm { margin: 2px 0; }
+  .org__mm-node { flex: 1; display: flex; justify-content: center; }
+  .org__lines { width: 100%; }
+  .org__lines--a { height: 20px; }
+  .org__lines--b { height: 13px; }
+  .org__path, .org__path-top { fill: none; stroke: var(--color-border); stroke-width: 1.5px; vector-effect: non-scaling-stroke; transition: stroke 0.3s ease; }
   .org__row { display: flex; }
   .org__dept { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
   .org__name { font-size: 11px; color: var(--color-text-secondary); transition: color 0.3s ease; }
   .org__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 64px; }
   .org__dots span { width: 8px; height: 8px; border-radius: 2px; background: var(--color-border); transition: background-color 0.4s ease; }
-  .dept.is-all .org__top, .dept.is-all .org__name { color: var(--color-accent); }
-  .dept.is-all .org__path { stroke: var(--color-accent); }
-  .dept.is-all .org__dots span { background: var(--color-accent); }
+  .dept.is-all .org__top, .dept.is-all .org__name, .dept.is-all .org__tier-label { color: var(--color-accent); }
+  .dept.is-all .org__path, .dept.is-all .org__path-top { stroke: var(--color-accent); }
+  .dept.is-all .org__dots span, .dept.is-all .org__tier-dots span { background: var(--color-accent); }
   .org__path.is-active { stroke: var(--color-accent); stroke-width: 2px; }
   .org__dept.is-active .org__name { color: var(--color-accent); font-weight: 600; }
   .org__dept.is-active .org__dots span { background: var(--color-accent); }
@@ -219,12 +255,29 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   /* context */
   .ctx { display: flex; justify-content: center; align-items: center; }
   .ctx__svg { width: 100%; height: auto; }
-  .ctx__out-spokes line { animation: ctxFlow 1.2s linear infinite; animation-play-state: paused; }
-  .ctx__out-spokes line:nth-child(2) { animation-delay: 0.15s; }
-  .ctx__out-spokes line:nth-child(3) { animation-delay: 0.3s; }
-  .ctx__out-spokes line:nth-child(4) { animation-delay: 0.45s; }
-  :global(.g2__card:hover) .ctx__out-spokes line { animation-play-state: running; stroke: var(--color-accent); }
-  @keyframes ctxFlow { to { stroke-dashoffset: -9; } }
+
+  /* fan-out dashes flow continuously toward the tools */
+  .ctx__out-spokes line { animation: ctxFlow 0.7s linear infinite; }
+  @keyframes ctxFlow { to { stroke-dashoffset: -8; } }
+
+  /* staged entrance (JS adds .ctx--anim, then .is-in on scroll):
+     inplicit opens first → org context → connector → MCP hands off to tools */
+  .ctx--anim .ctx__g-inplicit,
+  .ctx--anim .ctx__g-org,
+  .ctx--anim .ctx__g-mcp,
+  .ctx--anim .ctx__connector { opacity: 0; }
+  .ctx--anim .ctx__g-inplicit { transform-box: fill-box; transform-origin: center; transform: scale(0.86); }
+  .ctx--anim.is-in .ctx__g-inplicit { animation: ctxOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+  .ctx--anim.is-in .ctx__g-org       { animation: ctxIn 0.5s ease-out 0.55s forwards; }
+  .ctx--anim.is-in .ctx__connector   { animation: ctxIn 0.45s ease-out 1.0s forwards; }
+  .ctx--anim.is-in .ctx__g-mcp       { animation: ctxIn 0.5s ease-out 1.35s forwards; }
+  @keyframes ctxOpen { to { opacity: 1; transform: scale(1); } }
+  @keyframes ctxIn { to { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ctx__out-spokes line { animation: none; }
+    .ctx__flow { display: none; }
+  }
 
   /* interviews — chat design: inplicit asks, interviewee shown bottom-right */
   .iviz { display: flex; flex-direction: column; gap: var(--space-3); }
@@ -344,6 +397,16 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
       requestAnimationFrame(tick);
     });
   }
+
+  // Context viz: staged entrance on scroll-in (inplicit box opens first)
+  document.querySelectorAll('.ctx').forEach((ctx) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    ctx.classList.add('ctx--anim');
+    const card = ctx.closest('.g2__card') || ctx;
+    new IntersectionObserver((es, io) => {
+      es.forEach((e) => { if (e.isIntersecting) { ctx.classList.add('is-in'); io.disconnect(); } });
+    }, { threshold: 0.3 }).observe(card);
+  });
 
   // Interviews: avatar click + hover auto-cycle (chat design)
   document.querySelectorAll('.iviz').forEach((iviz) => {
