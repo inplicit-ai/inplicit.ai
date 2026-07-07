@@ -1,4 +1,6 @@
 ---
+import logoIconRaw from '../assets/logo_icon.svg?raw';
+
 export interface Props { type: string; }
 const { type } = Astro.props;
 
@@ -6,12 +8,12 @@ const departments = [{ name: 'Betrieb', n: 18 }, { name: 'Vertrieb', n: 15 }, { 
 const deptQuestions = ['Wo verlieren wir die meiste Zeit?','Welche Abläufe bremsen den Betrieb aus?','Was sollten wir zuerst automatisieren?','Wo hakt es im Onboarding?','Kommt das neue Rollout wirklich an?'];
 const campaignGoal = 'Ineffizienzen im Tagesgeschäft';
 const roles = [
-  { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',       q: '„Du koordinierst gerade den Hallenumbau – wo verlierst du im Tagesablauf am meisten Zeit?"' },
-  { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',           q: '„Im Abschlussprozess für Region Ost: an welcher Stelle stockt es bei dir am häufigsten?"' },
-  { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',        q: '„Ihr migriert gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?"' },
-  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',  q: '„Beim neuen Onboarding-Rollout: wo hakt es für dich im Ablauf am meisten?"' },
-  { role: 'Projektleiterin',      ctx: 'Strategy & Ops · Rollout Nord', q: '„Im Rollout Nord: an welcher Übergabe geht bei euch am meisten Zeit verloren?"' },
-  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',      q: '„In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?"' },
+  { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',        photo: 'photo-1560250097-0b93528c311a', q: 'Als Schichtleiter koordinierst du gerade den Hallenumbau – wo verlierst du im Tagesablauf am meisten Zeit?' },
+  { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',            photo: 'photo-1507003211169-0a1dd7228f2d', q: 'Im Vertrieb für Region Ost: an welcher Stelle im Abschluss stockt es bei dir am häufigsten?' },
+  { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',         photo: 'photo-1500648767791-00dcc994a43e', q: 'Ihr migriert gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?' },
+  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: 'photo-1438761681033-6461ffad8d80', q: 'Beim neuen Onboarding-Rollout, den du betreust: wo hakt es im Ablauf für dich am meisten?' },
+  { role: 'Teamleiterin',         ctx: 'Strategy & Ops · Rollout Nord', photo: 'photo-1494790108377-be9c29b29330', q: 'Als Teamleiterin steckst du gerade im Rollout Nord – an welcher Übergabe geht bei euch am meisten Zeit verloren?' },
+  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: 'photo-1472099645785-5658abf4ff4e', q: 'In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?' },
 ];
 
 // Scaled SQUARE path for InplicitLoader at S=44/1080
@@ -150,22 +152,27 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
 {type === 'interviews' && (
   <div class="viz iviz" data-roles={JSON.stringify(roles)} aria-hidden="true">
-    <div class="iviz__avatars">
-      {roles.map((r, i) => (
-        <button type="button" class={`iviz__avatar${i === 0 ? ' is-active' : ''}`} data-idx={i} aria-label={r.role}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
-        </button>
-      ))}
-    </div>
-    <div class="iviz__card">
-      <div class="iviz__campaign"><span class="iviz__campaign-dot"></span>Kampagne · {campaignGoal}</div>
-      <div class="iviz__badge">Adaptives Interview</div>
-      <div class="iviz__row"><span class="iviz__lbl">Rolle</span><span class="iviz__val iviz__role">{roles[0].role}</span></div>
-      <div class="iviz__row"><span class="iviz__lbl">Kontext</span><span class="iviz__val iviz__ctx-text">{roles[0].ctx}</span></div>
-      <div class="iviz__q">{roles[0].q}</div>
-      <div class="iviz__cross">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        Antworten werden innerhalb der Kampagne cross-validiert
+    <div class="iviz__campaign"><span class="iviz__campaign-dot"></span>Kampagne · {campaignGoal}</div>
+    <div class="iviz__body">
+      <div class="iviz__list">
+        {roles.map((r, i) => (
+          <button type="button" class={`iviz__ava${i === 0 ? ' is-active' : ''}`} data-idx={i} aria-label={r.role}
+            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`}></button>
+        ))}
+      </div>
+      <div class="iviz__chat">
+        <div class="iviz__bubble-row">
+          <span class="iviz__mark" set:html={logoIconRaw}></span>
+          <div class="iviz__bubble iviz__q">{roles[0].q}</div>
+        </div>
+        <div class="iviz__who">
+          <div class="iviz__who-meta">
+            <span class="iviz__who-role">{roles[0].role}</span>
+            <span class="iviz__who-ctx">{roles[0].ctx}</span>
+          </div>
+          <span class="iviz__who-ava"
+            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`}></span>
+        </div>
       </div>
     </div>
   </div>
@@ -219,28 +226,54 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   :global(.g2__card:hover) .ctx__out-spokes line { animation-play-state: running; stroke: var(--color-accent); }
   @keyframes ctxFlow { to { stroke-dashoffset: -9; } }
 
-  /* interviews */
+  /* interviews — chat design: inplicit asks, interviewee shown bottom-right */
   .iviz { display: flex; flex-direction: column; gap: var(--space-3); }
-  .iviz__avatars { display: flex; gap: 6px; }
-  .iviz__avatar {
-    flex: 1; aspect-ratio: 1; min-height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--color-surface-elevated); border: 1px solid var(--color-border);
-    border-radius: var(--radius-card); color: var(--color-text-tertiary);
-    cursor: pointer; transition: background 0.25s, border-color 0.25s, color 0.25s;
-  }
-  .iviz__avatar:hover { border-color: var(--color-text-tertiary); }
-  .iviz__avatar.is-active { background: var(--color-accent-light); border-color: var(--color-accent); color: var(--color-accent); }
-  .iviz__card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: 6px; }
-  .iviz__campaign { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); padding-bottom: 6px; border-bottom: 1px solid var(--color-border); }
+  .iviz__campaign { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); }
   .iviz__campaign-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; }
-  .iviz__badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-accent); }
-  .iviz__row { display: flex; gap: 6px; align-items: baseline; }
-  .iviz__lbl { font-size: 10px; color: var(--color-text-tertiary); width: 44px; flex-shrink: 0; }
-  .iviz__val { font-size: 11px; font-weight: 600; color: var(--color-text-primary); transition: opacity 0.2s ease; }
-  .iviz__q { font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.4; border-top: 1px solid var(--color-border); padding-top: 6px; margin-top: 2px; transition: opacity 0.2s ease; }
-  .iviz__cross { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--color-accent); font-weight: 600; }
-  .iviz__cross svg { flex-shrink: 0; }
+
+  .iviz__body { display: flex; gap: var(--space-3); align-items: stretch; }
+
+  /* left: campaign participants */
+  .iviz__list { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .iviz__ava {
+    width: 30px; height: 30px; border-radius: 50%; padding: 0;
+    background-size: cover; background-position: center;
+    border: 2px solid transparent; opacity: 0.5; cursor: pointer;
+    transition: opacity 0.25s, border-color 0.25s, transform 0.25s;
+  }
+  .iviz__ava:hover { opacity: 0.85; }
+  .iviz__ava.is-active { opacity: 1; border-color: var(--color-accent); transform: scale(1.06); }
+
+  /* right: chat window */
+  .iviz__chat {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-3);
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-card); padding: var(--space-3);
+  }
+  .iviz__bubble-row { display: flex; gap: 8px; align-items: flex-start; }
+  .iviz__mark {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    background: var(--color-accent-light); border: 1px solid var(--color-accent-muted);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .iviz__mark :global(svg) { width: 13px; height: 13px; display: block; }
+  .iviz__mark :global(path) { fill: var(--color-text-primary); }
+  .iviz__mark :global(rect) { fill: var(--color-accent); }
+  .iviz__bubble {
+    background: var(--color-text-primary); color: var(--color-bg);
+    border-radius: 4px 12px 12px 12px; padding: 8px 11px;
+    font-size: 11.5px; line-height: 1.5; transition: opacity 0.2s ease;
+  }
+  .iviz__who { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+  .iviz__who-meta { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; transition: opacity 0.2s ease; }
+  .iviz__who-role { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .iviz__who-ctx { font-size: 10px; color: var(--color-text-tertiary); }
+  .iviz__who-ava {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    background-size: cover; background-position: center;
+    border: 2px solid var(--color-accent); transition: opacity 0.2s ease;
+  }
 </style>
 
 <script>
@@ -312,28 +345,33 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     });
   }
 
-  // Interviews: avatar click + hover auto-cycle
+  // Interviews: avatar click + hover auto-cycle (chat design)
   document.querySelectorAll('.iviz').forEach((iviz) => {
     const card = iviz.closest('.g2__card'); if (!card) return;
-    let roles: {role:string;ctx:string;q:string}[] = [];
+    let roles: {role:string;ctx:string;q:string;photo:string}[] = [];
     try { roles = JSON.parse(iviz.getAttribute('data-roles')||'[]'); } catch {}
-    const roleEl = iviz.querySelector<HTMLElement>('.iviz__role');
-    const ctxEl  = iviz.querySelector<HTMLElement>('.iviz__ctx-text');
     const qEl    = iviz.querySelector<HTMLElement>('.iviz__q');
-    const avatars = [...iviz.querySelectorAll<HTMLElement>('.iviz__avatar')];
+    const roleEl = iviz.querySelector<HTMLElement>('.iviz__who-role');
+    const ctxEl  = iviz.querySelector<HTMLElement>('.iviz__who-ctx');
+    const metaEl = iviz.querySelector<HTMLElement>('.iviz__who-meta');
+    const avaEl  = iviz.querySelector<HTMLElement>('.iviz__who-ava');
+    const avatars = [...iviz.querySelectorAll<HTMLElement>('.iviz__ava')];
+    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`;
     let idx = 0; let timer: ReturnType<typeof setInterval> | null = null;
     const show = (i: number) => {
       const r = roles[i]; if(!r) return; idx = i;
-      if(roleEl) roleEl.style.opacity='0'; if(ctxEl) ctxEl.style.opacity='0'; if(qEl) qEl.style.opacity='0';
+      if(qEl) qEl.style.opacity='0'; if(metaEl) metaEl.style.opacity='0'; if(avaEl) avaEl.style.opacity='0';
       avatars.forEach((a,j)=>a.classList.toggle('is-active',j===i));
       setTimeout(()=>{
-        if(roleEl){roleEl.textContent=r.role;roleEl.style.opacity='1';}
-        if(ctxEl){ctxEl.textContent=r.ctx;ctxEl.style.opacity='1';}
         if(qEl){qEl.textContent=r.q;qEl.style.opacity='1';}
+        if(roleEl) roleEl.textContent=r.role;
+        if(ctxEl) ctxEl.textContent=r.ctx;
+        if(metaEl) metaEl.style.opacity='1';
+        if(avaEl){avaEl.style.backgroundImage=photoUrl(r.photo);avaEl.style.opacity='1';}
       },200);
     };
     avatars.forEach((a,i)=>a.addEventListener('click',()=>{ show(i); }));
-    card.addEventListener('mouseenter',()=>{ show(0); timer=setInterval(()=>{ show((idx+1)%roles.length); },2200); });
+    card.addEventListener('mouseenter',()=>{ show(0); timer=setInterval(()=>{ show((idx+1)%roles.length); },2600); });
     card.addEventListener('mouseleave',()=>{ if(timer){clearInterval(timer);timer=null;} show(0); });
   });
 </script>
