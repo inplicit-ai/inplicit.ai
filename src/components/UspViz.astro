@@ -136,20 +136,12 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
         <circle cx="236" cy="93" r="12" fill="var(--color-text-primary)"/>
         <text x="236" y="93" text-anchor="middle" dominant-baseline="middle" font-size="7" font-weight="700" fill="var(--color-bg)" font-family="Inter,sans-serif">MCP</text>
 
-        <!-- Fan-out dashed lines: FROM MCP circle edge → AI tools (flowing) -->
-        <g class="ctx__out-spokes" stroke="var(--color-border)" stroke-width="1.2" stroke-dasharray="3 5">
+        <!-- Fan-out dashed lines: FROM MCP circle edge → AI tools (fast flow) -->
+        <g class="ctx__out-spokes" stroke="var(--color-border)" stroke-width="0.8" stroke-dasharray="3 5">
           <line x1="248" y1="93" x2="265" y2="38"/>
           <line x1="248" y1="93" x2="265" y2="78"/>
           <line x1="248" y1="93" x2="265" y2="118"/>
           <line x1="248" y1="93" x2="265" y2="158"/>
-        </g>
-
-        <!-- Moving packets: context travels fast from MCP out to each tool -->
-        <g class="ctx__flow" fill="var(--color-accent)">
-          <circle r="2"><animateMotion path="M 248,93 L 265,38"  dur="0.85s" begin="0s"    repeatCount="indefinite" calcMode="linear"/></circle>
-          <circle r="2"><animateMotion path="M 248,93 L 265,78"  dur="0.85s" begin="0.2s"  repeatCount="indefinite" calcMode="linear"/></circle>
-          <circle r="2"><animateMotion path="M 248,93 L 265,118" dur="0.85s" begin="0.4s"  repeatCount="indefinite" calcMode="linear"/></circle>
-          <circle r="2"><animateMotion path="M 248,93 L 265,158" dur="0.85s" begin="0.6s"  repeatCount="indefinite" calcMode="linear"/></circle>
         </g>
 
         <!-- AI tools: real brand logos (all black) + labels -->
@@ -170,10 +162,10 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
            "impliziter Kontext" box, via a magnifying-glass node. Inplicit surfaces
            the hidden, in-people's-heads knowledge and feeds it into the org context. -->
       <g class="ctx__connector">
-        <line x1="93" y1="93" x2="120" y2="130" stroke="var(--color-accent)" stroke-width="1.3" stroke-linecap="round"/>
-        <circle cx="103" cy="107" r="9" fill="var(--color-text-primary)"/>
-        <circle cx="101.9" cy="105.9" r="2.7" fill="none" stroke="var(--color-bg)" stroke-width="1.4"/>
-        <line x1="103.6" y1="107.6" x2="105.4" y2="109.4" stroke="var(--color-bg)" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="93" y1="93" x2="120" y2="141" stroke="var(--color-border)" stroke-width="0.9"/>
+        <circle cx="120" cy="141" r="8.5" fill="var(--color-text-primary)"/>
+        <circle cx="118.9" cy="139.9" r="2.6" fill="none" stroke="var(--color-bg)" stroke-width="1.3"/>
+        <line x1="120.5" y1="141.5" x2="122.3" y2="143.3" stroke="var(--color-bg)" stroke-width="1.3" stroke-linecap="round"/>
       </g>
     </svg>
   </div>
@@ -248,16 +240,17 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   .dept.is-all .org__top, .dept.is-all .org__name, .dept.is-all .org__tier-label { color: var(--color-accent); }
   .dept.is-all .org__path, .dept.is-all .org__path-top { stroke: var(--color-accent); }
   .dept.is-all .org__dots span, .dept.is-all .org__tier-dots span { background: var(--color-accent); }
-  .org__path.is-active { stroke: var(--color-accent); stroke-width: 2px; }
+  .org__path.is-active, .org__path-top.is-active { stroke: var(--color-accent); stroke-width: 2px; }
   .org__dept.is-active .org__name { color: var(--color-accent); font-weight: 600; }
   .org__dept.is-active .org__dots span { background: var(--color-accent); }
+  .org__mm-node.is-active .org__tier-dots span { background: var(--color-accent); }
 
   /* context */
   .ctx { display: flex; justify-content: center; align-items: center; }
   .ctx__svg { width: 100%; height: auto; }
 
-  /* fan-out dashes flow continuously toward the tools */
-  .ctx__out-spokes line { animation: ctxFlow 0.7s linear infinite; }
+  /* fan-out dashes flow fast toward the tools (carries the "info travels" motion) */
+  .ctx__out-spokes line { animation: ctxFlow 0.28s linear infinite; }
   @keyframes ctxFlow { to { stroke-dashoffset: -8; } }
 
   /* staged entrance (JS adds .ctx--anim, then .is-in on scroll):
@@ -276,7 +269,6 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
   @media (prefers-reduced-motion: reduce) {
     .ctx__out-spokes line { animation: none; }
-    .ctx__flow { display: none; }
   }
 
   /* interviews — chat design: inplicit asks, interviewee shown bottom-right */
@@ -353,15 +345,18 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     const status = dept.querySelector<HTMLElement>('.dept__status');
     const depts = [...dept.querySelectorAll<HTMLElement>('.org__dept')];
     const paths = [...dept.querySelectorAll<SVGElement>('.org__path')];
+    const mmNodes = [...dept.querySelectorAll<HTMLElement>('.org__mm-node')];
+    const topPaths = [...dept.querySelectorAll<SVGElement>('.org__path-top')];
     let questions: string[] = [];
     try { questions = JSON.parse(dept.getAttribute('data-questions') || '[]'); } catch {}
     let step = 0; let timer: ReturnType<typeof setInterval> | null = null;
-    const reset = () => { dept.classList.remove('is-all'); depts.forEach(d=>d.classList.remove('is-active')); paths.forEach(p=>p.classList.remove('is-active')); if(q) q.textContent=questions[0]||''; if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; step=0; };
+    const clearActive = () => { depts.forEach(d=>d.classList.remove('is-active')); paths.forEach(p=>p.classList.remove('is-active')); mmNodes.forEach(n=>n.classList.remove('is-active')); topPaths.forEach(p=>p.classList.remove('is-active')); };
+    const reset = () => { dept.classList.remove('is-all'); clearActive(); if(q) q.textContent=questions[0]||''; if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; step=0; };
     const tick = () => {
       if(q) q.style.opacity='0'; if(status) status.style.opacity='0';
       setTimeout(()=>{
-        if(step===0){ dept.classList.add('is-all'); depts.forEach(d=>d.classList.remove('is-active')); paths.forEach(p=>p.classList.remove('is-active')); if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; }
-        else { dept.classList.remove('is-all'); depts.forEach((d,i)=>d.classList.toggle('is-active',i===step-1)); paths.forEach((p,i)=>p.classList.toggle('is-active',i===step-1)); if(status) status.textContent='Gezielt: '+(depts[step-1]?.getAttribute('data-dept')||''); }
+        if(step===0){ dept.classList.add('is-all'); clearActive(); if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; }
+        else { dept.classList.remove('is-all'); const a=step-1; depts.forEach((d,i)=>d.classList.toggle('is-active',i===a)); paths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); mmNodes.forEach((n,i)=>n.classList.toggle('is-active',i===a)); topPaths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); if(status) status.textContent='Gezielt: '+(depts[a]?.getAttribute('data-dept')||''); }
         if(q){q.textContent=questions[step%questions.length]||'';q.style.opacity='1';} if(status) status.style.opacity='1';
         step=(step+1)%(depts.length+1);
       },200);
