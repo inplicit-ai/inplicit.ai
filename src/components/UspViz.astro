@@ -4,13 +4,14 @@ const { type } = Astro.props;
 
 const departments = [{ name: 'Betrieb', n: 18 }, { name: 'Vertrieb', n: 15 }, { name: 'IT', n: 10 }, { name: 'Personal', n: 9 }];
 const deptQuestions = ['Wo verlieren wir die meiste Zeit?','Welche Abläufe bremsen den Betrieb aus?','Was sollten wir zuerst automatisieren?','Wo hakt es im Onboarding?','Kommt das neue Rollout wirklich an?'];
+const campaignGoal = 'Ineffizienzen im Tagesgeschäft';
 const roles = [
-  { role: 'Schichtleiter',        ctx: 'Logistik, 12 MA',    q: '„Wo hakt es bei der Übergabe?"' },
-  { role: 'Vertriebsmitarbeiter', ctx: 'Sales, Region Ost',   q: '„Was bremst den Abschluss?"' },
-  { role: 'IT-Admin',             ctx: 'IT-Infrastruktur',    q: '„Welche Tickets nerven am meisten?"' },
-  { role: 'HR Business Partner',  ctx: 'People & Culture',    q: '„Wie läuft das Onboarding?"' },
-  { role: 'Projektleiterin',      ctx: 'Strategy & Ops',      q: '„Wo stockt es im Rollout?"' },
-  { role: 'Qualitatsmanagerin',   ctx: 'QM & Compliance',     q: '„Wo entstehen die meisten Fehler?"' },
+  { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',       q: '„Du koordinierst gerade den Hallenumbau – wo verlierst du im Tagesablauf am meisten Zeit?"' },
+  { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',           q: '„Im Abschlussprozess für Region Ost: an welcher Stelle stockt es bei dir am häufigsten?"' },
+  { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',        q: '„Ihr migriert gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?"' },
+  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',  q: '„Beim neuen Onboarding-Rollout: wo hakt es für dich im Ablauf am meisten?"' },
+  { role: 'Projektleiterin',      ctx: 'Strategy & Ops · Rollout Nord', q: '„Im Rollout Nord: an welcher Übergabe geht bei euch am meisten Zeit verloren?"' },
+  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',      q: '„In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?"' },
 ];
 
 // Scaled SQUARE path for InplicitLoader at S=44/1080
@@ -22,7 +23,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     <div class="hbars__metric">
       <span class="hbars__label">Zeit bis zur Erkenntnis</span>
       <div class="hbars__row"><span class="hbars__name">Klassisch</span><div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div><span class="hbars__val">4-6 Monate</span></div>
-      <div class="hbars__row"><span class="hbars__name acc">inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="22%" style="--w:22%"></i></div><span class="hbars__val acc">3-4 Tage</span></div>
+      <div class="hbars__row"><span class="hbars__name acc">inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="8%" style="--w:8%"></i></div><span class="hbars__val acc">Stunden</span></div>
     </div>
     <div class="hbars__metric">
       <span class="hbars__label">Kosten</span>
@@ -94,9 +95,13 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
       <text x="48" y="108" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Menschliche</text>
       <text x="48" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Kontext-Ebene</text>
       <text x="48" y="136" text-anchor="middle" font-size="8" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">durch KI-Interviews</text>
-      <!-- Thin horizontal connector: inplicit center-right → Organisationskontext -->
-      <line x1="93" y1="93" x2="112" y2="93" stroke="var(--color-border)" stroke-width="1"/>
-      <polygon points="110,90 113,93 110,96" fill="var(--color-border)"/>
+      <!-- Connector: inplicit → orange "impliziter Kontext" box, via a magnifying-glass
+           node (mirrors the MCP circle on the right). Inplicit surfaces the hidden,
+           in-people's-heads knowledge and feeds it into the org context. -->
+      <line x1="93" y1="141" x2="120" y2="141" stroke="var(--color-accent-muted)" stroke-width="1.2"/>
+      <circle cx="106" cy="141" r="9" fill="var(--color-text-primary)"/>
+      <circle cx="104.5" cy="139.5" r="2.7" fill="none" stroke="var(--color-bg)" stroke-width="1.3"/>
+      <line x1="106.4" y1="141.4" x2="108.5" y2="143.5" stroke="var(--color-bg)" stroke-width="1.3" stroke-linecap="round"/>
 
       <!-- CENTER: Organisationskontext box -->
       <rect x="112" y="12" width="118" height="162" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2"/>
@@ -153,10 +158,15 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
       ))}
     </div>
     <div class="iviz__card">
+      <div class="iviz__campaign"><span class="iviz__campaign-dot"></span>Kampagne · {campaignGoal}</div>
       <div class="iviz__badge">Adaptives Interview</div>
       <div class="iviz__row"><span class="iviz__lbl">Rolle</span><span class="iviz__val iviz__role">{roles[0].role}</span></div>
       <div class="iviz__row"><span class="iviz__lbl">Kontext</span><span class="iviz__val iviz__ctx-text">{roles[0].ctx}</span></div>
       <div class="iviz__q">{roles[0].q}</div>
+      <div class="iviz__cross">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Antworten werden innerhalb der Kampagne cross-validiert
+      </div>
     </div>
   </div>
 )}
@@ -222,11 +232,15 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   .iviz__avatar:hover { border-color: var(--color-text-tertiary); }
   .iviz__avatar.is-active { background: var(--color-accent-light); border-color: var(--color-accent); color: var(--color-accent); }
   .iviz__card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: 6px; }
+  .iviz__campaign { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); padding-bottom: 6px; border-bottom: 1px solid var(--color-border); }
+  .iviz__campaign-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; }
   .iviz__badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-accent); }
   .iviz__row { display: flex; gap: 6px; align-items: baseline; }
   .iviz__lbl { font-size: 10px; color: var(--color-text-tertiary); width: 44px; flex-shrink: 0; }
   .iviz__val { font-size: 11px; font-weight: 600; color: var(--color-text-primary); transition: opacity 0.2s ease; }
   .iviz__q { font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.4; border-top: 1px solid var(--color-border); padding-top: 6px; margin-top: 2px; transition: opacity 0.2s ease; }
+  .iviz__cross { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--color-accent); font-weight: 600; }
+  .iviz__cross svg { flex-shrink: 0; }
 </style>
 
 <script>
