@@ -55,20 +55,10 @@ const CAL_LINK = 'inplicit/30min';
         </div>
       </div>
 
-      <!-- Right: Cal.com inline embed — loaded only on explicit user click (no
-           third-party connection / cookies to Cal until the visitor asks for it) -->
+      <!-- Right: Cal.com inline embed — loads automatically once the section
+           scrolls into view (consent for third-party cookies is covered by
+           the site-wide ConsentBanner, not a separate per-section gate) -->
       <div class="cal__embed-wrap section-fade" style="--delay: 100ms">
-        <div id="cal-placeholder" class="cal__placeholder">
-          <p class="cal__placeholder-text">
-            {isDE
-              ? 'Der Buchungskalender wird von Cal.com (EU-Hosting) geladen. Dabei wird eine Verbindung zu deren Servern hergestellt und es können Cookies gesetzt werden.'
-              : 'The booking calendar is provided by Cal.com (hosted in the EU). Loading it connects to their servers and may set cookies.'}
-          </p>
-          <button type="button" id="cal-load" class="cal__placeholder-btn">
-            {isDE ? 'Kalender laden' : 'Load calendar'}
-          </button>
-          <a href="/privacy" class="cal__placeholder-link">{isDE ? 'Datenschutzerklärung' : 'Privacy Policy'}</a>
-        </div>
         <div id="cal-inline" class="cal__embed" data-cal-link={CAL_LINK}></div>
       </div>
 
@@ -117,16 +107,12 @@ const CAL_LINK = 'inplicit/30min';
     });
   }
 
-  document.getElementById('cal-load')?.addEventListener('click', function () {
-    document.getElementById('cal-placeholder')?.remove();
-    loadCal();
-  });
-
   var calSection = document.getElementById('book-demo');
   if (calSection) {
     var calObserver = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) {
         window.posthog?.capture('cal_booking_section_viewed');
+        loadCal();
         calObserver.disconnect();
       }
     }, { threshold: 0.2 });
@@ -275,46 +261,5 @@ const CAL_LINK = 'inplicit/30min';
 
   .cal__embed {
     width: 100%;
-  }
-
-  /* Click-to-load placeholder (shown until the visitor loads the Cal.com embed) */
-  .cal__placeholder {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-4);
-    padding: var(--space-8);
-    text-align: center;
-    background: var(--color-surface);
-  }
-
-  .cal__placeholder-text {
-    font-size: var(--text-sm);
-    line-height: 1.65;
-    color: var(--color-text-secondary);
-    max-width: 340px;
-  }
-
-  .cal__placeholder-btn {
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-ui);
-    border: 1px solid transparent;
-    background: var(--color-cta-bg);
-    color: var(--color-cta-text);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    transition: opacity 0.15s var(--ease-smooth);
-  }
-
-  .cal__placeholder-btn:hover { opacity: 0.88; }
-
-  .cal__placeholder-link {
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    text-decoration: underline;
   }
 </style>
