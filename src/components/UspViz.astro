@@ -1,20 +1,52 @@
 ---
 import logoIconRaw from '../assets/logo_icon.svg?raw';
 
-export interface Props { type: string; }
-const { type } = Astro.props;
+export interface Props { type: string; lang?: 'en' | 'de'; }
+const { type, lang = 'de' } = Astro.props;
+const isDE = lang === 'de';
 
-const departments = [{ name: 'Betrieb', n: 18 }, { name: 'Vertrieb', n: 15 }, { name: 'IT', n: 10 }, { name: 'Personal', n: 9 }];
-const deptQuestions = ['Wo verlieren wir die meiste Zeit?','Welche Abläufe bremsen den Betrieb aus?','Was sollten wir zuerst automatisieren?','Wo hakt es im Onboarding?','Kommt das neue Rollout wirklich an?'];
-const campaignGoal = 'Ineffizienzen im Tagesgeschäft';
-const roles = [
+const departments = isDE
+  ? [{ name: 'Betrieb', n: 18 }, { name: 'Vertrieb', n: 15 }, { name: 'IT', n: 10 }, { name: 'Personal', n: 9 }]
+  : [{ name: 'Operations', n: 18 }, { name: 'Sales', n: 15 }, { name: 'IT', n: 10 }, { name: 'People', n: 9 }];
+const deptQuestions = isDE
+  ? ['Wo verlieren wir die meiste Zeit?','Welche Abläufe bremsen den Betrieb aus?','Was sollten wir zuerst automatisieren?','Wo hakt es im Onboarding?','Kommt das neue Rollout wirklich an?']
+  : ['Where do we lose the most time?','Which processes slow operations down?','What should we automate first?','Where does onboarding get stuck?','Is the new rollout really landing?'];
+const campaignGoal = isDE ? 'Ineffizienzen im Tagesgeschäft' : 'Inefficiencies in daily work';
+const roles = isDE ? [
   { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',        photo: 'photo-1560250097-0b93528c311a', q: 'Als Schichtleiter koordinierst du gerade den Hallenumbau – wo verlierst du im Tagesablauf am meisten Zeit?' },
   { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',            photo: 'photo-1507003211169-0a1dd7228f2d', q: 'Im Vertrieb für Region Ost: an welcher Stelle im Abschluss stockt es bei dir am häufigsten?' },
   { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',         photo: 'photo-1500648767791-00dcc994a43e', q: 'Ihr migriert gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?' },
   { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: 'photo-1472099645785-5658abf4ff4e', q: 'Beim neuen Onboarding-Rollout, den du betreust: wo hakt es im Ablauf für dich am meisten?' },
   { role: 'Teamleiterin',         ctx: 'Strategy & Ops · Rollout Nord', photo: 'photo-1494790108377-be9c29b29330', q: 'Als Teamleiterin steckst du gerade im Rollout Nord – an welcher Übergabe geht bei euch am meisten Zeit verloren?' },
   { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: 'photo-1438761681033-6461ffad8d80', q: 'In der Audit-Vorbereitung: wo entstehen bei euch die meisten vermeidbaren Fehler?' },
+] : [
+  { role: 'Shift lead',        ctx: 'Logistics · Warehouse revamp', photo: 'photo-1560250097-0b93528c311a', q: 'As shift lead you\'re coordinating the warehouse revamp – where do you lose the most time day to day?' },
+  { role: 'Sales rep',         ctx: 'Sales · East region',          photo: 'photo-1507003211169-0a1dd7228f2d', q: 'In sales for the East region: where in the closing process does it stall for you most often?' },
+  { role: 'IT admin',          ctx: 'IT · Ticket migration',        photo: 'photo-1500648767791-00dcc994a43e', q: 'You\'re migrating the ticketing system – which recurring task eats up the most time?' },
+  { role: 'HR business partner', ctx: 'People · Onboarding rollout', photo: 'photo-1472099645785-5658abf4ff4e', q: 'On the new onboarding rollout you own: where does the process snag most for you?' },
+  { role: 'Team lead',         ctx: 'Strategy & Ops · North rollout', photo: 'photo-1494790108377-be9c29b29330', q: 'As team lead you\'re deep in the North rollout – at which handoff does the most time get lost?' },
+  { role: 'Quality manager',   ctx: 'QA · Audit prep',              photo: 'photo-1438761681033-6461ffad8d80', q: 'In audit prep: where do the most avoidable errors happen on your side?' },
 ];
+
+const t = isDE ? {
+  savingsTime: 'Zeit bis zur Erkenntnis', consulting: 'Beratung', months: '4-6 Monate', hours: 'Stunden',
+  cost: 'Kosten', costHigh: '500k+', costLow: 'ab 30k',
+  statusAll: 'Gesamte Belegschaft, Antworten in Stunden', statusTargeted: 'Gezielt: ',
+  leadership: 'Geschäftsführung', middle: 'Mittelmanagement', campaign: 'Kampagne',
+  orgCtx1: 'Organisations-', orgCtx2: 'kontext', explicit: 'EXPLIZITER KONTEXT',
+  docs: 'Dokumente', systems: 'Systeme', toolsMeetings: 'Tools & Meetings',
+  implicit: 'IMPLIZITER KONTEXT', ex1: 'Praxiswissen', ex2: 'Echte Abläufe', ex3: 'Erfahrungswissen',
+  humanLayer1: 'Menschliche', humanLayer2: 'Kontext-Ebene', viaInterviews: 'durch KI-Interviews',
+} : {
+  savingsTime: 'Time to insight', consulting: 'Consulting', months: '4-6 months', hours: 'Hours',
+  cost: 'Cost', costHigh: '500k+', costLow: 'from 30k',
+  statusAll: 'Entire workforce, answers in hours', statusTargeted: 'Targeted: ',
+  leadership: 'Leadership', middle: 'Middle management', campaign: 'Campaign',
+  orgCtx1: 'Organisational', orgCtx2: 'context', explicit: 'EXPLICIT CONTEXT',
+  docs: 'Documents', systems: 'Systems', toolsMeetings: 'Tools & meetings',
+  implicit: 'IMPLICIT CONTEXT', ex1: 'Practical know-how', ex2: 'Real workflows', ex3: 'Experience',
+  humanLayer1: 'Human context', humanLayer2: 'layer', viaInterviews: 'via AI interviews',
+};
 
 // Scaled SQUARE path for InplicitLoader at S=44/1080
 const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
@@ -23,29 +55,29 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 {type === 'savings' && (
   <div class="viz hbars" aria-hidden="true">
     <div class="hbars__metric">
-      <span class="hbars__label">Zeit bis zur Erkenntnis</span>
-      <div class="hbars__row"><span class="hbars__name">Beratung</span><div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div><span class="hbars__val">4-6 Monate</span></div>
-      <div class="hbars__row"><span class="hbars__name acc">Inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="8%" style="--w:8%"></i></div><span class="hbars__val acc">Stunden</span></div>
+      <span class="hbars__label">{t.savingsTime}</span>
+      <div class="hbars__row"><span class="hbars__name">{t.consulting}</span><div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div><span class="hbars__val">{t.months}</span></div>
+      <div class="hbars__row"><span class="hbars__name acc">Inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="8%" style="--w:8%"></i></div><span class="hbars__val acc">{t.hours}</span></div>
     </div>
     <div class="hbars__metric">
-      <span class="hbars__label">Kosten</span>
-      <div class="hbars__row"><span class="hbars__name">Beratung</span><div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div><span class="hbars__val">500k+</span></div>
-      <div class="hbars__row"><span class="hbars__name acc">Inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="14%" style="--w:14%"></i></div><span class="hbars__val acc">ab 30k</span></div>
+      <span class="hbars__label">{t.cost}</span>
+      <div class="hbars__row"><span class="hbars__name">{t.consulting}</span><div class="hbars__track"><i class="hbars__fill hbars__fill--gray" style="--w:100%"></i></div><span class="hbars__val">{t.costHigh}</span></div>
+      <div class="hbars__row"><span class="hbars__name acc">Inplicit</span><div class="hbars__track"><i class="hbars__fill hbars__fill--acc" data-w="14%" style="--w:14%"></i></div><span class="hbars__val acc">{t.costLow}</span></div>
     </div>
   </div>
 )}
 
 {type === 'departments' && (
-  <div class="viz dept" data-questions={JSON.stringify(deptQuestions)} aria-hidden="true">
+  <div class="viz dept" data-questions={JSON.stringify(deptQuestions)} data-status-all={t.statusAll} data-status-targeted={t.statusTargeted} aria-hidden="true">
     <div class="dept__chat"><span class="dept__chat-mark"></span><span class="dept__chat-q">{deptQuestions[0]}</span></div>
-    <span class="dept__status">Gesamte Belegschaft, Antworten in Stunden</span>
+    <span class="dept__status">{t.statusAll}</span>
     <div class="org">
-      <span class="org__top">Geschäftsführung</span>
+      <span class="org__top">{t.leadership}</span>
       <div class="org__tier-dots org__gf">{Array.from({ length: 3 }).map(() => <span></span>)}</div>
       <svg class="org__lines org__lines--a" viewBox="0 0 1000 30" preserveAspectRatio="none">
         {departments.map((_, i) => <path class="org__path-top" d={`M 500 0 L 500 15 L ${125 + i * 250} 15 L ${125 + i * 250} 30`} />)}
       </svg>
-      <span class="org__tier-label">Mittelmanagement</span>
+      <span class="org__tier-label">{t.middle}</span>
       <div class="org__row org__row--mm">
         {departments.map(() => (
           <div class="org__mm-node"><div class="org__tier-dots">{Array.from({ length: 3 }).map(() => <span></span>)}</div></div>
@@ -105,29 +137,29 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
         <!-- inplicit label below logo -->
         <line x1="13" y1="78" x2="83" y2="78" stroke="var(--color-accent-muted)" stroke-width="1"/>
         <text x="48" y="93" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif">inplicit</text>
-        <text x="48" y="108" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Menschliche</text>
-        <text x="48" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Kontext-Ebene</text>
-        <text x="48" y="136" text-anchor="middle" font-size="8" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">durch KI-Interviews</text>
+        <text x="48" y="108" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.humanLayer1}</text>
+        <text x="48" y="121" text-anchor="middle" font-size="9" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.humanLayer2}</text>
+        <text x="48" y="136" text-anchor="middle" font-size="8" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">{t.viaInterviews}</text>
       </g>
 
       <!-- CENTER: Organisationskontext box -->
       <g class="ctx__g-org">
         <rect x="112" y="12" width="118" height="170" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2"/>
-        <text x="171" y="32" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Organisations-</text>
-        <text x="171" y="46" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">kontext</text>
+        <text x="171" y="32" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.orgCtx1}</text>
+        <text x="171" y="46" text-anchor="middle" font-size="10" font-weight="600" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.orgCtx2}</text>
         <line x1="120" y1="53" x2="222" y2="53" stroke="var(--color-border)" stroke-width="1"/>
         <!-- Expliziter Kontext section -->
-        <text x="171" y="66" text-anchor="middle" font-size="7.5" font-weight="600" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif" letter-spacing="0.08em">EXPLIZITER KONTEXT</text>
-        <text x="171" y="80" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Dokumente</text>
-        <text x="171" y="93" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Systeme</text>
-        <text x="171" y="106" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">Tools & Meetings</text>
+        <text x="171" y="66" text-anchor="middle" font-size="7.5" font-weight="600" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif" letter-spacing="0.08em">{t.explicit}</text>
+        <text x="171" y="80" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">{t.docs}</text>
+        <text x="171" y="93" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">{t.systems}</text>
+        <text x="171" y="106" text-anchor="middle" font-size="9" fill="var(--color-text-tertiary)" font-family="Inter,sans-serif">{t.toolsMeetings}</text>
         <line x1="120" y1="113" x2="222" y2="113" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3"/>
         <!-- Impliziter Kontext section (orange, contributed by inplicit) -->
         <rect x="120" y="117" width="102" height="60" rx="5" fill="var(--color-accent-light)" stroke="var(--color-accent-muted)" stroke-width="0.7"/>
-        <text x="171" y="130" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif" letter-spacing="0.08em">IMPLIZITER KONTEXT</text>
-        <text x="171" y="144" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Praxiswissen</text>
-        <text x="171" y="157" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Echte Abläufe</text>
-        <text x="171" y="170" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">Erfahrungswissen</text>
+        <text x="171" y="130" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--color-accent)" font-family="Inter,sans-serif" letter-spacing="0.08em">{t.implicit}</text>
+        <text x="171" y="144" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.ex1}</text>
+        <text x="171" y="157" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.ex2}</text>
+        <text x="171" y="170" text-anchor="middle" font-size="8.5" fill="var(--color-text-secondary)" font-family="Inter,sans-serif">{t.ex3}</text>
       </g>
 
       <!-- RIGHT: MCP hands the context off to the AI tools -->
@@ -173,12 +205,12 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
 {type === 'interviews' && (
   <div class="viz iviz" data-roles={JSON.stringify(roles)} aria-hidden="true">
-    <div class="iviz__campaign"><span class="iviz__campaign-dot"></span>Kampagne · {campaignGoal}</div>
+    <div class="iviz__campaign"><span class="iviz__campaign-dot"></span>{t.campaign} · {campaignGoal}</div>
     <div class="iviz__body">
       <div class="iviz__list">
         {roles.map((r, i) => (
           <button type="button" class={`iviz__ava${i === 0 ? ' is-active' : ''}`} data-idx={i} aria-label={r.role}
-            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`}></button>
+            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`}></button>
         ))}
       </div>
       <div class="iviz__chat">
@@ -192,7 +224,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
             <span class="iviz__who-ctx">{roles[0].ctx}</span>
           </div>
           <span class="iviz__who-ava"
-            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`}></span>
+            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`}></span>
         </div>
       </div>
     </div>
@@ -348,14 +380,16 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     const topPaths = [...dept.querySelectorAll<SVGElement>('.org__path-top')];
     let questions: string[] = [];
     try { questions = JSON.parse(dept.getAttribute('data-questions') || '[]'); } catch {}
+    const statusAll = dept.getAttribute('data-status-all') || '';
+    const statusTargeted = dept.getAttribute('data-status-targeted') || '';
     let step = 0; let timer: ReturnType<typeof setInterval> | null = null;
     const clearActive = () => { depts.forEach(d=>d.classList.remove('is-active')); paths.forEach(p=>p.classList.remove('is-active')); mmNodes.forEach(n=>n.classList.remove('is-active')); topPaths.forEach(p=>p.classList.remove('is-active')); };
-    const reset = () => { dept.classList.remove('is-all'); clearActive(); if(q) q.textContent=questions[0]||''; if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; step=0; };
+    const reset = () => { dept.classList.remove('is-all'); clearActive(); if(q) q.textContent=questions[0]||''; if(status) status.textContent=statusAll; step=0; };
     const tick = () => {
       if(q) q.style.opacity='0'; if(status) status.style.opacity='0';
       setTimeout(()=>{
-        if(step===0){ dept.classList.add('is-all'); clearActive(); if(status) status.textContent='Gesamte Belegschaft, Antworten in Stunden'; }
-        else { dept.classList.remove('is-all'); const a=step-1; depts.forEach((d,i)=>d.classList.toggle('is-active',i===a)); paths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); mmNodes.forEach((n,i)=>n.classList.toggle('is-active',i===a)); topPaths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); if(status) status.textContent='Gezielt: '+(depts[a]?.getAttribute('data-dept')||''); }
+        if(step===0){ dept.classList.add('is-all'); clearActive(); if(status) status.textContent=statusAll; }
+        else { dept.classList.remove('is-all'); const a=step-1; depts.forEach((d,i)=>d.classList.toggle('is-active',i===a)); paths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); mmNodes.forEach((n,i)=>n.classList.toggle('is-active',i===a)); topPaths.forEach((p,i)=>p.classList.toggle('is-active',i===a)); if(status) status.textContent=statusTargeted+(depts[a]?.getAttribute('data-dept')||''); }
         if(q){q.textContent=questions[step%questions.length]||'';q.style.opacity='1';} if(status) status.style.opacity='1';
         step=(step+1)%(depts.length+1);
       },200);
@@ -413,7 +447,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     const metaEl = iviz.querySelector<HTMLElement>('.iviz__who-meta');
     const avaEl  = iviz.querySelector<HTMLElement>('.iviz__who-ava');
     const avatars = [...iviz.querySelectorAll<HTMLElement>('.iviz__ava')];
-    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=64&h=64&fit=crop&crop=faces&auto=format&q=80)`;
+    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`;
     let idx = 0; let timer: ReturnType<typeof setInterval> | null = null;
     const show = (i: number) => {
       const r = roles[i]; if(!r) return; idx = i;

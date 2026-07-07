@@ -1,8 +1,8 @@
 ---
 import UspIcon from './UspIcon.astro';
 import UspViz from './UspViz.astro';
-export interface Props { facts: { icon: string; viz: string; title: string; body: string }[]; }
-const { facts } = Astro.props;
+export interface Props { facts: { icon: string; viz: string; title: string; body: string }[]; lang?: 'en' | 'de'; }
+const { facts, lang = 'de' } = Astro.props;
 ---
 
 <div class="g2">
@@ -13,7 +13,7 @@ const { facts } = Astro.props;
         <h3 class="g2__title">{f.title}</h3>
       </div>
       <p class="g2__text">{f.body}</p>
-      <div class="g2__viz"><UspViz type={f.viz} /></div>
+      <div class="g2__viz"><UspViz type={f.viz} lang={lang} /></div>
     </article>
   ))}
 </div>
