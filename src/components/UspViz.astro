@@ -95,12 +95,12 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
 
       <!-- LEFT: inplicit box (orange border) — opens first -->
       <g class="ctx__g-inplicit">
-        <rect x="3" y="18" width="90" height="150" rx="8" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="1.8"/>
-        <!-- InplicitLoader animation (44x44 scaled, centered in box at translate(26,26)) -->
-        <g transform="translate(26,26)">
+        <rect x="3" y="18" width="90" height="150" rx="8" fill="var(--color-bg)" stroke="var(--color-accent-muted)" stroke-width="1.1"/>
+        <!-- InplicitLoader animation — whole mark scaled to 0.78 around its centre (22,22) -->
+        <g transform="translate(48,48) scale(0.78) translate(-22,-22)">
           <path d={SQ} fill="var(--color-text-primary)"/>
-          <circle class="ctx__loader-w" cx="20.41" cy="20.38" r="4.7" fill="var(--color-bg)"/>
-          <circle class="ctx__loader-o" cx="23.59" cy="23.90" r="4.7" fill="var(--color-accent)"/>
+          <circle class="ctx__loader-w" cx="20.41" cy="20.38" r="5.23" fill="var(--color-bg)"/>
+          <circle class="ctx__loader-o" cx="23.59" cy="23.90" r="5.23" fill="var(--color-accent)"/>
         </g>
         <!-- inplicit label below logo -->
         <line x1="13" y1="78" x2="83" y2="78" stroke="var(--color-accent-muted)" stroke-width="1"/>
