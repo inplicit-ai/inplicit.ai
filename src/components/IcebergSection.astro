@@ -1,13 +1,14 @@
 ---
 /**
- * IcebergSection — "Explizit vs. Implizit" iceberg.
- * Native Astro component: scoped styles (no Tailwind — the site's global reset
- * would override utility classes), vanilla JS for the „Aufdecken" reveal.
+ * IcebergSection: "Explizit vs. Implizit" Eisberg.
+ * Natives Astro-Component (scoped styles, kein Tailwind: der globale Reset der
+ * Site würde Utility-Klassen überschreiben), Vanilla-JS für die Scroll-Effekte.
  *
- * Above the waterline = explicit, visible tools; on scroll they drift apart
- * while dashed lines appear between them (the invisible in-between). Below =
- * the implicit human context, directly visible as the larger part of the berg,
- * with a "Management Intelligence" panel of interview-based insights.
+ * Dramaturgie: Beim Scrollen schiebt sich der Eisberg von unten VOR den Text
+ * (z-Ebene über dem Content), die Tool-Chips ziehen sich zur Mitte zusammen
+ * und verschwinden hinter dem Berg. Unter der Wasserlinie nimmt der Scroll
+ * den Blur vom Unterwasser-Teil und blendet Labels und das Intelligence-
+ * Fenster ein.
  */
 
 const HIDDEN = [
@@ -21,28 +22,22 @@ const HIDDEN = [
 ];
 const LINKS = [[0, 2], [1, 3], [2, 4], [2, 6], [3, 5], [4, 6], [5, 6], [0, 1]];
 
-const MARKS: Record<string, string> = {
-  Celonis: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="5.5" fill="#6a2bd9"/><path d="M15.6 9.1a4.4 4.4 0 1 0 0 5.8" stroke="#fff" stroke-width="2.1" fill="none" stroke-linecap="round"/></svg>',
-  Slack: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="10" y="1.5" width="4" height="8.5" rx="2" fill="#36C5F0"/><rect x="14" y="10" width="8.5" height="4" rx="2" fill="#2EB67D"/><rect x="10" y="14" width="4" height="8.5" rx="2" fill="#ECB22E"/><rect x="1.5" y="10" width="8.5" height="4" rx="2" fill="#E01E5A"/></svg>',
-  Teams: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="18" cy="6.5" r="2.6" fill="#7B83EB"/><rect x="14.5" y="8.5" width="7.5" height="9" rx="2.4" fill="#5059C9"/><rect x="2.5" y="5.5" width="13" height="13" rx="3" fill="#5059C9"/><text x="9" y="14.5" font-size="9" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">T</text></svg>',
-  Jira: '<svg viewBox="0 0 32 32" width="20" height="20"><path d="M16 3 L29 16 L23 22 L16 15 L9 22 L3 16 Z" fill="#2684FF" opacity="0.55"/><path d="M16 10 L23 17 L16 24 L9 17 Z" fill="#2684FF"/></svg>',
-  Confluence: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M2 17q6-6.5 11-4.2t9 1.8" stroke="#2684FF" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M22 7q-6 6.5-11 4.2T2 9.4" stroke="#0052CC" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg>',
-  Notion: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/><path d="M8 16.5V8l8 8.5V8" stroke="#111" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>',
-  Drive: '<svg viewBox="0 0 32 32" width="20" height="20"><path d="M11 4 L21 4 L31 21 L21 21 Z" fill="#FFBA00"/><path d="M11 4 L1 21 L6 30 L16 13 Z" fill="#00AC47"/><path d="M6 30 L26 30 L31 21 L11 21 Z" fill="#2684FC"/></svg>',
-};
+/* Offizielle Logos liegen unter /public/logos (Wikimedia bzw. Simple Icons).
+   Für Celonis gibt es kein offizielles SVG in freien Quellen, daher ein
+   neutraler Buchstaben-Avatar statt eines erfundenen Logos. */
 const TOOLS = [
-  { n: "Celonis", style: "left:50%;top:6%;transform:translateX(-50%)" },
-  { n: "Slack", style: "left:11%;top:24%" },
-  { n: "Teams", style: "left:6%;top:50%" },
-  { n: "Jira", style: "right:9%;top:22%" },
-  { n: "Confluence", style: "right:6%;top:49%" },
-  { n: "Notion", style: "left:18%;top:71%" },
-  { n: "Drive", style: "right:16%;top:71%" },
+  { n: "Celonis", file: "", style: "left:50%;top:6%;transform:translateX(-50%)" },
+  { n: "Slack", file: "slack.svg", style: "left:11%;top:24%" },
+  { n: "Teams", file: "teams.svg", style: "left:6%;top:50%" },
+  { n: "Jira", file: "jira.svg", style: "right:9%;top:22%" },
+  { n: "Confluence", file: "confluence.svg", style: "right:6%;top:49%" },
+  { n: "Notion", file: "notion.svg", style: "left:18%;top:71%" },
+  { n: "Drive", file: "drive.svg", style: "right:16%;top:71%" },
 ];
 
 const INSIGHTS = [
-  { c: "#f6717f", t: "87 % bestätigen kritische Wissensinseln", s: "Aus den Interviews: Schlüsselwissen hängt an einzelnen Personen." },
-  { c: "#f4b552", t: "5 wiederkehrende Prozessbrüche genannt", s: "In 31 Interviews benannt — Übergaben verlieren Kontext." },
+  { c: "#d4452f", t: "87 % bestätigen kritische Wissensinseln", s: "Aus den Interviews: Schlüsselwissen hängt an einzelnen Personen." },
+  { c: "#b07310", t: "5 wiederkehrende Prozessbrüche genannt", s: "In 31 Interviews benannt: Übergaben verlieren Kontext." },
   { c: "#f5a623", t: "Automatisierungspotenzial in Team Operations", s: "73 % nennen manuelle Routinen mit hohem Wiederholungsgrad." },
 ];
 
@@ -53,14 +48,14 @@ const labelTransform = (side: string) =>
 ---
 
 <div class="ipl" id="ipl">
-  <!-- backgrounds -->
+  <!-- Ebene 0: Hintergründe -->
   <div class="ipl-bg" aria-hidden="true">
     <div class="sky"></div>
     <div class="deep"><div class="grid"></div></div>
     <div class="waterline"><div class="line"></div><div class="fade"></div></div>
   </div>
 
-  <!-- iceberg -->
+  <!-- Ebene 30: Eisberg (vor dem Hero-Text) -->
   <div class="berg" aria-hidden="true">
     <div class="berg-inner">
       <svg class="tip" viewBox="0 0 760 1240" preserveAspectRatio="xMidYMid meet">
@@ -77,7 +72,7 @@ const labelTransform = (side: string) =>
         <polyline points="158,430 262,190 372,44 478,175 586,430" fill="none" stroke="#8fb7e0" stroke-width="1.8" opacity="0.85" />
       </svg>
 
-      <svg class="implicit" viewBox="0 0 760 1240" preserveAspectRatio="xMidYMid meet">
+      <svg class="implicit" id="implicitSvg" viewBox="0 0 760 1240" preserveAspectRatio="xMidYMid meet">
         <defs>
           <radialGradient id="nodeglow" cx="50%" cy="50%" r="50%">
             <stop offset="0" stop-color="#f5a623" stop-opacity="0.95" />
@@ -118,26 +113,29 @@ const labelTransform = (side: string) =>
     </div>
   </div>
 
-  <!-- content -->
+  <!-- Ebene 20: Hero-Content (der Berg schiebt sich davor) -->
   <div class="content">
     <section class="stage" id="stage">
       <div class="pin">
-        <svg class="weblines" id="weblines" width="100%" height="100%" aria-hidden="true"></svg>
         <div class="logos" aria-hidden="true">
           {TOOLS.map((t) => (
             <div class="chip-pos" style={t.style}>
-              <div class="chip"><Fragment set:html={MARKS[t.n]} /><span>{t.n}</span></div>
+              <div class="chip">
+                {t.file
+                  ? <img src={`/logos/${t.file}`} width="20" height="20" alt="" />
+                  : <span class="avatar">C</span>}
+                <span>{t.n}</span>
+              </div>
             </div>
           ))}
         </div>
 
-        <div class="hero">
-          <h1 class="blur-in">Das wertvollste Wissen Ihrer Organisation ist unsichtbar — bis jetzt.</h1>
-          <p class="blur-in d2">Wie bei einem Eisberg liegt der größte Teil des Organisationswissens unter der Oberfläche. Inplicit verbindet Tool-Daten mit gezielten KI-Interviews — und macht den verborgenen menschlichen Kontext sichtbar.</p>
+        <div class="hero" id="hero">
+          <h1 class="blur-in">Das wertvollste Wissen Ihrer Organisation ist unsichtbar. Bis jetzt.</h1>
+          <p class="blur-in d2">Wie bei einem Eisberg liegt der größte Teil des Organisationswissens unter der Oberfläche. Inplicit verbindet Tool-Daten mit gezielten KI-Interviews und macht den verborgenen menschlichen Kontext sichtbar.</p>
           <button class="cta blur-in d3" id="scrollCta" type="button">Verborgenen Organisationskontext erkennen
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 8l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
-          <p class="converge-cap" id="convergeCap">Ihre Tools driften auseinander. Dazwischen: Absprachen, Workarounds, Erfahrungswissen — für jedes System unsichtbar.</p>
         </div>
 
         <div class="surface-badge">
@@ -145,31 +143,34 @@ const labelTransform = (side: string) =>
         </div>
       </div>
     </section>
+  </div>
 
+  <!-- Ebene 40: Unterwasser-Content (über dem Berg) -->
+  <div class="content-b">
     <section class="below" id="below">
       <div class="implizit-badge">
         <span class="badge dark"><span class="dot" style="background:#f5a623;box-shadow:0 0 10px #f5a623"></span>Implizit &amp; unsichtbar</span>
       </div>
 
-      <div class="card">
-        <div class="topline"></div>
-        <div class="card-head">
-          <div class="t">
-            <span class="ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 8h3l2-5 2 10 2-5h3" stroke="#f5a623" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
-            <span class="name">Management Intelligence</span>
-          </div>
-          <span class="live"><span class="dot" style="background:#f5a623"></span>Live</span>
+      <!-- Management-Intelligence-Fenster im Inplicit-App-Look -->
+      <div class="card" id="intelCard">
+        <div class="win-bar">
+          <span class="win-dots"><i></i><i></i><i></i></span>
+          <span class="win-title">Inplicit · Management Intelligence</span>
+          <span class="live"><span class="dot"></span>Live</span>
         </div>
-        <p class="cap">Verdichtet aus Tool-Daten &amp; 31 gezielten KI-Interviews</p>
-        <ul class="ins">
-          {INSIGHTS.map((ins, i) => (
-            <li>
-              <span class="num" style={`background:${ins.c}1f;color:${ins.c};border:1px solid ${ins.c}40`}>{i + 1}</span>
-              <span><span class="h">{ins.t}</span><span class="s">{ins.s}</span></span>
-            </li>
-          ))}
-        </ul>
-        <div class="card-foot"><div class="bar"><span></span></div><span class="rt">In Echtzeit aktualisiert</span></div>
+        <div class="win-body">
+          <p class="cap">Verdichtet aus Tool-Daten und 31 gezielten KI-Interviews</p>
+          <ul class="ins">
+            {INSIGHTS.map((ins) => (
+              <li>
+                <span class="sev" style={`background:${ins.c}`}></span>
+                <span class="txt"><span class="h">{ins.t}</span><span class="s">{ins.s}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="win-foot">In Echtzeit aktualisiert</div>
       </div>
     </section>
   </div>
@@ -180,13 +181,17 @@ const labelTransform = (side: string) =>
     document.getElementById("below")?.scrollIntoView({ behavior: "smooth", block: "start" })
   );
 
-  /* Scroll-Dramaturgie: Die Tool-Chips starten leicht zusammengezogen und
-     driften beim Scrollen AUSEINANDER (Silos). Gleichzeitig erscheinen
-     gestrichelte Linien zwischen ihnen — das Unsichtbare zwischen den Tools.
-     Inline transforms per Repo-Gotcha #2 (JS-getriebene Werte inline setzen). */
+  /* Scroll-Dramaturgie (inline styles per Repo-Gotcha #2):
+     1) Pin-Phase: Chips ziehen sich zur Pin-Mitte zusammen, schrumpfen und
+        blenden am Ende aus (sie verschwinden hinter dem aufsteigenden Berg,
+        der auf einer höheren z-Ebene liegt). Der Hero-Text tritt zurück.
+     2) Unter der Wasserlinie: Scroll-Fortschritt nimmt den Blur vom
+        Unterwasser-Teil, blendet die Labels und das Intelligence-Fenster ein. */
   const stage = document.getElementById("stage");
-  const cap = document.getElementById("convergeCap");
-  const web = document.getElementById("weblines");
+  const below = document.getElementById("below");
+  const hero = document.getElementById("hero");
+  const implicitSvg = document.getElementById("implicitSvg");
+  const intelCard = document.getElementById("intelCard");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (stage && !reduce) {
     const chips = [...document.querySelectorAll<HTMLElement>(".chip-pos")].map((el) => ({
@@ -195,54 +200,47 @@ const labelTransform = (side: string) =>
       tx: 0,
       ty: 0,
     }));
-    /* Perimeter-Ring (Indizes in TOOLS-Reihenfolge): Celonis–Slack–Teams–
-       Notion–Drive–Confluence–Jira–Celonis — keine Linien quer durch den Text. */
-    const PAIRS = [[0, 1], [1, 2], [2, 5], [5, 6], [6, 4], [4, 3], [3, 0]];
-    const SVGNS = "http://www.w3.org/2000/svg";
-    const lines = web
-      ? PAIRS.map(() => {
-          const ln = document.createElementNS(SVGNS, "line");
-          ln.style.opacity = "0";
-          web.appendChild(ln);
-          return ln;
-        })
-      : [];
+    const lbls = [...document.querySelectorAll<HTMLElement>(".lbl")];
     const pinEl = stage.querySelector(".pin");
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
     const frame = () => {
       const r = stage.getBoundingClientRect();
       const total = r.height - innerHeight;
-      const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+      const p = total > 0 ? clamp(-r.top / total) : 0;
       /* Bezugspunkt = Pin-Mitte (scrollt nach der Pin-Phase natürlich mit weg). */
       const pr = (pinEl ?? stage).getBoundingClientRect();
       const cx = pr.left + pr.width / 2;
-      const cy = pr.top + pr.height * 0.5;
-      /* f > 0 zieht zur Mitte, f < 0 drückt nach außen: Start 22 % eingezogen,
-         Ende 8 % über die Ausgangsstreuung hinaus. */
-      const f = 0.22 * (1 - p) - 0.08 * p;
+      const cy = pr.top + pr.height * 0.6;
+      const f = p * 0.9;
+      const s = 1 - 0.45 * p;
+      const chipO = 1 - clamp((p - 0.78) / 0.18);
       for (const c of chips) {
         const b = c.el.getBoundingClientRect();
         const baseX = b.left + b.width / 2 - c.tx;
         const baseY = b.top + b.height / 2 - c.ty;
         c.tx = (cx - baseX) * f;
         c.ty = (cy - baseY) * f;
-        c.el.style.transform = `${c.bt}translate(${c.tx}px,${c.ty}px)`;
+        c.el.style.transform = `${c.bt}translate(${c.tx}px,${c.ty}px) scale(${s})`;
+        c.el.style.opacity = String(chipO);
       }
-      /* Linien zwischen den (transformierten) Chips, Koordinaten relativ zum Pin. */
-      const lo = Math.min(1, Math.max(0, (p - 0.12) / 0.55));
-      lines.forEach((ln, i) => {
-        const [a, b2] = PAIRS[i];
-        const ra = chips[a].el.getBoundingClientRect();
-        const rb = chips[b2].el.getBoundingClientRect();
-        ln.setAttribute("x1", String(ra.left + ra.width / 2 - pr.left));
-        ln.setAttribute("y1", String(ra.top + ra.height / 2 - pr.top));
-        ln.setAttribute("x2", String(rb.left + rb.width / 2 - pr.left));
-        ln.setAttribute("y2", String(rb.top + rb.height / 2 - pr.top));
-        ln.style.opacity = String(lo * 0.6);
-      });
-      if (cap) {
-        const o = Math.max(0, (p - 0.45) / 0.55);
-        cap.style.opacity = String(o);
-        cap.style.filter = `blur(${(1 - o) * 6}px)`;
+      if (hero) {
+        const ho = 1 - clamp((p - 0.6) / 0.32);
+        hero.style.opacity = String(ho);
+        hero.style.pointerEvents = ho < 0.15 ? "none" : "";
+      }
+      /* Unterwasser: q = Fortschritt, sobald die dunkle Zone in den Viewport kommt. */
+      if (below) {
+        const rb = below.getBoundingClientRect();
+        const q = clamp((innerHeight * 0.85 - rb.top) / (innerHeight * 0.7));
+        if (implicitSvg) implicitSvg.style.filter = q >= 1 ? "none" : `blur(${(1 - q) * 9}px)`;
+        for (const l of lbls) {
+          l.style.opacity = String(0.15 + 0.85 * q);
+          l.style.filter = q >= 1 ? "none" : `blur(${(1 - q) * 6}px)`;
+        }
+        if (intelCard) {
+          intelCard.style.opacity = String(q);
+          intelCard.style.transform = `translateX(${(1 - q) * 28}px)`;
+        }
       }
     };
     addEventListener("scroll", frame, { passive: true });
@@ -252,14 +250,14 @@ const labelTransform = (side: string) =>
 </script>
 
 <style>
-  /* overflow-x: clip (statt hidden) — hidden würde einen Scroll-Container
+  /* overflow-x: clip (statt hidden): hidden würde einen Scroll-Container
      erzeugen und damit das position:sticky des Pins deaktivieren. */
   .ipl { position: relative; width: 100%; overflow-x: clip; background: #fff;
-    --stage-h: 220vh; /* pinned intro: 100vh visible + 120vh scroll distance */
+    --stage-h: 220vh; /* Pin-Intro: 100vh sichtbar + 120vh Scrollweg */
     font-family: var(--font-family, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); -webkit-font-smoothing: antialiased; }
   .ipl svg { display: block; }
 
-  /* backgrounds */
+  /* Hintergründe */
   .ipl-bg { position: absolute; inset: 0; z-index: 0; }
   .sky { position: absolute; left: 0; top: 0; width: 100%; height: var(--stage-h);
     background:
@@ -279,44 +277,41 @@ const labelTransform = (side: string) =>
   .waterline .line { height: 1px; width: 100%; background: linear-gradient(90deg,transparent,rgba(245,166,35,.55) 30%,rgba(255,255,255,.55) 50%,rgba(245,166,35,.55) 70%,transparent); }
   .waterline .fade { height: 112px; width: 100%; background: linear-gradient(180deg,rgba(245,166,35,.10),transparent); }
 
-  /* iceberg */
-  .berg { position: absolute; left: 40%; top: var(--stage-h); transform: translateX(-50%); z-index: 10; pointer-events: none; }
+  /* Eisberg: z-30, schiebt sich beim Scrollen VOR den Hero-Text (z-20) */
+  .berg { position: absolute; left: 40%; top: var(--stage-h); transform: translateX(-50%); z-index: 30; pointer-events: none; }
   .berg-inner { position: relative; width: min(840px,94vw); aspect-ratio: 760/1240; transform: translateY(-34.7%); }
   .berg-inner svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .node .glow { transform-box: fill-box; transform-origin: center; animation: pulse 3.2s ease-in-out infinite; }
   .conn { stroke: #f5a623; stroke-width: 1.1; opacity: .5; }
-  /* Ambient-Scan: der Beam läuft in ruhiger Schleife durch den Berg. */
+  /* Ambient-Scan in ruhiger Schleife */
   .beam { opacity: 0; animation: beam 7s ease-in-out 1.5s infinite; }
 
   .lbl { position: absolute; white-space: nowrap; font-size: 12.5px; font-weight: 500; letter-spacing: .02em;
     color: #f5a623; text-shadow: 0 0 14px rgba(194,102,12,.4); }
 
-  /* content */
+  /* Hero-Content */
   .content { position: relative; z-index: 20; }
   .stage { position: relative; height: var(--stage-h); }
   .pin { position: sticky; top: 0; display: flex; height: 100vh; flex-direction: column; }
   .logos { position: absolute; inset: 0; pointer-events: none; }
-  /* Gestrichelte Verbindungen zwischen den Tools — erscheinen beim Scrollen
-     (Opacity JS-getrieben). width/height-Attribute stehen am Element (Gotcha #3). */
-  .weblines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .weblines :global(line) { stroke: #c2660c; stroke-width: 1.2; stroke-dasharray: 5 7;
-    animation: dashdrift 26s linear infinite; }
   .chip-pos { position: absolute; will-change: transform; }
   .chip { display: inline-flex; align-items: center; gap: 8px; background: #fff;
     border: 1px solid rgba(0,0,0,.06); border-radius: 12px; padding: 8px 12px;
     box-shadow: 0 10px 26px -14px rgba(20,40,80,.35); animation: float 6s ease-in-out infinite; }
-  .chip span { font-size: 13px; font-weight: 500; color: #262626; letter-spacing: 0; }
+  .chip img { display: block; }
+  .chip .avatar { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 5px;
+    background: #eceae7; font-size: 11px; font-weight: 600; color: #52525b; }
+  .chip span:last-child { font-size: 13px; font-weight: 500; color: #262626; letter-spacing: 0; }
   .hero { position: relative; margin: 0 auto; display: flex; flex: 1; max-width: 1152px;
     flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px 0; text-align: center; }
-  .hero h1 { margin: 0; max-width: 768px; font-size: clamp(34px,5vw,54px); font-weight: 600;
+  .hero h1 { margin: 0; max-width: 820px; font-size: clamp(34px,5vw,54px); font-weight: 600;
     line-height: 1.08; letter-spacing: -.02em; color: #0a0a0a; text-wrap: balance; }
-  .hero p { margin: 20px 0 0; max-width: 580px; font-size: clamp(16px,1.6vw,18px); line-height: 1.6; color: #525252; text-wrap: pretty; }
+  .hero p { margin: 20px 0 0; max-width: 620px; font-size: clamp(16px,1.6vw,18px); line-height: 1.6; color: #525252; text-wrap: pretty; }
   .blur-in { animation: blurIn .9s cubic-bezier(.22,1,.36,1) .15s backwards; }
   .blur-in.d2 { animation-delay: .38s; }
   .blur-in.d3 { animation-delay: .6s; }
-  .converge-cap { margin: 22px 0 0; font-size: 13px; letter-spacing: .01em; color: #8a7150; opacity: 0; }
   .cta { margin-top: 32px; display: inline-flex; align-items: center; gap: 8px; background: #0a0a0a; color: #fff;
-    border: none; border-radius: 12px; padding: 13px 22px; font-size: 14px; font-weight: 600; cursor: pointer;
+    border: none; border-radius: 12px; padding: 13px 22px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
     box-shadow: 0 16px 36px -12px rgba(0,0,0,.55); transition: transform .2s; }
   .cta:hover { transform: translateY(-2px); }
   .surface-badge { display: flex; justify-content: center; padding-bottom: 40px; }
@@ -324,54 +319,54 @@ const labelTransform = (side: string) =>
     font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; backdrop-filter: blur(6px); }
   .badge.light { border: 1px solid rgba(0,0,0,.1); background: rgba(255,255,255,.7); color: #71717a; }
   .badge.dark { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: rgba(255,255,255,.55); }
-  .dot { width: 6px; height: 6px; border-radius: 50%; animation: live 2.2s ease-in-out infinite; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; animation: live 2.2s ease-in-out infinite; }
 
-  /* Höhe folgt dem Kiel (Unterwasser-Anteil ≈ Breite × 810/760) + Luft,
+  /* Unterwasser-Content (z-40, über dem Berg) */
+  .content-b { position: relative; z-index: 40; }
+  /* Höhe folgt dem Kiel (Unterwasser-Anteil ca. Breite × 810/760) plus Luft,
      damit der Erklärtext direkt nach dem Berg beginnt. */
   .below { position: relative; min-height: calc(min(840px, 94vw) * 1.12); width: 100%; }
   .implizit-badge { display: flex; justify-content: center; padding-top: 48px; }
 
-  .card { position: absolute; right: 5%; top: 20%; width: 380px; max-width: calc(100vw - 48px);
-    border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 24px; overflow: hidden;
-    background: linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-    box-shadow: 0 30px 70px -30px rgba(0,0,0,.8); backdrop-filter: blur(16px); }
-  .card .topline { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg,transparent,#f5a623,transparent); }
-  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-  .card-head .t { display: flex; align-items: center; gap: 10px; }
-  .card-head .ico { display: flex; width: 28px; height: 28px; align-items: center; justify-content: center;
-    border-radius: 8px; background: rgba(245,166,35,.12); border: 1px solid rgba(245,166,35,.25); }
-  .card-head .name { font-size: 14px; font-weight: 600; color: #fff; }
-  .live { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.4); }
-  .card .cap { margin: 0 0 20px; padding-left: 38px; font-size: 11px; line-height: 1.35; color: rgba(255,255,255,.45); }
-  .ins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .ins li { display: flex; align-items: flex-start; gap: 12px; border: 1px solid rgba(255,255,255,.06);
-    background: rgba(255,255,255,.03); border-radius: 12px; padding: 12px; }
-  .ins .num { margin-top: 2px; flex: 0 0 auto; display: flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 6px; font-size: 11px; font-weight: 700; }
-  .ins .h { display: block; font-size: 13.5px; font-weight: 500; line-height: 1.3; color: #fff; }
-  .ins .s { display: block; margin-top: 2px; font-size: 12px; line-height: 1.3; color: #94a3b8; }
-  .card-foot { display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 20px; padding-top: 16px; }
-  .bar { position: relative; height: 4px; flex: 1; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.06); }
-  .bar span { position: absolute; inset: 0 auto 0 0; width: 33%; border-radius: 999px; background: linear-gradient(90deg,transparent,#f5a623,transparent); animation: shimmer 2.6s ease-in-out infinite; }
-  .card-foot .rt { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.35); }
+  /* Intelligence-Fenster im Inplicit-App-Look: helles Fenster, ruhige Ränder */
+  .card { position: absolute; right: 5%; top: 22%; width: 380px; max-width: calc(100vw - 48px);
+    background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: var(--radius-card, 8px);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,.55); overflow: hidden; }
+  .win-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    border-bottom: 1px solid rgba(0,0,0,.06); background: #fafafa; }
+  .win-dots { display: inline-flex; gap: 5px; }
+  .win-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e3e0dc; }
+  .win-title { flex: 1; font-size: 12px; font-weight: 500; color: rgba(0,0,0,.55);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .live { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .08em; color: rgba(0,0,0,.45); }
+  .live .dot { width: 6px; height: 6px; border-radius: 50%; background: #f5a623; animation: live 2.2s ease-in-out infinite; }
+  .win-body { padding: 14px; }
+  .win-body .cap { margin: 0 0 12px; font-size: 11px; line-height: 1.4; color: rgba(0,0,0,.45); }
+  .ins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .ins li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+    border: 1px solid rgba(0,0,0,.06); border-radius: var(--radius-ui, 6px); background: #fafafa; }
+  .ins .sev { flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; }
+  .ins .h { display: block; font-size: 13.5px; font-weight: 550; line-height: 1.35; color: #0a0a0a; }
+  .ins .s { display: block; margin-top: 2px; font-size: 12px; line-height: 1.4; color: rgba(0,0,0,.55); }
+  .win-foot { padding: 9px 14px; border-top: 1px solid rgba(0,0,0,.06); font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .08em; color: rgba(0,0,0,.4); }
 
   @keyframes blurIn { from { opacity: 0; filter: blur(14px); transform: translateY(14px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
-  @keyframes dashdrift { to { stroke-dashoffset: -288; } }
   @keyframes pulse { 0%,100% { opacity: .4; transform: scale(1); } 50% { opacity: .75; transform: scale(1.2); } }
   @keyframes live { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
-  @keyframes shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
   @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
   @keyframes beam { 0% { opacity: 0; transform: translateY(0); } 8% { opacity: .9; } 55% { opacity: .9; } 68% { opacity: 0; transform: translateY(770px); } 100% { opacity: 0; transform: translateY(770px); } }
 
   @media (max-width: 768px) {
-    .logos, .weblines { display: none; }
+    .logos { display: none; }
   }
   @media (max-width: 640px) {
     .lbl { display: none; }
-    .card { position: static; width: auto; margin: 480px auto 0; transform: none; }
+    .card { position: static; width: auto; margin: 480px auto 0; transform: none !important; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .node .glow, .dot, .bar span, .chip, .beam { animation: none !important; }
+    .node .glow, .badge .dot, .live .dot, .chip, .beam { animation: none !important; }
     .blur-in { animation: none !important; }
-    .converge-cap { opacity: 1; }
   }
 </style>
