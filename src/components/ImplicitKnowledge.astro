@@ -1,0 +1,195 @@
+---
+/**
+ * ImplicitKnowledge — Erklärteil: Was ist implizites Wissen, warum ist es
+ * wertvoll, was kostet seine Unsichtbarkeit. Nummerierte Fußnoten verweisen
+ * auf die Quellenliste am Ende. Dunkle Fortsetzung der Unterwasser-Zone.
+ */
+
+const REASONS = [
+  {
+    t: "Rohstoff für Innovation",
+    b: "Neues organisationales Wissen entsteht, wenn implizites Wissen ausgesprochen, geteilt und mit explizitem Wissen kombiniert wird — der Kern des SECI-Modells von Nonaka und Takeuchi. Wer nur auf Dokumentiertes schaut, recycelt Bestehendes.",
+    refs: [2],
+  },
+  {
+    t: "Wettbewerbsvorteil, der nicht kopierbar ist",
+    b: "Die wissensbasierte Theorie der Firma zeigt: Nachhaltige Vorteile entstehen aus Wissen, das Wettbewerber nicht imitieren können. Explizites Wissen lässt sich kopieren — erfahrungsgebundenes, implizites Wissen nicht.",
+    refs: [3],
+  },
+  {
+    t: "Produktivität, die nicht von allein skaliert",
+    b: "Bewährte Praktiken verbreiten sich nicht von selbst: Ihr Transfer scheitert an interner „Stickiness“ — vor allem, weil das entscheidende Wissen implizit ist. Sichtbarmachung senkt genau diese Barriere.",
+    refs: [4],
+  },
+  {
+    t: "Risiken, die niemand ausspricht",
+    b: "Organisationale Stille: Mitarbeitende halten Probleme, Bedenken und Ideen systematisch zurück, wenn Sprechen riskant wirkt. Und mit jedem Abgang verlässt kritisches Erfahrungswissen das Unternehmen — oft unwiederbringlich.",
+    refs: [5, 6],
+  },
+];
+
+const STATS = [
+  { v: "42 %", l: "des Unternehmenswissens existiert nur in den Köpfen der Mitarbeitenden", r: 8 },
+  { v: "5,3 Std.", l: "wartet ein Mitarbeitender pro Woche im Schnitt auf Wissen, das Kolleg:innen bereits haben", r: 7 },
+  { v: "47 Mio. $", l: "verlieren große Unternehmen im Schnitt pro Jahr durch ineffizient geteiltes Wissen", r: 7 },
+];
+
+const SOURCES = [
+  "Polanyi, M. (1966): The Tacit Dimension. University of Chicago Press.",
+  "Nonaka, I.; Takeuchi, H. (1995): The Knowledge-Creating Company. Oxford University Press.",
+  "Grant, R. M. (1996): Toward a Knowledge-Based Theory of the Firm. Strategic Management Journal 17 (S2), 109–122.",
+  "Szulanski, G. (1996): Exploring Internal Stickiness: Impediments to the Transfer of Best Practice Within the Firm. Strategic Management Journal 17 (S2), 27–43.",
+  "Morrison, E. W.; Milliken, F. J. (2000): Organizational Silence: A Barrier to Change and Development in a Pluralistic World. Academy of Management Review 25 (4), 706–725.",
+  "DeLong, D. W. (2004): Lost Knowledge: Confronting the Threat of an Aging Workforce. Oxford University Press.",
+  "Panopto (2018): Workplace Knowledge and Productivity Report.",
+  "Delphi Group (2002): Taxonomy & Content Classification. Marktstudie.",
+];
+---
+
+<section class="ik" id="implizites-wissen">
+  <div class="wrap">
+    <span class="eyebrow">Implizites Wissen</span>
+    <h2 class="fx">Der wertvollste Teil Ihrer Organisation steht in keinem System.</h2>
+    <p class="lead fx">
+      Explizites Wissen ist dokumentiert: Tickets, Wikis, Prozesse, Dashboards. Implizites Wissen steckt in
+      Menschen — Erfahrung, Abkürzungen, Urteilsvermögen, informelle Netzwerke. Es ist der Teil der Organisation,
+      der funktioniert oder blockiert, ohne je aufgeschrieben worden zu sein.<a class="ref" href="#ik-src-1"><sup>1</sup></a>
+    </p>
+
+    <figure class="quote fx">
+      <blockquote>„Wir wissen mehr, als wir zu sagen wissen.“</blockquote>
+      <figcaption>Michael Polanyi, The Tacit Dimension (1966)<a class="ref" href="#ik-src-1"><sup>1</sup></a></figcaption>
+    </figure>
+
+    <div class="stats fx">
+      {STATS.map((s) => (
+        <div class="stat">
+          <span class="v">{s.v}</span>
+          <span class="l">{s.l}<a class="ref" href={`#ik-src-${s.r}`}><sup>{s.r}</sup></a></span>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="fx">Warum es sich lohnt, es sichtbar zu machen</h3>
+    <div class="cards">
+      {REASONS.map((c) => (
+        <article class="card fx">
+          <h4>{c.t}</h4>
+          <p>{c.b}{c.refs.map((r) => <a class="ref" href={`#ik-src-${r}`}><sup>{r}</sup></a>)}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="closing fx">
+      <p>
+        Implizites Wissen lässt sich nicht per Formular abfragen — es wird im Gespräch externalisiert.<a class="ref" href="#ik-src-2"><sup>2</sup></a>
+        Genau dort setzt Inplicit an: KI-Interviews machen den impliziten Kontext Ihrer Organisation strukturiert
+        sichtbar und verbinden ihn mit Ihren Tool-Daten.
+      </p>
+      <button class="ik-cta" id="ikCta" type="button">Zum interaktiven Modell
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13V4M4 8l4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    </div>
+
+    <footer class="sources fx">
+      <span class="src-head">Quellen</span>
+      <ol>
+        {SOURCES.map((s, i) => (
+          <li id={`ik-src-${i + 1}`}>{s}</li>
+        ))}
+      </ol>
+    </footer>
+  </div>
+</section>
+
+<script>
+  document.getElementById("ikCta")?.addEventListener("click", () => {
+    document.getElementById("ipl")?.classList.add("revealed");
+    document.getElementById("below")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* Sanfte Reveals beim Scrollen. Default ist sichtbar (no-JS / reduced motion);
+     JS setzt den Ausgangszustand inline und blendet per IO ein. */
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els = [...document.querySelectorAll<HTMLElement>(".ik .fx")];
+  if (!reduce && !document.hidden && "IntersectionObserver" in window) {
+    els.forEach((el) => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(18px)";
+      el.style.filter = "blur(6px)";
+    });
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const el = e.target as HTMLElement;
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+          el.style.filter = "blur(0)";
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>
+
+<style>
+  .ik { position: relative; background: linear-gradient(180deg, #070b15 0%, #0a0a0a 30%);
+    color: #f5f5f5;
+    font-family: var(--font-family, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+    padding: 120px 0 96px; }
+  .wrap { max-width: var(--max-width, 1200px); margin: 0 auto; padding: 0 24px; }
+  .fx { transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1), filter .8s ease; }
+
+  .eyebrow { display: inline-block; margin-bottom: 20px; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .18em; color: var(--color-accent, #f5a623); }
+  h2 { margin: 0 0 24px; max-width: 720px; font-size: clamp(30px, 4vw, 48px); font-weight: 600;
+    line-height: 1.1; letter-spacing: -.02em; color: #f5f5f5; text-wrap: balance; }
+  .lead { margin: 0 0 64px; max-width: 660px; font-size: clamp(16px, 1.6vw, 18px); line-height: 1.65;
+    color: rgba(255,255,255,.55); text-wrap: pretty; }
+
+  .quote { margin: 0 0 64px; padding-left: 24px; border-left: 2px solid var(--color-accent, #f5a623); }
+  .quote blockquote { margin: 0; font-size: clamp(22px, 2.6vw, 30px); font-weight: 300;
+    line-height: 1.35; letter-spacing: -.01em; color: #f5f5f5; }
+  .quote figcaption { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,.55); }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 88px; }
+  .stat { border: 1px solid rgba(255,255,255,.08); border-radius: 8px;
+    background: rgba(255,255,255,.04); padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .stat .v { font-size: clamp(30px, 3.4vw, 42px); font-weight: 600; letter-spacing: -.02em;
+    color: var(--color-accent, #f5a623); font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,.55); }
+
+  h3 { margin: 0 0 28px; font-size: clamp(20px, 2.2vw, 26px); font-weight: 600;
+    letter-spacing: -.01em; color: #f5f5f5; }
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 88px; }
+  .card { border: 1px solid rgba(255,255,255,.08); border-radius: 8px;
+    background: rgba(255,255,255,.04); padding: 28px; }
+  .card h4 { margin: 0 0 10px; font-size: 16px; font-weight: 600; color: #f5f5f5; }
+  .card p { margin: 0; font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.55); }
+
+  .closing { max-width: 660px; margin-bottom: 88px; }
+  .closing p { margin: 0 0 28px; font-size: clamp(16px, 1.6vw, 18px); line-height: 1.65; color: #c9c9c9; }
+  .ik-cta { display: inline-flex; align-items: center; gap: 8px; border: none; border-radius: 12px;
+    padding: 13px 24px; font-family: inherit; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer;
+    background: linear-gradient(135deg, var(--color-accent, #f5a623), var(--color-accent-dark, #d4891a));
+    box-shadow: 0 14px 40px -12px rgba(212, 137, 26, .8); transition: transform .2s; }
+  .ik-cta:hover { transform: translateY(-2px); }
+
+  .ref { text-decoration: none; }
+  .ref sup { font-size: 10px; font-weight: 600; color: var(--color-accent, #f5a623); margin-left: 2px; }
+  .sources { border-top: 1px solid rgba(255,255,255,.08); padding-top: 28px; }
+  .src-head { display: block; margin-bottom: 14px; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .16em; color: rgba(255,255,255,.55); }
+  .sources ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .sources li { font-size: 12.5px; line-height: 1.55; color: #6a6a72; }
+  .sources li:target { color: #c9c9c9; }
+
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .ik { padding: 88px 0 72px; }
+  }
+</style>

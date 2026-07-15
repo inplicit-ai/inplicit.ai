@@ -1,0 +1,374 @@
+---
+/**
+ * IcebergSection — "Explizit vs. Implizit" iceberg.
+ * Native Astro component: scoped styles (no Tailwind — the site's global reset
+ * would override utility classes), vanilla JS for the „Aufdecken" reveal.
+ *
+ * Above the waterline = explicit, visible tools. Below = the implicit human
+ * context, blurred until revealed, then sharpened into a "Management
+ * Intelligence" panel with interview-based insights.
+ */
+
+const HIDDEN = [
+  { x: 322, y: 512, label: "Workarounds", side: "left" },
+  { x: 472, y: 548, label: "Wissensinseln", side: "right" },
+  { x: 292, y: 612, label: "informelle Entscheidungen", side: "left" },
+  { x: 482, y: 648, label: "kulturelle Reibung", side: "right" },
+  { x: 320, y: 722, label: "unausgesprochene Blocker", side: "left" },
+  { x: 458, y: 742, label: "Hidden Expertise", side: "right" },
+  { x: 372, y: 852, label: "Automatisierungspotenzial", side: "left" },
+];
+const LINKS = [[0, 2], [1, 3], [2, 4], [2, 6], [3, 5], [4, 6], [5, 6], [0, 1]];
+
+const MARKS: Record<string, string> = {
+  Celonis: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="5.5" fill="#6a2bd9"/><path d="M15.6 9.1a4.4 4.4 0 1 0 0 5.8" stroke="#fff" stroke-width="2.1" fill="none" stroke-linecap="round"/></svg>',
+  Slack: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="10" y="1.5" width="4" height="8.5" rx="2" fill="#36C5F0"/><rect x="14" y="10" width="8.5" height="4" rx="2" fill="#2EB67D"/><rect x="10" y="14" width="4" height="8.5" rx="2" fill="#ECB22E"/><rect x="1.5" y="10" width="8.5" height="4" rx="2" fill="#E01E5A"/></svg>',
+  Teams: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="18" cy="6.5" r="2.6" fill="#7B83EB"/><rect x="14.5" y="8.5" width="7.5" height="9" rx="2.4" fill="#5059C9"/><rect x="2.5" y="5.5" width="13" height="13" rx="3" fill="#5059C9"/><text x="9" y="14.5" font-size="9" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">T</text></svg>',
+  Jira: '<svg viewBox="0 0 32 32" width="20" height="20"><path d="M16 3 L29 16 L23 22 L16 15 L9 22 L3 16 Z" fill="#2684FF" opacity="0.55"/><path d="M16 10 L23 17 L16 24 L9 17 Z" fill="#2684FF"/></svg>',
+  Confluence: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M2 17q6-6.5 11-4.2t9 1.8" stroke="#2684FF" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M22 7q-6 6.5-11 4.2T2 9.4" stroke="#0052CC" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg>',
+  Notion: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/><path d="M8 16.5V8l8 8.5V8" stroke="#111" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+  Drive: '<svg viewBox="0 0 32 32" width="20" height="20"><path d="M11 4 L21 4 L31 21 L21 21 Z" fill="#FFBA00"/><path d="M11 4 L1 21 L6 30 L16 13 Z" fill="#00AC47"/><path d="M6 30 L26 30 L31 21 L11 21 Z" fill="#2684FC"/></svg>',
+};
+const TOOLS = [
+  { n: "Celonis", style: "left:50%;top:6%;transform:translateX(-50%)" },
+  { n: "Slack", style: "left:11%;top:24%" },
+  { n: "Teams", style: "left:6%;top:50%" },
+  { n: "Jira", style: "right:9%;top:22%" },
+  { n: "Confluence", style: "right:6%;top:49%" },
+  { n: "Notion", style: "left:18%;top:71%" },
+  { n: "Drive", style: "right:16%;top:71%" },
+];
+
+const INSIGHTS = [
+  { c: "#f6717f", t: "87 % bestätigen kritische Wissensinseln", s: "Aus den Interviews: Schlüsselwissen hängt an einzelnen Personen." },
+  { c: "#f4b552", t: "5 wiederkehrende Prozessbrüche genannt", s: "In 31 Interviews benannt — Übergaben verlieren Kontext." },
+  { c: "#f5a623", t: "Automatisierungspotenzial in Team Operations", s: "73 % nennen manuelle Routinen mit hohem Wiederholungsgrad." },
+];
+
+const px = (x: number) => (x / 760) * 100;
+const py = (y: number) => (y / 1040) * 100;
+const labelTransform = (side: string) =>
+  side === "left" ? "translate(calc(-100% - 14px),-50%)" : "translate(14px,-50%)";
+---
+
+<div class="ipl" id="ipl">
+  <!-- backgrounds -->
+  <div class="ipl-bg" aria-hidden="true">
+    <div class="sky"></div>
+    <div class="deep"><div class="grid"></div></div>
+    <div class="waterline"><div class="line"></div><div class="fade"></div></div>
+  </div>
+
+  <!-- iceberg -->
+  <div class="berg" aria-hidden="true">
+    <div class="berg-inner">
+      <svg class="tip" viewBox="0 0 760 1040" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="tipshadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#2a5180" flood-opacity="0.24" />
+          </filter>
+        </defs>
+        <g filter="url(#tipshadow)">
+          <polygon points="372,44 262,190 158,430 372,430" fill="#d8e8f8" />
+          <polygon points="372,44 372,430 478,175" fill="#f4f9ff" />
+          <polygon points="478,175 372,430 586,430" fill="#bcd7f0" />
+        </g>
+        <polyline points="158,430 262,190 372,44 478,175 586,430" fill="none" stroke="#8fb7e0" stroke-width="1.8" opacity="0.85" />
+      </svg>
+
+      <svg class="implicit" viewBox="0 0 760 1040" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="nodeglow" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#f5a623" stop-opacity="0.95" />
+            <stop offset="100%" stop-color="#f5a623" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient id="beamgrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f5a623" stop-opacity="0" />
+            <stop offset="0.5" stop-color="#f5a623" stop-opacity="0.34" />
+            <stop offset="1" stop-color="#f5a623" stop-opacity="0" />
+          </linearGradient>
+          <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.4" /></filter>
+        </defs>
+        <polygon points="158,430 112,580 372,600 372,430" fill="#3a7fbf" />
+        <polygon points="372,430 372,600 632,580 586,430" fill="#2c6aa6" />
+        <polygon points="112,580 286,770 372,1000 372,600" fill="#1d4f86" />
+        <polygon points="372,600 372,1000 458,770 632,580" fill="#143a64" />
+        <polygon points="158,430 586,430 632,580 112,580" fill="#f5a623" opacity="0.05" />
+        <g class="beam">
+          <rect x="120" y="414" width="500" height="34" fill="url(#beamgrad)" />
+          <rect x="120" y="430" width="500" height="2.4" fill="#f5a623" opacity="0.9" />
+          <rect x="120" y="430" width="500" height="7" fill="#f5a623" opacity="0.4" filter="url(#soft)" />
+        </g>
+        {LINKS.map(([a, b]) => (
+          <line class="conn" x1={HIDDEN[a].x} y1={HIDDEN[a].y} x2={HIDDEN[b].x} y2={HIDDEN[b].y} />
+        ))}
+        {HIDDEN.map((n) => (
+          <g class="node">
+            <circle class="glow" cx={n.x} cy={n.y} r="16" fill="url(#nodeglow)" />
+            <circle cx={n.x} cy={n.y} r="5" fill="#fff3df" />
+            <circle cx={n.x} cy={n.y} r="5" fill="none" stroke="#f5a623" stroke-width="1.3" />
+          </g>
+        ))}
+      </svg>
+
+      {HIDDEN.map((n) => (
+        <div class="lbl" style={`left:${px(n.x)}%;top:${py(n.y)}%;transform:${labelTransform(n.side)}`}>{n.label}</div>
+      ))}
+    </div>
+  </div>
+
+  <!-- content -->
+  <div class="content">
+    <section class="stage" id="stage">
+      <div class="pin">
+        <div class="logos" aria-hidden="true">
+          {TOOLS.map((t) => (
+            <div class="chip-pos" style={t.style}>
+              <div class="chip"><Fragment set:html={MARKS[t.n]} /><span>{t.n}</span></div>
+            </div>
+          ))}
+        </div>
+
+        <div class="hero">
+          <h1 class="blur-in">Machen Sie sichtbar, was Ihre Systeme nicht wissen.</h1>
+          <p class="blur-in d2">Inplicit verbindet Tool-Daten mit gezielten KI-Interviews und deckt den menschlichen Kontext auf, der zwischen Prozessen, Teams und Entscheidungen verborgen liegt.</p>
+          <button class="cta blur-in d3" id="scrollCta" type="button">Verborgenen Organisationskontext erkennen
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 8l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+          <p class="converge-cap" id="convergeCap">Ihre Tools rücken zusammen — und zeigen trotzdem nur die Oberfläche.</p>
+        </div>
+
+        <div class="surface-badge">
+          <span class="badge light"><span class="dot" style="background:#c2660c;box-shadow:0 0 10px #c2660c"></span>Explizit &amp; sichtbar</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="below" id="below">
+      <div class="implizit-badge">
+        <span class="badge dark"><span class="dot" style="background:#f5a623;box-shadow:0 0 10px #f5a623"></span>Implizit &amp; unsichtbar</span>
+      </div>
+
+      <div class="aufdecken" id="aufdecken">
+        <button id="uncoverBtn" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8Z" stroke="currentColor" stroke-width="1.4" /><circle cx="8" cy="8" r="1.8" fill="currentColor" /></svg>
+          Aufdecken
+        </button>
+        <span class="hint">Den impliziten Kontext sichtbar machen</span>
+      </div>
+
+      <div class="card">
+        <div class="topline"></div>
+        <div class="card-head">
+          <div class="t">
+            <span class="ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 8h3l2-5 2 10 2-5h3" stroke="#f5a623" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            <span class="name">Management Intelligence</span>
+          </div>
+          <span class="live"><span class="dot" style="background:#f5a623"></span>Live</span>
+        </div>
+        <p class="cap">Verdichtet aus Tool-Daten &amp; 31 gezielten KI-Interviews</p>
+        <ul class="ins">
+          {INSIGHTS.map((ins, i) => (
+            <li>
+              <span class="num" style={`background:${ins.c}1f;color:${ins.c};border:1px solid ${ins.c}40`}>{i + 1}</span>
+              <span><span class="h">{ins.t}</span><span class="s">{ins.s}</span></span>
+            </li>
+          ))}
+        </ul>
+        <div class="card-foot"><div class="bar"><span></span></div><span class="rt">In Echtzeit aktualisiert</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  const ipl = document.getElementById("ipl");
+  document.getElementById("uncoverBtn")?.addEventListener("click", () => ipl?.classList.add("revealed"));
+  document.getElementById("scrollCta")?.addEventListener("click", () =>
+    document.getElementById("below")?.scrollIntoView({ behavior: "smooth", block: "start" })
+  );
+
+  /* Scroll convergence: scattered tool chips drift toward the viewport centre
+     as the pinned stage scrolls. Applied as inline transforms per the repo's
+     CSS gotcha #2 (JS-driven values must be inline styles, not class toggles). */
+  const stage = document.getElementById("stage");
+  const cap = document.getElementById("convergeCap");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (stage && !reduce) {
+    const chips = [...document.querySelectorAll<HTMLElement>(".chip-pos")].map((el) => ({
+      el,
+      bt: el.style.transform ? el.style.transform + " " : "",
+      tx: 0,
+      ty: 0,
+    }));
+    const pinEl = stage.querySelector(".pin");
+    const frame = () => {
+      const r = stage.getBoundingClientRect();
+      const total = r.height - innerHeight;
+      const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+      /* Ziel = Pin-Mitte, nicht Viewport-Mitte: während der Pin-Phase identisch,
+         danach scrollt das Ziel mit weg — sonst jagen die Chips dem Viewport
+         für immer hinterher und schweben über den Folge-Sektionen. */
+      const pr = (pinEl ?? stage).getBoundingClientRect();
+      const cx = pr.left + pr.width / 2;
+      const cy = pr.top + pr.height * 0.52;
+      for (const c of chips) {
+        const b = c.el.getBoundingClientRect();
+        const baseX = b.left + b.width / 2 - c.tx;
+        const baseY = b.top + b.height / 2 - c.ty;
+        c.tx = (cx - baseX) * p * 0.85;
+        c.ty = (cy - baseY) * p * 0.85;
+        c.el.style.transform = `${c.bt}translate(${c.tx}px,${c.ty}px) scale(${1 - 0.28 * p})`;
+      }
+      if (cap) {
+        const o = Math.max(0, (p - 0.45) / 0.55);
+        cap.style.opacity = String(o);
+        cap.style.filter = `blur(${(1 - o) * 6}px)`;
+      }
+    };
+    addEventListener("scroll", frame, { passive: true });
+    addEventListener("resize", frame);
+    frame();
+  }
+</script>
+
+<style>
+  /* overflow-x: clip (statt hidden) — hidden würde einen Scroll-Container
+     erzeugen und damit das position:sticky des Pins deaktivieren. */
+  .ipl { position: relative; width: 100%; overflow-x: clip; background: #fff;
+    --stage-h: 220vh; /* pinned intro: 100vh visible + 120vh scroll distance */
+    font-family: var(--font-family, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); -webkit-font-smoothing: antialiased; }
+  .ipl svg { display: block; }
+
+  /* backgrounds */
+  .ipl-bg { position: absolute; inset: 0; z-index: 0; }
+  .sky { position: absolute; left: 0; top: 0; width: 100%; height: var(--stage-h);
+    background:
+      radial-gradient(80% 60% at 50% -10%, rgba(194,102,12,.14) 0%, rgba(194,102,12,0) 60%),
+      radial-gradient(60% 50% at 85% 20%, rgba(245,166,35,.10) 0%, rgba(245,166,35,0) 55%),
+      linear-gradient(180deg,#fff 0%,#fdfaf6 62%,#f4eee5 100%); }
+  .deep { position: absolute; left: 0; top: var(--stage-h); bottom: 0; width: 100%; overflow: hidden;
+    background:
+      radial-gradient(90% 70% at 80% 12%, rgba(245,166,35,.10) 0%, rgba(8,12,22,0) 55%),
+      linear-gradient(180deg,#0b1120 0%,#0a0f1c 55%,#070b15 100%); }
+  .deep .grid { position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(150,180,220,.05) 1px,transparent 1px), linear-gradient(90deg,rgba(150,180,220,.05) 1px,transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: radial-gradient(110% 80% at 45% 25%,#000 35%,transparent 100%);
+            mask-image: radial-gradient(110% 80% at 45% 25%,#000 35%,transparent 100%); }
+  .waterline { position: absolute; left: 0; top: var(--stage-h); width: 100%; }
+  .waterline .line { height: 1px; width: 100%; background: linear-gradient(90deg,transparent,rgba(245,166,35,.55) 30%,rgba(255,255,255,.55) 50%,rgba(245,166,35,.55) 70%,transparent); }
+  .waterline .fade { height: 112px; width: 100%; background: linear-gradient(180deg,rgba(245,166,35,.10),transparent); }
+
+  /* iceberg */
+  .berg { position: absolute; left: 40%; top: var(--stage-h); transform: translateX(-50%); z-index: 10; pointer-events: none; }
+  .berg-inner { position: relative; width: min(840px,94vw); aspect-ratio: 760/1040; transform: translateY(-41.3%); }
+  .berg-inner svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .implicit { filter: blur(10px); transition: filter 1s ease; }
+  .ipl.revealed .implicit { filter: blur(0); }
+  .node { opacity: .28; transition: opacity .6s ease; }
+  .ipl.revealed .node { opacity: 1; }
+  .node .glow { transform-box: fill-box; transform-origin: center; animation: pulse 3.2s ease-in-out infinite; }
+  .conn { stroke: #f5a623; stroke-width: 1.1; opacity: .12; transition: opacity .7s ease; }
+  .ipl.revealed .conn { opacity: .5; }
+  .beam { opacity: 0; }
+  .ipl.revealed .beam { animation: beam 1.9s ease-in-out .1s both; }
+
+  .lbl { position: absolute; white-space: nowrap; font-size: 12.5px; font-weight: 500; letter-spacing: .02em;
+    color: #7c8aa0; filter: blur(7px); transition: filter .9s ease, color .5s ease, text-shadow .5s ease; }
+  .ipl.revealed .lbl { filter: blur(0); color: #f5a623; text-shadow: 0 0 14px rgba(194,102,12,.4); }
+
+  /* content */
+  .content { position: relative; z-index: 20; }
+  .stage { position: relative; height: var(--stage-h); }
+  .pin { position: sticky; top: 0; display: flex; height: 100vh; flex-direction: column; }
+  .logos { position: absolute; inset: 0; pointer-events: none; }
+  .chip-pos { position: absolute; will-change: transform; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; background: #fff;
+    border: 1px solid rgba(0,0,0,.06); border-radius: 12px; padding: 8px 12px;
+    box-shadow: 0 10px 26px -14px rgba(20,40,80,.35); animation: float 6s ease-in-out infinite; }
+  .chip span { font-size: 13px; font-weight: 500; color: #262626; letter-spacing: 0; }
+  .hero { position: relative; margin: 0 auto; display: flex; flex: 1; max-width: 1152px;
+    flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px 0; text-align: center; }
+  .hero h1 { margin: 0; max-width: 768px; font-size: clamp(34px,5vw,54px); font-weight: 600;
+    line-height: 1.08; letter-spacing: -.02em; color: #0a0a0a; text-wrap: balance; }
+  .hero p { margin: 20px 0 0; max-width: 580px; font-size: clamp(16px,1.6vw,18px); line-height: 1.6; color: #525252; text-wrap: pretty; }
+  .blur-in { animation: blurIn .9s cubic-bezier(.22,1,.36,1) .15s backwards; }
+  .blur-in.d2 { animation-delay: .38s; }
+  .blur-in.d3 { animation-delay: .6s; }
+  .converge-cap { margin: 22px 0 0; font-size: 13px; letter-spacing: .01em; color: #8a7150; opacity: 0; }
+  .cta { margin-top: 32px; display: inline-flex; align-items: center; gap: 8px; background: #0a0a0a; color: #fff;
+    border: none; border-radius: 12px; padding: 13px 22px; font-size: 14px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 16px 36px -12px rgba(0,0,0,.55); transition: transform .2s; }
+  .cta:hover { transform: translateY(-2px); }
+  .surface-badge { display: flex; justify-content: center; padding-bottom: 40px; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 5px 12px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; backdrop-filter: blur(6px); }
+  .badge.light { border: 1px solid rgba(0,0,0,.1); background: rgba(255,255,255,.7); color: #71717a; }
+  .badge.dark { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: rgba(255,255,255,.55); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; animation: live 2.2s ease-in-out infinite; }
+
+  .below { position: relative; min-height: 124vh; width: 100%; }
+  .implizit-badge { display: flex; justify-content: center; padding-top: 48px; }
+  .aufdecken { position: absolute; left: 50%; top: calc(min(840px,94vw) * .42); transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px; transition: opacity .4s, transform .4s; }
+  .ipl.revealed .aufdecken { opacity: 0; transform: translateX(-50%) translateY(8px); pointer-events: none; }
+  .aufdecken button { display: inline-flex; align-items: center; gap: 8px; border: none; border-radius: 12px;
+    padding: 13px 26px; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; white-space: nowrap;
+    background: linear-gradient(135deg,#f5a623,#c2660c); box-shadow: 0 14px 40px -12px #c2660c; transition: transform .2s; }
+  .aufdecken button:hover { transform: translateY(-2px); }
+  .aufdecken .hint { font-size: 11px; text-transform: uppercase; letter-spacing: .18em; color: rgba(255,255,255,.45); }
+
+  .card { position: absolute; right: 5%; top: 20%; width: 380px; max-width: calc(100vw - 48px);
+    border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 24px; overflow: hidden;
+    background: linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,.8); backdrop-filter: blur(16px);
+    opacity: 0; transform: translateX(40px);
+    transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .ipl.revealed .card { opacity: 1; transform: translateX(0); }
+  .card .topline { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg,transparent,#f5a623,transparent); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .card-head .t { display: flex; align-items: center; gap: 10px; }
+  .card-head .ico { display: flex; width: 28px; height: 28px; align-items: center; justify-content: center;
+    border-radius: 8px; background: rgba(245,166,35,.12); border: 1px solid rgba(245,166,35,.25); }
+  .card-head .name { font-size: 14px; font-weight: 600; color: #fff; }
+  .live { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.4); }
+  .card .cap { margin: 0 0 20px; padding-left: 38px; font-size: 11px; line-height: 1.35; color: rgba(255,255,255,.45); }
+  .ins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ins li { display: flex; align-items: flex-start; gap: 12px; border: 1px solid rgba(255,255,255,.06);
+    background: rgba(255,255,255,.03); border-radius: 12px; padding: 12px;
+    opacity: 0; transform: translateX(16px); transition: opacity .5s ease, transform .5s ease; }
+  .ipl.revealed .ins li { opacity: 1; transform: translateX(0); }
+  .ipl.revealed .ins li:nth-child(1) { transition-delay: .5s; }
+  .ipl.revealed .ins li:nth-child(2) { transition-delay: .68s; }
+  .ipl.revealed .ins li:nth-child(3) { transition-delay: .86s; }
+  .ins .num { margin-top: 2px; flex: 0 0 auto; display: flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .ins .h { display: block; font-size: 13.5px; font-weight: 500; line-height: 1.3; color: #fff; }
+  .ins .s { display: block; margin-top: 2px; font-size: 12px; line-height: 1.3; color: #94a3b8; }
+  .card-foot { display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 20px; padding-top: 16px; }
+  .bar { position: relative; height: 4px; flex: 1; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.06); }
+  .bar span { position: absolute; inset: 0 auto 0 0; width: 33%; border-radius: 999px; background: linear-gradient(90deg,transparent,#f5a623,transparent); animation: shimmer 2.6s ease-in-out infinite; }
+  .card-foot .rt { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.35); }
+
+  @keyframes blurIn { from { opacity: 0; filter: blur(14px); transform: translateY(14px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
+  @keyframes pulse { 0%,100% { opacity: .4; transform: scale(1); } 50% { opacity: .75; transform: scale(1.2); } }
+  @keyframes live { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+  @keyframes shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes beam { 0% { opacity: 0; transform: translateY(0); } 12% { opacity: .9; } 85% { opacity: .9; } 100% { opacity: 0; transform: translateY(560px); } }
+
+  @media (max-width: 768px) {
+    .logos { display: none; }
+  }
+  @media (max-width: 640px) {
+    .lbl { display: none; }
+    .card { position: static; width: auto; margin: 640px auto 0; transform: none; }
+    .ipl.revealed .card { transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .node .glow, .dot, .bar span, .chip, .beam { animation: none !important; }
+    .blur-in { animation: none !important; }
+    .converge-cap { opacity: 1; }
+    .implicit, .lbl, .card, .ins li, .aufdecken, .conn { transition: none !important; }
+  }
+</style>

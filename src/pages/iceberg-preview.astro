@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import IcebergSection from '../components/IcebergSection.tsx';
+import IcebergSection from '../components/IcebergSection.astro';
+import ImplicitKnowledge from '../components/ImplicitKnowledge.astro';
 ---
 
 <Layout title="Iceberg animation preview" lang="de">
-  <IcebergSection client:load />
+  <IcebergSection />
+  <ImplicitKnowledge />
 </Layout>
