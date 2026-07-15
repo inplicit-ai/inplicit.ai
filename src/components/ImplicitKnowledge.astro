@@ -35,25 +35,28 @@ const STATS = [
 ];
 
 const SOURCES = [
-  "Polanyi, M. (1966): The Tacit Dimension. University of Chicago Press.",
-  "Nonaka, I.; Takeuchi, H. (1995): The Knowledge-Creating Company. Oxford University Press.",
-  "Grant, R. M. (1996): Toward a Knowledge-Based Theory of the Firm. Strategic Management Journal 17 (S2), 109–122.",
-  "Szulanski, G. (1996): Exploring Internal Stickiness: Impediments to the Transfer of Best Practice Within the Firm. Strategic Management Journal 17 (S2), 27–43.",
-  "Morrison, E. W.; Milliken, F. J. (2000): Organizational Silence: A Barrier to Change and Development in a Pluralistic World. Academy of Management Review 25 (4), 706–725.",
-  "DeLong, D. W. (2004): Lost Knowledge: Confronting the Threat of an Aging Workforce. Oxford University Press.",
-  "Panopto (2018): Workplace Knowledge and Productivity Report.",
-  "Delphi Group (2002): Taxonomy & Content Classification. Marktstudie.",
+  { t: "Polanyi, M. (1966): The Tacit Dimension. University of Chicago Press.", href: "https://scholar.google.com/scholar?q=Polanyi+%22The+Tacit+Dimension%22+1966" },
+  { t: "Nonaka, I.; Takeuchi, H. (1995): The Knowledge-Creating Company. Oxford University Press.", href: "https://scholar.google.com/scholar?q=Nonaka+Takeuchi+%22The+Knowledge-Creating+Company%22+1995" },
+  { t: "Grant, R. M. (1996): Toward a Knowledge-Based Theory of the Firm. Strategic Management Journal 17 (S2), 109–122.", href: "https://doi.org/10.1002/smj.4250171110" },
+  { t: "Szulanski, G. (1996): Exploring Internal Stickiness: Impediments to the Transfer of Best Practice Within the Firm. Strategic Management Journal 17 (S2), 27–43.", href: "https://doi.org/10.1002/smj.4250171105" },
+  { t: "Morrison, E. W.; Milliken, F. J. (2000): Organizational Silence: A Barrier to Change and Development in a Pluralistic World. Academy of Management Review 25 (4), 706–725.", href: "https://doi.org/10.5465/amr.2000.3707697" },
+  { t: "DeLong, D. W. (2004): Lost Knowledge: Confronting the Threat of an Aging Workforce. Oxford University Press.", href: "https://scholar.google.com/scholar?q=DeLong+%22Lost+Knowledge%22+2004+aging+workforce" },
+  { t: "Panopto (2018): Workplace Knowledge and Productivity Report.", href: "https://www.panopto.com/resource/valuing-workplace-knowledge/" },
+  { t: "Delphi Group (2002): Taxonomy & Content Classification. Marktstudie.", href: "https://scholar.google.com/scholar?q=Delphi+Group+%22Taxonomy+%26+Content+Classification%22" },
 ];
 ---
 
 <section class="ik" id="implizites-wissen">
   <div class="wrap">
     <span class="eyebrow">Implizites Wissen</span>
-    <h2 class="fx">Der wertvollste Teil Ihrer Organisation steht in keinem System.</h2>
+    <h2 class="fx">Die unsichtbaren 80 Prozent.</h2>
     <p class="lead fx">
-      Explizites Wissen ist dokumentiert: Tickets, Wikis, Prozesse, Dashboards. Implizites Wissen steckt in
-      Menschen — Erfahrung, Abkürzungen, Urteilsvermögen, informelle Netzwerke. Es ist der Teil der Organisation,
-      der funktioniert oder blockiert, ohne je aufgeschrieben worden zu sein.<a class="ref" href="#ik-src-1"><sup>1</sup></a>
+      <strong>Implizites Wissen</strong> (englisch <em>tacit knowledge</em>) ist Wissen, das unser Handeln leitet,
+      sich aber kaum vollständig artikulieren oder dokumentieren lässt: Erfahrung, eingespielte Routinen,
+      Urteilsvermögen, informelle Netzwerke.<a class="ref" href="#ik-src-1"><sup>1</sup></a> Explizites Wissen
+      dagegen steht in Tickets, Wikis und Dashboards. In der Wissensmanagement-Literatur wird dieses Verhältnis
+      oft mit dem <strong>Eisbergmodell</strong> erklärt: Sichtbar ist nur die Spitze — der weitaus größere Teil
+      liegt unter der Oberfläche.<a class="ref" href="#ik-src-2"><sup>2</sup></a>
     </p>
 
     <figure class="quote fx">
@@ -68,6 +71,27 @@ const SOURCES = [
           <span class="l">{s.l}<a class="ref" href={`#ik-src-${s.r}`}><sup>{s.r}</sup></a></span>
         </div>
       ))}
+    </div>
+
+    <div class="example fx">
+      <div class="ex-text">
+        <h3>Ein Beispiel</h3>
+        <p>
+          Eine erfahrene Projektleiterin verlässt nach zwölf Jahren das Unternehmen. Im Wiki bleiben ihre
+          Vorlagen, Prozessdiagramme und Übergabedokumente — der explizite Teil. Nicht dokumentiert ist,
+          wen sie bei einer Eskalation zuerst anruft, welcher Zulieferer bei Engpässen wirklich reagiert und
+          mit welchem Workaround sie jede Freigabe in zwei Tagen statt zwei Wochen bekommt.
+          Dieses Wissen steht in keinem System — und geht mit ihr.
+        </p>
+      </div>
+      <figure class="ex-viz" aria-label="Verhältnis von explizitem zu implizitem Wissen: rund 20 zu 80 Prozent">
+        <div class="bar">
+          <div class="seg exp"><span class="pct">~20&nbsp;%</span><span class="what">explizit — dokumentiert in Systemen</span></div>
+          <div class="wl"></div>
+          <div class="seg imp"><span class="pct">~80&nbsp;%</span><span class="what">implizit — in Köpfen, Routinen, Beziehungen</span></div>
+        </div>
+        <figcaption>Gängige Faustregel der Wissensmanagement-Praxis; Studien wie die der Delphi Group stützen die Größenordnung.<a class="ref" href="#ik-src-8"><sup>8</sup></a></figcaption>
+      </figure>
     </div>
 
     <h3 class="fx">Warum es sich lohnt, es sichtbar zu machen</h3>
@@ -86,7 +110,7 @@ const SOURCES = [
         Genau dort setzt Inplicit an: KI-Interviews machen den impliziten Kontext Ihrer Organisation strukturiert
         sichtbar und verbinden ihn mit Ihren Tool-Daten.
       </p>
-      <button class="ik-cta" id="ikCta" type="button">Zum interaktiven Modell
+      <button class="ik-cta" id="ikCta" type="button">Zum Eisberg-Modell
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13V4M4 8l4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </button>
     </div>
@@ -95,7 +119,7 @@ const SOURCES = [
       <span class="src-head">Quellen</span>
       <ol>
         {SOURCES.map((s, i) => (
-          <li id={`ik-src-${i + 1}`}>{s}</li>
+          <li id={`ik-src-${i + 1}`}><a href={s.href} target="_blank" rel="noopener noreferrer">{s.t}<span class="ext" aria-hidden="true">&#8599;</span></a></li>
         ))}
       </ol>
     </footer>
@@ -104,7 +128,6 @@ const SOURCES = [
 
 <script>
   document.getElementById("ikCta")?.addEventListener("click", () => {
-    document.getElementById("ipl")?.classList.add("revealed");
     document.getElementById("below")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
@@ -162,8 +185,29 @@ const SOURCES = [
     color: var(--color-accent, #f5a623); font-variant-numeric: tabular-nums; }
   .stat .l { font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,.55); }
 
+  /* Beispiel + 80/20-Grafik: die Bar ist ein abstrahierter Eisberg —
+     Eisfarbe oben, Unterwasser-Blau unten, Amber-Wasserlinie dazwischen. */
+  .example { display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start; margin-bottom: 88px; }
+  .ex-text p { margin: 0; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.7; color: rgba(255,255,255,.6); }
+  .ex-viz { margin: 0; }
+  .bar { display: flex; flex-direction: column; height: 360px; border-radius: 10px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08); }
+  .seg { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 22px; }
+  .seg .pct { font-size: clamp(24px, 2.4vw, 32px); font-weight: 600; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; }
+  .seg .what { font-size: 12.5px; line-height: 1.4; }
+  .seg.exp { flex: 0 0 20%; background: linear-gradient(180deg, #f4f9ff, #d8e8f8); }
+  .seg.exp .pct { color: #143a64; }
+  .seg.exp .what { color: rgba(20,58,100,.75); }
+  .seg.imp { flex: 1; background: linear-gradient(180deg, #2c6aa6, #143a64); }
+  .seg.imp .pct { color: var(--color-accent, #f5a623); }
+  .seg.imp .what { color: rgba(255,255,255,.7); }
+  .wl { flex: 0 0 2px; background: linear-gradient(90deg, rgba(245,166,35,.2), #f5a623, rgba(245,166,35,.2)); }
+  .ex-viz figcaption { margin-top: 12px; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,.4); }
+
   h3 { margin: 0 0 28px; font-size: clamp(20px, 2.2vw, 26px); font-weight: 600;
     letter-spacing: -.01em; color: #f5f5f5; }
+  .ex-text h3 { margin-bottom: 14px; }
   .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 88px; }
   .card { border: 1px solid rgba(255,255,255,.08); border-radius: 8px;
     background: rgba(255,255,255,.04); padding: 28px; }
@@ -186,10 +230,16 @@ const SOURCES = [
   .sources ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
   .sources li { font-size: 12.5px; line-height: 1.55; color: #6a6a72; }
   .sources li:target { color: #c9c9c9; }
+  .sources li a { color: inherit; text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,.25);
+    transition: color .15s ease, border-color .15s ease; }
+  .sources li a:hover, .sources li a:focus-visible { color: #c9c9c9; border-bottom-color: var(--color-accent, #f5a623); }
+  .sources .ext { margin-left: 4px; font-size: 10px; color: var(--color-accent, #f5a623); }
 
   @media (max-width: 860px) {
     .stats { grid-template-columns: 1fr; }
     .cards { grid-template-columns: 1fr; }
+    .example { grid-template-columns: 1fr; gap: 28px; }
+    .bar { height: 300px; }
     .ik { padding: 88px 0 72px; }
   }
 </style>
