@@ -29,22 +29,28 @@ Implicit is an AI-guided interview service that surfaces inefficiencies, operati
 
 All tokens live in `/src/styles/design.css`. Never hardcode these values.
 
+Synced 1:1 with the dashboard's "clean white workhorse" system (`inplicit-dashboard/app/design.css`).
+
 | Token | Value |
 |-------|-------|
-| `--color-bg` | `#0a0a0a` |
-| `--color-surface` | `#111111` |
-| `--color-border` | `#1f1f1f` |
-| `--color-text-primary` | `#f5f5f5` |
-| `--color-text-secondary` | `#888888` |
-| `--color-accent` | `#f5a623` |
-| `--color-accent-dark` | `#d4891a` |
-| `--font-family` | Inter (Google Fonts) |
+| `--color-bg` | `#F7F8FA` (clean grey canvas) |
+| `--color-surface` | `#FFFFFF` (white work surfaces/cards) |
+| `--color-surface-elevated` | `#F1F2F5` (nested/deeper surface) |
+| `--color-border` | `#E6E8EC` |
+| `--color-text-primary` | `#0B0C10` (deep ink, never pure black) |
+| `--color-text-secondary` | `#656978` |
+| `--color-accent` | `#FCA157` (Signal Orange — text on it is always INK) |
+| `--color-accent-dark` | `#F08A3C` |
+| `--brand-blue` | `#1E3490` (navy — links/focus/active) |
+| `--brand-periwinkle` | `#ABA9FF` |
+| `--color-cta-bg` / `--color-cta-text` | `#FCA157` / `#0B0C10` |
+| `--font-family` | Geist (self-hosted via `@fontsource-variable/geist`, no Google Fonts) |
 | `--max-width` | `1080px` |
-| `--radius-ui` | `4px` |
-| `--radius-card` | `8px` |
+| `--radius-ui` / `--radius-card` / `--radius-xl` | `8px` / `10px` / `14px` |
 
-Type scale: `12 / 14 / 16 / 20 / 32 / 48 / 64px` via `--text-xs` through `--text-3xl`.
-Spacing: multiples of 4px via `--space-1` through `--space-32`.
+Green-free palette; danger = `#D93A2E`. No film grain. Calm easing (`cubic-bezier(0.2,0,0,1)`, no bounce).
+Type scale (marketing): `12 / 14 / 16 / 20 / 32 / 48 / 64 / 96px` via `--text-xs` through `--text-4xl`.
+Spacing: multiples of 4px via `--space-1` through `--space-48`.
 
 ---
 

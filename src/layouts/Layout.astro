@@ -12,7 +12,7 @@ const {
 } = Astro.props;
 
 import '../styles/design.css';
-import '@fontsource-variable/inter';
+import '@fontsource-variable/geist';
 import ConsentBanner from '../components/ConsentBanner.astro';
 
 // PostHog: inert until PUBLIC_POSTHOG_KEY is set (see .env.example)
@@ -76,7 +76,7 @@ const posthogHost = import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog
       </script>
     )}
 
-    <!-- Inter is self-hosted via @fontsource-variable/inter (no Google Fonts / no IP transfer to Google) -->
+    <!-- Geist is self-hosted via @fontsource-variable/geist (no Google Fonts / no IP transfer to Google) -->
 
   </head>
   <body>

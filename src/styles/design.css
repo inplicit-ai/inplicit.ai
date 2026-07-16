@@ -1,41 +1,60 @@
 /* design.css — single source of truth for all design tokens */
 
-/* ---- White — default ---- */
+/* ---- Clean white workhorse — synced 1:1 with inplicit-dashboard/app/design.css ---- */
 :root {
-  /* Colors — warm paper base, warm-charcoal ink, amber signal */
-  --color-bg: #faf8f4;
-  --color-surface: #f4f1ea;
-  --color-surface-elevated: #efeae0;
-  --color-border: rgba(26, 23, 20, 0.10);
-  --color-border-subtle: rgba(26, 23, 20, 0.05);
-  --color-text-primary: #1a1714;
-  --color-text-secondary: rgba(26, 23, 20, 0.58);
-  --color-text-tertiary: rgba(26, 23, 20, 0.34);
-  --color-accent: #f5a623;
-  --color-accent-dark: #e8950f;
-  --color-accent-light: rgba(245, 166, 35, 0.10);
-  --color-accent-muted: rgba(245, 166, 35, 0.22);
-  /* Ember range (gradient depth) + warm dark canvas (optional dark sections) */
-  --color-ember: #d8741f;
-  --color-ember-deep: #b5531a;
-  --color-canvas-dark: #1a1714;
-  --color-on-dark: #f4f1ea;
-  --grain-opacity: 0.035;
+  /* Colors — clean grey canvas, white work surfaces, cool ink, Signal Orange.
+     ~75% white/neutral · ~17% ink · ~6% orange (actions) · ~2% blue. Green-free. */
+  --color-bg: #F7F8FA;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F1F2F5;
+  --color-border: #E6E8EC;
+  --color-border-subtle: #EDEEF2;
+  --color-text-primary: #0B0C10;
+  --color-text-secondary: #656978;
+  --color-text-tertiary: #9CA0AC;
+  --color-accent: #FCA157;
+  --color-accent-dark: #F08A3C;
+  --color-accent-light: rgba(252, 161, 87, 0.12);
+  --color-accent-muted: rgba(252, 161, 87, 0.36);
 
-  /* CTA tokens */
-  --color-cta-bg: #1a1714;
-  --color-cta-text: #faf8f4;
-  --color-cta-icon-bg: rgba(255, 255, 255, 0.15);
+  /* Brand accents beyond orange — deep navy leads links/focus, periwinkle supports.
+     Text ON navy is always WHITE; text ON periwinkle is always INK. */
+  --brand-blue: #1E3490;
+  --brand-blue-strong: #172A75;
+  --brand-blue-weak: #E9EBF7;
+  --brand-periwinkle: #ABA9FF;
+  --brand-periwinkle-weak: #EDEDFE;
 
-  /* Shadows — diffuse, wide-spread, ultra-low opacity */
-  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+  /* Semantic (green-free: positive/active = navy, danger = red) */
+  --color-pain: #D93A2E;
+  --color-pain-soft: #FDEBE9;
+  --color-gap: #1E3490;
+  --color-gap-soft: #E9EBF7;
+  --color-success: #1E3490;
+  --color-danger: #D93A2E;
 
-  /* Typography */
-  --font-family: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Ember range (gradient depth) + dark canvas (optional dark sections) */
+  --color-ember: #F08A3C;
+  --color-ember-deep: #C2410C;
+  --color-canvas-dark: #0B0C10;
+  --color-on-dark: #F7F8FA;
+  --grain-opacity: 0;
+
+  /* CTA tokens — primary action = Signal Orange with INK text (AAA; white on orange fails) */
+  --color-cta-bg: #FCA157;
+  --color-cta-text: #0B0C10;
+  --color-cta-hover: #F08A3C;
+  --color-cta-icon-bg: rgba(11, 12, 16, 0.12);
+
+  /* Shadows — sparse, warm (ink alpha). Cards rest on their hairline border alone. */
+  --shadow-xs: 0 1px 2px rgba(11, 12, 16, 0.04);
+  --shadow-sm: 0 1px 3px rgba(11, 12, 16, 0.06), 0 1px 2px rgba(11, 12, 16, 0.04);
+  --shadow-md: 0 4px 12px rgba(11, 12, 16, 0.08);
+  --shadow-lg: 0 12px 32px rgba(11, 12, 16, 0.12);
+  --shadow-xl: 0 20px 48px rgba(11, 12, 16, 0.14);
+
+  /* Typography — ONE family: Geist (corporate design §5), self-hosted (no Google Fonts) */
+  --font-family: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --text-xs: 0.75rem;    /* 12px */
   --text-sm: 0.875rem;   /* 14px */
   --text-base: 1rem;     /* 16px */
@@ -63,16 +82,16 @@
   --space-section: 5.5rem;   /* 88px — standard section gap */
   --space-section-lg: 9rem;  /* 144px — hero/feature gap */
 
-  /* Border radii — rounded, matching OnePager */
+  /* Border radii — corporate design §7: md 8 · card 10 · lg 14 */
   --radius-ui: 8px;
-  --radius-card: 12px;
-  --radius-xl: 16px;
+  --radius-card: 10px;
+  --radius-xl: 14px;
   --radius-full: 9999px;
 
-  /* Easing */
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  /* Easing — one calm curve (§7), no bounce */
+  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
+  --ease-smooth: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
 
   /* Layout */
   --max-width: 1080px;
@@ -110,18 +129,7 @@ body {
   background-color: var(--color-bg);
 }
 
-/* Film grain — kills the flat-SaaS sheen. Static, fixed, pointer-safe, very low opacity. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
+/* Film grain removed — the clean white workhorse system is flat, no grain overlay. */
 
 a {
   color: inherit;
