@@ -10,7 +10,7 @@ const isDE = lang === 'de';
 // ── Large organisation as an organic cluster network ──
 // Every circle is one employee (avatar). Grey photos first → the whole org
 // turns orange (the digital twin). The leadership team sits at the centre and
-// each exec heads a department cluster. Communication sparks flit along links.
+// each exec heads a department cluster.
 function mulberry32(seed: number) {
   return function () {
     seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
@@ -105,22 +105,6 @@ function labelPos(n: Node) {
     ? { x: n.x + n.r + 5, y: n.y + 3, anchor: 'start' }    // right
     : { x: n.x - n.r - 5, y: n.y + 3, anchor: 'end' };     // left
 }
-
-// Communication sparks — fast pulses; exec links always spark, plus a subset
-type Spark = { d: string; dur: string; begin: string };
-const execSet = new Set(execIdx);
-const sparks: Spark[] = [];
-edges.forEach(([a, b]) => {
-  if (execSet.has(a) || execSet.has(b) || rnd() < 0.4) {
-    const rev = rnd() < 0.5;
-    const p1 = rev ? b : a, p2 = rev ? a : b;
-    sparks.push({
-      d: `M ${nodes[p1].x},${nodes[p1].y} L ${nodes[p2].x},${nodes[p2].y}`,
-      dur: `${rand(0.32, 0.7).toFixed(2)}s`,
-      begin: `${rand(0, 1.1).toFixed(2)}s`,
-    });
-  }
-});
 
 // Radial "interview" wave: nodes turn orange from the centre outward.
 const maxDist = Math.max(...nodes.map((n) => Math.hypot(n.x - CX, n.y - CY)));
@@ -251,16 +235,6 @@ const LCo = { x: 578.80, y: 586.55 };
             stroke-width="2.4" font-size="8" font-weight="700" letter-spacing="0.02em">{n.role}</text>
         );
       })}
-    </g>
-
-    <!-- Communication sparks flitting along the links (light grey, low saturation).
-         Visible from the very start, alongside the grey base network. -->
-    <g class="nv-sparks">
-      {sparks.map((sp) => (
-        <circle r="1.9" style="fill: var(--color-text-secondary);">
-          <animateMotion path={sp.d} dur={sp.dur} begin={sp.begin} repeatCount="indefinite" calcMode="linear"/>
-        </circle>
-      ))}
     </g>
   </svg>
 
@@ -545,7 +519,6 @@ const LCo = { x: 578.80, y: 586.55 };
     transform: scale(0.4);
     animation: nv-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.7s forwards;
   }
-  .nv-sparks   { opacity: 0; animation: nv-in 0.6s ease-out 1.2s forwards; }
   .nviz-labels { opacity: 0; animation: nv-in 1.0s ease-out 1.4s forwards; }
 
   @keyframes nv-in { to { opacity: 1; } }
@@ -709,7 +682,6 @@ const LCo = { x: 578.80, y: 586.55 };
     .nviz-orange { animation: none; transform: none; }
     .nv-oedges { animation: none; opacity: 1; }
     .nv-onode, .nv-badge, .nv-inplicit { animation: none; opacity: 1; transform: scale(1); }
-    .nv-sparks { display: none; }
     .scene { opacity: 1; transform: none; transition: none; }
     .scene__live, .chat__caret, .scene__caret { animation: none; }
   }
