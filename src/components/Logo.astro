@@ -1,0 +1,121 @@
+---
+// Animated inplicit logo: the loader mark spins in and keeps its subtle orbit,
+// then the "Inplicit" wordmark wipes in — mirroring the provided intro clip.
+// Resting state is the FINAL (visible) state, so the logo never disappears even
+// if the intro animation doesn't run; the keyframes only play it in.
+import wordmarkRaw from '../assets/wordmark.svg?raw';
+
+// Scaled SQUARE path for InplicitLoader (44-unit space, matches UspViz loader)
+const SQ = 'M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z';
+---
+
+<span class="ilogo" aria-hidden="true">
+  <svg class="ilogo__mark" viewBox="5 5 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d={SQ} class="ilogo__sq" />
+    <circle class="ilogo__w" cx="20.41" cy="20.38" r="5.23" />
+    <circle class="ilogo__o" cx="23.59" cy="23.90" r="5.23" />
+  </svg>
+  <span class="ilogo__word" set:html={wordmarkRaw}></span>
+</span>
+
+<script is:inline>
+  /* Trigger the intro only while the tab is visible — a hidden/backgrounded tab
+     freezes the animation timeline, so gating avoids a stuck-hidden logo. */
+  (function () {
+    function play() {
+      if (document.visibilityState !== 'visible') return;
+      document.querySelectorAll('.ilogo').forEach(function (l) { l.classList.add('is-intro'); });
+      document.removeEventListener('visibilitychange', play);
+    }
+    play();
+    if (!document.querySelector('.ilogo.is-intro')) {
+      document.addEventListener('visibilitychange', play);
+    }
+  })();
+</script>
+
+<style>
+  .ilogo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--logo-ink, var(--color-text-primary));
+  }
+
+  /* Resting state = visible & final. The intro only plays once JS adds .is-intro
+     (and only while the tab is visible), so the logo is NEVER stuck hidden —
+     not on a frozen timeline, not without JS, not without animation support. */
+  .ilogo__mark {
+    height: 24px;
+    width: 24px;
+    flex-shrink: 0;
+    overflow: visible; /* don't clip the square while it spins in */
+    transform-origin: center;
+  }
+  .ilogo.is-intro .ilogo__mark {
+    animation: ilogo-pop 0.85s cubic-bezier(0.34, 1.4, 0.5, 1) 0.05s both;
+  }
+  .ilogo__sq { fill: var(--logo-ink, var(--color-text-primary)); transition: fill 0.3s var(--ease-smooth); }
+  .ilogo__w  { fill: var(--logo-hole, #fff); transition: fill 0.3s var(--ease-smooth); }
+  .ilogo__o  { fill: var(--color-accent); }
+
+  .ilogo__word {
+    display: inline-flex;
+  }
+  .ilogo.is-intro .ilogo__word {
+    animation: ilogo-wipe 0.65s cubic-bezier(0.2, 0, 0, 1) 1.0s both;
+  }
+  .ilogo__word :global(svg) {
+    height: 17px;
+    width: auto;
+    display: block;
+  }
+  .ilogo__word :global(path) { fill: var(--logo-ink, var(--color-text-primary)); transition: fill 0.3s var(--ease-smooth); }
+
+  /* Mark spins + scales in, then holds ~1s alone before the wordmark reveals */
+  @keyframes ilogo-pop {
+    from { opacity: 0; transform: scale(0.2) rotate(-180deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  /* Wordmark wipes in from behind the mark */
+  @keyframes ilogo-wipe {
+    from { clip-path: inset(0 100% 0 0); opacity: 0; }
+    to   { clip-path: inset(0 0 0 0); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ilogo.is-intro .ilogo__mark, .ilogo.is-intro .ilogo__word { animation: none; }
+  }
+</style>
+
+<script>
+  // InplicitLoader — orbiting orange/white circles (vanilla-JS port, slow idle
+  // speed for a nav mark). The mark keeps this subtle motion after it spins in.
+  {
+    const R = 128.405, Mx = 539.95, My = 543.84, Ox = 38.85, Oy = 42.71, DEPTH = 0.13, DUR = 2600, S = 44 / 1080;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.ilogo__mark').forEach((svg) => {
+        const w = svg.querySelector<SVGCircleElement>('.ilogo__w');
+        const o = svg.querySelector<SVGCircleElement>('.ilogo__o');
+        if (!w || !o) return;
+        let t0: number | null = null;
+        const set = (el: SVGCircleElement, cx: number, cy: number, r: number) => {
+          el.setAttribute('cx', (cx * S).toFixed(2));
+          el.setAttribute('cy', (cy * S).toFixed(2));
+          el.setAttribute('r', (r * S).toFixed(2));
+        };
+        const tick = (now: number) => {
+          if (t0 === null) t0 = now;
+          const a = (((now - t0) % DUR) / DUR) * 2 * Math.PI;
+          const cos = Math.cos(a), sin = Math.sin(a);
+          set(w, Mx - Ox * cos, My - Oy * cos, R * (1 + DEPTH * sin));
+          set(o, Mx + Ox * cos, My + Oy * cos, R * (1 - DEPTH * sin));
+          const front = sin >= 0 ? w : o;
+          if (front.parentNode && front.parentNode.lastChild !== front) front.parentNode.appendChild(front);
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }
+  }
+</script>
