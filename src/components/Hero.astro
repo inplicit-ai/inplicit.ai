@@ -1,17 +1,27 @@
 ---
-import GradientField from './ui/GradientField.astro';
-import HeroNetworkViz from './HeroNetworkViz.astro';
-
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
-
 ---
 
 <section class="hero" id="hero">
-  <GradientField />
+  <div class="hero__bg" aria-hidden="true">
+    <video
+      class="hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="/hero-poster.jpg"
+    >
+      <source src="/hero-bg.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__scrim"></div>
+  </div>
+
   <div class="hero__inner container">
     <div class="hero__content">
 
@@ -57,11 +67,6 @@ const isDE = lang === 'de';
         <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Daten in der EU' : 'Data in EU'}</span>
       </div>
     </div>
-
-    <div class="hero__visual">
-      <HeroNetworkViz lang={lang} />
-    </div>
-
   </div>
 </section>
 
@@ -77,20 +82,43 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
 <style>
   .hero {
     position: relative;
+    isolation: isolate;
     display: flex;
-    align-items: flex-start;
-    padding-top: calc(var(--space-6) + 64px);
-    padding-bottom: var(--space-16);
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 128px 0 96px;
     overflow: hidden;
+  }
+
+  /* ── Full-bleed nature video background ── */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #0b0c10;
+  }
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Readability scrim: dark on the left (under the copy) → clearer on the right,
+     plus a soft top/bottom vignette. */
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(11, 12, 16, 0.86) 0%, rgba(11, 12, 16, 0.66) 38%, rgba(11, 12, 16, 0.28) 72%, rgba(11, 12, 16, 0.12) 100%),
+      linear-gradient(0deg, rgba(11, 12, 16, 0.55) 0%, rgba(11, 12, 16, 0) 32%),
+      linear-gradient(180deg, rgba(11, 12, 16, 0.45) 0%, rgba(11, 12, 16, 0) 22%);
   }
 
   .hero__inner {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr minmax(380px, 480px);
-    gap: var(--space-12);
-    align-items: center;
     width: 100%;
     animation: hero-in 0.7s var(--ease-out) forwards;
   }
@@ -100,13 +128,13 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .hero__content { max-width: 600px; }
+  .hero__content { max-width: 640px; }
 
   .hero__headline {
     font-family: var(--font-family);
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-size: clamp(2.4rem, 5.4vw, 4rem);
     font-weight: 400;
-    line-height: 1.08;
+    line-height: 1.07;
     letter-spacing: -0.03em;
     margin-bottom: var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.1s;
@@ -114,23 +142,22 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
     display: flex;
     flex-direction: column;
     gap: 0;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
   }
-  .hero__line { color: var(--color-text-primary); }
-  .hero__line em {
-    font-style: normal;
-    font-weight: 400;
-  }
-  .hero__line--ghost { opacity: 0.34; }
+  .hero__line { color: #fff; }
+  .hero__line em { font-style: normal; font-weight: 400; }
+  .hero__line--ghost { color: rgba(255, 255, 255, 0.42); }
 
   .hero__sub {
     font-size: clamp(var(--text-base), 1.7vw, var(--text-lg));
     font-weight: 400;
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.84);
     line-height: 1.75;
-    max-width: 500px;
+    max-width: 520px;
     margin-bottom: var(--space-10);
     animation: hero-in 0.7s var(--ease-out) forwards 0.18s;
     opacity: 0;
+    text-shadow: 0 1px 16px rgba(0, 0, 0, 0.35);
   }
 
   .hero__actions {
@@ -144,43 +171,38 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
     background-color: var(--color-cta-bg); color: var(--color-cta-text);
     font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em;
     border-radius: var(--radius-ui); transition: opacity 0.2s var(--ease-smooth);
+    box-shadow: 0 8px 24px -8px rgba(252, 161, 87, 0.5);
   }
-  .hero__cta-primary:hover { opacity: 0.85; }
+  .hero__cta-primary:hover { opacity: 0.9; }
   .hero__cta-primary:active { transform: scale(0.97); }
   .hero__cta-primary-label { margin-right: var(--space-10); transition: opacity 0.4s var(--ease-smooth); white-space: nowrap; }
   .hero__cta-primary:hover .hero__cta-primary-label { opacity: 0; }
   .hero__cta-primary-icon {
     position: absolute; right: 4px; top: 4px; bottom: 4px;
     border-radius: var(--radius-ui); z-index: 1; display: grid; width: 25%; place-items: center;
-    background-color: var(--color-cta-icon-bg); transition: width 0.4s var(--ease-spring);
+    background-color: var(--color-cta-icon-bg, rgba(11, 12, 16, 0.14)); transition: width 0.4s var(--ease-spring);
   }
   .hero__cta-primary:hover .hero__cta-primary-icon { width: calc(100% - 8px); }
   .hero__cta-secondary {
     display: inline-flex; align-items: center; height: 46px; padding: 0 var(--space-6);
-    color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: 500;
-    border-radius: var(--radius-ui); border: 1px solid var(--color-border);
-    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth);
+    color: #fff; font-size: var(--text-sm); font-weight: 500;
+    border-radius: var(--radius-ui); border: 1px solid rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(4px);
+    transition: color 0.15s var(--ease-smooth), border-color 0.15s var(--ease-smooth), background 0.15s var(--ease-smooth);
   }
-  .hero__cta-secondary:hover { color: var(--color-text-primary); border-color: var(--color-text-tertiary); }
+  .hero__cta-secondary:hover { border-color: rgba(255, 255, 255, 0.7); background: rgba(255, 255, 255, 0.12); }
 
   .hero__meta {
     display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
     animation: hero-in 0.7s var(--ease-out) forwards 0.34s; opacity: 0;
   }
-  .hero__meta-item { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-sm); color: var(--color-text-tertiary); font-weight: 400; }
+  .hero__meta-item { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.72); font-weight: 400; }
   .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
-  .hero__meta-sep { color: var(--color-text-tertiary); opacity: 0.4; font-size: var(--text-sm); }
-
-  .hero__visual { position: relative; display: flex; align-items: center; justify-content: center; }
-
-  @media (max-width: 900px) {
-    .hero { padding-top: calc(var(--space-10) + 56px); padding-bottom: var(--space-16); }
-    .hero__inner { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-10); }
-    .hero__content { max-width: 100%; }
-    .hero__visual { justify-content: center; max-width: 420px; margin: 0 auto; }
-  }
+  .hero__meta-sep { color: rgba(255, 255, 255, 0.4); font-size: var(--text-sm); }
 
   @media (max-width: 767px) {
+    .hero { padding: 112px 0 72px; }
     .hero__line { font-size: clamp(2rem, 11vw, 2.8rem); }
     .hero__sub { font-size: var(--text-base); margin-bottom: var(--space-8); }
     .hero__actions { flex-direction: column; align-items: stretch; gap: var(--space-2); }
@@ -191,5 +213,7 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
 
   @media (prefers-reduced-motion: reduce) {
     .hero__inner, .hero__headline, .hero__sub, .hero__actions, .hero__meta { animation: none; opacity: 1; }
+    .hero__video { display: none; }
+    .hero__bg { background: #0b0c10 url('/hero-poster.jpg') center / cover no-repeat; }
   }
 </style>
