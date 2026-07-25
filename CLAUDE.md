@@ -140,6 +140,11 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ### While working
 - One component per file. Max ~200 lines per `.astro` file.
 - All copy must exist in both `en` and `de` via inline ternary on the `lang` prop.
+- **No dashes as punctuation in copy.** Never use em dashes (—) or en dashes (–) to join
+  or interrupt a sentence; use a comma, colon or a second sentence instead. (En dashes
+  stay fine inside number ranges like `2–6 Wochen`.) Applies to all user-facing text,
+  DE and EN; code comments are unaffected.
+- Address the reader formally in German (Sie/Ihr), never du/ihr.
 - No hardcoded hex values — use CSS custom properties from `design.css`.
 - No external CSS libraries or UI kits. Write scoped styles.
 - Keep `<style>` blocks scoped (default in Astro). Use `is:global` only for truly global rules.

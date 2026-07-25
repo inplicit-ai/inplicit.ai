@@ -14,10 +14,18 @@ const p = (n: number) => `/people/s${n}.png`;
 
 const campaigns = isDE ? [
   {
+    tag: 'Wissensbasis',
+    title: 'Ein Company Brain, das aus Ihrer Belegschaft entsteht',
+    body: 'Statt Dokumente zu sammeln, die niemand pflegt, entsteht ein strukturiertes Company Brain direkt aus den Köpfen Ihrer Mitarbeitenden. Durchsuchbar, mit Beleg zur anonymen Quelle und anschlussfähig an Ihre bestehenden Tools.',
+    who: 'Interviewt werden: alle Abteilungen, von Produktion bis Vertrieb',
+    people: [2, 5, 9, 12],
+    image: img('photo-1556761175-b413da4baf72'),
+  },
+  {
     tag: 'Post-Merger-Integration',
     title: 'Zwei Organisationen, ein Bild davon, wer was kann',
-    body: 'Nach dem Closing läuft die Uhr: Je länger die Integration dauert, desto mehr Geld verbrennt. Wir erfassen in Tagen, wo Wissen, Doppelstrukturen und Reibung sitzen — statt sich auf ein Intro der übernommenen Führung zu verlassen.',
-    who: 'Beide Standorte, von Führung bis Team',
+    body: 'Nach dem Closing läuft die Uhr. Je länger die Integration dauert, desto mehr kostet es. Wir erfassen in Tagen, wo Wissen, Doppelstrukturen und Reibung sitzen, statt sich auf ein Intro der übernommenen Führung zu verlassen.',
+    who: 'Interviewt werden: die gesamte Belegschaft in beiden Unternehmen',
     people: [1, 2, 3, 4],
     image: img('photo-1486406146926-c627a92ad1ab'),
   },
@@ -25,48 +33,48 @@ const campaigns = isDE ? [
     tag: 'Wissenstransfer & Nachfolge',
     title: 'Erfahrungswissen sichern, bevor es das Haus verlässt',
     body: 'Wenn erfahrene Mitarbeitende gehen, geht undokumentiertes Wissen mit. Wir machen sichtbar, welches Wissen an einzelnen Personen hängt, und übersetzen es in eine nutzbare Wissensbasis.',
-    who: 'Erfahrene Fachkräfte und ihre Nachfolge',
+    who: 'Interviewt werden: Fachkräfte vor dem Ausstieg und ihre Nachfolge',
     people: [5, 6, 7],
     image: img('photo-1600880292203-757bb62b4baf'),
   },
   {
     tag: 'Trainingsbedarfe',
     title: 'Wissenslücken finden, statt Trainings zu raten',
-    body: 'Ein strukturierter Quick-Check über die Belegschaft zeigt, wo tatsächlich Qualifikationslücken bestehen — die Grundlage für Personalentwicklung, Skill-Matrix und ISO-Nachweise.',
-    who: 'Gesamte Belegschaft, nach Rollen ausgewertet',
+    body: 'Ein strukturierter Quick-Check über die Belegschaft zeigt, wo tatsächlich Qualifikationslücken bestehen. Die Grundlage für Personalentwicklung, Skill-Matrix und ISO-Nachweise.',
+    who: 'Interviewt werden: alle Mitarbeitenden, ausgewertet je Rolle',
     people: [8, 9, 10, 11, 12],
     image: img('photo-1552664730-d307ca884978'),
   },
   {
-    tag: 'Wissensmanagement',
-    title: 'Eine Wissensbasis, die aus der Belegschaft entsteht',
-    body: 'Statt Dokumente zu sammeln, die niemand pflegt: strukturiertes Wissen direkt aus den Köpfen — durchsuchbar, mit Beleg zur anonymen Quelle, anschlussfähig an Ihre bestehenden Tools.',
-    who: 'Alle Abteilungen, fortlaufend befragt',
-    people: [2, 5, 9, 12],
-    image: img('photo-1556761175-b413da4baf72'),
-  },
-  {
     tag: 'Innovationsroadmap',
     title: 'Die Ideen, die längst im Unternehmen liegen',
-    body: 'Ihre Mitarbeitenden wissen, was besser laufen könnte — nur fragt sie selten jemand strukturiert. Wir sammeln Vorschläge, clustern sie und zeigen, welche Potenziale mehrfach genannt werden.',
-    who: 'Operative Teams, die es täglich sehen',
+    body: 'Ihre Mitarbeitenden wissen, was besser laufen könnte. Nur fragt sie selten jemand strukturiert. Wir sammeln Vorschläge, clustern sie und zeigen, welche Potenziale mehrfach genannt werden.',
+    who: 'Interviewt werden: Produktion, Service und Vertrieb',
     people: [3, 7, 10, 1],
     image: img('photo-1522071820081-009f0129c71c'),
   },
   {
     tag: 'Transformation & Change',
     title: 'Erst verstehen, was heute wirklich passiert',
-    body: 'Jede Transformation beginnt mit einer ehrlichen Ist-Aufnahme. Wir erfassen, wie heute wirklich gearbeitet wird — und wo der Wandel auf Widerstand oder auf Rückenwind trifft.',
-    who: 'Die betroffenen Bereiche im Rollout',
+    body: 'Jede Transformation beginnt mit einer ehrlichen Ist-Aufnahme. Wir erfassen, wie heute wirklich gearbeitet wird, und wo der Wandel auf Widerstand oder auf Rückenwind trifft.',
+    who: 'Interviewt werden: die betroffenen Abteilungen und ihre Teamleads',
     people: [4, 8, 11, 6],
     image: img('photo-1531482615713-2afd69097998'),
   },
 ] : [
   {
+    tag: 'Knowledge base',
+    title: 'A company brain that grows out of your workforce',
+    body: 'Instead of collecting documents nobody maintains, a structured company brain forms straight from your employees\' heads. Searchable, evidenced to an anonymous source and connected to the tools you already run.',
+    who: 'Interviewed: every department, from operations to sales',
+    people: [2, 5, 9, 12],
+    image: img('photo-1556761175-b413da4baf72'),
+  },
+  {
     tag: 'Post-merger integration',
     title: 'Two organisations, one picture of who knows what',
-    body: 'After closing, the clock runs: the longer integration takes, the more real money burns. In days we map where knowledge, duplicate structures and friction actually sit — instead of relying on an intro from the acquired leadership.',
-    who: 'Both sites, from leadership to team level',
+    body: 'After closing, the clock runs. The longer integration takes, the more it costs. In days we map where knowledge, duplicate structures and friction actually sit, instead of relying on an intro from the acquired leadership.',
+    who: 'Interviewed: the entire workforce across both companies',
     people: [1, 2, 3, 4],
     image: img('photo-1486406146926-c627a92ad1ab'),
   },
@@ -74,39 +82,31 @@ const campaigns = isDE ? [
     tag: 'Knowledge transfer & succession',
     title: 'Capture experience before it walks out the door',
     body: 'When experienced people leave, undocumented knowledge leaves with them. We surface which knowledge sits with individuals and turn it into a knowledge base you can use.',
-    who: 'Experienced specialists and their successors',
+    who: 'Interviewed: specialists nearing exit and their successors',
     people: [5, 6, 7],
     image: img('photo-1600880292203-757bb62b4baf'),
   },
   {
     tag: 'Training needs',
     title: 'Find the skill gaps instead of guessing at training',
-    body: 'A structured quick-check across the workforce shows where qualification gaps really are — the basis for people development, a skill matrix and ISO evidence.',
-    who: 'Whole workforce, evaluated by role',
+    body: 'A structured quick-check across the workforce shows where qualification gaps really are. The basis for people development, a skill matrix and ISO evidence.',
+    who: 'Interviewed: all employees, evaluated by role',
     people: [8, 9, 10, 11, 12],
     image: img('photo-1552664730-d307ca884978'),
   },
   {
-    tag: 'Knowledge management',
-    title: 'A knowledge base that grows out of your workforce',
-    body: 'Instead of collecting documents nobody maintains: structured knowledge straight from people\'s heads — searchable, evidenced to an anonymous source, and connected to the tools you already run.',
-    who: 'Every department, asked continuously',
-    people: [2, 5, 9, 12],
-    image: img('photo-1556761175-b413da4baf72'),
-  },
-  {
     tag: 'Innovation roadmap',
     title: 'The ideas already sitting inside your company',
-    body: 'Your employees know what could run better — they are rarely asked in a structured way. We collect proposals, cluster them and show which opportunities come up again and again.',
-    who: 'The operational teams who see it daily',
+    body: 'Your employees know what could run better. They are rarely asked in a structured way. We collect proposals, cluster them and show which opportunities come up again and again.',
+    who: 'Interviewed: operations, service and sales',
     people: [3, 7, 10, 1],
     image: img('photo-1522071820081-009f0129c71c'),
   },
   {
     tag: 'Transformation & change',
     title: 'First understand what actually happens today',
-    body: 'Every transformation starts with an honest baseline. We capture how work really gets done — and where the change will meet resistance or momentum.',
-    who: 'The areas affected by the rollout',
+    body: 'Every transformation starts with an honest baseline. We capture how work really gets done, and where the change will meet resistance or momentum.',
+    who: 'Interviewed: the affected departments and their team leads',
     people: [4, 8, 11, 6],
     image: img('photo-1531482615713-2afd69097998'),
   },
@@ -152,6 +152,11 @@ const campaigns = isDE ? [
             <div class="cg__who">
               <span class="cg__faces" aria-hidden="true">
                 {c.people.map((n) => <img class="cg__face" src={p(n)} alt="" loading="lazy" decoding="async" width="64" height="64" />)}
+                <span class="cg__face cg__face--mic">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>
+                  </svg>
+                </span>
               </span>
               <span class="cg__who-label">{c.who}</span>
             </div>
@@ -314,15 +319,23 @@ const campaigns = isDE ? [
     padding-top: var(--space-4);
     border-top: 1px solid rgba(255,255,255,0.16);
   }
-  .cg__faces { display: flex; flex-shrink: 0; }
+  .cg__faces { display: flex; align-items: center; flex-shrink: 0; }
   .cg__face {
-    width: 26px; height: 26px;
+    width: 28px; height: 28px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.9);
-    box-shadow: 0 1px 4px rgba(11,12,16,0.4);
+    box-shadow: 0 1px 5px rgba(11,12,16,0.45);
   }
-  .cg__face + .cg__face { margin-left: -9px; }
+  .cg__face + .cg__face { margin-left: -8px; }
+  /* the campaign itself closes the row: an interview badge */
+  .cg__face--mic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: var(--color-canvas-dark, #0B0C10);
+    flex-shrink: 0;
+  }
   .cg__who-label {
     font-size: var(--text-xs);
     line-height: 1.4;
