@@ -210,7 +210,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
       <div class="iviz__list">
         {roles.map((r, i) => (
           <button type="button" class={`iviz__ava${i === 0 ? ' is-active' : ''}`} data-idx={i} aria-label={r.role}
-            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`}></button>
+            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`}></button>
         ))}
       </div>
       <div class="iviz__chat">
@@ -224,7 +224,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
             <span class="iviz__who-ctx">{roles[0].ctx}</span>
           </div>
           <span class="iviz__who-ava"
-            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`}></span>
+            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`}></span>
         </div>
       </div>
     </div>
@@ -336,8 +336,9 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
   .iviz__mark :global(svg) { width: 13px; height: 13px; display: block; }
   .iviz__mark :global(path) { fill: var(--color-text-primary); }
   .iviz__mark :global(rect) { fill: var(--color-accent); }
+  /* inplicit asks → grey bubble (the user's replies are the black ones) */
   .iviz__bubble {
-    background: var(--color-text-primary); color: var(--color-bg);
+    background: var(--color-surface-elevated); color: var(--color-text-primary);
     border-radius: 4px 12px 12px 12px; padding: 8px 11px;
     font-size: 11.5px; line-height: 1.5; transition: opacity 0.2s ease;
   }
@@ -447,7 +448,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     const metaEl = iviz.querySelector<HTMLElement>('.iviz__who-meta');
     const avaEl  = iviz.querySelector<HTMLElement>('.iviz__who-ava');
     const avatars = [...iviz.querySelectorAll<HTMLElement>('.iviz__ava')];
-    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=120&h=120&fit=facearea&facepad=3.5&auto=format&q=80)`;
+    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`;
     let idx = 0; let timer: ReturnType<typeof setInterval> | null = null;
     const show = (i: number) => {
       const r = roles[i]; if(!r) return; idx = i;
