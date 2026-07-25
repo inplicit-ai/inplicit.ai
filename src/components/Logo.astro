@@ -69,6 +69,7 @@ const SQ = 'M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z';
     height: 17px;
     width: auto;
     display: block;
+    overflow: visible; /* let the "p" descender render below the tight viewBox */
   }
   .ilogo__word :global(path) { fill: var(--logo-ink, var(--color-text-primary)); transition: fill 0.3s var(--ease-smooth); }
 

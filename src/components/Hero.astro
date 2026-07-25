@@ -28,7 +28,7 @@ const isDE = lang === 'de';
       <h1 class="hero__headline">
         {isDE ? (
           <>
-            <span class="hero__line">Dein</span>
+            <span class="hero__line">Ihr</span>
             <span class="hero__line"><em>Organisations-Kontext</em></span>
             <span class="hero__line hero__line--ghost">sichtbar gemacht.</span>
           </>
@@ -43,7 +43,7 @@ const isDE = lang === 'de';
 
       <p class="hero__sub">
         {isDE
-          ? 'Knapp 80% des Wissens deiner Organisation steckt in den Köpfen deiner Mitarbeitenden. Wir helfen dir dabei, es sichtbar und nutzbar zu machen.'
+          ? 'Knapp 80% des Wissens Ihrer Organisation steckt in den Köpfen Ihrer Mitarbeitenden. Wir helfen Ihnen dabei, es sichtbar und nutzbar zu machen.'
           : 'Almost 80% of your organisation\'s knowledge lives in the minds of your employees. We help you make it visible and actionable.'}
       </p>
 
@@ -61,9 +61,7 @@ const isDE = lang === 'de';
 
       <div class="hero__meta">
         <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'DSGVO-konform' : 'GDPR compliant'}</span>
-        <span class="hero__meta-sep" aria-hidden="true">·</span>
         <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Betriebsrat-ready' : 'Works-council ready'}</span>
-        <span class="hero__meta-sep" aria-hidden="true">·</span>
         <span class="hero__meta-item"><svg class="hero__meta-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{isDE ? 'Daten in der EU' : 'Data in EU'}</span>
       </div>
     </div>
@@ -195,12 +193,11 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
   .hero__cta-secondary:hover { border-color: rgba(255, 255, 255, 0.7); background: rgba(255, 255, 255, 0.12); }
 
   .hero__meta {
-    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-6);
     animation: hero-in 0.7s var(--ease-out) forwards 0.34s; opacity: 0;
   }
-  .hero__meta-item { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.72); font-weight: 400; }
+  .hero__meta-item { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.72); font-weight: 400; }
   .hero__meta-check { width: 12px; height: 12px; flex-shrink: 0; }
-  .hero__meta-sep { color: rgba(255, 255, 255, 0.4); font-size: var(--text-sm); }
 
   @media (max-width: 767px) {
     .hero { padding: 112px 0 72px; }
@@ -208,7 +205,6 @@ document.querySelector('.hero__cta-secondary')?.addEventListener('click', functi
     .hero__sub { font-size: var(--text-base); margin-bottom: var(--space-8); }
     .hero__actions { flex-direction: column; align-items: stretch; gap: var(--space-2); }
     .hero__cta-primary, .hero__cta-secondary { width: 100%; justify-content: center; }
-    .hero__meta-sep { display: none; }
     .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
   }
 
