@@ -8,13 +8,13 @@ export interface Props {
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-// Interviewed employees feeding the synthesis (scene 3) — same crop as the USP avatars
-const photo = (id: string) => `https://images.unsplash.com/${id}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80`;
-const synthPeople = [
-  { y: 47,  src: photo('photo-1560250097-0b93528c311a') },
-  { y: 110, src: photo('photo-1494790108377-be9c29b29330') },
-  { y: 173, src: photo('photo-1500648767791-00dcc994a43e') },
-];
+// Interviewed employees feeding the synthesis (scene 3): a 3x4 cluster of local
+// portraits, each with a mic badge. Distinct people from the USP card avatars.
+const SYNTH_COLS = [22, 54, 86];
+const SYNTH_ROWS = [47, 89, 131, 173];
+const synthPeople = SYNTH_ROWS.flatMap((y, r) =>
+  SYNTH_COLS.map((x, c) => ({ x, y, src: `/people/s${r * SYNTH_COLS.length + c + 1}.png` }))
+);
 
 const steps = isDE ? [
   { num: '01', title: 'Setup',
@@ -158,24 +158,24 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                   <svg class="synth__svg" viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       {synthPeople.map((p, i) => (
-                        <clipPath id={`synth-av-${i}`}><circle cx="30" cy={p.y} r="18"/></clipPath>
+                        <clipPath id={`synth-av-${i}`}><circle cx={p.x} cy={p.y} r="14"/></clipPath>
                       ))}
                     </defs>
-                    {/* Interviewed employees: photo + a mic badge, feeding the synthesis */}
+                    {/* The interviewed workforce: each portrait carries a mic badge */}
                     {synthPeople.map((p, i) => (
                       <>
-                        <image href={p.src} x="12" y={p.y - 18} width="36" height="36"
+                        <image href={p.src} x={p.x - 14} y={p.y - 14} width="28" height="28"
                                preserveAspectRatio="xMidYMid slice" clip-path={`url(#synth-av-${i})`}/>
-                        <circle cx="30" cy={p.y} r="18" fill="none" stroke="var(--color-border)" stroke-width="1"/>
-                        <circle cx="62" cy={p.y} r="10" fill="var(--color-text-primary)"/>
-                        <rect x="60.4" y={p.y - 4.6} width="3.2" height="6.2" rx="1.6" fill="#fff"/>
-                        <path d={`M58.6 ${p.y + 0.4} a3.4 3.4 0 0 0 6.8 0`} stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-                        <path d={`M62 ${p.y + 3.8} v2.2`} stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>
+                        <circle cx={p.x} cy={p.y} r="14" fill="none" stroke="var(--color-border)" stroke-width="0.8"/>
+                        <circle cx={p.x + 10} cy={p.y + 10} r="7" fill="var(--color-text-primary)" stroke="var(--color-surface)" stroke-width="1.4"/>
+                        <rect x={p.x + 8.9} y={p.y + 6.9} width="2.2" height="3.9" rx="1.1" fill="#fff"/>
+                        <path d={`M${p.x + 7.7} ${p.y + 10.1} a2.3 2.3 0 0 0 4.6 0`} stroke="#fff" stroke-width="0.85" fill="none" stroke-linecap="round"/>
+                        <path d={`M${p.x + 10} ${p.y + 12.4} v1.5`} stroke="#fff" stroke-width="0.85" stroke-linecap="round"/>
                       </>
                     ))}
-                    <path class="synth__path synth__path--1" d="M76 47 C150 47 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="synth__path synth__path--2" d="M76 110 L185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="synth__path synth__path--3" d="M76 173 C150 173 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="synth__path synth__path--1" d="M108 60 C150 60 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="synth__path synth__path--2" d="M108 110 L185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="synth__path synth__path--3" d="M108 160 C150 160 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     <path class="synth__path synth__path--out" d="M215 110 L262 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     <image href={logoIconUrl} x="176" y="86" width="48" height="48"/>
                     <rect x="262" y="80" width="74" height="60" rx="10" fill="var(--color-surface-elevated)" stroke="var(--color-accent-muted)" stroke-width="1.5"/>

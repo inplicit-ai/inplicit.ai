@@ -12,20 +12,22 @@ const deptQuestions = isDE
   ? ['Wo verlieren wir die meiste Zeit?','Welche Abläufe bremsen den Betrieb aus?','Was sollten wir zuerst automatisieren?','Wo hakt es im Onboarding?','Kommt das neue Rollout wirklich an?']
   : ['Where do we lose the most time?','Which processes slow operations down?','What should we automate first?','Where does onboarding get stuck?','Is the new rollout really landing?'];
 const campaignGoal = isDE ? 'Ineffizienzen im Tagesgeschäft' : 'Inefficiencies in daily work';
+// Portraits are local, pre-cropped headshots (public/people) — no remote crop
+// service, so nothing gets clipped at the top or bottom of the avatar circles.
 const roles = isDE ? [
-  { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',        photo: 'photo-1560250097-0b93528c311a', q: 'Als Schichtleiter koordinieren Sie gerade den Hallenumbau – wo verlieren Sie im Tagesablauf am meisten Zeit?' },
-  { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',            photo: 'photo-1507003211169-0a1dd7228f2d', q: 'Im Vertrieb für Region Ost: an welcher Stelle im Abschluss stockt es bei Ihnen am häufigsten?' },
-  { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',         photo: 'photo-1500648767791-00dcc994a43e', q: 'Sie migrieren gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?' },
-  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: 'photo-1472099645785-5658abf4ff4e', q: 'Beim neuen Onboarding-Rollout, den Sie betreuen: wo hakt es im Ablauf für Sie am meisten?' },
-  { role: 'Teamleiterin',         ctx: 'Strategy & Ops · Rollout Nord', photo: 'photo-1494790108377-be9c29b29330', q: 'Als Teamleiterin stecken Sie gerade im Rollout Nord – an welcher Übergabe geht bei Ihnen am meisten Zeit verloren?' },
-  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: 'photo-1438761681033-6461ffad8d80', q: 'In der Audit-Vorbereitung: wo entstehen bei Ihnen die meisten vermeidbaren Fehler?' },
+  { role: 'Schichtleiter',        ctx: 'Logistik · Hallenumbau',        photo: '/people/u1.png', q: 'Als Schichtleiter koordinieren Sie gerade den Hallenumbau – wo verlieren Sie im Tagesablauf am meisten Zeit?' },
+  { role: 'Vertriebsmitarbeiter', ctx: 'Sales · Region Ost',            photo: '/people/u2.png', q: 'Im Vertrieb für Region Ost: an welcher Stelle im Abschluss stockt es bei Ihnen am häufigsten?' },
+  { role: 'IT-Admin',             ctx: 'IT · Ticket-Migration',         photo: '/people/u3.png', q: 'Sie migrieren gerade das Ticket-System – welche wiederkehrende Aufgabe frisst dabei die meiste Zeit?' },
+  { role: 'HR Business Partner',  ctx: 'People · Onboarding-Rollout',   photo: '/people/u4.png', q: 'Beim neuen Onboarding-Rollout, den Sie betreuen: wo hakt es im Ablauf für Sie am meisten?' },
+  { role: 'Teamleiterin',         ctx: 'Strategy & Ops · Rollout Nord', photo: '/people/u5.png', q: 'Als Teamleiterin stecken Sie gerade im Rollout Nord – an welcher Übergabe geht bei Ihnen am meisten Zeit verloren?' },
+  { role: 'Qualitätsmanagerin',   ctx: 'QM · Audit-Vorbereitung',       photo: '/people/u6.png', q: 'In der Audit-Vorbereitung: wo entstehen bei Ihnen die meisten vermeidbaren Fehler?' },
 ] : [
-  { role: 'Shift lead',        ctx: 'Logistics · Warehouse revamp', photo: 'photo-1560250097-0b93528c311a', q: 'As shift lead you\'re coordinating the warehouse revamp – where do you lose the most time day to day?' },
-  { role: 'Sales rep',         ctx: 'Sales · East region',          photo: 'photo-1507003211169-0a1dd7228f2d', q: 'In sales for the East region: where in the closing process does it stall for you most often?' },
-  { role: 'IT admin',          ctx: 'IT · Ticket migration',        photo: 'photo-1500648767791-00dcc994a43e', q: 'You\'re migrating the ticketing system – which recurring task eats up the most time?' },
-  { role: 'HR business partner', ctx: 'People · Onboarding rollout', photo: 'photo-1472099645785-5658abf4ff4e', q: 'On the new onboarding rollout you own: where does the process snag most for you?' },
-  { role: 'Team lead',         ctx: 'Strategy & Ops · North rollout', photo: 'photo-1494790108377-be9c29b29330', q: 'As team lead you\'re deep in the North rollout – at which handoff does the most time get lost?' },
-  { role: 'Quality manager',   ctx: 'QA · Audit prep',              photo: 'photo-1438761681033-6461ffad8d80', q: 'In audit prep: where do the most avoidable errors happen on your side?' },
+  { role: 'Shift lead',        ctx: 'Logistics · Warehouse revamp', photo: '/people/u1.png', q: 'As shift lead you\'re coordinating the warehouse revamp – where do you lose the most time day to day?' },
+  { role: 'Sales rep',         ctx: 'Sales · East region',          photo: '/people/u2.png', q: 'In sales for the East region: where in the closing process does it stall for you most often?' },
+  { role: 'IT admin',          ctx: 'IT · Ticket migration',        photo: '/people/u3.png', q: 'You\'re migrating the ticketing system – which recurring task eats up the most time?' },
+  { role: 'HR business partner', ctx: 'People · Onboarding rollout', photo: '/people/u4.png', q: 'On the new onboarding rollout you own: where does the process snag most for you?' },
+  { role: 'Team lead',         ctx: 'Strategy & Ops · North rollout', photo: '/people/u5.png', q: 'As team lead you\'re deep in the North rollout – at which handoff does the most time get lost?' },
+  { role: 'Quality manager',   ctx: 'QA · Audit prep',              photo: '/people/u6.png', q: 'In audit prep: where do the most avoidable errors happen on your side?' },
 ];
 
 const t = isDE ? {
@@ -210,7 +212,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
       <div class="iviz__list">
         {roles.map((r, i) => (
           <button type="button" class={`iviz__ava${i === 0 ? ' is-active' : ''}`} data-idx={i} aria-label={r.role}
-            style={`background-image:url(https://images.unsplash.com/${r.photo}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`}></button>
+            style={`background-image:url(${r.photo})`}></button>
         ))}
       </div>
       <div class="iviz__chat">
@@ -224,7 +226,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
             <span class="iviz__who-ctx">{roles[0].ctx}</span>
           </div>
           <span class="iviz__who-ava"
-            style={`background-image:url(https://images.unsplash.com/${roles[0].photo}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`}></span>
+            style={`background-image:url(${roles[0].photo})`}></span>
         </div>
       </div>
     </div>
@@ -448,7 +450,7 @@ const SQ = "M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z";
     const metaEl = iviz.querySelector<HTMLElement>('.iviz__who-meta');
     const avaEl  = iviz.querySelector<HTMLElement>('.iviz__who-ava');
     const avatars = [...iviz.querySelectorAll<HTMLElement>('.iviz__ava')];
-    const photoUrl = (p: string) => `url(https://images.unsplash.com/${p}?w=200&h=200&fit=facearea&facepad=10&auto=format&q=80)`;
+    const photoUrl = (p: string) => `url(${p})`;
     let idx = 0; let timer: ReturnType<typeof setInterval> | null = null;
     const show = (i: number) => {
       const r = roles[i]; if(!r) return; idx = i;
