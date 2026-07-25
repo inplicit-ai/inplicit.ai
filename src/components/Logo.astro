@@ -65,11 +65,12 @@ const SQ = 'M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z';
   .ilogo.is-intro .ilogo__word {
     animation: ilogo-wipe 0.65s cubic-bezier(0.2, 0, 0, 1) 1.0s both;
   }
+  /* viewBox spans the full glyph bbox (incl. the "p" descender and i-dots), so
+     nothing is clipped; height scaled up to keep the same optical cap height. */
   .ilogo__word :global(svg) {
-    height: 17px;
+    height: 23px;
     width: auto;
     display: block;
-    overflow: visible; /* let the "p" descender render below the tight viewBox */
   }
   .ilogo__word :global(path) { fill: var(--logo-ink, var(--color-text-primary)); transition: fill 0.3s var(--ease-smooth); }
 
