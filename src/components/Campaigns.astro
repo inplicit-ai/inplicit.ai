@@ -1,0 +1,364 @@
+---
+// "So sehen Kampagnen aus" — the concrete, classic project names buyers have
+// budgets for (Post-Merger-Integration, Wissenstransfer, Trainingsbedarfe …),
+// deliberately kept separate from the more abstract Anwendungsfälle tiles.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const img = (id: string) => `https://images.unsplash.com/${id}?w=900&q=65&auto=format&fit=crop`;
+
+const campaigns = isDE ? [
+  {
+    tag: 'Post-Merger-Integration',
+    title: 'Zwei Organisationen, ein Bild davon, wer was kann',
+    body: 'Nach dem Closing läuft die Uhr: Je länger die Integration dauert, desto mehr Geld verbrennt. Wir erfassen in Tagen, wo Wissen, Doppelstrukturen und Reibung sitzen — statt sich auf ein Intro der übernommenen Führung zu verlassen.',
+    meta: 'Typisch: 2–6 Wochen nach Closing',
+    image: img('photo-1486406146926-c627a92ad1ab'),
+  },
+  {
+    tag: 'Wissenstransfer & Nachfolge',
+    title: 'Erfahrungswissen sichern, bevor es das Haus verlässt',
+    body: 'Wenn erfahrene Mitarbeitende gehen, geht undokumentiertes Wissen mit. Wir machen sichtbar, welches Wissen an einzelnen Personen hängt, und übersetzen es in eine nutzbare Wissensbasis.',
+    meta: 'Typisch: vor Renteneintritt oder Rollenwechsel',
+    image: img('photo-1600880292203-757bb62b4baf'),
+  },
+  {
+    tag: 'Trainingsbedarfe',
+    title: 'Wissenslücken finden, statt Trainings zu raten',
+    body: 'Ein strukturierter Quick-Check über die Belegschaft zeigt, wo tatsächlich Qualifikationslücken bestehen — die Grundlage für Personalentwicklung, Skill-Matrix und ISO-Nachweise.',
+    meta: 'Typisch: 10 Tage, auch für 5.000 Mitarbeitende',
+    image: img('photo-1552664730-d307ca884978'),
+  },
+  {
+    tag: 'Wissensmanagement',
+    title: 'Eine Wissensbasis, die aus der Belegschaft entsteht',
+    body: 'Statt Dokumente zu sammeln, die niemand pflegt: strukturiertes Wissen direkt aus den Köpfen — durchsuchbar, mit Beleg zur anonymen Quelle, anschlussfähig an Ihre bestehenden Tools.',
+    meta: 'Typisch: fortlaufend, quartalsweise Kampagnen',
+    image: img('photo-1556761175-b413da4baf72'),
+  },
+  {
+    tag: 'Innovationsroadmap',
+    title: 'Die Ideen, die längst im Unternehmen liegen',
+    body: 'Ihre Mitarbeitenden wissen, was besser laufen könnte — nur fragt sie selten jemand strukturiert. Wir sammeln Vorschläge, clustern sie und zeigen, welche Potenziale mehrfach genannt werden.',
+    meta: 'Typisch: 4 Kampagnen über 3 Monate',
+    image: img('photo-1522071820081-009f0129c71c'),
+  },
+  {
+    tag: 'Transformation & Change',
+    title: 'Erst verstehen, was heute wirklich passiert',
+    body: 'Jede Transformation beginnt mit einer ehrlichen Ist-Aufnahme. Wir erfassen, wie heute wirklich gearbeitet wird — und wo der Wandel auf Widerstand oder auf Rückenwind trifft.',
+    meta: 'Typisch: begleitend zum Rollout',
+    image: img('photo-1531482615713-2afd69097998'),
+  },
+] : [
+  {
+    tag: 'Post-merger integration',
+    title: 'Two organisations, one picture of who knows what',
+    body: 'After closing, the clock runs: the longer integration takes, the more real money burns. In days we map where knowledge, duplicate structures and friction actually sit — instead of relying on an intro from the acquired leadership.',
+    meta: 'Typically: 2–6 weeks post closing',
+    image: img('photo-1486406146926-c627a92ad1ab'),
+  },
+  {
+    tag: 'Knowledge transfer & succession',
+    title: 'Capture experience before it walks out the door',
+    body: 'When experienced people leave, undocumented knowledge leaves with them. We surface which knowledge sits with individuals and turn it into a knowledge base you can use.',
+    meta: 'Typically: ahead of retirement or role changes',
+    image: img('photo-1600880292203-757bb62b4baf'),
+  },
+  {
+    tag: 'Training needs',
+    title: 'Find the skill gaps instead of guessing at training',
+    body: 'A structured quick-check across the workforce shows where qualification gaps really are — the basis for people development, a skill matrix and ISO evidence.',
+    meta: 'Typically: 10 days, even for 5,000 employees',
+    image: img('photo-1552664730-d307ca884978'),
+  },
+  {
+    tag: 'Knowledge management',
+    title: 'A knowledge base that grows out of your workforce',
+    body: 'Instead of collecting documents nobody maintains: structured knowledge straight from people\'s heads — searchable, evidenced to an anonymous source, and connected to the tools you already run.',
+    meta: 'Typically: ongoing, quarterly campaigns',
+    image: img('photo-1556761175-b413da4baf72'),
+  },
+  {
+    tag: 'Innovation roadmap',
+    title: 'The ideas already sitting inside your company',
+    body: 'Your employees know what could run better — they are rarely asked in a structured way. We collect proposals, cluster them and show which opportunities come up again and again.',
+    meta: 'Typically: 4 campaigns across 3 months',
+    image: img('photo-1522071820081-009f0129c71c'),
+  },
+  {
+    tag: 'Transformation & change',
+    title: 'First understand what actually happens today',
+    body: 'Every transformation starts with an honest baseline. We capture how work really gets done — and where the change will meet resistance or momentum.',
+    meta: 'Typically: alongside the rollout',
+    image: img('photo-1531482615713-2afd69097998'),
+  },
+];
+---
+
+<section class="cg" id="campaigns">
+  <div class="container">
+    <div class="cg__head section-fade">
+      <div class="cg__head-copy">
+        <span class="section-eyebrow">{isDE ? 'Kampagnen' : 'Campaigns'}</span>
+        <h2 class="cg__heading">
+          <span>{isDE ? 'So sehen Kampagnen aus,' : 'What campaigns look like'}</span>
+          <span class="cg__heading-ghost">{isDE ? 'die Sie mit Inplicit fahren.' : 'when you run them with Inplicit.'}</span>
+        </h2>
+        <p class="cg__sub">
+          {isDE
+            ? 'Jede Kampagne beantwortet eine konkrete Frage aus dem Tagesgeschäft. Diese Einsätze sehen wir am häufigsten.'
+            : 'Every campaign answers one concrete question from day-to-day business. These are the engagements we see most often.'}
+        </p>
+      </div>
+      <div class="cg__nav" aria-hidden="true">
+        <button type="button" class="cg__arrow" data-cg-prev aria-label={isDE ? 'Zurück' : 'Previous'}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="cg__arrow" data-cg-next aria-label={isDE ? 'Weiter' : 'Next'}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cg__rail" data-cg-rail tabindex="0" role="region" aria-label={isDE ? 'Kampagnen' : 'Campaigns'}>
+    <div class="cg__track">
+      {campaigns.map((c) => (
+        <article class="cg__card">
+          <img class="cg__img" src={c.image} alt="" loading="lazy" decoding="async" width="900" height="600" />
+          <span class="cg__tint" aria-hidden="true"></span>
+          <span class="cg__scrim" aria-hidden="true"></span>
+          <div class="cg__body">
+            <span class="cg__tag">{c.tag}</span>
+            <h3 class="cg__title">{c.title}</h3>
+            <p class="cg__text">{c.body}</p>
+            <span class="cg__meta">{c.meta}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <div class="cg__dots" data-cg-dots aria-hidden="true">
+    {campaigns.map((_, i) => (
+      <button type="button" class={`cg__dot${i === 0 ? ' is-active' : ''}`} data-cg-dot={i}></button>
+    ))}
+  </div>
+</section>
+
+<style>
+  .cg {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    overflow: hidden;
+  }
+  @media (max-width: 767px) { .cg { padding: var(--space-24) 0; } }
+
+  .cg__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+  .cg__head-copy { max-width: 620px; }
+
+  .cg__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+  }
+  .cg__heading-ghost { color: var(--color-text-primary); opacity: 0.3; }
+
+  .cg__sub {
+    margin-top: var(--space-5);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .cg__nav { display: flex; gap: var(--space-2); flex-shrink: 0; }
+  .cg__arrow {
+    width: 42px; height: 42px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-full, 999px);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    transition: border-color 0.15s var(--ease-smooth), opacity 0.15s var(--ease-smooth);
+  }
+  .cg__arrow:hover { border-color: var(--color-text-tertiary); }
+  .cg__arrow[disabled] { opacity: 0.35; pointer-events: none; }
+  @media (max-width: 767px) { .cg__nav { display: none; } }
+
+  /* ── Rail: native scroll-snap (drag/swipe works without JS) ── */
+  .cg__rail {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cg__rail::-webkit-scrollbar { display: none; }
+  .cg__rail:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 4px; }
+
+  .cg__track {
+    display: flex;
+    gap: var(--space-4);
+    /* align the first card with the container, let the last one breathe */
+    padding: 0 max(var(--space-6), calc((100vw - var(--max-width)) / 2 + var(--space-8)));
+  }
+  @media (min-width: 768px) {
+    .cg__track { padding: 0 max(var(--space-8), calc((100vw - var(--max-width)) / 2)); }
+  }
+
+  .cg__card {
+    position: relative;
+    isolation: isolate;
+    flex: 0 0 auto;
+    width: 340px;
+    height: 440px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    scroll-snap-align: start;
+    background: var(--color-canvas-dark, #0B0C10);
+  }
+  @media (max-width: 480px) { .cg__card { width: 82vw; height: 420px; } }
+
+  .cg__img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    /* one shared colour scheme across all photos, warm like the hero */
+    filter: grayscale(1) contrast(1.06);
+    transition: transform 0.5s var(--ease-smooth);
+  }
+  .cg__card:hover .cg__img { transform: scale(1.05); }
+
+  .cg__tint {
+    position: absolute; inset: 0;
+    background: var(--color-accent);
+    mix-blend-mode: color;
+    opacity: 0.5;
+  }
+  .cg__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(11,12,16,0.94) 0%, rgba(11,12,16,0.62) 42%, rgba(11,12,16,0.22) 72%, rgba(11,12,16,0.1) 100%);
+  }
+
+  .cg__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .cg__tag {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(6px);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: var(--space-1);
+  }
+  .cg__title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .cg__text {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: rgba(255,255,255,0.78);
+  }
+  .cg__meta {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .cg__dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: var(--space-8);
+  }
+  .cg__dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: var(--color-text-primary);
+    opacity: 0.18;
+    transition: opacity 0.2s var(--ease-smooth), background-color 0.2s var(--ease-smooth);
+  }
+  .cg__dot.is-active { opacity: 1; background: var(--color-accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg__rail { scroll-behavior: auto; }
+    .cg__card:hover .cg__img { transform: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.cg').forEach((section) => {
+    const rail = section.querySelector<HTMLElement>('[data-cg-rail]');
+    const track = section.querySelector<HTMLElement>('.cg__track');
+    if (!rail || !track) return;
+
+    const cards = [...track.querySelectorAll<HTMLElement>('.cg__card')];
+    const dots = [...section.querySelectorAll<HTMLElement>('[data-cg-dot]')];
+    const prev = section.querySelector<HTMLButtonElement>('[data-cg-prev]');
+    const next = section.querySelector<HTMLButtonElement>('[data-cg-next]');
+    if (!cards.length) return;
+
+    const step = () => {
+      if (cards.length < 2) return cards[0].offsetWidth;
+      return cards[1].offsetLeft - cards[0].offsetLeft;
+    };
+
+    const sync = () => {
+      const maxScroll = rail.scrollWidth - rail.clientWidth - 1;
+      const atEnd = rail.scrollLeft >= maxScroll;
+      // at the end the last card can't scroll flush left, so pin the last dot
+      const i = atEnd ? cards.length - 1 : Math.round(rail.scrollLeft / step());
+      const active = Math.max(0, Math.min(cards.length - 1, i));
+      dots.forEach((d, j) => d.classList.toggle('is-active', j === active));
+      if (prev) prev.disabled = rail.scrollLeft <= 1;
+      if (next) next.disabled = atEnd;
+    };
+
+    prev?.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next?.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
+    dots.forEach((d, j) => d.addEventListener('click', () => {
+      rail.scrollTo({ left: j * step(), behavior: 'smooth' });
+    }));
+
+    let raf = 0;
+    rail.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(sync);
+    }, { passive: true });
+    window.addEventListener('resize', sync, { passive: true });
+    sync();
+  });
+</script>
