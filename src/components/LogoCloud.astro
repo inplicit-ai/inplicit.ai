@@ -14,9 +14,9 @@ const isDE = lang === 'de';
 // height render them at wildly different sizes. The viewBoxes are now cropped
 // to the artwork, so one height applies to all three.
 const logos = [
-  { name: 'Youth Lead The Change Germany', src: ylcg },
-  { name: 'Ignite Startup Club Lüneburg',  src: ignite },
-  { name: 'Utopia',                        src: utopia },
+  { name: 'Youth Lead The Change Germany', src: ylcg,   href: 'https://ylc-germany.de/' },
+  { name: 'Ignite Startup Club Lüneburg',  src: ignite, href: 'https://www.ignite-startupclub.de/' },
+  { name: 'Utopia',                        src: utopia, href: 'https://utopia-lueneburg.de/' },
 ];
 ---
 
@@ -29,13 +29,21 @@ const logos = [
     </p>
     <div class="logos__row">
       {logos.map((l) => (
-        <img
-          class="logos__img"
-          src={l.src}
-          alt={l.name}
-          loading="lazy"
-          decoding="async"
-        />
+        <a
+          class="logos__link"
+          href={l.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={l.name}
+        >
+          <img
+            class="logos__img"
+            src={l.src}
+            alt={l.name}
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
       ))}
     </div>
   </div>
@@ -64,6 +72,11 @@ const logos = [
     margin: 0 auto;
   }
 
+  .logos__link {
+    display: inline-flex;
+    align-items: center;
+  }
+
   /* Greyscale by default so three different brand palettes sit together
      calmly; the real colours come back on hover. */
   .logos__img {
@@ -75,7 +88,8 @@ const logos = [
     transition: opacity 0.25s var(--ease-smooth), filter 0.25s var(--ease-smooth);
   }
 
-  .logos__img:hover {
+  .logos__link:hover .logos__img,
+  .logos__link:focus-visible .logos__img {
     filter: grayscale(0);
     opacity: 1;
   }
