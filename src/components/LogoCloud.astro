@@ -1,25 +1,38 @@
 ---
+import ylcg from '../assets/logos/ylcg.svg?url';
+import ignite from '../assets/logos/ignite.svg?url';
+import utopia from '../assets/logos/utopia.svg?url';
+
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-// Placeholder partner/customer names - swap these for real logo files
-// (drop SVG/PNG into src/assets and replace the <span> with an <img>).
-const logos = ['Partner A', 'Partner B', 'Partner C', 'Partner D', 'Partner E'];
+// Heights are tuned per logo, not uniform: the marks carry different amounts of
+// text, so one shared height would make some read far larger than others.
+const logos = [
+  { name: 'Youth Lead The Change Germany', src: ylcg,   h: 56 },
+  { name: 'Ignite Startup Club Lüneburg',  src: ignite, h: 52 },
+  { name: 'Utopia',                        src: utopia, h: 30 },
+];
 ---
 
 <section class="logos">
   <div class="container">
     <p class="logos__label">
-      {isDE
-        ? 'Vertraut von 5+ Organisationen'
-        : 'Trusted by 5+ organisations'}
+      {isDE ? 'In Zusammenarbeit mit' : 'In collaboration with'}
     </p>
     <div class="logos__row">
-      {logos.map((name) => (
-        <span class="logos__item">{name}</span>
+      {logos.map((l) => (
+        <img
+          class="logos__img"
+          src={l.src}
+          alt={l.name}
+          style={`--h: ${l.h}px`}
+          loading="lazy"
+          decoding="async"
+        />
       ))}
     </div>
   </div>
@@ -35,7 +48,7 @@ const logos = ['Partner A', 'Partner B', 'Partner C', 'Partner D', 'Partner E'];
     text-align: center;
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-10);
+    margin-bottom: var(--space-8);
   }
 
   .logos__row {
@@ -43,34 +56,34 @@ const logos = ['Partner A', 'Partner B', 'Partner C', 'Partner D', 'Partner E'];
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--space-10) var(--space-16);
+    gap: var(--space-8) var(--space-16);
     max-width: 880px;
     margin: 0 auto;
   }
 
-  /* Placeholder wordmark - replace with <img class="logos__img" .../> */
-  .logos__item {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--color-text-tertiary);
-    opacity: 0.65;
-  }
-
-  /* Styling for real logo images once added */
+  /* Greyscale by default so three different brand palettes sit together
+     calmly; the real colours come back on hover. */
   .logos__img {
-    height: 28px;
+    height: var(--h, 32px);
     width: auto;
     object-fit: contain;
-    opacity: 0.7;
     filter: grayscale(1);
-    transition: opacity 0.2s var(--ease-smooth);
+    opacity: 0.55;
+    transition: opacity 0.25s var(--ease-smooth), filter 0.25s var(--ease-smooth);
   }
 
-  .logos__img:hover { opacity: 1; }
+  .logos__img:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
 
   @media (max-width: 767px) {
     .logos { padding: var(--space-10) 0; }
     .logos__row { gap: var(--space-6) var(--space-10); }
+    .logos__img { height: calc(var(--h, 32px) * 0.82); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logos__img { transition: none; }
   }
 </style>
