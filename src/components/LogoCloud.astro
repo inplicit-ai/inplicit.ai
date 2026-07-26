@@ -9,12 +9,14 @@ export interface Props {
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-// Heights are tuned per logo, not uniform: the marks carry different amounts of
-// text, so one shared height would make some read far larger than others.
+// The source files carried very different amounts of built-in whitespace
+// (Ignite filled only 43% of its viewBox, Utopia 99%), which made a shared
+// height render them at wildly different sizes. The viewBoxes are now cropped
+// to the artwork, so one height applies to all three.
 const logos = [
-  { name: 'Youth Lead The Change Germany', src: ylcg,   h: 56 },
-  { name: 'Ignite Startup Club Lüneburg',  src: ignite, h: 52 },
-  { name: 'Utopia',                        src: utopia, h: 30 },
+  { name: 'Youth Lead The Change Germany', src: ylcg },
+  { name: 'Ignite Startup Club Lüneburg',  src: ignite },
+  { name: 'Utopia',                        src: utopia },
 ];
 ---
 
@@ -31,7 +33,6 @@ const logos = [
           class="logos__img"
           src={l.src}
           alt={l.name}
-          style={`--h: ${l.h}px`}
           loading="lazy"
           decoding="async"
         />
@@ -66,7 +67,7 @@ const logos = [
   /* Greyscale by default so three different brand palettes sit together
      calmly; the real colours come back on hover. */
   .logos__img {
-    height: var(--h, 32px);
+    height: 26px;
     width: auto;
     object-fit: contain;
     filter: grayscale(1);
@@ -82,7 +83,7 @@ const logos = [
   @media (max-width: 767px) {
     .logos { padding: var(--space-10) 0; }
     .logos__row { gap: var(--space-6) var(--space-10); }
-    .logos__img { height: calc(var(--h, 32px) * 0.82); }
+    .logos__img { height: 22px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
