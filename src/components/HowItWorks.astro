@@ -1,6 +1,5 @@
 ---
 import logoIconRaw from '../assets/logo_icon.svg?raw';
-import logoIconUrl from '../assets/logo_icon.svg?url';
 
 export interface Props {
   lang?: 'en' | 'de';
@@ -15,6 +14,24 @@ const SYNTH_ROWS = [47, 89, 131, 173];
 const synthPeople = SYNTH_ROWS.flatMap((y, r) =>
   SYNTH_COLS.map((x, c) => ({ x, y, src: `/people/s${r * SYNTH_COLS.length + c + 1}.png` }))
 );
+// Larger pool than the 12 visible slots, so faces can rotate in and out.
+const synthPool = Array.from({ length: 20 }, (_, i) => `/people/s${i + 1}.png`);
+
+// inplicit mark drawn inline (white on the black hub), same square as the loader
+const SQ = 'M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z';
+
+// What the synthesis produces, shown as separate outputs rather than one number
+const synthOutputs = isDE
+  ? [
+      { n: '14', label: 'Einblicke',        y: 63 },
+      { n: '9',  label: 'Herausforderungen', y: 107 },
+      { n: '6',  label: 'Lösungsansätze',    y: 151 },
+    ]
+  : [
+      { n: '14', label: 'Insights',       y: 63 },
+      { n: '9',  label: 'Challenges',     y: 107 },
+      { n: '6',  label: 'Solution ideas', y: 151 },
+    ];
 
 const steps = isDE ? [
   { num: '01', title: 'Setup',
@@ -155,7 +172,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
               <div class="scene__head"><div class="scene__head-title">{isDE ? 'Synthese läuft' : 'Synthesis running'}</div><span class="scene__dot scene__dot--live" style="margin-left:auto"></span></div>
               <div class="synth">
                 <div class="synth__graph">
-                  <svg class="synth__svg" viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg class="synth__svg" viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg" data-pool={JSON.stringify(synthPool)}>
                     <defs>
                       {synthPeople.map((p, i) => (
                         <clipPath id={`synth-av-${i}`}><circle cx={p.x} cy={p.y} r="14"/></clipPath>
@@ -164,7 +181,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                     {/* The interviewed workforce: each portrait carries a mic badge */}
                     {synthPeople.map((p, i) => (
                       <>
-                        <image href={p.src} x={p.x - 14} y={p.y - 14} width="28" height="28"
+                        <image class="synth__face" data-slot={i} href={p.src} x={p.x - 14} y={p.y - 14} width="28" height="28"
                                preserveAspectRatio="xMidYMid slice" clip-path={`url(#synth-av-${i})`}/>
                         <circle cx={p.x} cy={p.y} r="14" fill="none" stroke="var(--color-border)" stroke-width="0.8"/>
                         <circle cx={p.x + 10} cy={p.y + 10} r="7" fill="var(--color-text-primary)" stroke="var(--color-surface)" stroke-width="1.4"/>
@@ -173,14 +190,32 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                         <path d={`M${p.x + 10} ${p.y + 12.4} v1.5`} stroke="#fff" stroke-width="0.85" stroke-linecap="round"/>
                       </>
                     ))}
-                    <path class="synth__path synth__path--1" d="M108 60 C150 60 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="synth__path synth__path--2" d="M108 110 L185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="synth__path synth__path--3" d="M108 160 C150 160 158 110 185 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <path class="synth__path synth__path--out" d="M215 110 L262 110" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
-                    <image href={logoIconUrl} x="176" y="86" width="48" height="48"/>
-                    <rect x="262" y="80" width="74" height="60" rx="10" fill="var(--color-surface-elevated)" stroke="var(--color-accent-muted)" stroke-width="1.5"/>
-                    <text x="299" y="114" text-anchor="middle" font-size="23" font-weight="800" fill="var(--color-accent)" font-family="var(--font-family)" letter-spacing="-0.04em">14</text>
-                    <text x="299" y="129" text-anchor="middle" font-size="8" font-weight="700" fill="var(--color-text-secondary)" font-family="var(--font-family)" letter-spacing="0.1em">{isDE ? 'SIGNALE' : 'INSIGHTS'}</text>
+                    {/* workforce → hub */}
+                    <path class="synth__path synth__path--1" d="M110 60 C146 60 152 107 163 107" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="synth__path synth__path--2" d="M110 107 L163 107" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    <path class="synth__path synth__path--3" d="M110 155 C146 155 152 107 163 107" stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    {/* hub → the separate outputs */}
+                    {synthOutputs.map((o) => (
+                      <path class="synth__path synth__path--out"
+                            d={o.y === 107 ? 'M207 107 L246 107' : `M207 107 C226 107 228 ${o.y} 246 ${o.y}`}
+                            stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
+                    ))}
+                    {/* the hub: inplicit mark, white inside a black circle */}
+                    <circle cx="185" cy="107" r="22" fill="var(--color-text-primary)"/>
+                    <g transform="translate(173,95) scale(0.545)">
+                      <path d={SQ} fill="#fff"/>
+                      <circle cx="22" cy="22" r="5.4" fill="var(--color-accent)"/>
+                    </g>
+                    <text x="185" y="141" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">
+                      {isDE ? 'inplicit baut ein Company Brain' : 'inplicit creates a company brain'}
+                    </text>
+                    {synthOutputs.map((o) => (
+                      <>
+                        <rect x="246" y={o.y - 15} width="106" height="30" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
+                        <text x="260" y={o.y + 4} font-size="15" font-weight="800" fill="var(--color-accent)" font-family="var(--font-family)" letter-spacing="-0.03em">{o.n}</text>
+                        <text x={o.n.length > 1 ? 281 : 273} y={o.y + 3.5} font-size="8" font-weight="600" fill="var(--color-text-secondary)" font-family="var(--font-family)">{o.label}</text>
+                      </>
+                    ))}
                   </svg>
                 </div>
                 <div class="synth__list">
@@ -209,28 +244,40 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
             <div class="scene" aria-hidden="true">
               <div class="scene__head"><div class="scene__head-title">Insights</div></div>
               <div class="ins">
-                <div class="ins__card">
-                  <div class="ins__cardhead">
-                    <div class="ins__badges"><span class="dept">Operations</span><span class="dept">{isDE ? 'Offene Phase' : 'Open phase'}</span></div>
-                    <span class="ins__rank">#1</span>
-                  </div>
+                <article class="ins__card">
+                  <header class="ins__bar">
+                    <span class="ins__num">1</span>
+                    <span class="ins__title">{isDE ? 'Einblick: Auftragsexport' : 'Insight: order export'}</span>
+                    <span class="ins__dept">Operations</span>
+                  </header>
                   <div class="ins__rows">
-                    <div class="ins__row"><span class="tlabel tlabel--problem">Problem</span><span class="ttext">{isDE ? 'Auftragsexport braucht drei Tools und eine manuelle Prüfung.' : 'Order export needs three tools and a manual check.'}</span></div>
-                    <div class="ins__row"><span class="tlabel tlabel--idea">{isDE ? 'Idee' : 'Idea'}</span><span class="ttext">{isDE ? 'Eine Export-Ansicht, die die drei Quellen zusammenführt.' : 'One export view that merges the three sources.'}</span></div>
-                    <div class="ins__row"><span class="tlabel tlabel--opp">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Etwa 4 Stunden pro Woche pro Mitarbeiter.' : 'About 4 hours a week per operator.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">Problem</span><span class="ttext">{isDE ? 'Auftragsexport braucht drei Tools und eine manuelle Prüfung.' : 'Order export needs three tools and a manual check.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">{isDE ? 'Idee' : 'Idea'}</span><span class="ttext">{isDE ? 'Eine Export-Ansicht, die die drei Quellen zusammenführt.' : 'One export view that merges the three sources.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Etwa 4 Stunden pro Woche pro Mitarbeiter.' : 'About 4 hours a week per operator.'}</span></div>
                   </div>
-                </div>
-                <div class="ins__card">
-                  <div class="ins__cardhead">
-                    <div class="ins__badges"><span class="dept">HR</span><span class="dept">{isDE ? 'Offene Phase' : 'Open phase'}</span></div>
-                    <span class="ins__rank">#2</span>
-                  </div>
+                  <footer class="ins__foot">
+                    <span>{isDE ? '7 Belege' : '7 proofs'}</span><span class="ins__sep">·</span>
+                    <span>{isDE ? 'Konfidenz 91 %' : 'Confidence 91%'}</span><span class="ins__sep">·</span>
+                    <span>{isDE ? 'Offene Phase' : 'Open phase'}</span>
+                  </footer>
+                </article>
+                <article class="ins__card">
+                  <header class="ins__bar">
+                    <span class="ins__num">2</span>
+                    <span class="ins__title">{isDE ? 'Einblick: Systemzugang' : 'Insight: system access'}</span>
+                    <span class="ins__dept">HR</span>
+                  </header>
                   <div class="ins__rows">
-                    <div class="ins__row"><span class="tlabel tlabel--problem">Problem</span><span class="ttext">{isDE ? 'Neue Mitarbeitende warten Tage auf Systemzugang.' : 'New hires wait days for system access.'}</span></div>
-                    <div class="ins__row"><span class="tlabel tlabel--idea">{isDE ? 'Idee (AI)' : 'Idea (AI)'}</span><span class="ttext">{isDE ? 'Zugang aus dem unterschriebenen Vertrag auslösen.' : 'Trigger access from the signed contract.'}</span></div>
-                    <div class="ins__row"><span class="tlabel tlabel--opp">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Schnellere erste Woche, weniger Leerlauf.' : 'Faster first week, less idle time.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">Problem</span><span class="ttext">{isDE ? 'Neue Mitarbeitende warten Tage auf Systemzugang.' : 'New hires wait days for system access.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">{isDE ? 'Idee' : 'Idea'}</span><span class="ttext">{isDE ? 'Zugang aus dem unterschriebenen Vertrag auslösen.' : 'Trigger access from the signed contract.'}</span></div>
+                    <div class="ins__row"><span class="tlabel">{isDE ? 'Chance' : 'Opportunity'}</span><span class="ttext">{isDE ? 'Schnellere erste Woche, weniger Leerlauf.' : 'Faster first week, less idle time.'}</span></div>
                   </div>
-                </div>
+                  <footer class="ins__foot">
+                    <span>{isDE ? '5 Belege' : '5 proofs'}</span><span class="ins__sep">·</span>
+                    <span>{isDE ? 'Konfidenz 88 %' : 'Confidence 88%'}</span><span class="ins__sep">·</span>
+                    <span>{isDE ? 'Offene Phase' : 'Open phase'}</span>
+                  </footer>
+                </article>
               </div>
             </div>
           </div>
@@ -315,6 +362,42 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     </div>
   </div>
 </section>
+
+<script is:inline>
+/* Synthesis scene: rotate a couple of faces at a time so the workforce reads as
+   a live sample rather than a fixed set. Pauses while the tab is hidden. */
+(function () {
+  var svg = document.querySelector('.synth__svg[data-pool]');
+  if (!svg) return;
+  var pool = [];
+  try { pool = JSON.parse(svg.getAttribute('data-pool')) || []; } catch (e) { return; }
+  var faces = [].slice.call(svg.querySelectorAll('.synth__face'));
+  if (!faces.length || pool.length <= faces.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var shown = faces.map(function (f) { return f.getAttribute('href'); });
+
+  function swapOne() {
+    var idle = pool.filter(function (p) { return shown.indexOf(p) === -1; });
+    if (!idle.length) return;
+    var slot = Math.floor(Math.random() * faces.length);
+    var next = idle[Math.floor(Math.random() * idle.length)];
+    var img = faces[slot];
+    img.style.opacity = '0';
+    setTimeout(function () {
+      img.setAttribute('href', next);
+      shown[slot] = next;
+      img.style.opacity = '1';
+    }, 450);
+  }
+
+  setInterval(function () {
+    if (document.visibilityState !== 'visible') return;
+    swapOne();
+    if (Math.random() < 0.5) setTimeout(swapOne, 700);
+  }, 2600);
+})();
+</script>
 
 <script is:inline>
 (function () {
@@ -733,6 +816,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   .synth__svg { width: 100%; height: auto; max-width: 420px; margin: 0 auto; display: block; }
   @media (max-width: 767px) { .synth__svg { max-width: none; } }
 
+  .synth__face { transition: opacity 0.45s var(--ease-smooth); }
   .synth__path { animation: dash-flow 0.7s linear infinite; }
   .synth__path--2 { animation-delay: 0.1s; }
   .synth__path--3 { animation-delay: 0.2s; }
@@ -755,20 +839,41 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
 
   /* ── Insights triad cards ── */
   .ins { flex: 1; min-height: 0; overflow: hidden; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-  .ins__card { border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-bg); padding: var(--space-3) var(--space-4); flex-shrink: 0; }
-  .ins__cardhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
-  .ins__badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ins__card { border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); overflow: hidden; flex-shrink: 0; }
+  /* Each insight opens with its own dark title bar, so the cards read as
+     numbered findings rather than a stack of loose tags. */
+  .ins__bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px var(--space-3);
+    background: var(--color-text-primary);
+  }
+  .ins__num {
+    flex-shrink: 0; width: 17px; height: 17px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-accent); color: var(--color-canvas-dark, #0B0C10);
+    font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums;
+  }
+  .ins__title { font-size: 11px; font-weight: 600; color: #fff; letter-spacing: -0.01em; }
+  .ins__dept {
+    margin-left: auto; flex-shrink: 0;
+    font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.72);
+    background: rgba(255,255,255,0.12); border-radius: var(--radius-full);
+    padding: 2px 8px;
+  }
   .dept { font-size: 9px; font-weight: 600; color: var(--color-text-secondary); background: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 1px 7px; }
-  .ins__rank { font-size: 11px; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
-  .ins__rows { display: flex; flex-direction: column; }
-  .ins__row { display: flex; flex-direction: column; gap: 3px; padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); }
-  .ins__row:first-child { border-top: none; padding-top: 0; }
-  .ins__row:last-child { padding-bottom: 0; }
-  .tlabel { align-self: flex-start; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: var(--radius-full); padding: 1px 7px; border: 1px solid; }
-  .tlabel--problem { color: #d4452f; background: rgba(212, 69, 47, 0.07); border-color: rgba(212, 69, 47, 0.2); }
-  .tlabel--idea { color: #2f6f8f; background: rgba(47, 111, 143, 0.07); border-color: rgba(47, 111, 143, 0.2); }
-  .tlabel--opp { color: var(--color-accent); background: var(--color-accent-light); border-color: var(--color-accent-muted); }
-  .ttext { font-size: 11.5px; line-height: 1.4; color: var(--color-text-primary); }
+  .ins__rows { display: flex; flex-direction: column; padding: 0 var(--space-4); }
+  .ins__row { display: flex; flex-direction: column; gap: 2px; padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); }
+  .ins__row:first-child { border-top: none; padding-top: var(--space-3); }
+  .tlabel { font-size: 10px; font-weight: 500; color: var(--color-text-tertiary); }
+  .ttext { font-size: 11.5px; line-height: 1.45; color: var(--color-text-primary); }
+  .ins__foot {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px var(--space-4);
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-bg);
+    font-size: 9.5px; color: var(--color-text-tertiary);
+  }
+  .ins__sep { opacity: 0.5; }
 
   .research__pulse { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; animation: pulse-dot 1.4s ease-in-out infinite; }
 
