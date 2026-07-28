@@ -207,13 +207,13 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                     {/* the hub: the animated inplicit mark, white on a dark disc.
                         The orbiting pair gives the square its hole, so the disc
                         colour (not white) fills the cut-out. */}
-                    <circle cx="185" cy="107" r="18" fill="var(--color-text-primary)"/>
+                    <circle cx="185" cy="107" r="18" fill="var(--color-surface-elevated)"/>
                     <g transform="translate(170.7,92.7) scale(0.65)">
-                      <path d={SQ} fill="#fff"/>
-                      <circle class="synth__hole" cx="20.41" cy="20.38" r="5.23" fill="var(--color-text-primary)"/>
+                      <path d={SQ} fill="var(--color-text-primary)"/>
+                      <circle class="synth__hole" cx="20.41" cy="20.38" r="5.23" fill="var(--color-surface-elevated)"/>
                       <circle class="synth__dot"  cx="23.59" cy="23.90" r="5.23" fill="var(--color-accent)"/>
                     </g>
-                    <text x="185" y="136" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">{isDE ? 'inplicit baut daraus' : 'inplicit turns this into'}</text>
+                    <text x="185" y="136" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">{isDE ? 'Inplicit baut daraus' : 'Inplicit turns this into'}</text>
                     <text x="185" y="145" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">{isDE ? 'ein Company Brain' : 'a company brain'}</text>
                     {synthOutputs.map((o) => (
                       <>
@@ -378,16 +378,18 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   var pool = [];
   try { pool = JSON.parse(svg.getAttribute('data-pool')) || []; } catch (e) { return; }
   var faces = [].slice.call(svg.querySelectorAll('.synth__face'));
-  if (!faces.length || pool.length <= faces.length) return;
+  if (!faces.length) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // group the two layers per slot
+  // group the two layers per slot (faces holds 2 elements per visible slot)
   var slots = [];
   faces.forEach(function (f) {
     var i = +f.getAttribute('data-slot');
     slots[i] = slots[i] || {};
     slots[i][f.getAttribute('data-layer')] = f;
   });
+  // needs spare portraits beyond the visible slots to rotate through
+  if (pool.length <= slots.length) return;
   slots.forEach(function (s) { s.active = 'a'; s.busy = false; });
   var shown = slots.map(function (s) { return s.a.getAttribute('href'); });
 
@@ -903,7 +905,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   .ins__bar {
     display: flex; align-items: center; gap: 8px;
     padding: 7px var(--space-3);
-    background: color-mix(in srgb, var(--color-text-primary) 78%, #fff);
+    background: color-mix(in srgb, var(--color-text-primary) 62%, #fff);
   }
   .ins__num {
     flex-shrink: 0; width: 17px; height: 17px; border-radius: 50%;
