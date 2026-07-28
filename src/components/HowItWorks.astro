@@ -181,7 +181,11 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                     {/* The interviewed workforce: each portrait carries a mic badge */}
                     {synthPeople.map((p, i) => (
                       <>
-                        <image class="synth__face" data-slot={i} href={p.src} x={p.x - 14} y={p.y - 14} width="28" height="28"
+                        {/* two stacked layers per slot so a swap cross-fades
+                            instead of blinking through the background */}
+                        <image class="synth__face" data-slot={i} data-layer="a" href={p.src} x={p.x - 14} y={p.y - 14} width="28" height="28"
+                               preserveAspectRatio="xMidYMid slice" clip-path={`url(#synth-av-${i})`}/>
+                        <image class="synth__face" data-slot={i} data-layer="b" href={p.src} opacity="0" x={p.x - 14} y={p.y - 14} width="28" height="28"
                                preserveAspectRatio="xMidYMid slice" clip-path={`url(#synth-av-${i})`}/>
                         <circle cx={p.x} cy={p.y} r="14" fill="none" stroke="var(--color-border)" stroke-width="0.8"/>
                         <circle cx={p.x + 10} cy={p.y + 10} r="7" fill="var(--color-text-primary)" stroke="var(--color-surface)" stroke-width="1.4"/>
@@ -200,15 +204,17 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
                             d={o.y === 107 ? 'M207 107 L246 107' : `M207 107 C226 107 228 ${o.y} 246 ${o.y}`}
                             stroke="var(--color-accent)" stroke-width="0.8" stroke-dasharray="3 5"/>
                     ))}
-                    {/* the hub: inplicit mark, white inside a black circle */}
-                    <circle cx="185" cy="107" r="22" fill="var(--color-text-primary)"/>
-                    <g transform="translate(173,95) scale(0.545)">
+                    {/* the hub: the animated inplicit mark, white on a dark disc.
+                        The orbiting pair gives the square its hole, so the disc
+                        colour (not white) fills the cut-out. */}
+                    <circle cx="185" cy="107" r="18" fill="var(--color-text-primary)"/>
+                    <g transform="translate(170.7,92.7) scale(0.65)">
                       <path d={SQ} fill="#fff"/>
-                      <circle cx="22" cy="22" r="5.4" fill="var(--color-accent)"/>
+                      <circle class="synth__hole" cx="20.41" cy="20.38" r="5.23" fill="var(--color-text-primary)"/>
+                      <circle class="synth__dot"  cx="23.59" cy="23.90" r="5.23" fill="var(--color-accent)"/>
                     </g>
-                    <text x="185" y="141" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">
-                      {isDE ? 'inplicit baut ein Company Brain' : 'inplicit creates a company brain'}
-                    </text>
+                    <text x="185" y="136" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">{isDE ? 'inplicit baut daraus' : 'inplicit turns this into'}</text>
+                    <text x="185" y="145" text-anchor="middle" font-size="6.4" fill="var(--color-text-secondary)" font-family="var(--font-family)">{isDE ? 'ein Company Brain' : 'a company brain'}</text>
                     {synthOutputs.map((o) => (
                       <>
                         <rect x="246" y={o.y - 15} width="106" height="30" rx="8" fill="var(--color-surface-elevated)" stroke="var(--color-border)" stroke-width="1"/>
@@ -375,20 +381,43 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   if (!faces.length || pool.length <= faces.length) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var shown = faces.map(function (f) { return f.getAttribute('href'); });
+  // group the two layers per slot
+  var slots = [];
+  faces.forEach(function (f) {
+    var i = +f.getAttribute('data-slot');
+    slots[i] = slots[i] || {};
+    slots[i][f.getAttribute('data-layer')] = f;
+  });
+  slots.forEach(function (s) { s.active = 'a'; s.busy = false; });
+  var shown = slots.map(function (s) { return s.a.getAttribute('href'); });
 
   function swapOne() {
     var idle = pool.filter(function (p) { return shown.indexOf(p) === -1; });
     if (!idle.length) return;
-    var slot = Math.floor(Math.random() * faces.length);
+    var free = slots.map(function (s, i) { return s.busy ? -1 : i; }).filter(function (i) { return i >= 0; });
+    if (!free.length) return;
+
+    var slot = free[Math.floor(Math.random() * free.length)];
     var next = idle[Math.floor(Math.random() * idle.length)];
-    var img = faces[slot];
-    img.style.opacity = '0';
-    setTimeout(function () {
-      img.setAttribute('href', next);
+    var s = slots[slot];
+    var incoming = s.active === 'a' ? s.b : s.a;
+    var outgoing = s.active === 'a' ? s.a : s.b;
+
+    // only start the cross-fade once the new portrait is decoded, so the
+    // incoming layer is never blank
+    var pre = new Image();
+    pre.onload = function () {
+      s.busy = true;
+      incoming.setAttribute('href', next);
+      requestAnimationFrame(function () {
+        incoming.style.opacity = '1';
+        outgoing.style.opacity = '0';
+      });
       shown[slot] = next;
-      img.style.opacity = '1';
-    }, 450);
+      s.active = s.active === 'a' ? 'b' : 'a';
+      setTimeout(function () { s.busy = false; }, 700);
+    };
+    pre.src = next;
   }
 
   setInterval(function () {
@@ -396,6 +425,35 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
     swapOne();
     if (Math.random() < 0.5) setTimeout(swapOne, 700);
   }, 2600);
+})();
+
+/* The hub mark keeps the loader's orbit, so the square's cut-out moves. */
+(function () {
+  var svg = document.querySelector('.synth__svg');
+  if (!svg) return;
+  var hole = svg.querySelector('.synth__hole');
+  var dot = svg.querySelector('.synth__dot');
+  if (!hole || !dot) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var R = 128.405, Mx = 539.95, My = 543.84, Ox = 38.85, Oy = 42.71, DEPTH = 0.13, DUR = 2600, S = 44 / 1080;
+  var t0 = null;
+  function set(el, cx, cy, r) {
+    el.setAttribute('cx', (cx * S).toFixed(2));
+    el.setAttribute('cy', (cy * S).toFixed(2));
+    el.setAttribute('r', (r * S).toFixed(2));
+  }
+  function tick(now) {
+    if (t0 === null) t0 = now;
+    var a = (((now - t0) % DUR) / DUR) * 2 * Math.PI;
+    var cos = Math.cos(a), sin = Math.sin(a);
+    set(hole, Mx - Ox * cos, My - Oy * cos, R * (1 + DEPTH * sin));
+    set(dot, Mx + Ox * cos, My + Oy * cos, R * (1 - DEPTH * sin));
+    var front = sin >= 0 ? hole : dot;
+    if (front.parentNode && front.parentNode.lastChild !== front) front.parentNode.appendChild(front);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 })();
 </script>
 
@@ -845,7 +903,7 @@ const userIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
   .ins__bar {
     display: flex; align-items: center; gap: 8px;
     padding: 7px var(--space-3);
-    background: var(--color-text-primary);
+    background: color-mix(in srgb, var(--color-text-primary) 78%, #fff);
   }
   .ins__num {
     flex-shrink: 0; width: 17px; height: 17px; border-radius: 50%;
