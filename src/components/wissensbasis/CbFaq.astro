@@ -2,8 +2,8 @@
 // FAQ. Native <details>/<summary> so it works without JS and stays accessible.
 const faqs = [
   {
-    q: 'Wie lange dauert eine Company Brain Campaign?',
-    a: 'Der genaue Umfang hängt von Fragestellung und Zielgruppe ab. Eine fokussierte Campaign kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
+    q: 'Wie lange dauert eine Company Brain Kampagne?',
+    a: 'Der genaue Umfang hängt von Fragestellung und Zielgruppe ab. Eine fokussierte Kampagne kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
   },
   {
     q: 'Wer wird interviewt?',
@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: 'Wie funktioniert der Einstieg?',
-    a: 'In einem kurzen Scoping-Gespräch definieren wir Ihre Fragestellung, Zielgruppe und den passenden Campaign-Umfang.',
+    a: 'In einem kurzen Scoping-Gespräch definieren wir Ihre Fragestellung, Zielgruppe und den passenden Umfang der Kampagne.',
   },
 ];
 
@@ -40,8 +40,7 @@ const faqSchema = {
       <div class="cbf__header section-fade">
         <span class="section-eyebrow">Häufige Fragen</span>
         <h2 class="cbf__heading">
-          <span>Was Führungskräfte</span>
-          <span class="cbf__heading-ghost">vorab wissen wollen.</span>
+          Was vor dem Start üblicherweise zu klären ist.
         </h2>
       </div>
 
@@ -85,16 +84,12 @@ const faqSchema = {
   }
 
   .cbf__heading {
-    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-size: clamp(var(--text-lg), 3vw, var(--text-xl));
     font-weight: 400;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    display: flex;
-    flex-direction: column;
-    gap: 0.06em;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
     color: var(--color-text-primary);
   }
-  .cbf__heading-ghost { opacity: 0.3; }
 
   .cbf__list { border-top: 1px solid var(--color-border); }
 

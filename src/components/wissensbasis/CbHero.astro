@@ -1,5 +1,5 @@
 ---
-// Company Brain Campaign — hero. Reuses the site hero's video asset, scrim
+// Company Brain Kampagne — hero. Reuses the site hero's video asset, scrim
 // treatment and CTA mechanics; copy is landing-page specific.
 export interface Props {
   bookingHref: string;
@@ -18,9 +18,9 @@ const faces = [2, 5, 9, 12, 7];
       loop
       playsinline
       preload="auto"
-      poster="/hero-poster.jpg"
+      poster="/company-brain-poster.jpg"
     >
-      <source src="/hero-bg.mp4" type="video/mp4" />
+      <source src="/company-brain-hero.mp4" type="video/mp4" />
     </video>
     <div class="cbh__scrim"></div>
   </div>
@@ -43,7 +43,7 @@ const faces = [2, 5, 9, 12, 7];
 
       <div class="cbh__actions">
         <a href={bookingHref} class="cbh__cta" data-cb-cta="hero">
-          <span class="cbh__cta-label">Company Brain Campaign besprechen</span>
+          <span class="cbh__cta-label">Company Brain Kampagne besprechen</span>
           <i class="cbh__cta-icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -269,6 +269,6 @@ const faces = [2, 5, 9, 12, 7];
   @media (prefers-reduced-motion: reduce) {
     .cbh__inner, .cbh__headline, .cbh__sub, .cbh__actions, .cbh__who { animation: none; opacity: 1; }
     .cbh__video { display: none; }
-    .cbh__bg { background: #0b0c10 url('/hero-poster.jpg') center / cover no-repeat; }
+    .cbh__bg { background: #0b0c10 url('/company-brain-poster.jpg') center / cover no-repeat; }
   }
 </style>

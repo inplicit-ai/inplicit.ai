@@ -1,0 +1,101 @@
+---
+// Why the Company Brain matters beyond people: it is the human context layer
+// your AI tools can actually read. Reuses the MCP visualisation from the
+// "Warum inplicit" section on the main landing page (UspViz type="context").
+import UspViz from '../UspViz.astro';
+
+const points = [
+  'Erfahrungswissen aus Gesprächen, nicht nur Dokumente und Systeme',
+  'Anschlussfähig an Claude, Gemini, ChatGPT und Copilot über MCP',
+  'Antworten mit Beleg zur anonymen Quelle statt generischer Auskünfte',
+];
+---
+
+<section class="cbl" id="ki-anbindung">
+  <div class="container">
+    <div class="cbl__inner">
+
+      <div class="cbl__copy section-fade">
+        <span class="section-eyebrow">KI-Anbindung</span>
+        <h2 class="cbl__heading">
+          Die menschliche Kontext-Ebene, auf die auch Ihre KI-Tools zugreifen können.
+        </h2>
+        <p class="cbl__sub">
+          Das meiste Wissen einer Organisation steht in keinem Dokument. Das Company Brain
+          macht dieses Erfahrungswissen strukturiert verfügbar und übergibt es per MCP an
+          die KI-Tools, mit denen Ihre Teams ohnehin arbeiten.
+        </p>
+        <ul class="cbl__points" role="list">
+          {points.map((point) => (
+            <li class="cbl__point">
+              <svg class="cbl__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {point}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="cbl__viz section-fade" style="--delay: 100ms">
+        <UspViz type="context" lang="de" />
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .cbl {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+  @media (max-width: 767px) { .cbl { padding: var(--space-24) 0; } }
+
+  .cbl__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .cbl__inner { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: var(--space-16); }
+  }
+
+  .cbl__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+  }
+
+  .cbl__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    margin-bottom: var(--space-8);
+  }
+
+  .cbl__points { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+  .cbl__point {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .cbl__check { width: 14px; height: 14px; flex-shrink: 0; margin-top: 4px; }
+
+  /* The viz is an SVG built against the light card background of the USP grid */
+  .cbl__viz {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-8) var(--space-6);
+  }
+  @media (max-width: 767px) { .cbl__viz { padding: var(--space-5) var(--space-4); } }
+</style>

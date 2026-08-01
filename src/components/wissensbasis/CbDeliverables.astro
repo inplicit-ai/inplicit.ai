@@ -24,7 +24,7 @@ const items = [
     icon: 'search',
     tag: 'Wissensbasis',
     title: 'Strukturierte Wissensbasis',
-    body: 'Eine durchsuchbare Grundlage, die über die Campaign hinaus nutzbar bleibt.',
+    body: 'Eine durchsuchbare Grundlage, die über die Kampagne hinaus nutzbar bleibt.',
   },
 ];
 ---
@@ -33,10 +33,7 @@ const items = [
   <div class="container">
     <div class="cbd__header section-fade">
       <span class="section-eyebrow">Ergebnisse</span>
-      <h2 class="cbd__heading">
-        <span>Was am Ende der</span>
-        <span class="cbd__heading-ghost">Campaign vorliegt.</span>
-      </h2>
+      <h2 class="cbd__heading">Was am Ende der Kampagne vorliegt.</h2>
     </div>
 
     <div class="cbd__grid">
@@ -92,12 +89,8 @@ const items = [
     font-weight: 400;
     letter-spacing: -0.04em;
     line-height: 1.05;
-    display: flex;
-    flex-direction: column;
-    gap: 0.06em;
     color: var(--color-text-primary);
   }
-  .cbd__heading-ghost { opacity: 0.3; }
 
   .cbd__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
   @media (min-width: 640px) { .cbd__grid { grid-template-columns: repeat(2, 1fr); } }

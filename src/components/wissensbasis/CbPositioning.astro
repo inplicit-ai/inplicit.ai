@@ -25,8 +25,7 @@ const columns = [
     <div class="cbn__header section-fade">
       <span class="section-eyebrow">Einordnung</span>
       <h2 class="cbn__heading">
-        <span>Mehr Tiefe als eine Befragung.</span>
-        <span class="cbn__heading-ghost">Wiederholbarer als Beratung.</span>
+        Mehr Tiefe als eine Befragung. Wiederholbarer als Beratung.
       </h2>
     </div>
 
@@ -56,12 +55,9 @@ const columns = [
     font-weight: 400;
     letter-spacing: -0.04em;
     line-height: 1.05;
-    display: flex;
-    flex-direction: column;
-    gap: 0.06em;
     color: var(--color-text-primary);
+    max-width: 20ch;
   }
-  .cbn__heading-ghost { opacity: 0.3; }
 
   .cbn__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
   @media (min-width: 768px) { .cbn__grid { grid-template-columns: repeat(3, 1fr); } }

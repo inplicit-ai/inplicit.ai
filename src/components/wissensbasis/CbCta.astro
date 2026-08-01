@@ -1,55 +1,123 @@
 ---
-// Closing CTA. Dark card echoing the hero canvas, orange primary action.
-export interface Props {
-  bookingHref: string;
-}
-const { bookingHref } = Astro.props;
+// Closing section. Same two-column layout as CalBooking on the main landing
+// page: copy on the left, the Cal.eu inline embed on the right. Own element
+// ids so it never collides with CalBooking if both ever appear on one page.
+const CAL_LINK = 'inplicit/30min';
 
-// Only claims that the existing site already makes (Hero meta, TrustSecurity).
+// Only claims the existing site already makes (Hero meta, TrustSecurity).
 const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindbar'];
 ---
 
 <section class="cbc" id="gespraech">
   <div class="container">
-    <div class="cbc__card section-fade">
-      <span class="cbc__pill">Nächster Schritt</span>
+    <div class="cbc__inner">
 
-      <h2 class="cbc__heading">
-        <span>Machen Sie sichtbar,</span>
-        <span class="cbc__heading-ghost">was Ihre Organisation bereits weiß.</span>
-      </h2>
+      <div class="cbc__copy section-fade">
+        <span class="section-eyebrow">Nächster Schritt</span>
 
-      <p class="cbc__sub">
-        Starten Sie mit einer konkreten Fragestellung. Gemeinsam definieren wir, welche
-        Teams und Wissensbereiche für Ihre nächste Entscheidung relevant sind.
-      </p>
+        <h2 class="cbc__heading">
+          Machen Sie sichtbar, was Ihre Organisation bereits weiß.
+        </h2>
 
-      <a href={bookingHref} class="cbc__cta" data-cb-cta="final">
-        <span class="cbc__cta-label">Company Brain Campaign besprechen</span>
-        <i class="cbc__cta-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </i>
-      </a>
+        <p class="cbc__sub">
+          Starten Sie mit einer konkreten Fragestellung. Gemeinsam definieren wir, welche
+          Teams und Wissensbereiche für Ihre nächste Entscheidung relevant sind.
+        </p>
 
-      <p class="cbc__microcopy">
-        20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Wissensrisiken und Potenziale.
-      </p>
+        <p class="cbc__microcopy">
+          20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Wissensrisiken und Potenziale.
+        </p>
 
-      <ul class="cbc__trust" role="list">
-        {trust.map((item) => (
-          <li class="cbc__trust-item">
-            <svg class="cbc__check" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 6l3 3 5-5" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            {item}
-          </li>
-        ))}
-      </ul>
+        <ul class="cbc__trust" role="list">
+          {trust.map((item) => (
+            <li class="cbc__trust-item">
+              <svg class="cbc__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="cbc__founder">
+          <img class="cbc__founder-photo" src="/martin.png" alt="Martin Auer" width="56" height="56" />
+          <div>
+            <p class="cbc__founder-name">Martin Auer</p>
+            <p class="cbc__founder-role">Co-Founder &amp; CEO</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cbc__embed-wrap section-fade" style="--delay: 100ms">
+        <div id="cb-cal-inline" class="cbc__embed" data-cal-link={CAL_LINK}></div>
+      </div>
+
     </div>
   </div>
 </section>
+
+<script is:inline>
+  (function () {
+    var el = document.getElementById('cb-cal-inline');
+    if (!el) return;
+    var calLink = el.getAttribute('data-cal-link');
+
+    function loadCal() {
+      (function (C, A, INIT) {
+        var p = function (a, ar) { a.q.push(ar); };
+        var d = C.document;
+        C.Cal = C.Cal || function () {
+          var cal = C.Cal;
+          var ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement('script')).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === INIT) {
+            var api = function () { p(api, arguments); };
+            var ns = ar[1];
+            api.q = api.q || [];
+            typeof ns === 'string' ? (cal.ns[ns] = api) && p(api, ar) : p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, 'https://app.cal.eu/embed/embed.js', 'init');
+
+      // Carry campaign attribution into the booking itself.
+      var config = { theme: 'light', locale: document.documentElement.lang || 'de', campaign: 'company-brain' };
+      new URLSearchParams(window.location.search).forEach(function (value, key) {
+        if (key.indexOf('utm_') === 0 || key === 'gclid' || key === 'fbclid' || key === 'li_fat_id') {
+          config[key] = value;
+        }
+      });
+
+      Cal('init', { origin: 'https://cal.eu' });
+      Cal('inline', {
+        elementOrSelector: '#cb-cal-inline',
+        calLink: calLink,
+        layout: 'month_view',
+        config: config,
+      });
+      Cal('ui', {
+        styles: { branding: { brandColor: '#f5a623' } },
+        hideEventTypeDetails: false,
+      });
+    }
+
+    var section = document.getElementById('gespraech');
+    var observer = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        window.posthog?.capture('company_brain_booking_started', { location: 'cal_embed' });
+        loadCal();
+        observer.disconnect();
+      }
+    }, { threshold: 0.2 });
+    observer.observe(section);
+  })();
+</script>
 
 <style>
   .cbc {
@@ -60,45 +128,16 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
   }
   @media (max-width: 767px) { .cbc { padding: var(--space-24) 0; } }
 
-  .cbc__card {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background: var(--color-canvas-dark, #0b0c10);
-    border-radius: var(--radius-xl);
-    padding: var(--space-16) var(--space-12);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  /* Same proportions as CalBooking: narrow copy column, calendar right-aligned */
+  .cbc__inner {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 520px);
+    justify-content: space-between;
+    gap: var(--space-16);
+    align-items: start;
   }
-
-  /* Soft ember glow, the only warm light on the card */
-  .cbc__card::after {
-    content: '';
-    position: absolute;
-    top: -30%;
-    right: -10%;
-    width: 520px;
-    height: 520px;
-    z-index: -1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(252, 161, 87, 0.18) 0%, rgba(252, 161, 87, 0) 68%);
-    pointer-events: none;
-  }
-
-  .cbc__pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 12px;
-    margin-bottom: var(--space-6);
-    border-radius: var(--radius-full, 999px);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.86);
+  @media (max-width: 900px) {
+    .cbc__inner { grid-template-columns: 1fr; justify-content: stretch; gap: var(--space-10); }
   }
 
   .cbc__heading {
@@ -106,98 +145,72 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
     font-weight: 400;
     letter-spacing: -0.04em;
     line-height: 1.05;
-    display: flex;
-    flex-direction: column;
-    gap: 0.06em;
     margin-bottom: var(--space-5);
-    color: #fff;
-    max-width: 18ch;
+    color: var(--color-text-primary);
   }
-  .cbc__heading-ghost { color: rgba(255, 255, 255, 0.42); }
 
   .cbc__sub {
     font-size: var(--text-base);
-    color: rgba(255, 255, 255, 0.78);
-    line-height: 1.8;
-    max-width: 52ch;
-    margin-bottom: var(--space-8);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    margin-bottom: var(--space-4);
   }
-
-  .cbc__cta {
-    position: relative;
-    overflow: hidden;
-    display: inline-flex;
-    align-items: center;
-    height: 50px;
-    padding: 0 var(--space-8);
-    background-color: var(--color-cta-bg);
-    color: var(--color-cta-text);
-    font-size: var(--text-base);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    border-radius: var(--radius-full, 999px);
-    transition: opacity 0.2s var(--ease-smooth);
-  }
-  .cbc__cta:hover { opacity: 0.9; }
-  .cbc__cta:active { transform: scale(0.98); }
-  .cbc__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-  .cbc__cta-label { margin-right: var(--space-12); transition: opacity 0.4s var(--ease-smooth); }
-  .cbc__cta:hover .cbc__cta-label { opacity: 0; }
-  .cbc__cta-icon {
-    position: absolute;
-    right: 4px; top: 4px; bottom: 4px;
-    width: 42px;
-    display: grid;
-    place-items: center;
-    z-index: 1;
-    border-radius: var(--radius-full, 999px);
-    background-color: var(--color-cta-icon-bg);
-    transition: width 0.4s var(--ease-spring);
-  }
-  .cbc__cta:hover .cbc__cta-icon { width: calc(100% - 8px); }
 
   .cbc__microcopy {
-    margin-top: var(--space-4);
     font-size: var(--text-sm);
-    color: rgba(255, 255, 255, 0.62);
+    color: var(--color-text-tertiary);
     line-height: 1.6;
-    max-width: 52ch;
+    margin-bottom: var(--space-8);
   }
 
   .cbc__trust {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3) var(--space-6);
-    margin-top: var(--space-10);
-    padding-top: var(--space-6);
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
-    width: 100%;
+    flex-direction: column;
+    gap: var(--space-3);
   }
   .cbc__trust-item {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-3);
     font-size: var(--text-sm);
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--color-text-secondary);
   }
-  .cbc__check { width: 12px; height: 12px; flex-shrink: 0; }
+  .cbc__check { width: 14px; height: 14px; flex-shrink: 0; }
 
-  @media (max-width: 767px) {
-    .cbc__card { padding: var(--space-10) var(--space-6); }
-    .cbc__heading { max-width: none; }
-    /* Long CTA label: let the button grow instead of wrapping under the icon */
-    .cbc__cta {
-      width: 100%;
-      justify-content: center;
-      height: auto;
-      min-height: 52px;
-      padding: var(--space-4) var(--space-5);
-      font-size: var(--text-sm);
-      text-align: center;
-    }
-    .cbc__cta-label { margin-right: 0; }
-    .cbc__cta-icon { display: none; }
-    .cbc__trust { flex-direction: column; gap: var(--space-2); }
+  .cbc__founder {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
   }
+  .cbc__founder-photo {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 18%;
+    background: var(--color-accent-light);
+    flex-shrink: 0;
+  }
+  .cbc__founder-name { font-size: var(--text-sm); font-weight: 600; color: var(--color-text-primary); }
+  .cbc__founder-role { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+  /* Fixed-height card; the Cal embed scrolls inside it (same as CalBooking) */
+  .cbc__embed-wrap {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .cbc__embed { width: 100%; height: 100%; overflow: hidden; }
+
+  /* !important is needed because Cal's embed.js sets an inline height */
+  .cbc__embed :global(cal-inline) { height: 100% !important; display: block; overflow: hidden; }
+  .cbc__embed-wrap :global(iframe.cal-embed) { height: 100% !important; }
 </style>
