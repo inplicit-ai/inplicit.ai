@@ -1,0 +1,139 @@
+---
+// Problem framing. Card grid follows the TrustSecurity/Applications card pattern.
+const cards = [
+  {
+    icon: 'user',
+    title: 'Wissen hängt an Personen',
+    body: 'Erfahrene Mitarbeitende kennen Ausnahmen, Kunden und funktionierende Wege, oft ohne dass dieses Wissen strukturiert verfügbar ist.',
+  },
+  {
+    icon: 'doc',
+    title: 'Dokumentation zeigt nicht die Realität',
+    body: 'Prozesse beschreiben den Soll-Zustand. Die informellen Lösungen im Arbeitsalltag bleiben unsichtbar.',
+  },
+  {
+    icon: 'compass',
+    title: 'Führung entscheidet mit Lücken',
+    body: 'Ohne die Perspektive der Belegschaft bleiben Risiken, Engpässe und Chancen oft zu lange verborgen.',
+  },
+];
+---
+
+<section class="cbp" id="problem">
+  <div class="container">
+    <div class="cbp__header section-fade">
+      <span class="section-eyebrow">Ausgangslage</span>
+      <h2 class="cbp__heading">
+        <span>Das wichtigste Wissen Ihrer Organisation</span>
+        <span class="cbp__heading-ghost">steht selten im Handbuch.</span>
+      </h2>
+      <p class="cbp__sub">
+        Wie Arbeit wirklich funktioniert, welche Ausnahmen Teams täglich lösen und wer
+        kritisches Erfahrungswissen besitzt, bleibt oft unsichtbar. Das wird zum Risiko,
+        wenn Organisationen wachsen, sich verändern oder Schlüsselpersonen fehlen.
+      </p>
+    </div>
+
+    <div class="cbp__grid">
+      {cards.map((card, i) => (
+        <article class="cbp__card section-fade" style={`--delay: ${i * 80}ms`}>
+          <div class="cbp__card-icon" aria-hidden="true">
+            {card.icon === 'user' && (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            )}
+            {card.icon === 'doc' && (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>
+              </svg>
+            )}
+            {card.icon === 'compass' && (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/>
+              </svg>
+            )}
+          </div>
+          <h3 class="cbp__card-title">{card.title}</h3>
+          <p class="cbp__card-body">{card.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cbp {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+  @media (max-width: 767px) { .cbp { padding: var(--space-24) 0; } }
+
+  .cbp__header { margin-bottom: var(--space-16); max-width: 660px; }
+  @media (max-width: 767px) { .cbp__header { margin-bottom: var(--space-10); } }
+
+  .cbp__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+  }
+  .cbp__heading-ghost { opacity: 0.3; }
+
+  .cbp__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+  }
+
+  .cbp__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 768px) { .cbp__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .cbp__card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition: border-color 0.2s var(--ease-smooth);
+  }
+  .cbp__card:hover { border-color: var(--color-text-tertiary); }
+
+  .cbp__card-icon {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-ui);
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    transition: color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth), background 0.2s var(--ease-smooth);
+  }
+  .cbp__card:hover .cbp__card-icon {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+  }
+
+  .cbp__card-title {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+  }
+  .cbp__card-body {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 767px) { .cbp__card { padding: var(--space-6); } }
+</style>

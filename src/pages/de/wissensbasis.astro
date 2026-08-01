@@ -1,0 +1,111 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CbHero from '../../components/wissensbasis/CbHero.astro';
+import CbProblem from '../../components/wissensbasis/CbProblem.astro';
+import CbProcess from '../../components/wissensbasis/CbProcess.astro';
+import CbDeliverables from '../../components/wissensbasis/CbDeliverables.astro';
+import CbAudience from '../../components/wissensbasis/CbAudience.astro';
+import CbPositioning from '../../components/wissensbasis/CbPositioning.astro';
+import CbCta from '../../components/wissensbasis/CbCta.astro';
+import CbFaq from '../../components/wissensbasis/CbFaq.astro';
+
+const lang = 'de';
+
+// Existing booking flow: the standalone Cal.com page (/de/call). The campaign
+// parameter identifies the source; utm_* are appended client-side (see below).
+const bookingHref = '/de/call?campaign=company-brain';
+---
+
+<Layout
+  title="Company Brain Campaign | Inplicit"
+  description="Machen Sie verborgenes Erfahrungswissen, informelle Abläufe und kritische Wissensrisiken in Ihrer Organisation sichtbar."
+  lang={lang}
+  canonical="https://inplicit.ai/de/wissensbasis"
+  ogImage="https://inplicit.ai/hero-poster.jpg"
+>
+  <Nav
+    lang={lang}
+    langToggleHref="/"
+    ctaHref={bookingHref}
+    ctaLabel="Campaign besprechen"
+  />
+
+  <main>
+    <CbHero bookingHref={bookingHref} />
+    <CbProblem />
+    <CbProcess />
+    <CbDeliverables />
+    <CbAudience />
+    <CbPositioning />
+    <CbCta bookingHref={bookingHref} />
+    <CbFaq />
+  </main>
+
+  <Footer lang={lang} />
+
+  <script is:inline>
+    (function () {
+      // The nav CTA is rendered by the shared Nav component, so tag it here.
+      var navCta = document.querySelector('.nav__cta');
+      if (navCta) navCta.setAttribute('data-cb-cta', 'nav');
+      var menuCta = document.querySelector('.nav__menu-cta');
+      if (menuCta) menuCta.setAttribute('data-cb-cta', 'nav_menu');
+
+      var ctas = document.querySelectorAll('[data-cb-cta]');
+
+      // Carry campaign attribution from the ad/landing URL through to the booking page.
+      var incoming = new URLSearchParams(window.location.search);
+      var carry = new URLSearchParams();
+      incoming.forEach(function (value, key) {
+        if (key.indexOf('utm_') === 0 || key === 'gclid' || key === 'fbclid' || key === 'li_fat_id') {
+          carry.set(key, value);
+        }
+      });
+      if (carry.toString()) {
+        ctas.forEach(function (el) {
+          var href = el.getAttribute('href');
+          if (!href) return;
+          var url = new URL(href, window.location.origin);
+          carry.forEach(function (value, key) { url.searchParams.set(key, value); });
+          el.setAttribute('href', url.pathname + url.search + url.hash);
+        });
+      }
+
+      // PostHog stays a no-op until cookie consent is granted (see Layout.astro).
+      window.posthog?.capture('company_brain_page_view', {
+        page: '/de/wissensbasis',
+        campaign: 'company-brain',
+      });
+
+      var bookingStarted = false;
+      ctas.forEach(function (el) {
+        el.addEventListener('click', function () {
+          var location = el.getAttribute('data-cb-cta');
+          window.posthog?.capture('company_brain_cta_clicked', { location: location });
+          if (!bookingStarted) {
+            bookingStarted = true;
+            window.posthog?.capture('company_brain_booking_started', { location: location });
+          }
+        });
+      });
+    })();
+  </script>
+</Layout>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.section-fade').forEach((el) => observer.observe(el));
+</script>

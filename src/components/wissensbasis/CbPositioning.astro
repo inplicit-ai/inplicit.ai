@@ -1,0 +1,101 @@
+---
+// Positioning against the two familiar alternatives. Three plain columns,
+// the third one carried by the brand accent. No feature matrix.
+const columns = [
+  {
+    title: 'Befragungen',
+    body: 'Skalierbar, aber meist vorgegebene und oberflächliche Antworten.',
+    highlight: false,
+  },
+  {
+    title: 'Beratung',
+    body: 'Tiefgehend, aber häufig langsam, selektiv und einmalig.',
+    highlight: false,
+  },
+  {
+    title: 'Inplicit',
+    body: 'Qualitative Gespräche in der Breite, als wiederholbare Wissensbasis.',
+    highlight: true,
+  },
+];
+---
+
+<section class="cbn" id="positionierung">
+  <div class="container">
+    <div class="cbn__header section-fade">
+      <span class="section-eyebrow">Einordnung</span>
+      <h2 class="cbn__heading">
+        <span>Mehr Tiefe als eine Befragung.</span>
+        <span class="cbn__heading-ghost">Wiederholbarer als Beratung.</span>
+      </h2>
+    </div>
+
+    <div class="cbn__grid">
+      {columns.map((col, i) => (
+        <article class:list={['cbn__col', 'section-fade', { 'cbn__col--accent': col.highlight }]} style={`--delay: ${i * 80}ms`}>
+          <h3 class="cbn__col-title">{col.title}</h3>
+          <p class="cbn__col-body">{col.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cbn {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+  @media (max-width: 767px) { .cbn { padding: var(--space-24) 0; } }
+
+  .cbn__header { margin-bottom: var(--space-12); max-width: 640px; }
+
+  .cbn__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+    color: var(--color-text-primary);
+  }
+  .cbn__heading-ghost { opacity: 0.3; }
+
+  .cbn__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 768px) { .cbn__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .cbn__col {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .cbn__col-title {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--color-text-secondary);
+  }
+  .cbn__col-body {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  /* The Inplicit column carries the accent: warm tint, orange hairline, ink text */
+  .cbn__col--accent {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-muted);
+  }
+  .cbn__col--accent .cbn__col-title { color: var(--color-text-primary); font-weight: 600; }
+  .cbn__col--accent .cbn__col-body { color: var(--color-text-primary); }
+
+  @media (max-width: 767px) { .cbn__col { padding: var(--space-6); } }
+</style>

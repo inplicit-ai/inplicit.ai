@@ -1,0 +1,150 @@
+---
+// FAQ. Native <details>/<summary> so it works without JS and stays accessible.
+const faqs = [
+  {
+    q: 'Wie lange dauert eine Company Brain Campaign?',
+    a: 'Der genaue Umfang hängt von Fragestellung und Zielgruppe ab. Eine fokussierte Campaign kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
+  },
+  {
+    q: 'Wer wird interviewt?',
+    a: 'Die relevanten Mitarbeitenden, Teams und Schlüsselrollen werden gemeinsam mit Ihnen anhand Ihrer Fragestellung definiert.',
+  },
+  {
+    q: 'Ist das eine Mitarbeiterbefragung?',
+    a: 'Nein. Inplicit arbeitet mit strukturierten Gesprächen, die auf Antworten eingehen und Hintergründe, Workarounds sowie konkrete Lösungsvorschläge sichtbar machen.',
+  },
+  {
+    q: 'Was erhält das Management?',
+    a: 'Ein verdichtetes Executive Readout, priorisierte Muster und Risiken sowie eine strukturierte Grundlage für nächste Entscheidungen.',
+  },
+  {
+    q: 'Wie funktioniert der Einstieg?',
+    a: 'In einem kurzen Scoping-Gespräch definieren wir Ihre Fragestellung, Zielgruppe und den passenden Campaign-Umfang.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<section class="cbf" id="faq">
+  <div class="container">
+    <div class="cbf__inner">
+      <div class="cbf__header section-fade">
+        <span class="section-eyebrow">Häufige Fragen</span>
+        <h2 class="cbf__heading">
+          <span>Was Führungskräfte</span>
+          <span class="cbf__heading-ghost">vorab wissen wollen.</span>
+        </h2>
+      </div>
+
+      <div class="cbf__list section-fade" style="--delay: 80ms">
+        {faqs.map((faq) => (
+          <details class="cbf__item">
+            <summary class="cbf__q">
+              <span>{faq.q}</span>
+              <span class="cbf__icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="cbf__a"><p>{faq.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+
+<style>
+  .cbf {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+  @media (max-width: 767px) { .cbf { padding: var(--space-24) 0; } }
+
+  .cbf__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .cbf__inner { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--space-16); }
+  }
+
+  .cbf__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+    color: var(--color-text-primary);
+  }
+  .cbf__heading-ghost { opacity: 0.3; }
+
+  .cbf__list { border-top: 1px solid var(--color-border); }
+
+  .cbf__item { border-bottom: 1px solid var(--color-border); }
+
+  .cbf__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--text-base);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+    transition: color 0.2s var(--ease-smooth);
+  }
+  .cbf__q::-webkit-details-marker { display: none; }
+  .cbf__q:hover { color: var(--color-accent-dark); }
+  .cbf__q:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 2px; }
+
+  .cbf__icon {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    transition: transform 0.3s var(--ease-spring), color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
+  }
+  .cbf__item[open] .cbf__icon {
+    transform: rotate(45deg);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .cbf__a { padding: 0 var(--space-10) var(--space-6) 0; }
+  .cbf__a p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    max-width: 62ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cbf__icon { transition: none; }
+  }
+</style>

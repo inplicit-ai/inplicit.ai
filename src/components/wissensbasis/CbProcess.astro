@@ -1,0 +1,131 @@
+---
+// The campaign in three steps. Numbering + accent rail follow the HowItWorks
+// step list, laid out as a horizontal sequence instead of an accordion.
+const steps = [
+  {
+    num: '01',
+    title: 'Zuhören',
+    body: 'Inplicit führt strukturierte, vertrauliche AI-gestützte Gespräche mit den relevanten Mitarbeitenden.',
+  },
+  {
+    num: '02',
+    title: 'Verstehen',
+    body: 'Wiederkehrende Muster, Wissensrisiken, Reibungspunkte und informelle Expertennetzwerke werden sichtbar.',
+  },
+  {
+    num: '03',
+    title: 'Handeln',
+    body: 'Leadership erhält eine priorisierte Grundlage für Übergaben, Prozessverbesserungen und nächste Entscheidungen.',
+  },
+];
+---
+
+<section class="cbs" id="campaign">
+  <div class="container">
+    <div class="cbs__header section-fade">
+      <span class="section-eyebrow">Company Brain Campaign</span>
+      <h2 class="cbs__heading">
+        <span>In wenigen Wochen vom verstreuten Wissen</span>
+        <span class="cbs__heading-ghost">zu klaren Entscheidungen.</span>
+      </h2>
+      <p class="cbs__sub">
+        Eine fokussierte Campaign für eine konkrete Organisationseinheit, einen Standort
+        oder ein unternehmensweites Thema.
+      </p>
+    </div>
+
+    <ol class="cbs__steps" role="list">
+      {steps.map((step, i) => (
+        <li class="cbs__step section-fade" style={`--delay: ${i * 90}ms`}>
+          <span class="cbs__rail" aria-hidden="true"></span>
+          <span class="cbs__num">{step.num}</span>
+          <h3 class="cbs__step-title">{step.title}</h3>
+          <p class="cbs__step-body">{step.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .cbs {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+  @media (max-width: 767px) { .cbs { padding: var(--space-24) 0; } }
+
+  .cbs__header { margin-bottom: var(--space-16); max-width: 660px; }
+  @media (max-width: 767px) { .cbs__header { margin-bottom: var(--space-10); } }
+
+  .cbs__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+  }
+  .cbs__heading-ghost { opacity: 0.3; }
+
+  .cbs__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+  }
+
+  .cbs__steps {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  @media (min-width: 768px) {
+    .cbs__steps { grid-template-columns: repeat(3, 1fr); gap: var(--space-8); }
+  }
+
+  .cbs__step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    position: relative;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Accent segment on the divider, the same orange progress cue as HowItWorks */
+  .cbs__rail {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 48px;
+    height: 2px;
+    background: var(--color-accent);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .cbs__num {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent);
+  }
+
+  .cbs__step-title {
+    font-size: var(--text-xl);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-text-primary);
+  }
+
+  .cbs__step-body {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>
