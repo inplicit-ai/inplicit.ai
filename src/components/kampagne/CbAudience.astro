@@ -1,13 +1,13 @@
 ---
 // Who gets interviewed. Reuses the site's avatar-stack + orange mic badge
 // (see Campaigns.astro) as the section's visual anchor.
-const groups = [
-  { label: 'Produktion und operative Teams', people: [1, 4, 8] },
-  { label: 'Service und Kundenkontakt', people: [2, 11] },
-  { label: 'Vertrieb', people: [7, 3] },
-  { label: 'Teamleads und Schlüsselrollen', people: [5, 6, 9] },
-  { label: 'Zentrale Funktionen und Schnittstellen', people: [10, 12] },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['audience'];
+}
+const { content } = Astro.props;
+const groups = content.groups;
 ---
 
 <section class="cba" id="wer-wird-interviewt">
@@ -15,15 +15,12 @@ const groups = [
     <div class="cba__inner">
 
       <div class="cba__copy section-fade">
-        <span class="section-eyebrow">Teilnehmende</span>
+        <span class="section-eyebrow">{content.eyebrow}</span>
         <h2 class="cba__heading">
-          <span>Nicht nur die lautesten Stimmen.</span>
-          <span class="cba__heading-ghost">Die Menschen, die die Arbeit kennen.</span>
+          <span>{content.heading}</span>
+          <span class="cba__heading-ghost">{content.headingGhost}</span>
         </h2>
-        <p class="cba__sub">
-          Je nach Fragestellung beziehen wir die Teams ein, die Prozesse täglich ausführen
-          und relevantes Wissen unmittelbar erleben.
-        </p>
+        <p class="cba__sub">{content.sub}</p>
       </div>
 
       <ul class="cba__list section-fade" style="--delay: 100ms" role="list">

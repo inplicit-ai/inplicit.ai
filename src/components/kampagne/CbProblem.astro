@@ -1,40 +1,23 @@
 ---
 // Problem framing. Card grid follows the TrustSecurity/Applications card pattern.
-const cards = [
-  {
-    icon: 'user',
-    title: 'Wissen hängt an Personen',
-    body: 'Erfahrene Mitarbeitende kennen Ausnahmen, Kunden und funktionierende Wege, oft ohne dass dieses Wissen strukturiert verfügbar ist.',
-  },
-  {
-    icon: 'doc',
-    title: 'Dokumentation zeigt nicht die Realität',
-    body: 'Prozesse beschreiben den Soll-Zustand. Die informellen Lösungen im Arbeitsalltag bleiben unsichtbar.',
-  },
-  {
-    icon: 'compass',
-    title: 'Führung entscheidet mit Lücken',
-    body: 'Ohne die Perspektive der Belegschaft bleiben Risiken, Engpässe und Chancen oft zu lange verborgen.',
-  },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['problem'];
+}
+const { content } = Astro.props;
 ---
 
 <section class="cbp" id="problem">
   <div class="container">
     <div class="cbp__header section-fade">
-      <span class="section-eyebrow">Ausgangslage</span>
-      <h2 class="cbp__heading">
-        Das wichtigste Wissen Ihrer Organisation steht selten im Handbuch.
-      </h2>
-      <p class="cbp__sub">
-        Wie Arbeit wirklich funktioniert, welche Ausnahmen Teams täglich lösen und wer
-        kritisches Erfahrungswissen besitzt, bleibt oft unsichtbar. Das wird zum Risiko,
-        wenn Organisationen wachsen, sich verändern oder Schlüsselpersonen fehlen.
-      </p>
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbp__heading">{content.heading}</h2>
+      <p class="cbp__sub">{content.sub}</p>
     </div>
 
     <div class="cbp__grid">
-      {cards.map((card, i) => (
+      {content.cards.map((card, i) => (
         <article class="cbp__card section-fade" style={`--delay: ${i * 80}ms`}>
           <div class="cbp__card-icon" aria-hidden="true">
             {card.icon === 'user' && (

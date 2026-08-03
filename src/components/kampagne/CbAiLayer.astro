@@ -3,12 +3,12 @@
 // your AI tools can actually read. Reuses the MCP visualisation from the
 // "Warum inplicit" section on the main landing page (UspViz type="context").
 import UspViz from '../UspViz.astro';
+import type { KampagneContent } from '../../data/kampagnen';
 
-const points = [
-  'Erfahrungswissen aus Gesprächen, nicht nur Dokumente und Systeme',
-  'Anschlussfähig an Claude, Gemini, ChatGPT und Copilot über MCP',
-  'Antworten mit Beleg zur anonymen Quelle statt generischer Auskünfte',
-];
+export interface Props {
+  content: KampagneContent['aiLayer'];
+}
+const { content } = Astro.props;
 ---
 
 <section class="cbl" id="ki-anbindung">
@@ -16,17 +16,11 @@ const points = [
     <div class="cbl__inner">
 
       <div class="cbl__copy section-fade">
-        <span class="section-eyebrow">KI-Anbindung</span>
-        <h2 class="cbl__heading">
-          Die menschliche Kontext-Ebene, auf die auch Ihre KI-Tools zugreifen können.
-        </h2>
-        <p class="cbl__sub">
-          Das meiste Wissen einer Organisation steht in keinem Dokument. Das Company Brain
-          macht dieses Erfahrungswissen strukturiert verfügbar und übergibt es per MCP an
-          die KI-Tools, mit denen Ihre Teams ohnehin arbeiten.
-        </p>
+        <span class="section-eyebrow">{content.eyebrow}</span>
+        <h2 class="cbl__heading">{content.heading}</h2>
+        <p class="cbl__sub">{content.sub}</p>
         <ul class="cbl__points" role="list">
-          {points.map((point) => (
+          {content.points.map((point) => (
             <li class="cbl__point">
               <svg class="cbl__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>

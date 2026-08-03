@@ -1,36 +1,23 @@
 ---
 // Positioning against the two familiar alternatives. Three plain columns,
 // the third one carried by the brand accent. No feature matrix.
-const columns = [
-  {
-    title: 'Befragungen',
-    body: 'Skalierbar, aber meist vorgegebene und oberflächliche Antworten.',
-    highlight: false,
-  },
-  {
-    title: 'Beratung',
-    body: 'Tiefgehend, aber häufig langsam, selektiv und einmalig.',
-    highlight: false,
-  },
-  {
-    title: 'Inplicit',
-    body: 'Qualitative Gespräche in der Breite, als wiederholbare Wissensbasis.',
-    highlight: true,
-  },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['positioning'];
+}
+const { content } = Astro.props;
 ---
 
 <section class="cbn" id="positionierung">
   <div class="container">
     <div class="cbn__header section-fade">
-      <span class="section-eyebrow">Einordnung</span>
-      <h2 class="cbn__heading">
-        Mehr Tiefe als eine Befragung. Wiederholbarer als Beratung.
-      </h2>
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbn__heading">{content.heading}</h2>
     </div>
 
     <div class="cbn__grid">
-      {columns.map((col, i) => (
+      {content.columns.map((col, i) => (
         <article class:list={['cbn__col', 'section-fade', { 'cbn__col--accent': col.highlight }]} style={`--delay: ${i * 80}ms`}>
           <h3 class="cbn__col-title">{col.title}</h3>
           <p class="cbn__col-body">{col.body}</p>

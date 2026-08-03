@@ -1,40 +1,24 @@
 ---
 // The campaign in three steps. Numbering + accent rail follow the HowItWorks
 // step list, laid out as a horizontal sequence instead of an accordion.
-const steps = [
-  {
-    num: '01',
-    title: 'Zuhören',
-    body: 'Inplicit führt strukturierte, vertrauliche AI-gestützte Gespräche mit den relevanten Mitarbeitenden.',
-  },
-  {
-    num: '02',
-    title: 'Verstehen',
-    body: 'Wiederkehrende Muster, Wissensrisiken, Reibungspunkte und informelle Expertennetzwerke werden sichtbar.',
-  },
-  {
-    num: '03',
-    title: 'Handeln',
-    body: 'Leadership erhält eine priorisierte Grundlage für Übergaben, Prozessverbesserungen und nächste Entscheidungen.',
-  },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['process'];
+}
+const { content } = Astro.props;
 ---
 
-<section class="cbs" id="campaign">
+<section class="cbs" id="kampagne">
   <div class="container">
     <div class="cbs__header section-fade">
-      <span class="section-eyebrow">Company Brain Kampagne</span>
-      <h2 class="cbs__heading">
-        In wenigen Wochen vom verstreuten Wissen zu klaren Entscheidungen.
-      </h2>
-      <p class="cbs__sub">
-        Eine fokussierte Kampagne für eine konkrete Organisationseinheit, einen Standort
-        oder ein unternehmensweites Thema.
-      </p>
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbs__heading">{content.heading}</h2>
+      <p class="cbs__sub">{content.sub}</p>
     </div>
 
     <ol class="cbs__steps" role="list">
-      {steps.map((step, i) => (
+      {content.steps.map((step, i) => (
         <li class="cbs__step section-fade" style={`--delay: ${i * 90}ms`}>
           <span class="cbs__rail" aria-hidden="true"></span>
           <span class="cbs__num">{step.num}</span>

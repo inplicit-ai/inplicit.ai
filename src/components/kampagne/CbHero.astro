@@ -1,16 +1,18 @@
 ---
-// Company Brain Kampagne — hero. Reuses the site hero's video asset, scrim
-// treatment and CTA mechanics; copy is landing-page specific.
+// Campaign hero. Reuses the site hero's scrim treatment and CTA mechanics;
+// copy and video come from src/data/kampagnen.ts.
+import type { KampagneContent } from '../../data/kampagnen';
+
 export interface Props {
+  content: KampagneContent['hero'];
   bookingHref: string;
 }
-const { bookingHref } = Astro.props;
-
-const faces = [2, 5, 9, 12, 7];
+const { content, bookingHref } = Astro.props;
+const faces = content.faces;
 ---
 
 <section class="cbh" id="hero">
-  <div class="cbh__bg" aria-hidden="true">
+  <div class="cbh__bg" aria-hidden="true" style={`--cbh-poster: url('${content.poster}')`}>
     <video
       class="cbh__video"
       autoplay
@@ -18,41 +20,35 @@ const faces = [2, 5, 9, 12, 7];
       loop
       playsinline
       preload="auto"
-      poster="/company-brain-poster.jpg"
+      poster={content.poster}
     >
-      <source src="/company-brain-hero.mp4" type="video/mp4" />
+      <source src={content.video} type="video/mp4" />
     </video>
     <div class="cbh__scrim"></div>
   </div>
 
   <div class="cbh__inner container">
     <div class="cbh__content">
-      <span class="cbh__pill">Wissensbasis</span>
+      <span class="cbh__pill">{content.pill}</span>
 
       <h1 class="cbh__headline">
-        <span class="cbh__line">Ein Company Brain,</span>
-        <span class="cbh__line">das aus Ihrer Belegschaft</span>
-        <span class="cbh__line cbh__line--ghost">entsteht.</span>
+        <span class="cbh__line">{content.lines[0]}</span>
+        <span class="cbh__line">{content.lines[1]}</span>
+        <span class="cbh__line cbh__line--ghost">{content.lines[2]}</span>
       </h1>
 
-      <p class="cbh__sub">
-        Machen Sie das Wissen, die Erfahrungen und die informellen Lösungen Ihrer
-        Mitarbeitenden dauerhaft nutzbar, statt darauf zu hoffen, dass sie
-        irgendwann dokumentiert werden.
-      </p>
+      <p class="cbh__sub">{content.sub}</p>
 
       <div class="cbh__actions">
         <a href={bookingHref} class="cbh__cta" data-cb-cta="hero">
-          <span class="cbh__cta-label">Company Brain Kampagne besprechen</span>
+          <span class="cbh__cta-label">{content.ctaLabel}</span>
           <i class="cbh__cta-icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </i>
         </a>
-        <p class="cbh__microcopy">
-          In 20 Minuten klären wir, welche Wissensbereiche Sie zuerst sichtbar machen sollten.
-        </p>
+        <p class="cbh__microcopy">{content.microcopy}</p>
       </div>
 
       <div class="cbh__who">
@@ -66,7 +62,7 @@ const faces = [2, 5, 9, 12, 7];
             </svg>
           </span>
         </span>
-        <span class="cbh__who-label">Für Geschäftsführung, Operations und Transformationsteams</span>
+        <span class="cbh__who-label">{content.audience}</span>
       </div>
     </div>
   </div>
@@ -269,6 +265,6 @@ const faces = [2, 5, 9, 12, 7];
   @media (prefers-reduced-motion: reduce) {
     .cbh__inner, .cbh__headline, .cbh__sub, .cbh__actions, .cbh__who { animation: none; opacity: 1; }
     .cbh__video { display: none; }
-    .cbh__bg { background: #0b0c10 url('/company-brain-poster.jpg') center / cover no-repeat; }
+    .cbh__bg { background: #0b0c10 var(--cbh-poster) center / cover no-repeat; }
   }
 </style>

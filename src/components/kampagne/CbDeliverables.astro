@@ -1,43 +1,23 @@
 ---
 // What the customer holds at the end of the campaign. 2x2 card grid, same
 // treatment as the Applications section.
-const items = [
-  {
-    icon: 'readout',
-    tag: 'Leadership',
-    title: 'Executive Readout',
-    body: 'Die wichtigsten Muster und Entscheidungen für Führungskräfte.',
-  },
-  {
-    icon: 'map',
-    tag: 'Risiko',
-    title: 'Wissens- und Risikokarte',
-    body: 'Wo kritisches Wissen liegt, fehlt oder an einzelnen Personen hängt.',
-  },
-  {
-    icon: 'list',
-    tag: 'Priorisierung',
-    title: 'Priorisierte Handlungsfelder',
-    body: 'Welche Themen zuerst gesichert, verbessert oder weiter untersucht werden sollten.',
-  },
-  {
-    icon: 'search',
-    tag: 'Wissensbasis',
-    title: 'Strukturierte Wissensbasis',
-    body: 'Eine durchsuchbare Grundlage, die über die Kampagne hinaus nutzbar bleibt.',
-  },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['deliverables'];
+}
+const { content } = Astro.props;
 ---
 
 <section class="cbd" id="ergebnisse">
   <div class="container">
     <div class="cbd__header section-fade">
-      <span class="section-eyebrow">Ergebnisse</span>
-      <h2 class="cbd__heading">Was am Ende der Kampagne vorliegt.</h2>
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbd__heading">{content.heading}</h2>
     </div>
 
     <div class="cbd__grid">
-      {items.map((item, i) => (
+      {content.items.map((item, i) => (
         <article class="cbd__card section-fade" style={`--delay: ${i * 80}ms`}>
           <div class="cbd__card-top">
             <div class="cbd__card-icon" aria-hidden="true">

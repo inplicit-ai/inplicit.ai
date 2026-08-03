@@ -2,10 +2,16 @@
 // Closing section. Same two-column layout as CalBooking on the main landing
 // page: copy on the left, the Cal.eu inline embed on the right. Own element
 // ids so it never collides with CalBooking if both ever appear on one page.
-const CAL_LINK = 'inplicit/30min';
+import type { KampagneContent } from '../../data/kampagnen';
 
-// Only claims the existing site already makes (Hero meta, TrustSecurity).
-const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindbar'];
+export interface Props {
+  content: KampagneContent['cta'];
+  /** Identifies the campaign in the booking metadata. */
+  campaign: string;
+}
+const { content, campaign } = Astro.props;
+
+const CAL_LINK = 'inplicit/30min';
 ---
 
 <section class="cbc" id="gespraech">
@@ -13,23 +19,16 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
     <div class="cbc__inner">
 
       <div class="cbc__copy section-fade">
-        <span class="section-eyebrow">Nächster Schritt</span>
+        <span class="section-eyebrow">{content.eyebrow}</span>
 
-        <h2 class="cbc__heading">
-          Machen Sie sichtbar, was Ihre Organisation bereits weiß.
-        </h2>
+        <h2 class="cbc__heading">{content.heading}</h2>
 
-        <p class="cbc__sub">
-          Starten Sie mit einer konkreten Fragestellung. Gemeinsam definieren wir, welche
-          Teams und Wissensbereiche für Ihre nächste Entscheidung relevant sind.
-        </p>
+        <p class="cbc__sub">{content.sub}</p>
 
-        <p class="cbc__microcopy">
-          20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Wissensrisiken und Potenziale.
-        </p>
+        <p class="cbc__microcopy">{content.microcopy}</p>
 
         <ul class="cbc__trust" role="list">
-          {trust.map((item) => (
+          {content.trust.map((item) => (
             <li class="cbc__trust-item">
               <svg class="cbc__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -49,7 +48,7 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
       </div>
 
       <div class="cbc__embed-wrap section-fade" style="--delay: 100ms">
-        <div id="cb-cal-inline" class="cbc__embed" data-cal-link={CAL_LINK}></div>
+        <div id="cb-cal-inline" class="cbc__embed" data-cal-link={CAL_LINK} data-campaign={campaign}></div>
       </div>
 
     </div>
@@ -61,6 +60,7 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
     var el = document.getElementById('cb-cal-inline');
     if (!el) return;
     var calLink = el.getAttribute('data-cal-link');
+    var campaign = el.getAttribute('data-campaign');
 
     function loadCal() {
       (function (C, A, INIT) {
@@ -87,7 +87,7 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
       })(window, 'https://app.cal.eu/embed/embed.js', 'init');
 
       // Carry campaign attribution into the booking itself.
-      var config = { theme: 'light', locale: document.documentElement.lang || 'de', campaign: 'company-brain' };
+      var config = { theme: 'light', locale: document.documentElement.lang || 'de', campaign: campaign };
       new URLSearchParams(window.location.search).forEach(function (value, key) {
         if (key.indexOf('utm_') === 0 || key === 'gclid' || key === 'fbclid' || key === 'li_fat_id') {
           config[key] = value;
@@ -108,9 +108,10 @@ const trust = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindb
     }
 
     var section = document.getElementById('gespraech');
+    var prefix = document.querySelector('main')?.getAttribute('data-analytics-prefix') || 'kampagne';
     var observer = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) {
-        window.posthog?.capture('company_brain_booking_started', { location: 'cal_embed' });
+        window.posthog?.capture(prefix + '_booking_started', { location: 'cal_embed', campaign: campaign });
         loadCal();
         observer.disconnect();
       }

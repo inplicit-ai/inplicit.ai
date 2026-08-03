@@ -1,0 +1,121 @@
+---
+// Shared shell for the German campaign landing pages. Section order and
+// behaviour are identical across campaigns; every string comes from
+// src/data/kampagnen.ts.
+import Layout from './Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CbHero from '../components/kampagne/CbHero.astro';
+import CbProblem from '../components/kampagne/CbProblem.astro';
+import CbProcess from '../components/kampagne/CbProcess.astro';
+import CbDeliverables from '../components/kampagne/CbDeliverables.astro';
+import CbAudience from '../components/kampagne/CbAudience.astro';
+import CbAiLayer from '../components/kampagne/CbAiLayer.astro';
+import CbPositioning from '../components/kampagne/CbPositioning.astro';
+import CbCta from '../components/kampagne/CbCta.astro';
+import CbFaq from '../components/kampagne/CbFaq.astro';
+import type { KampagneContent } from '../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent;
+}
+const { content } = Astro.props;
+
+const lang = 'de';
+
+// The booking flow lives on the page itself: the closing section embeds the
+// same Cal.eu calendar as the main landing page, so every CTA scrolls to it.
+const bookingHref = '#gespraech';
+---
+
+<Layout
+  title={content.seo.title}
+  description={content.seo.description}
+  lang={lang}
+  canonical={content.seo.canonical}
+  ogImage={content.seo.ogImage}
+>
+  <Nav
+    lang={lang}
+    langToggleHref="/"
+    ctaHref={bookingHref}
+    ctaLabel={content.navCtaLabel}
+  />
+
+  <main data-kampagne={content.slug} data-analytics-prefix={content.analyticsPrefix}>
+    <CbHero content={content.hero} bookingHref={bookingHref} />
+    <CbProblem content={content.problem} />
+    <CbProcess content={content.process} />
+    <CbDeliverables content={content.deliverables} />
+    <CbAudience content={content.audience} />
+    <CbAiLayer content={content.aiLayer} />
+    <CbPositioning content={content.positioning} />
+    <CbCta content={content.cta} campaign={content.slug} />
+    <CbFaq content={content.faq} />
+  </main>
+
+  <Footer lang={lang} />
+
+  <script is:inline>
+    (function () {
+      var main = document.querySelector('main[data-kampagne]');
+      if (!main) return;
+      var campaign = main.getAttribute('data-kampagne');
+      var prefix = main.getAttribute('data-analytics-prefix');
+
+      // The nav CTA is rendered by the shared Nav component, so tag it here.
+      var navCta = document.querySelector('.nav__cta');
+      if (navCta) navCta.setAttribute('data-cb-cta', 'nav');
+      var menuCta = document.querySelector('.nav__menu-cta');
+      if (menuCta) menuCta.setAttribute('data-cb-cta', 'nav_menu');
+
+      // Every CTA scrolls to the on-page calendar, so campaign attribution is
+      // handed to the Cal embed instead of appended to a link (see CbCta.astro).
+      // Any other outbound link keeps its utm_* parameters here.
+      var carry = new URLSearchParams();
+      new URLSearchParams(window.location.search).forEach(function (value, key) {
+        if (key.indexOf('utm_') === 0 || key === 'gclid' || key === 'fbclid' || key === 'li_fat_id') {
+          carry.set(key, value);
+        }
+      });
+
+      document.querySelectorAll('[data-cb-cta]').forEach(function (el) {
+        var href = el.getAttribute('href') || '';
+        if (carry.toString() && href && href.charAt(0) !== '#') {
+          var url = new URL(href, window.location.origin);
+          carry.forEach(function (value, key) { url.searchParams.set(key, value); });
+          el.setAttribute('href', url.pathname + url.search + url.hash);
+        }
+        el.addEventListener('click', function () {
+          window.posthog?.capture(prefix + '_cta_clicked', {
+            location: el.getAttribute('data-cb-cta'),
+            campaign: campaign,
+          });
+        });
+      });
+
+      // PostHog stays a no-op until cookie consent is granted (see Layout.astro).
+      // <prefix>_booking_started fires when the calendar loads (CbCta.astro).
+      window.posthog?.capture(prefix + '_page_view', {
+        page: window.location.pathname,
+        campaign: campaign,
+      });
+    })();
+  </script>
+</Layout>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.section-fade').forEach((el) => observer.observe(el));
+</script>

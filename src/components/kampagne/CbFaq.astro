@@ -1,27 +1,12 @@
 ---
 // FAQ. Native <details>/<summary> so it works without JS and stays accessible.
-const faqs = [
-  {
-    q: 'Wie lange dauert eine Company Brain Kampagne?',
-    a: 'Der genaue Umfang hängt von Fragestellung und Zielgruppe ab. Eine fokussierte Kampagne kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
-  },
-  {
-    q: 'Wer wird interviewt?',
-    a: 'Die relevanten Mitarbeitenden, Teams und Schlüsselrollen werden gemeinsam mit Ihnen anhand Ihrer Fragestellung definiert.',
-  },
-  {
-    q: 'Ist das eine Mitarbeiterbefragung?',
-    a: 'Nein. Inplicit arbeitet mit strukturierten Gesprächen, die auf Antworten eingehen und Hintergründe, Workarounds sowie konkrete Lösungsvorschläge sichtbar machen.',
-  },
-  {
-    q: 'Was erhält das Management?',
-    a: 'Ein verdichtetes Executive Readout, priorisierte Muster und Risiken sowie eine strukturierte Grundlage für nächste Entscheidungen.',
-  },
-  {
-    q: 'Wie funktioniert der Einstieg?',
-    a: 'In einem kurzen Scoping-Gespräch definieren wir Ihre Fragestellung, Zielgruppe und den passenden Umfang der Kampagne.',
-  },
-];
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: KampagneContent['faq'];
+}
+const { content } = Astro.props;
+const faqs = content.items;
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -38,10 +23,8 @@ const faqSchema = {
   <div class="container">
     <div class="cbf__inner">
       <div class="cbf__header section-fade">
-        <span class="section-eyebrow">Häufige Fragen</span>
-        <h2 class="cbf__heading">
-          Was vor dem Start üblicherweise zu klären ist.
-        </h2>
+        <span class="section-eyebrow">{content.eyebrow}</span>
+        <h2 class="cbf__heading">{content.heading}</h2>
       </div>
 
       <div class="cbf__list section-fade" style="--delay: 80ms">
