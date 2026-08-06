@@ -14,7 +14,8 @@ export interface KampagneContent {
     lines: [string, string, string];
     sub: string;
     ctaLabel: string;
-    microcopy: string;
+    /** Small line under the CTA. Omitted when it would not add anything. */
+    microcopy?: string;
     audience: string;
     video: string;
     poster: string;
@@ -52,7 +53,14 @@ export interface KampagneContent {
     sub: string;
     items: { title: string; body: string; example: string }[];
   };
-  aiLayer: { eyebrow: string; heading: string; sub: string; points: string[] };
+  aiLayer: {
+    eyebrow: string;
+    heading: string;
+    sub: string;
+    points: string[];
+    /** Campaign boxes shown on the left of the Company Brain diagram. */
+    campaigns: { label: string; people: number[] }[];
+  };
   positioning: {
     eyebrow: string;
     heading: string;
@@ -183,6 +191,11 @@ export const wissensbasis: KampagneContent = {
     heading: 'Die menschliche Kontext-Ebene, auf die auch Ihre KI-Tools zugreifen können.',
     sub: 'Das meiste Wissen einer Organisation steht in keinem Dokument. Das Company Brain macht dieses Erfahrungswissen strukturiert verfügbar und übergibt es per MCP an die KI-Tools, mit denen Ihre Teams ohnehin arbeiten.',
     points: ['Erfahrungswissen aus Gesprächen, nicht nur Dokumente und Systeme', MCP_POINT, SOURCE_POINT],
+    campaigns: [
+      { label: 'Wissensbasis', people: [2, 5, 9] },
+      { label: 'Wissenstransfer', people: [6, 3, 12] },
+      { label: 'Prozesse & Reibung', people: [1, 8, 11] },
+    ],
   },
   positioning: {
     eyebrow: 'Einordnung',
@@ -229,134 +242,133 @@ export const wissensbasis: KampagneContent = {
 };
 
 export const readiness: KampagneContent = {
-  slug: 'company-brain-readiness',
+  slug: 'company-brain-check',
   analyticsPrefix: 'readiness',
   seo: {
-    title: 'Company Brain Readiness | Inplicit',
+    title: 'Company Brain Check | Inplicit',
     description:
-      'Das Assessment vor dem KI-Projekt: Welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden vertrauen und wo eine Anbindung wirklich trägt.',
+      'Die dreiwöchige Kampagne vor dem KI-Projekt: Welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden vertrauen und welche Anbindung sich zuerst lohnt.',
     canonical: 'https://inplicit.ai/de/ai-readiness',
     ogImage: 'https://inplicit.ai/company-brain-poster.jpg',
   },
-  navCtaLabel: 'Assessment besprechen',
+  navCtaLabel: 'Kampagne besprechen',
   hero: {
-    pill: 'Company Brain Readiness',
-    lines: ['Bevor Sie KI ausrollen,', 'wissen Sie, worauf sie', 'aufsetzt.'],
-    sub: 'Das Assessment, das erhebt, welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden tatsächlich vertrauen und welche Anbindung sich zuerst lohnt.',
-    ctaLabel: 'Readiness-Assessment besprechen',
-    microcopy: 'In 20 Minuten klären wir, welche Bereiche wir zuerst erheben sollten.',
-    audience: 'Für Geschäftsführung, IT-Leitung und Digitalisierungsverantwortliche',
+    pill: 'Kampagne · 3 Wochen',
+    lines: ['Ist Ihr Unternehmen', 'bereit für ein', 'Company Brain?'],
+    sub: 'Drei Wochen, ein Bereich, eine klare Antwort: welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden wirklich vertrauen und was Sie zuerst anbinden sollten.',
+    ctaLabel: 'Kampagne besprechen',
+    audience: 'Für Geschäftsführung, IT-Leitung und Digitalisierung',
     video: '/company-brain-hero.mp4',
     poster: '/company-brain-poster.jpg',
     faces: [4, 9, 2, 11, 6],
   },
   problem: {
     eyebrow: 'Ausgangslage',
-    heading: 'KI-Projekte scheitern selten am Modell. Meistens an dem, worauf sie zugreifen.',
-    sub: 'Assistenten und Suchsysteme greifen auf das zu, was dokumentiert ist. Ob dieses Material aktuell, vollständig und im Haus überhaupt anerkannt ist, steht in keinem Systemkatalog. Das wissen nur die Menschen, die täglich damit arbeiten.',
+    heading: 'Ihre KI ist nur so gut wie das, worauf sie zugreift.',
+    sub: 'Assistenten und Suchsysteme greifen auf das zu, was dokumentiert ist. Ob dieses Material aktuell, vollständig und im Haus überhaupt anerkannt ist, steht in keinem Systemverzeichnis. Das wissen nur die Menschen, die täglich damit arbeiten.',
     cards: [
       {
         icon: 'doc',
         title: 'Quellen, denen niemand traut',
-        body: 'Teams wissen, welche Ablage veraltet ist, und arbeiten trotzdem daran vorbei. Ein System, das darauf zugreift, antwortet überzeugend falsch.',
+        body: 'Teams wissen, welche Ablage veraltet ist, und arbeiten daran vorbei. Ein System, das darauf zugreift, antwortet überzeugend falsch.',
       },
       {
         icon: 'user',
-        title: 'Das Entscheidende ist nicht dokumentiert',
+        title: 'Das Entscheidende steht nirgends',
         body: 'Ausnahmen, Sonderfälle und funktionierende Wege liegen in Köpfen und privaten Notizen, nicht in den Systemen, die angebunden werden.',
       },
       {
         icon: 'compass',
-        title: 'Readiness wird oben gemessen',
-        body: 'Übliche Assessments erheben Lizenzen, Infrastruktur und Richtlinien. Ob das nötige Wissen abrufbar existiert, bleibt ungeprüft.',
+        title: 'Gemessen wird an der Spitze',
+        body: 'Übliche Reifegrad-Analysen erheben Lizenzen, Technik und Richtlinien. Ob das nötige Wissen abrufbar vorhanden ist, bleibt ungeprüft.',
       },
     ],
   },
   dimensions: {
-    eyebrow: 'Erhebung',
-    heading: 'Sechs Dimensionen, erhoben dort, wo die Arbeit stattfindet.',
-    sub: 'Statt eines Fragebogens an die IT führt Inplicit strukturierte Gespräche mit den Rollen, die die Systeme täglich benutzen. Jede Dimension wird im Gespräch vertieft, nicht abgehakt.',
+    eyebrow: 'Was wir erheben',
+    heading: 'Sechs Fragen, die nur Ihre Mitarbeitenden beantworten können.',
+    sub: 'Statt eines Fragebogens an die IT führt Inplicit vertrauliche Gespräche mit den Rollen, die die Systeme täglich benutzen. Jede Frage wird im Gespräch vertieft, nicht abgehakt.',
     items: [
       {
-        title: 'Wissensorte und Schattenwissen',
-        body: 'Wofür muss man einen Menschen fragen statt ein System. Welche Ablagen werden real geöffnet, welche privaten Listen tragen die Arbeit.',
+        title: 'Wo das Wissen wirklich liegt',
+        body: 'Wofür muss man einen Menschen fragen statt ein System. Welche Ablagen werden tatsächlich geöffnet, welche privaten Listen tragen die Arbeit.',
         example: '„Wenn Sie zwei Wochen ausfallen: Was könnte Ihre Vertretung nirgends nachlesen?"',
       },
       {
-        title: 'Vertrauen in die Quellen',
-        body: 'Pro genanntem System: aktuell, korrekt, vollständig? Wo weiß das Team, dass die Quelle falsch ist, und nutzt sie trotzdem.',
+        title: 'Welchen Quellen vertraut wird',
+        body: 'Pro genanntem System: aktuell, richtig, vollständig? Wo weiß das Team, dass die Quelle falsch ist, und nutzt sie trotzdem.',
         example: '„Wenn dort etwas steht, verlassen Sie sich darauf oder prüfen Sie nach?"',
       },
       {
-        title: 'Reibung und Engpässe',
+        title: 'Wo Arbeit ins Stocken gerät',
         body: 'Wie oft Menschen auf Antworten warten, wie lange das dauert und wer zur Engstelle wird, obwohl es nicht seine Aufgabe ist.',
         example: '„Wer wird bei Ihnen am häufigsten gefragt, obwohl er gar nicht zuständig ist?"',
       },
       {
-        title: 'Gelebte KI-Nutzung',
+        title: 'Wie KI heute schon genutzt wird',
         body: 'Was tatsächlich benutzt wird, offiziell und inoffiziell. Wo Ergebnisse überzeugt haben und an welcher Stelle das Vertrauen gekippt ist.',
         example: '„Gab es einen Fall, in dem eine KI-Antwort falsch war? Wie haben Sie es gemerkt?"',
       },
       {
-        title: 'Anwendungsfälle mit Wert und Risiko',
+        title: 'Was sich zuerst lohnt',
         body: 'Welche wiederkehrende Frage am meisten Zeit bindet, und wie hoch der Schaden wäre, wenn die Antwort falsch ist.',
         example: '„Welche Frage müssen Sie so oft beantworten, dass es Sie aufhält?"',
       },
       {
-        title: 'Voraussetzungen für die Anbindung',
-        body: 'Welche Systeme rollenübergreifend als Wissensquelle auftauchen, wie sensibel sie sind und wo Mitbestimmung früh einzubinden ist.',
+        title: 'Was der Anbindung im Weg steht',
+        body: 'Welche Systeme rollenübergreifend als Wissensquelle auftauchen, wie sensibel sie sind und wo die Mitbestimmung früh einzubinden ist.',
         example: '„Welche Systeme öffnen Sie an einem normalen Arbeitstag wirklich?"',
       },
     ],
   },
   process: {
     eyebrow: 'Ablauf',
-    heading: 'Vom offenen Gespräch zur belastbaren Entscheidungsgrundlage.',
-    sub: 'Ein fokussiertes Assessment für einen Bereich, einen Standort oder als Vorbereitung eines konkreten KI-Vorhabens.',
+    heading: 'Drei Wochen. Von der ersten Frage bis zur Entscheidung.',
+    sub: 'Eine fokussierte Kampagne für einen Bereich, einen Standort oder ein konkretes KI-Vorhaben.',
     steps: [
       {
-        num: '01',
-        title: 'Erheben',
-        body: 'Inplicit führt strukturierte, vertrauliche AI-gestützte Gespräche mit den Rollen, die die Systeme und Abläufe täglich nutzen.',
+        num: 'Woche 1',
+        title: 'Festlegen',
+        body: 'Wir bestimmen gemeinsam den Bereich, die Rollen und die Fragestellung. Danach starten die Gespräche.',
       },
       {
-        num: '02',
-        title: 'Bewerten',
-        body: 'Aus den Gesprächen entstehen ein Bild der Wissenslage, eine Bewertung der vorhandenen Quellen und die tatsächliche KI-Nutzung im Haus.',
+        num: 'Woche 2',
+        title: 'Sprechen',
+        body: 'Inplicit führt die vertraulichen, KI-gestützten Gespräche. Sie sehen laufend, wie viele Rückmeldungen eingehen.',
       },
       {
-        num: '03',
-        title: 'Priorisieren',
-        body: 'Daraus wird eine Reihenfolge: welche Anwendungsfälle zuerst tragen, welche Quellen angebunden und welche vorher bereinigt werden sollten.',
+        num: 'Woche 3',
+        title: 'Entscheiden',
+        body: 'Sie erhalten die Auswertung, wir gehen sie gemeinsam durch und legen die nächsten Schritte fest.',
       },
     ],
   },
   deliverables: {
     eyebrow: 'Ergebnisse',
-    heading: 'Was am Ende des Assessments vorliegt.',
+    heading: 'Was nach drei Wochen auf dem Tisch liegt.',
     items: [
       {
         icon: 'readout',
-        tag: 'Leadership',
-        title: 'Executive Readout',
+        tag: 'Führung',
+        title: 'Zusammenfassung für die Geschäftsführung',
         body: 'Eine begründete Einschätzung der Ausgangslage und die Entscheidungen, die daraus folgen.',
       },
       {
         icon: 'map',
         tag: 'Quellen',
-        title: 'Quellenbewertung',
+        title: 'Bewertung Ihrer Wissensquellen',
         body: 'Welchen Systemen Ihre Mitarbeitenden vertrauen, welchen nicht, und woran das jeweils liegt.',
       },
       {
         icon: 'list',
-        tag: 'Priorisierung',
-        title: 'Anwendungsfälle in Reihenfolge',
+        tag: 'Reihenfolge',
+        title: 'Anwendungsfälle nach Priorität',
         body: 'Bewertet nach Häufigkeit, gebundener Zeit, Risiko bei falscher Antwort und Datenlage.',
       },
       {
         icon: 'search',
-        tag: 'Roadmap',
-        title: 'Anbindungs-Roadmap',
+        tag: 'Fahrplan',
+        title: 'Fahrplan für die Anbindung',
         body: 'Welche Quelle wann angebunden wird, was sie freischaltet und was vorher zu klären ist.',
       },
     ],
@@ -371,44 +383,49 @@ export const readiness: KampagneContent = {
       { label: 'Service und Kundenkontakt', people: [2, 11] },
       { label: 'Teamleads und Prozessverantwortliche', people: [9, 5] },
       { label: 'IT, Datenschutz und Systemverantwortung', people: [6, 10] },
-      { label: 'Frühe KI-Anwender im Haus', people: [3, 7, 12] },
+      { label: 'Wer im Haus schon mit KI arbeitet', people: [3, 7, 12] },
     ],
   },
   aiLayer: {
     eyebrow: 'Anschluss',
-    heading: 'Das Assessment ist bereits die erste Schicht Ihres Company Brains.',
+    heading: 'Die Kampagne ist bereits die erste Schicht Ihres Company Brains.',
     sub: 'Was in den Gesprächen entsteht, ist strukturiertes Wissen, das über MCP anschlussfähig ist. Der Ausbau besteht danach darin, die als tragfähig bewerteten Quellen anzubinden, nicht darin, noch einmal von vorn zu beginnen.',
     points: [
-      'Die Wissensbasis aus dem Assessment bleibt nutzbar und wächst mit jeder weiteren Kampagne',
+      'Jede weitere Kampagne vertieft den Kontext im Company Brain',
       MCP_POINT,
       SOURCE_POINT,
+    ],
+    campaigns: [
+      { label: 'Company Brain Check', people: [4, 9, 2] },
+      { label: 'Wissenstransfer', people: [6, 5, 3] },
+      { label: 'Prozesse & Reibung', people: [1, 8, 11] },
     ],
   },
   positioning: {
     eyebrow: 'Einordnung',
-    heading: 'Näher an der Arbeit als ein Fragebogen. Ehrlicher als eine Systemanalyse.',
+    heading: 'Näher dran als ein Fragebogen. Ehrlicher als eine Systemanalyse.',
     columns: [
       {
-        title: 'AI-Readiness-Fragebogen',
-        body: 'Schnell ausgefüllt, misst aber Infrastruktur und Richtlinien statt Wissenslage.',
+        title: 'Fragebogen an die IT',
+        body: 'Schnell ausgefüllt, misst aber Technik und Richtlinien statt Wissenslage.',
         highlight: false,
       },
       {
-        title: 'Technische Datenanalyse',
+        title: 'Datenanalyse',
         body: 'Zeigt, welche Daten existieren, aber nicht, ob im Haus jemand ihnen traut.',
         highlight: false,
       },
       {
         title: 'Inplicit',
-        body: 'Erhebt bei denen, die es wissen: was fehlt, was stimmt und was zuerst trägt.',
+        body: 'Fragt die, die es wissen: was fehlt, was stimmt und was zuerst trägt.',
         highlight: true,
       },
     ],
   },
   cta: {
     eyebrow: 'Nächster Schritt',
-    heading: 'Klären Sie die Ausgangslage, bevor Sie investieren.',
-    sub: 'Starten Sie mit dem Bereich, in dem ein KI-Vorhaben ansteht oder bereits ins Stocken geraten ist. Gemeinsam definieren wir, welche Rollen und Systeme wir erheben.',
+    heading: 'Erst wissen, dann investieren.',
+    sub: 'Starten Sie mit dem Bereich, in dem ein KI-Vorhaben ansteht oder bereits ins Stocken geraten ist. Gemeinsam legen wir fest, welche Rollen und Systeme wir uns ansehen.',
     microcopy: '20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Ausgangslage.',
     trust: TRUST,
   },
@@ -417,24 +434,24 @@ export const readiness: KampagneContent = {
     heading: 'Was vor dem Start üblicherweise zu klären ist.',
     items: [
       {
-        q: 'Ist das ein klassisches AI-Readiness-Assessment?',
-        a: 'Nur teilweise. Infrastruktur, Richtlinien und Datenschutz erheben andere ebenfalls. Inplicit ergänzt die Ebene, die sich nicht aus Systemen auslesen lässt: welches Wissen abrufbar existiert und welchen Quellen im Haus tatsächlich vertraut wird.',
+        q: 'Sind drei Wochen realistisch?',
+        a: 'Für einen klar abgegrenzten Bereich ja. Woche eins legt Zielgruppe und Fragestellung fest, in Woche zwei laufen die Gespräche, Woche drei ist die Auswertung. Größere Zuschnitte über mehrere Standorte brauchen entsprechend länger.',
       },
       {
-        q: 'Wie lange dauert das Assessment?',
-        a: 'Der Umfang hängt von Bereich und Zielgruppe ab. Ein fokussiertes Assessment kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
+        q: 'Ist das eine übliche Reifegrad-Analyse?',
+        a: 'Nur zum Teil. Technik, Richtlinien und Datenschutz erheben andere ebenfalls. Inplicit ergänzt die Ebene, die sich nicht aus Systemen auslesen lässt: welches Wissen abrufbar vorhanden ist und welchen Quellen im Haus tatsächlich vertraut wird.',
       },
       {
-        q: 'Wer wird interviewt?',
-        a: 'Die Rollen, die die betroffenen Systeme und Abläufe täglich nutzen, dazu Systemverantwortung und frühe KI-Anwender. Die Auswahl definieren wir gemeinsam mit Ihnen.',
+        q: 'Wer wird befragt?',
+        a: 'Die Rollen, die die betroffenen Systeme und Abläufe täglich nutzen, dazu die Systemverantwortung und diejenigen, die im Haus schon mit KI arbeiten. Die Auswahl legen wir gemeinsam mit Ihnen fest.',
       },
       {
         q: 'Brauchen wir das, wenn wir schon ein KI-Tool im Einsatz haben?',
-        a: 'Gerade dann. Das Assessment zeigt, warum bestehende Assistenten in manchen Bereichen überzeugen und in anderen nicht, und welche Quellen dafür verantwortlich sind.',
+        a: 'Gerade dann. Die Kampagne zeigt, warum bestehende Assistenten in manchen Bereichen überzeugen und in anderen nicht, und welche Quellen dafür verantwortlich sind.',
       },
       {
-        q: 'Was passiert nach dem Assessment?',
-        a: 'Sie erhalten eine priorisierte Roadmap und können damit intern oder mit einem Partner Ihrer Wahl weiterarbeiten. Wenn Sie möchten, baut Inplicit darauf das Company Brain auf.',
+        q: 'Was passiert danach?',
+        a: 'Sie erhalten einen priorisierten Fahrplan und können damit intern oder mit einem Partner Ihrer Wahl weiterarbeiten. Wenn Sie möchten, baut Inplicit darauf das Company Brain auf.',
       },
     ],
   },
@@ -554,6 +571,11 @@ export const wissenstransfer: KampagneContent = {
     heading: 'Gesichertes Wissen, auf das auch Ihre KI-Tools zugreifen können.',
     sub: 'Das Wissen einer ausscheidenden Rolle bleibt nicht in einem Übergabedokument liegen. Es wird strukturiert verfügbar und per MCP an die KI-Tools übergeben, mit denen Ihre Teams ohnehin arbeiten.',
     points: ['Erfahrungswissen aus Gesprächen, nicht nur Übergabeprotokolle', MCP_POINT, SOURCE_POINT],
+    campaigns: [
+      { label: 'Wissenstransfer', people: [6, 5, 3] },
+      { label: 'Wissensbasis', people: [2, 9, 12] },
+      { label: 'Prozesse & Reibung', people: [1, 8, 11] },
+    ],
   },
   positioning: {
     eyebrow: 'Einordnung',

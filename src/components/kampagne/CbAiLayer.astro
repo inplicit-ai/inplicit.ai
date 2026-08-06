@@ -1,8 +1,8 @@
 ---
-// Why the Company Brain matters beyond people: it is the human context layer
-// your AI tools can actually read. Reuses the MCP visualisation from the
-// "Warum inplicit" section on the main landing page (UspViz type="context").
-import UspViz from '../UspViz.astro';
+// How the campaigns connect to the Company Brain and from there to the AI
+// tools. The diagram gets the full container width so the three stages stay
+// readable; the takeaways sit underneath it.
+import CbBrainViz from './CbBrainViz.astro';
 import type { KampagneContent } from '../../data/kampagnen';
 
 export interface Props {
@@ -13,29 +13,28 @@ const { content } = Astro.props;
 
 <section class="cbl" id="ki-anbindung">
   <div class="container">
-    <div class="cbl__inner">
 
-      <div class="cbl__copy section-fade">
-        <span class="section-eyebrow">{content.eyebrow}</span>
-        <h2 class="cbl__heading">{content.heading}</h2>
-        <p class="cbl__sub">{content.sub}</p>
-        <ul class="cbl__points" role="list">
-          {content.points.map((point) => (
-            <li class="cbl__point">
-              <svg class="cbl__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              {point}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="cbl__viz section-fade" style="--delay: 100ms">
-        <UspViz type="context" lang="de" />
-      </div>
-
+    <div class="cbl__header section-fade">
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbl__heading">{content.heading}</h2>
+      <p class="cbl__sub">{content.sub}</p>
     </div>
+
+    <div class="cbl__viz section-fade" style="--delay: 100ms">
+      <CbBrainViz campaigns={content.campaigns} />
+    </div>
+
+    <ul class="cbl__points section-fade" style="--delay: 160ms" role="list">
+      {content.points.map((point) => (
+        <li class="cbl__point">
+          <svg class="cbl__check" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.5 7l3 3 6-6" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {point}
+        </li>
+      ))}
+    </ul>
+
   </div>
 </section>
 
@@ -47,15 +46,7 @@ const { content } = Astro.props;
   }
   @media (max-width: 767px) { .cbl { padding: var(--space-24) 0; } }
 
-  .cbl__inner {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-10);
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .cbl__inner { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: var(--space-16); }
-  }
+  .cbl__header { max-width: 660px; margin-bottom: var(--space-12); }
 
   .cbl__heading {
     font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
@@ -70,10 +61,27 @@ const { content } = Astro.props;
     font-size: var(--text-base);
     color: var(--color-text-secondary);
     line-height: 1.75;
-    margin-bottom: var(--space-8);
   }
 
-  .cbl__points { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+  .cbl__viz {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-8);
+  }
+  @media (max-width: 767px) { .cbl__viz { padding: var(--space-5) var(--space-4); } }
+
+  .cbl__points {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+  @media (min-width: 768px) {
+    .cbl__points { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  }
+
   .cbl__point {
     display: flex;
     align-items: flex-start;
@@ -83,13 +91,4 @@ const { content } = Astro.props;
     line-height: 1.6;
   }
   .cbl__check { width: 14px; height: 14px; flex-shrink: 0; margin-top: 4px; }
-
-  /* The viz is an SVG built against the light card background of the USP grid */
-  .cbl__viz {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    padding: var(--space-8) var(--space-6);
-  }
-  @media (max-width: 767px) { .cbl__viz { padding: var(--space-5) var(--space-4); } }
 </style>
