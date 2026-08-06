@@ -9,6 +9,7 @@ import CbHero from '../components/kampagne/CbHero.astro';
 import CbProblem from '../components/kampagne/CbProblem.astro';
 import CbProcess from '../components/kampagne/CbProcess.astro';
 import CbDeliverables from '../components/kampagne/CbDeliverables.astro';
+import CbDimensions from '../components/kampagne/CbDimensions.astro';
 import CbAudience from '../components/kampagne/CbAudience.astro';
 import CbAiLayer from '../components/kampagne/CbAiLayer.astro';
 import CbPositioning from '../components/kampagne/CbPositioning.astro';
@@ -45,6 +46,7 @@ const bookingHref = '#gespraech';
   <main data-kampagne={content.slug} data-analytics-prefix={content.analyticsPrefix}>
     <CbHero content={content.hero} bookingHref={bookingHref} />
     <CbProblem content={content.problem} />
+    {content.dimensions && <CbDimensions content={content.dimensions} />}
     <CbProcess content={content.process} />
     <CbDeliverables content={content.deliverables} />
     <CbAudience content={content.audience} />

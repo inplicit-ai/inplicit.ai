@@ -45,6 +45,13 @@ export interface KampagneContent {
     sub: string;
     groups: { label: string; people: number[] }[];
   };
+  /** Assessment campaigns only: what the campaign measures. Section is skipped when absent. */
+  dimensions?: {
+    eyebrow: string;
+    heading: string;
+    sub: string;
+    items: { title: string; body: string; example: string }[];
+  };
   aiLayer: { eyebrow: string; heading: string; sub: string; points: string[] };
   positioning: {
     eyebrow: string;
@@ -216,6 +223,218 @@ export const wissensbasis: KampagneContent = {
       {
         q: 'Wie funktioniert der Einstieg?',
         a: 'In einem kurzen Scoping-Gespräch definieren wir Ihre Fragestellung, Zielgruppe und den passenden Umfang der Kampagne.',
+      },
+    ],
+  },
+};
+
+export const readiness: KampagneContent = {
+  slug: 'company-brain-readiness',
+  analyticsPrefix: 'readiness',
+  seo: {
+    title: 'Company Brain Readiness | Inplicit',
+    description:
+      'Das Assessment vor dem KI-Projekt: Welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden vertrauen und wo eine Anbindung wirklich trägt.',
+    canonical: 'https://inplicit.ai/de/ai-readiness',
+    ogImage: 'https://inplicit.ai/company-brain-poster.jpg',
+  },
+  navCtaLabel: 'Assessment besprechen',
+  hero: {
+    pill: 'Company Brain Readiness',
+    lines: ['Bevor Sie KI ausrollen,', 'wissen Sie, worauf sie', 'aufsetzt.'],
+    sub: 'Das Assessment, das erhebt, welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden tatsächlich vertrauen und welche Anbindung sich zuerst lohnt.',
+    ctaLabel: 'Readiness-Assessment besprechen',
+    microcopy: 'In 20 Minuten klären wir, welche Bereiche wir zuerst erheben sollten.',
+    audience: 'Für Geschäftsführung, IT-Leitung und Digitalisierungsverantwortliche',
+    video: '/company-brain-hero.mp4',
+    poster: '/company-brain-poster.jpg',
+    faces: [4, 9, 2, 11, 6],
+  },
+  problem: {
+    eyebrow: 'Ausgangslage',
+    heading: 'KI-Projekte scheitern selten am Modell. Meistens an dem, worauf sie zugreifen.',
+    sub: 'Assistenten und Suchsysteme greifen auf das zu, was dokumentiert ist. Ob dieses Material aktuell, vollständig und im Haus überhaupt anerkannt ist, steht in keinem Systemkatalog. Das wissen nur die Menschen, die täglich damit arbeiten.',
+    cards: [
+      {
+        icon: 'doc',
+        title: 'Quellen, denen niemand traut',
+        body: 'Teams wissen, welche Ablage veraltet ist, und arbeiten trotzdem daran vorbei. Ein System, das darauf zugreift, antwortet überzeugend falsch.',
+      },
+      {
+        icon: 'user',
+        title: 'Das Entscheidende ist nicht dokumentiert',
+        body: 'Ausnahmen, Sonderfälle und funktionierende Wege liegen in Köpfen und privaten Notizen, nicht in den Systemen, die angebunden werden.',
+      },
+      {
+        icon: 'compass',
+        title: 'Readiness wird oben gemessen',
+        body: 'Übliche Assessments erheben Lizenzen, Infrastruktur und Richtlinien. Ob das nötige Wissen abrufbar existiert, bleibt ungeprüft.',
+      },
+    ],
+  },
+  dimensions: {
+    eyebrow: 'Erhebung',
+    heading: 'Sechs Dimensionen, erhoben dort, wo die Arbeit stattfindet.',
+    sub: 'Statt eines Fragebogens an die IT führt Inplicit strukturierte Gespräche mit den Rollen, die die Systeme täglich benutzen. Jede Dimension wird im Gespräch vertieft, nicht abgehakt.',
+    items: [
+      {
+        title: 'Wissensorte und Schattenwissen',
+        body: 'Wofür muss man einen Menschen fragen statt ein System. Welche Ablagen werden real geöffnet, welche privaten Listen tragen die Arbeit.',
+        example: '„Wenn Sie zwei Wochen ausfallen: Was könnte Ihre Vertretung nirgends nachlesen?"',
+      },
+      {
+        title: 'Vertrauen in die Quellen',
+        body: 'Pro genanntem System: aktuell, korrekt, vollständig? Wo weiß das Team, dass die Quelle falsch ist, und nutzt sie trotzdem.',
+        example: '„Wenn dort etwas steht, verlassen Sie sich darauf oder prüfen Sie nach?"',
+      },
+      {
+        title: 'Reibung und Engpässe',
+        body: 'Wie oft Menschen auf Antworten warten, wie lange das dauert und wer zur Engstelle wird, obwohl es nicht seine Aufgabe ist.',
+        example: '„Wer wird bei Ihnen am häufigsten gefragt, obwohl er gar nicht zuständig ist?"',
+      },
+      {
+        title: 'Gelebte KI-Nutzung',
+        body: 'Was tatsächlich benutzt wird, offiziell und inoffiziell. Wo Ergebnisse überzeugt haben und an welcher Stelle das Vertrauen gekippt ist.',
+        example: '„Gab es einen Fall, in dem eine KI-Antwort falsch war? Wie haben Sie es gemerkt?"',
+      },
+      {
+        title: 'Anwendungsfälle mit Wert und Risiko',
+        body: 'Welche wiederkehrende Frage am meisten Zeit bindet, und wie hoch der Schaden wäre, wenn die Antwort falsch ist.',
+        example: '„Welche Frage müssen Sie so oft beantworten, dass es Sie aufhält?"',
+      },
+      {
+        title: 'Voraussetzungen für die Anbindung',
+        body: 'Welche Systeme rollenübergreifend als Wissensquelle auftauchen, wie sensibel sie sind und wo Mitbestimmung früh einzubinden ist.',
+        example: '„Welche Systeme öffnen Sie an einem normalen Arbeitstag wirklich?"',
+      },
+    ],
+  },
+  process: {
+    eyebrow: 'Ablauf',
+    heading: 'Vom offenen Gespräch zur belastbaren Entscheidungsgrundlage.',
+    sub: 'Ein fokussiertes Assessment für einen Bereich, einen Standort oder als Vorbereitung eines konkreten KI-Vorhabens.',
+    steps: [
+      {
+        num: '01',
+        title: 'Erheben',
+        body: 'Inplicit führt strukturierte, vertrauliche AI-gestützte Gespräche mit den Rollen, die die Systeme und Abläufe täglich nutzen.',
+      },
+      {
+        num: '02',
+        title: 'Bewerten',
+        body: 'Aus den Gesprächen entstehen ein Bild der Wissenslage, eine Bewertung der vorhandenen Quellen und die tatsächliche KI-Nutzung im Haus.',
+      },
+      {
+        num: '03',
+        title: 'Priorisieren',
+        body: 'Daraus wird eine Reihenfolge: welche Anwendungsfälle zuerst tragen, welche Quellen angebunden und welche vorher bereinigt werden sollten.',
+      },
+    ],
+  },
+  deliverables: {
+    eyebrow: 'Ergebnisse',
+    heading: 'Was am Ende des Assessments vorliegt.',
+    items: [
+      {
+        icon: 'readout',
+        tag: 'Leadership',
+        title: 'Executive Readout',
+        body: 'Eine begründete Einschätzung der Ausgangslage und die Entscheidungen, die daraus folgen.',
+      },
+      {
+        icon: 'map',
+        tag: 'Quellen',
+        title: 'Quellenbewertung',
+        body: 'Welchen Systemen Ihre Mitarbeitenden vertrauen, welchen nicht, und woran das jeweils liegt.',
+      },
+      {
+        icon: 'list',
+        tag: 'Priorisierung',
+        title: 'Anwendungsfälle in Reihenfolge',
+        body: 'Bewertet nach Häufigkeit, gebundener Zeit, Risiko bei falscher Antwort und Datenlage.',
+      },
+      {
+        icon: 'search',
+        tag: 'Roadmap',
+        title: 'Anbindungs-Roadmap',
+        body: 'Welche Quelle wann angebunden wird, was sie freischaltet und was vorher zu klären ist.',
+      },
+    ],
+  },
+  audience: {
+    eyebrow: 'Teilnehmende',
+    heading: 'Nicht nur die IT.',
+    headingGhost: 'Die Menschen, die die Systeme benutzen.',
+    sub: 'Ob eine Quelle trägt, entscheidet sich in der täglichen Nutzung. Deshalb sprechen wir mit den Rollen, die damit arbeiten, und nicht nur mit denen, die sie verantworten.',
+    groups: [
+      { label: 'Operative Teams und Sachbearbeitung', people: [1, 4, 8] },
+      { label: 'Service und Kundenkontakt', people: [2, 11] },
+      { label: 'Teamleads und Prozessverantwortliche', people: [9, 5] },
+      { label: 'IT, Datenschutz und Systemverantwortung', people: [6, 10] },
+      { label: 'Frühe KI-Anwender im Haus', people: [3, 7, 12] },
+    ],
+  },
+  aiLayer: {
+    eyebrow: 'Anschluss',
+    heading: 'Das Assessment ist bereits die erste Schicht Ihres Company Brains.',
+    sub: 'Was in den Gesprächen entsteht, ist strukturiertes Wissen, das über MCP anschlussfähig ist. Der Ausbau besteht danach darin, die als tragfähig bewerteten Quellen anzubinden, nicht darin, noch einmal von vorn zu beginnen.',
+    points: [
+      'Die Wissensbasis aus dem Assessment bleibt nutzbar und wächst mit jeder weiteren Kampagne',
+      MCP_POINT,
+      SOURCE_POINT,
+    ],
+  },
+  positioning: {
+    eyebrow: 'Einordnung',
+    heading: 'Näher an der Arbeit als ein Fragebogen. Ehrlicher als eine Systemanalyse.',
+    columns: [
+      {
+        title: 'AI-Readiness-Fragebogen',
+        body: 'Schnell ausgefüllt, misst aber Infrastruktur und Richtlinien statt Wissenslage.',
+        highlight: false,
+      },
+      {
+        title: 'Technische Datenanalyse',
+        body: 'Zeigt, welche Daten existieren, aber nicht, ob im Haus jemand ihnen traut.',
+        highlight: false,
+      },
+      {
+        title: 'Inplicit',
+        body: 'Erhebt bei denen, die es wissen: was fehlt, was stimmt und was zuerst trägt.',
+        highlight: true,
+      },
+    ],
+  },
+  cta: {
+    eyebrow: 'Nächster Schritt',
+    heading: 'Klären Sie die Ausgangslage, bevor Sie investieren.',
+    sub: 'Starten Sie mit dem Bereich, in dem ein KI-Vorhaben ansteht oder bereits ins Stocken geraten ist. Gemeinsam definieren wir, welche Rollen und Systeme wir erheben.',
+    microcopy: '20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Ausgangslage.',
+    trust: TRUST,
+  },
+  faq: {
+    eyebrow: 'Häufige Fragen',
+    heading: 'Was vor dem Start üblicherweise zu klären ist.',
+    items: [
+      {
+        q: 'Ist das ein klassisches AI-Readiness-Assessment?',
+        a: 'Nur teilweise. Infrastruktur, Richtlinien und Datenschutz erheben andere ebenfalls. Inplicit ergänzt die Ebene, die sich nicht aus Systemen auslesen lässt: welches Wissen abrufbar existiert und welchen Quellen im Haus tatsächlich vertraut wird.',
+      },
+      {
+        q: 'Wie lange dauert das Assessment?',
+        a: 'Der Umfang hängt von Bereich und Zielgruppe ab. Ein fokussiertes Assessment kann innerhalb weniger Wochen vorbereitet, durchgeführt und ausgewertet werden.',
+      },
+      {
+        q: 'Wer wird interviewt?',
+        a: 'Die Rollen, die die betroffenen Systeme und Abläufe täglich nutzen, dazu Systemverantwortung und frühe KI-Anwender. Die Auswahl definieren wir gemeinsam mit Ihnen.',
+      },
+      {
+        q: 'Brauchen wir das, wenn wir schon ein KI-Tool im Einsatz haben?',
+        a: 'Gerade dann. Das Assessment zeigt, warum bestehende Assistenten in manchen Bereichen überzeugen und in anderen nicht, und welche Quellen dafür verantwortlich sind.',
+      },
+      {
+        q: 'Was passiert nach dem Assessment?',
+        a: 'Sie erhalten eine priorisierte Roadmap und können damit intern oder mit einem Partner Ihrer Wahl weiterarbeiten. Wenn Sie möchten, baut Inplicit darauf das Company Brain auf.',
       },
     ],
   },

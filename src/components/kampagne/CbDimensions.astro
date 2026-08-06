@@ -1,0 +1,124 @@
+---
+// Optional section: what an assessment campaign actually measures. Numbered
+// grid, same numbering language as the process steps.
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: NonNullable<KampagneContent['dimensions']>;
+}
+const { content } = Astro.props;
+---
+
+<section class="cbm" id="erhebung">
+  <div class="container">
+    <div class="cbm__header section-fade">
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbm__heading">{content.heading}</h2>
+      <p class="cbm__sub">{content.sub}</p>
+    </div>
+
+    <ol class="cbm__grid" role="list">
+      {content.items.map((item, i) => (
+        <li class="cbm__item section-fade" style={`--delay: ${i * 70}ms`}>
+          <span class="cbm__num">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="cbm__item-title">{item.title}</h3>
+          <p class="cbm__item-body">{item.body}</p>
+          <p class="cbm__item-example">
+            <span class="cbm__example-label">Beispielfrage</span>
+            {item.example}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .cbm {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+  @media (max-width: 767px) { .cbm { padding: var(--space-24) 0; } }
+
+  .cbm__header { margin-bottom: var(--space-12); max-width: 660px; }
+
+  .cbm__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+  }
+
+  .cbm__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+  }
+
+  .cbm__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  @media (min-width: 640px) { .cbm__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .cbm__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .cbm__item {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transition: border-color 0.2s var(--ease-smooth);
+  }
+  .cbm__item:hover { border-color: var(--color-text-tertiary); }
+
+  .cbm__num {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent);
+  }
+
+  .cbm__item-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: var(--color-text-primary);
+  }
+
+  .cbm__item-body {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  /* The sample question makes the assessment concrete instead of abstract */
+  .cbm__item-example {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-subtle);
+    font-size: var(--text-sm);
+    font-style: italic;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .cbm__example-label {
+    display: block;
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 4px;
+  }
+</style>
