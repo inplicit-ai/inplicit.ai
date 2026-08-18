@@ -132,14 +132,26 @@ const tools = ['Claude', 'Gemini', 'ChatGPT', 'Copilot'];
     align-items: center;
     justify-content: center;
   }
+  /* Dashes flow toward the brain and on to the tools, same cadence as the
+     context viz on the main landing page (0.28s, 3-on/5-off dash period). */
   .bviz__flow::before {
     content: '';
     position: absolute;
     left: 4px;
     right: 4px;
     top: 50%;
-    border-top: 1px dashed var(--color-border);
+    height: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--color-text-tertiary) 0 3px,
+      transparent 3px 8px
+    );
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    animation: bvizFlow 0.28s linear infinite;
   }
+  @keyframes bvizFlow { to { background-position: 8px 0; } }
+  @keyframes bvizFlowVertical { to { background-position: 0 8px; } }
   .bviz__flow::after {
     content: '';
     position: absolute;
@@ -233,8 +245,15 @@ const tools = ['Claude', 'Gemini', 'ChatGPT', 'Copilot'];
     .bviz__flow { height: 44px; align-self: auto; }
     .bviz__flow::before {
       left: 50%; right: auto; top: 4px; bottom: 4px;
-      border-top: none;
-      border-left: 1px dashed var(--color-border);
+      width: 1px; height: auto;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-text-tertiary) 0 3px,
+        transparent 3px 8px
+      );
+      background-size: 1px 8px;
+      background-repeat: repeat-y;
+      animation-name: bvizFlowVertical;
     }
     .bviz__flow::after {
       right: auto; left: 50%; top: auto; bottom: 4px;
@@ -243,5 +262,9 @@ const tools = ['Claude', 'Gemini', 'ChatGPT', 'Copilot'];
     }
     .bviz__side--tools .bviz__tools { flex-direction: row; flex-wrap: wrap; }
     .bviz__label { margin-top: var(--space-2); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bviz__flow::before { animation: none; }
   }
 </style>
