@@ -1,270 +1,157 @@
 ---
-// Campaign-page variant of the context diagram: campaigns on the left feed the
-// Company Brain in the centre, which hands context to the AI tools via MCP.
-// The main landing page keeps UspViz type="context" unchanged.
+// Campaign-page variant of the context diagram: every campaign feeds the
+// implicit half of the Company Brain, which hands the whole context on to the
+// AI tools via MCP. Drawn as one SVG so the flow lines can converge and fan
+// out. The main landing page keeps UspViz type="context" unchanged.
+import logos from './aiToolLogos.html?raw';
+
 export interface Props {
   campaigns: { label: string; people: number[] }[];
 }
 const { campaigns } = Astro.props;
 
-const tools = ['Claude', 'Gemini', 'ChatGPT', 'Copilot'];
+// Card geometry — three stacked campaign cards on the left
+const CARD = { x: 2, w: 190, h: 68, gap: 16, top: 20 };
+const cardY = (i: number) => CARD.top + i * (CARD.h + CARD.gap);
+const cardMid = (i: number) => cardY(i) + CARD.h / 2;
+
+// Where every campaign line converges: the left edge of the implicit box
+const SINK = { x: 302, y: 211 };
+
+const tools = [
+  { id: 'viz-claude', label: 'Claude', y: 42 },
+  { id: 'viz-gemini', label: 'Gemini', y: 114 },
+  { id: 'viz-chatgpt', label: 'ChatGPT', y: 186 },
+  { id: 'viz-copilot', label: 'Copilot', y: 258 },
+];
+const MCP = { cx: 576, cy: 150, r: 17 };
 ---
 
 <div class="bviz" aria-hidden="true">
+  <div class="bviz__scroll">
+    <svg class="bviz__svg" viewBox="0 0 748 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs set:html={logos} />
+      <defs>
+        {campaigns.map((c, ci) => c.people.map((n, pi) => (
+          <clipPath id={`bviz-c${ci}-${pi}`}>
+            <circle cx={18 + pi * 14} cy={cardY(ci) + 48} r="9" />
+          </clipPath>
+        )))}
+      </defs>
 
-  <!-- LEFT: each campaign is one interview round feeding the brain -->
-  <div class="bviz__side">
-    <span class="bviz__label">Kampagnen</span>
-    <div class="bviz__campaigns">
-      {campaigns.map((c) => (
-        <div class="bviz__campaign">
-          <span class="bviz__campaign-title">{c.label}</span>
-          <span class="bviz__faces">
-            {c.people.map((n) => (
-              <img class="bviz__face" src={`/people/s${n}.png`} alt="" loading="lazy" decoding="async" width="48" height="48" />
-            ))}
-            <span class="bviz__face bviz__face--mic">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>
-              </svg>
-            </span>
-          </span>
-        </div>
+      <!-- ── Column labels ── -->
+      <text x="2" y="10" class="bviz__label">KAMPAGNEN</text>
+      <text x="612" y="10" class="bviz__label">KI-ANWENDUNGEN</text>
+
+      <!-- ── Campaign cards: who was interviewed in each round ── -->
+      {campaigns.map((c, ci) => (
+        <g>
+          <rect x={CARD.x} y={cardY(ci)} width={CARD.w} height={CARD.h} rx="8"
+                fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="16" y={cardY(ci) + 27} class="bviz__card-title">{c.label}</text>
+          {c.people.map((n, pi) => (
+            <>
+              <image href={`/people/s${n}.png`} x={9 + pi * 14} y={cardY(ci) + 39}
+                     width="18" height="18" clip-path={`url(#bviz-c${ci}-${pi})`} preserveAspectRatio="xMidYMid slice" />
+              <circle cx={18 + pi * 14} cy={cardY(ci) + 48} r="9" fill="none"
+                      stroke="var(--color-surface)" stroke-width="1.5" />
+            </>
+          ))}
+          <circle cx={18 + c.people.length * 14} cy={cardY(ci) + 48} r="9" fill="var(--color-accent)" />
+          <g transform={`translate(${18 + c.people.length * 14 - 5}, ${cardY(ci) + 48 - 5})`}>
+            <path d="M5 1.2h0a1.6 1.6 0 0 1 1.6 1.6v2.4A1.6 1.6 0 0 1 5 6.8a1.6 1.6 0 0 1-1.6-1.6V2.8A1.6 1.6 0 0 1 5 1.2z
+                     M2.2 5a2.8 2.8 0 0 0 5.6 0 M5 7.8v1.2"
+                  stroke="var(--color-canvas-dark)" stroke-width="1.1" stroke-linecap="round" fill="none" />
+          </g>
+        </g>
       ))}
-    </div>
+
+      <!-- ── Every campaign flows into the implicit context ── -->
+      <g class="bviz__feed">
+        {campaigns.map((_, ci) => (
+          <line x1={CARD.x + CARD.w + 4} y1={cardMid(ci)} x2={SINK.x - 4} y2={SINK.y} />
+        ))}
+      </g>
+
+      <!-- ── The Company Brain ── -->
+      <rect x="292" y="12" width="250" height="276" rx="10"
+            fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2" />
+      <text x="417" y="39" text-anchor="middle" class="bviz__brain-title">Company Brain</text>
+      <line x1="306" y1="52" x2="528" y2="52" stroke="var(--color-border)" stroke-width="1" />
+
+      <text x="417" y="70" text-anchor="middle" class="bviz__zone-label">EXPLIZITER KONTEXT</text>
+      <text x="417" y="90" text-anchor="middle" class="bviz__item">Dokumente</text>
+      <text x="417" y="108" text-anchor="middle" class="bviz__item">Systeme</text>
+      <text x="417" y="126" text-anchor="middle" class="bviz__item">Besprechungen</text>
+
+      <line x1="306" y1="140" x2="528" y2="140" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3" />
+
+      <rect x="304" y="150" width="226" height="122" rx="6"
+            fill="var(--color-accent-light)" stroke="var(--color-accent-muted)" stroke-width="1" />
+      <text x="417" y="170" text-anchor="middle" class="bviz__zone-label bviz__zone-label--acc">IMPLIZITER KONTEXT</text>
+      <text x="417" y="194" text-anchor="middle" class="bviz__item bviz__item--acc">Praxiswissen</text>
+      <text x="417" y="214" text-anchor="middle" class="bviz__item bviz__item--acc">Echte Abläufe</text>
+      <text x="417" y="234" text-anchor="middle" class="bviz__item bviz__item--acc">Erfahrungswissen</text>
+      <text x="417" y="257" text-anchor="middle" class="bviz__source">aus den Kampagnen</text>
+
+      <!-- ── MCP hands the context on ── -->
+      <line x1="542" y1="150" x2={MCP.cx - MCP.r} y2="150" stroke="var(--color-border)" stroke-width="1" />
+      <circle cx={MCP.cx} cy={MCP.cy} r={MCP.r} fill="var(--color-text-primary)" />
+      <text x={MCP.cx} y={MCP.cy + 3} text-anchor="middle" class="bviz__mcp">MCP</text>
+
+      <g class="bviz__spokes">
+        {tools.map((t) => (
+          <line x1={MCP.cx + MCP.r + 2} y1={MCP.cy} x2="610" y2={t.y} />
+        ))}
+      </g>
+
+      {tools.map((t) => (
+        <>
+          <use href={`#${t.id}`} x="616" y={t.y - 7} width="14" height="14" />
+          <text x="638" y={t.y + 4} class="bviz__tool">{t.label}</text>
+        </>
+      ))}
+    </svg>
   </div>
-
-  <span class="bviz__flow" data-dir="in"></span>
-
-  <!-- CENTRE: the Company Brain itself -->
-  <div class="bviz__brain">
-    <span class="bviz__brain-title">Company Brain</span>
-
-    <div class="bviz__zone">
-      <span class="bviz__zone-label">Expliziter Kontext</span>
-      <span class="bviz__zone-item">Dokumente</span>
-      <span class="bviz__zone-item">Systeme</span>
-      <span class="bviz__zone-item">Besprechungen</span>
-    </div>
-
-    <div class="bviz__zone bviz__zone--implicit">
-      <span class="bviz__zone-label">Impliziter Kontext</span>
-      <span class="bviz__zone-item">Praxiswissen</span>
-      <span class="bviz__zone-item">Echte Abläufe</span>
-      <span class="bviz__zone-item">Erfahrungswissen</span>
-      <span class="bviz__zone-source">aus den Kampagnen</span>
-    </div>
-  </div>
-
-  <span class="bviz__flow" data-dir="out"><span class="bviz__mcp">MCP</span></span>
-
-  <!-- RIGHT: the tools that consume the context -->
-  <div class="bviz__side bviz__side--tools">
-    <span class="bviz__label">KI-Anwendungen</span>
-    <div class="bviz__tools">
-      {tools.map((tool) => <span class="bviz__tool">{tool}</span>)}
-    </div>
-  </div>
-
 </div>
 
 <style>
-  .bviz {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.15fr) 76px minmax(0, 0.7fr);
-    align-items: center;
-    gap: 0;
-  }
+  .bviz__scroll { overflow-x: auto; scrollbar-width: none; }
+  .bviz__scroll::-webkit-scrollbar { display: none; }
+  .bviz__svg { display: block; width: 100%; min-width: 680px; height: auto; }
 
-  .bviz__label {
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-    margin-bottom: var(--space-3);
-  }
+  .bviz__label,
+  .bviz__zone-label,
+  .bviz__card-title,
+  .bviz__brain-title,
+  .bviz__item,
+  .bviz__source,
+  .bviz__mcp,
+  .bviz__tool { font-family: var(--font-family); }
 
-  /* ── Campaign cards ── */
-  .bviz__campaigns { display: flex; flex-direction: column; gap: var(--space-2); }
+  .bviz__label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.09em; fill: var(--color-text-tertiary); }
+  .bviz__card-title { font-size: 12px; font-weight: 500; fill: var(--color-text-primary); }
+  .bviz__brain-title { font-size: 13px; font-weight: 600; fill: var(--color-text-primary); }
+  .bviz__zone-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em; fill: var(--color-text-tertiary); }
+  .bviz__zone-label--acc { fill: var(--color-accent-dark); }
+  .bviz__item { font-size: 11px; fill: var(--color-text-tertiary); }
+  .bviz__item--acc { fill: var(--color-text-secondary); }
+  .bviz__source { font-size: 9px; fill: var(--color-text-tertiary); }
+  .bviz__mcp { font-size: 8px; font-weight: 700; fill: var(--color-bg); }
+  .bviz__tool { font-size: 12px; fill: var(--color-text-primary); }
 
-  .bviz__campaign {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-ui);
-    padding: var(--space-3) var(--space-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .bviz__campaign-title {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-primary);
-    line-height: 1.3;
-  }
-
-  .bviz__faces { display: flex; align-items: center; }
-  .bviz__face {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1.5px solid var(--color-surface);
-    background: var(--color-surface-elevated);
-  }
-  .bviz__face + .bviz__face { margin-left: -7px; }
-  .bviz__face--mic {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-accent);
-    color: var(--color-canvas-dark, #0b0c10);
-    flex-shrink: 0;
-  }
-
-  /* ── Flow connectors ── */
-  .bviz__flow {
-    position: relative;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  /* Dashes flow toward the brain and on to the tools, same cadence as the
-     context viz on the main landing page (0.28s, 3-on/5-off dash period). */
-  .bviz__flow::before {
-    content: '';
-    position: absolute;
-    left: 4px;
-    right: 4px;
-    top: 50%;
-    height: 1px;
-    background-image: repeating-linear-gradient(
-      to right,
-      var(--color-text-tertiary) 0 3px,
-      transparent 3px 8px
-    );
-    background-size: 8px 1px;
-    background-repeat: repeat-x;
+  /* Thin orange dashes travelling from the campaigns into the implicit
+     context, and from MCP out to the tools. Same cadence as UspViz. */
+  .bviz__feed line,
+  .bviz__spokes line {
+    stroke: var(--color-accent);
+    stroke-width: 0.9;
+    stroke-dasharray: 3 5;
     animation: bvizFlow 0.28s linear infinite;
   }
-  @keyframes bvizFlow { to { background-position: 8px 0; } }
-  @keyframes bvizFlowVertical { to { background-position: 0 8px; } }
-  .bviz__flow::after {
-    content: '';
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    width: 5px; height: 5px;
-    margin-top: -3px;
-    border-top: 1px solid var(--color-text-tertiary);
-    border-right: 1px solid var(--color-text-tertiary);
-    transform: rotate(45deg);
-  }
-
-  .bviz__mcp {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: var(--color-text-primary);
-    color: var(--color-bg);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── The Company Brain, visually the anchor of the diagram ── */
-  .bviz__brain {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .bviz__brain-title {
-    font-size: var(--text-base);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--color-text-primary);
-    text-align: center;
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .bviz__zone { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-
-  .bviz__zone-label {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-    margin-bottom: 2px;
-  }
-  .bviz__zone-item { font-size: var(--text-sm); color: var(--color-text-tertiary); line-height: 1.5; }
-
-  /* The implicit half is what Inplicit contributes, so it carries the accent */
-  .bviz__zone--implicit {
-    background: var(--color-accent-light);
-    border: 1px solid var(--color-accent-muted);
-    border-radius: var(--radius-ui);
-    padding: var(--space-3);
-  }
-  .bviz__zone--implicit .bviz__zone-label { color: var(--color-accent-dark); }
-  .bviz__zone--implicit .bviz__zone-item { color: var(--color-text-secondary); }
-  .bviz__zone-source {
-    font-size: 10px;
-    color: var(--color-text-tertiary);
-    margin-top: 4px;
-  }
-
-  /* ── Tools ── */
-  .bviz__tools { display: flex; flex-direction: column; gap: var(--space-2); }
-  .bviz__tool {
-    font-size: var(--text-sm);
-    color: var(--color-text-primary);
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-ui);
-    background: var(--color-surface);
-  }
-
-  /* ── Stacked layout on narrow screens: connectors point downwards ── */
-  @media (max-width: 860px) {
-    .bviz { grid-template-columns: 1fr; }
-    .bviz__flow { height: 44px; align-self: auto; }
-    .bviz__flow::before {
-      left: 50%; right: auto; top: 4px; bottom: 4px;
-      width: 1px; height: auto;
-      background-image: repeating-linear-gradient(
-        to bottom,
-        var(--color-text-tertiary) 0 3px,
-        transparent 3px 8px
-      );
-      background-size: 1px 8px;
-      background-repeat: repeat-y;
-      animation-name: bvizFlowVertical;
-    }
-    .bviz__flow::after {
-      right: auto; left: 50%; top: auto; bottom: 4px;
-      margin-top: 0; margin-left: -3px;
-      transform: rotate(135deg);
-    }
-    .bviz__side--tools .bviz__tools { flex-direction: row; flex-wrap: wrap; }
-    .bviz__label { margin-top: var(--space-2); }
-  }
+  @keyframes bvizFlow { to { stroke-dashoffset: -8; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .bviz__flow::before { animation: none; }
+    .bviz__feed line, .bviz__spokes line { animation: none; }
   }
 </style>
