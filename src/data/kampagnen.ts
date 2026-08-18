@@ -242,13 +242,13 @@ export const wissensbasis: KampagneContent = {
 };
 
 export const readiness: KampagneContent = {
-  slug: 'company-brain-check',
+  slug: 'company-brain-standortbestimmung',
   analyticsPrefix: 'readiness',
   seo: {
-    title: 'Company Brain Check | Inplicit',
+    title: 'Company Brain Standortbestimmung | Inplicit',
     description:
       'Die dreiwöchige Kampagne vor dem KI-Projekt: Welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden vertrauen und welche Anbindung sich zuerst lohnt.',
-    canonical: 'https://inplicit.ai/de/ai-readiness',
+    canonical: 'https://inplicit.ai/company-brain',
     ogImage: 'https://inplicit.ai/company-brain-poster.jpg',
   },
   navCtaLabel: 'Kampagne besprechen',
@@ -270,7 +270,7 @@ export const readiness: KampagneContent = {
       {
         icon: 'doc',
         title: 'Quellen, denen niemand traut',
-        body: 'Teams wissen, welche Ablage veraltet ist, und arbeiten daran vorbei. Ein System, das darauf zugreift, antwortet überzeugend falsch.',
+        body: 'Die Mitarbeitenden wissen, welche Ablage veraltet ist, und arbeiten daran vorbei. Ein System, das darauf zugreift, antwortet überzeugend falsch.',
       },
       {
         icon: 'user',
@@ -296,7 +296,7 @@ export const readiness: KampagneContent = {
       },
       {
         title: 'Welchen Quellen vertraut wird',
-        body: 'Pro genanntem System: aktuell, richtig, vollständig? Wo weiß das Team, dass die Quelle falsch ist, und nutzt sie trotzdem.',
+        body: 'Pro genanntem System: aktuell, richtig, vollständig? Wo weiß man im Haus, dass die Quelle falsch ist, und nutzt sie trotzdem.',
         example: '„Wenn dort etwas steht, verlassen Sie sich darauf oder prüfen Sie nach?"',
       },
       {
@@ -381,7 +381,7 @@ export const readiness: KampagneContent = {
     groups: [
       { label: 'Operative Teams und Sachbearbeitung', people: [1, 4, 8] },
       { label: 'Service und Kundenkontakt', people: [2, 11] },
-      { label: 'Teamleads und Prozessverantwortliche', people: [9, 5] },
+      { label: 'Bereichsleitung und Prozessverantwortliche', people: [9, 5] },
       { label: 'IT, Datenschutz und Systemverantwortung', people: [6, 10] },
       { label: 'Wer im Haus schon mit KI arbeitet', people: [3, 7, 12] },
     ],
@@ -396,7 +396,7 @@ export const readiness: KampagneContent = {
       SOURCE_POINT,
     ],
     campaigns: [
-      { label: 'Company Brain Check', people: [4, 9, 2] },
+      { label: 'Standortbestimmung', people: [4, 9, 2] },
       { label: 'Wissenstransfer', people: [6, 5, 3] },
       { label: 'Prozesse & Reibung', people: [1, 8, 11] },
     ],
@@ -426,7 +426,7 @@ export const readiness: KampagneContent = {
     eyebrow: 'Nächster Schritt',
     heading: 'Erst wissen, dann investieren.',
     sub: 'Starten Sie mit dem Bereich, in dem ein KI-Vorhaben ansteht oder bereits ins Stocken geraten ist. Gemeinsam legen wir fest, welche Rollen und Systeme wir uns ansehen.',
-    microcopy: '20 Minuten. Kein Standard-Pitch. Eine erste Einschätzung Ihrer Ausgangslage.',
+    microcopy: '20 Minuten. Keine Verkaufspräsentation. Eine erste Einschätzung Ihrer Ausgangslage.',
     trust: TRUST,
   },
   faq: {
@@ -446,7 +446,7 @@ export const readiness: KampagneContent = {
         a: 'Die Rollen, die die betroffenen Systeme und Abläufe täglich nutzen, dazu die Systemverantwortung und diejenigen, die im Haus schon mit KI arbeiten. Die Auswahl legen wir gemeinsam mit Ihnen fest.',
       },
       {
-        q: 'Brauchen wir das, wenn wir schon ein KI-Tool im Einsatz haben?',
+        q: 'Brauchen wir das, wenn wir schon eine KI-Anwendung im Einsatz haben?',
         a: 'Gerade dann. Die Kampagne zeigt, warum bestehende Assistenten in manchen Bereichen überzeugen und in anderen nicht, und welche Quellen dafür verantwortlich sind.',
       },
       {
