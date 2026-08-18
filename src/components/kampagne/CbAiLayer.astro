@@ -3,6 +3,7 @@
 // tools. The diagram gets the full container width so the three stages stay
 // readable; the takeaways sit underneath it.
 import CbBrainViz from './CbBrainViz.astro';
+import CbBrainVizStacked from './CbBrainVizStacked.astro';
 import type { KampagneContent } from '../../data/kampagnen';
 
 export interface Props {
@@ -20,8 +21,11 @@ const { content } = Astro.props;
       <p class="cbl__sub">{content.sub}</p>
     </div>
 
-    <div class="cbl__viz section-fade" style="--delay: 100ms">
+    <div class="cbl__viz cbl__viz--wide section-fade" style="--delay: 100ms">
       <CbBrainViz campaigns={content.campaigns} />
+    </div>
+    <div class="cbl__viz cbl__viz--stacked section-fade" style="--delay: 100ms">
+      <CbBrainVizStacked campaigns={content.campaigns} />
     </div>
 
     <ul class="cbl__points section-fade" style="--delay: 160ms" role="list">
@@ -44,7 +48,7 @@ const { content } = Astro.props;
     border-top: 1px solid var(--color-border);
     background-color: var(--color-surface);
   }
-  @media (max-width: 767px) { .cbl { padding: var(--space-24) 0; } }
+  @media (max-width: 767px) { .cbl { padding: var(--space-16) 0; } }
 
   .cbl__header { max-width: 660px; margin-bottom: var(--space-12); }
 
@@ -70,6 +74,13 @@ const { content } = Astro.props;
     padding: var(--space-8);
   }
   @media (max-width: 767px) { .cbl__viz { padding: var(--space-5) var(--space-4); } }
+
+  /* One diagram per breakpoint: side by side on desktop, stacked on phones */
+  .cbl__viz--stacked { display: none; }
+  @media (max-width: 860px) {
+    .cbl__viz--wide { display: none; }
+    .cbl__viz--stacked { display: block; }
+  }
 
   .cbl__points {
     list-style: none;

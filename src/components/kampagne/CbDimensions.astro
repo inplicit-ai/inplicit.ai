@@ -39,7 +39,7 @@ const { content } = Astro.props;
     border-top: 1px solid var(--color-border);
     background-color: var(--color-surface);
   }
-  @media (max-width: 767px) { .cbm { padding: var(--space-24) 0; } }
+  @media (max-width: 767px) { .cbm { padding: var(--space-16) 0; } }
 
   .cbm__header { margin-bottom: var(--space-12); max-width: 660px; }
 
@@ -120,5 +120,12 @@ const { content } = Astro.props;
     text-transform: uppercase;
     color: var(--color-text-tertiary);
     margin-bottom: 4px;
+  }
+
+  @media (max-width: 767px) {
+    .cbm__item { padding: var(--space-5); gap: 6px; }
+    .cbm__item-body { line-height: 1.6; }
+    .cbm__item-example { padding-top: var(--space-3); }
+    .cbm__header { margin-bottom: var(--space-8); }
   }
 </style>

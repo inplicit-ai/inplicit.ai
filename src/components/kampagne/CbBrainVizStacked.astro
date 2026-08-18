@@ -1,0 +1,129 @@
+---
+// Phone layout of the Company Brain diagram: campaigns on top, brain below,
+// tools at the bottom. The implicit zone sits at the top of the brain card
+// here because the flow arrives from above. Wide screens use CbBrainViz.
+import logos from './aiToolLogos.html?raw';
+import { BRAIN, TOOLS } from './brainLabels';
+
+export interface Props {
+  campaigns: { label: string; people: number[] }[];
+}
+const { campaigns } = Astro.props;
+
+const CARD = { x: 2, w: 238, h: 58, gap: 8, top: 20 };
+const cardY = (i: number) => CARD.top + i * (CARD.h + CARD.gap);
+const cardMid = (i: number) => cardY(i) + CARD.h / 2;
+
+// All campaign lines converge on the top edge of the implicit box
+const SINK = { x: 300, y: 302 };
+const MCP = { cx: 180, cy: 588, r: 17 };
+const TOOL_POS = [
+  { x: 44, y: 652 }, { x: 214, y: 652 },
+  { x: 44, y: 690 }, { x: 214, y: 690 },
+];
+---
+
+<svg class="bvs" viewBox="0 0 360 716" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs set:html={logos} />
+  <defs>
+    {campaigns.map((c, ci) => c.people.map((n, pi) => (
+      <clipPath id={`bvs-c${ci}-${pi}`}>
+        <circle cx={16 + pi * 14} cy={cardY(ci) + 40} r="9" />
+      </clipPath>
+    )))}
+  </defs>
+
+  <text x="2" y="12" class="bvs__label">{BRAIN.campaignsLabel}</text>
+
+  {campaigns.map((c, ci) => (
+    <g>
+      <rect x={CARD.x} y={cardY(ci)} width={CARD.w} height={CARD.h} rx="8"
+            fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1" />
+      <text x="14" y={cardY(ci) + 22} class="bvs__card-title">{c.label}</text>
+      {c.people.map((n, pi) => (
+        <>
+          <image href={`/people/s${n}.png`} x={7 + pi * 14} y={cardY(ci) + 31}
+                 width="18" height="18" clip-path={`url(#bvs-c${ci}-${pi})`} preserveAspectRatio="xMidYMid slice" />
+          <circle cx={16 + pi * 14} cy={cardY(ci) + 40} r="9" fill="none" stroke="var(--color-surface)" stroke-width="1.5" />
+        </>
+      ))}
+      <circle cx={16 + c.people.length * 14} cy={cardY(ci) + 40} r="9" fill="var(--color-accent)" />
+      <g transform={`translate(${16 + c.people.length * 14 - 5}, ${cardY(ci) + 40 - 5})`}>
+        <path d="M5 1.2a1.6 1.6 0 0 1 1.6 1.6v2.4A1.6 1.6 0 0 1 5 6.8a1.6 1.6 0 0 1-1.6-1.6V2.8A1.6 1.6 0 0 1 5 1.2z
+                 M2.2 5a2.8 2.8 0 0 0 5.6 0 M5 7.8v1.2"
+              stroke="var(--color-canvas-dark)" stroke-width="1.1" stroke-linecap="round" fill="none" />
+      </g>
+    </g>
+  ))}
+
+  <g class="bvs__feed">
+    {campaigns.map((_, ci) => (
+      <line x1={CARD.x + CARD.w + 4} y1={cardMid(ci)} x2={SINK.x} y2={SINK.y - 4} />
+    ))}
+  </g>
+
+  <rect x="2" y="254" width="356" height="300" rx="10"
+        fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="1.2" />
+  <text x="180" y="280" text-anchor="middle" class="bvs__brain-title">{BRAIN.title}</text>
+  <line x1="16" y1="292" x2="344" y2="292" stroke="var(--color-border)" stroke-width="1" />
+
+  <rect x="14" y="302" width="332" height="126" rx="6"
+        fill="var(--color-accent-light)" stroke="var(--color-accent-muted)" stroke-width="1" />
+  <text x="180" y="322" text-anchor="middle" class="bvs__zone-label bvs__zone-label--acc">{BRAIN.implicitLabel}</text>
+  {BRAIN.implicit.map((item, i) => (
+    <text x="180" y={346 + i * 20} text-anchor="middle" class="bvs__item bvs__item--acc">{item}</text>
+  ))}
+  <text x="180" y="418" text-anchor="middle" class="bvs__source">{BRAIN.source}</text>
+
+  <line x1="16" y1="442" x2="344" y2="442" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3" />
+  <text x="180" y="462" text-anchor="middle" class="bvs__zone-label">{BRAIN.explicitLabel}</text>
+  {BRAIN.explicit.map((item, i) => (
+    <text x="180" y={484 + i * 20} text-anchor="middle" class="bvs__item">{item}</text>
+  ))}
+
+  <line x1="180" y1="554" x2="180" y2={MCP.cy - MCP.r} stroke="var(--color-border)" stroke-width="1" />
+  <circle cx={MCP.cx} cy={MCP.cy} r={MCP.r} fill="var(--color-text-primary)" />
+  <text x={MCP.cx} y={MCP.cy + 3} text-anchor="middle" class="bvs__mcp">MCP</text>
+
+  <g class="bvs__feed">
+    {TOOL_POS.map((p) => (
+      <line x1={MCP.cx} y1={MCP.cy + MCP.r + 2} x2={p.x + 6} y2={p.y - 10} />
+    ))}
+  </g>
+  {TOOLS.map((t, i) => (
+    <>
+      <use href={`#${t.id}`} x={TOOL_POS[i].x} y={TOOL_POS[i].y - 7} width="14" height="14" />
+      <text x={TOOL_POS[i].x + 20} y={TOOL_POS[i].y + 4} class="bvs__tool">{t.label}</text>
+    </>
+  ))}
+</svg>
+
+<style>
+  .bvs { display: block; width: 100%; height: auto; }
+
+  .bvs__label, .bvs__card-title, .bvs__brain-title, .bvs__zone-label,
+  .bvs__item, .bvs__source, .bvs__mcp, .bvs__tool { font-family: var(--font-family); }
+
+  .bvs__label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.09em; fill: var(--color-text-tertiary); }
+  .bvs__card-title { font-size: 12px; font-weight: 500; fill: var(--color-text-primary); }
+  .bvs__brain-title { font-size: 13px; font-weight: 600; fill: var(--color-text-primary); }
+  .bvs__zone-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em; fill: var(--color-text-tertiary); }
+  .bvs__zone-label--acc { fill: var(--color-accent-dark); }
+  .bvs__item { font-size: 11px; fill: var(--color-text-tertiary); }
+  .bvs__item--acc { fill: var(--color-text-secondary); }
+  .bvs__source { font-size: 9px; fill: var(--color-text-tertiary); }
+  .bvs__mcp { font-size: 8px; font-weight: 700; fill: var(--color-bg); }
+  .bvs__tool { font-size: 12px; fill: var(--color-text-primary); }
+
+  .bvs__feed line {
+    stroke: var(--color-accent);
+    stroke-width: 0.9;
+    stroke-dasharray: 3 5;
+    animation: bvsFlow 0.28s linear infinite;
+  }
+  @keyframes bvsFlow { to { stroke-dashoffset: -8; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bvs__feed line { animation: none; }
+  }
+</style>

@@ -46,6 +46,12 @@ export interface KampagneContent {
     sub: string;
     groups: { label: string; people: number[] }[];
   };
+  /** Campaigns that double as the entry point to the Company Brain. Skipped when absent. */
+  duality?: {
+    eyebrow: string;
+    heading: string;
+    cards: { tag: string; title: string; body: string; highlight: boolean }[];
+  };
   /** Assessment campaigns only: what the campaign measures. Section is skipped when absent. */
   dimensions?: {
     eyebrow: string;
@@ -281,6 +287,24 @@ export const readiness: KampagneContent = {
         icon: 'compass',
         title: 'Gemessen wird an der Spitze',
         body: 'Übliche Reifegrad-Analysen erheben Lizenzen, Technik und Richtlinien. Ob das nötige Wissen abrufbar vorhanden ist, bleibt ungeprüft.',
+      },
+    ],
+  },
+  duality: {
+    eyebrow: 'Doppelter Nutzen',
+    heading: 'Eine Kampagne, zwei Ergebnisse.',
+    cards: [
+      {
+        tag: 'Sofort',
+        title: 'Ihre Standortbestimmung',
+        body: 'Nach drei Wochen wissen Sie, welches Wissen Ihre Organisation trägt, welchen Quellen Ihre Mitarbeitenden vertrauen und welche Anwendungsfälle zuerst tragen. Das steht für sich, auch wenn Sie danach nichts weiter tun.',
+        highlight: false,
+      },
+      {
+        tag: 'Danach',
+        title: 'Die erste Schicht Ihres Company Brains',
+        body: 'Was in den Gesprächen entsteht, ist bereits strukturiertes Wissen. Wenn Sie ausbauen wollen, kommen die als tragfähig bewerteten Quellen dazu, statt dass Sie noch einmal von vorn beginnen.',
+        highlight: true,
       },
     ],
   },

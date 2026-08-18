@@ -1,0 +1,100 @@
+---
+// Optional section: the campaign stands on its own and is at the same time the
+// entry point to the Company Brain. Two cards, the second one accented.
+import type { KampagneContent } from '../../data/kampagnen';
+
+export interface Props {
+  content: NonNullable<KampagneContent['duality']>;
+}
+const { content } = Astro.props;
+---
+
+<section class="cbu" id="doppelter-nutzen">
+  <div class="container">
+    <div class="cbu__header section-fade">
+      <span class="section-eyebrow">{content.eyebrow}</span>
+      <h2 class="cbu__heading">{content.heading}</h2>
+    </div>
+
+    <div class="cbu__grid">
+      {content.cards.map((card, i) => (
+        <article class:list={['cbu__card', 'section-fade', { 'cbu__card--accent': card.highlight }]} style={`--delay: ${i * 90}ms`}>
+          <span class="cbu__tag">{card.tag}</span>
+          <h3 class="cbu__title">{card.title}</h3>
+          <p class="cbu__body">{card.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cbu {
+    padding: var(--space-section) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+  @media (max-width: 767px) { .cbu { padding: var(--space-16) 0; } }
+
+  .cbu__header { margin-bottom: var(--space-10); max-width: 640px; }
+
+  .cbu__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--color-text-primary);
+  }
+
+  .cbu__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 768px) { .cbu__grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .cbu__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  @media (max-width: 767px) { .cbu__card { padding: var(--space-6); } }
+
+  /* The second card is the bridge to the Company Brain, so it carries the accent */
+  .cbu__card--accent {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-muted);
+  }
+
+  .cbu__tag {
+    align-self: flex-start;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-bg);
+  }
+  .cbu__card--accent .cbu__tag {
+    color: var(--color-accent-dark);
+    border-color: var(--color-accent-muted);
+    background: var(--color-surface);
+  }
+
+  .cbu__title {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+  }
+  .cbu__body {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+  .cbu__card--accent .cbu__body { color: var(--color-text-primary); }
+</style>
