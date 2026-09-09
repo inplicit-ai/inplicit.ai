@@ -1,8 +1,10 @@
 ---
 export interface Props {
   lang?: 'en' | 'de';
+  /** Standalone /call page: neutral heading instead of the landing-page close. */
+  discovery?: boolean;
 }
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', discovery = false } = Astro.props;
 const isDE = lang === 'de';
 
 const CAL_LINK = 'inplicit/30min';
@@ -16,8 +18,8 @@ const CAL_LINK = 'inplicit/30min';
       <div class="cal__copy section-fade">
         <p class="section-eyebrow">{isDE ? 'Demo buchen' : 'Book a demo'}</p>
         <h2 class="cal__heading">
-          <span>{isDE ? 'Überzeugt?' : 'Seen enough?'}</span>
-          <span class="cal__heading-ghost">{isDE ? 'Sprecht mit uns.' : 'Talk to us.'}</span>
+          <span>{discovery ? (isDE ? 'Sehen, wie' : 'See how') : (isDE ? 'Überzeugt?' : 'Seen enough?')}</span>
+          <span class="cal__heading-ghost">{discovery ? (isDE ? 'Inplicit funktioniert' : 'Inplicit works') : (isDE ? 'Sprecht mit uns.' : 'Talk to us.')}</span>
         </h2>
         <p class="cal__sub">
           {isDE

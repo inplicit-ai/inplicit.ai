@@ -1,0 +1,191 @@
+---
+/**
+ * SceneSetup — pixel mock of the dashboard's Setup Chat work-area content
+ * (AppShell.astro supplies chrome). No header bar in the pane: SetupChat.tsx
+ * says so explicitly. Participants are never framed as optional, launch is
+ * blocked without them (ReviewLaunch.tsx).
+ *
+ * Scenario: an M&A advisory running post-merger integration diligence,
+ * acquirer "Halden" acquiring "Meridian".
+ *
+ * Re-read 2026-08-22 (client: turn design "changed recently"): SetupChat.tsx,
+ * ChatTurnRow.tsx, chat-shell.tsx, prompt-input.tsx + git history.
+ * UNCHANGED: 28px/8px-radius/bordered avatar; the user bubble (bg-cta/white,
+ * 14px radius with a 6px bottom-right corner); the assistant reading column
+ * (borderless, max-w-[68ch], 15px/1.65).
+ * CHANGED (PR #180/#181, merged 2026-08-18): a drafted list answer no longer
+ * renders as a plain hairline-boxed <ul>. It is now one AnswerCard: a
+ * bordered card with four hairline-divided zones, head (checkmark + title +
+ * count), content (each item on its own rail), a fixed question line, two
+ * actions ("Looks good" filled / "Change" outlined). Rebuilt as `.answer-card`.
+ */
+import logoIconRaw from '../../assets/logo_icon.svg?raw';
+
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+// Explicit width/height so no inline SVG ever balloons if scoped CSS drops.
+const sendIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+const checkIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+const turn1 = isDE
+  ? 'Beschreiben Sie, was Sie über die Integration erfahren möchten. Ich erstelle daraus eine Interview-Kampagne, einschließlich wer teilnehmen sollte.'
+  : "Tell me what you want to learn about the merger, and I'll turn it into an interview campaign, including who should take part.";
+
+const turn2 = isDE
+  ? 'Wo versteckt sich Integrationsrisiko bei Halden-Meridian, das der Datenraum nicht zeigt?'
+  : "Where is integration risk hiding in the Halden-Meridian deal that the data room won't show us?";
+
+const leadIn = isDE
+  ? 'Basierend auf ähnlichen Post-Merger-Integrationen, hier ein Entwurf für Meridian:'
+  : "Based on similar post-merger integrations, here's a draft catalog for Meridian:";
+
+// Mirrors detailsOf()'s "title (method)" shape for set_exploration_map, folded
+// into one flowing sentence per row (a colon, never a dash) so the risk area
+// and why it matters read together on the card's own hairline rail.
+const rows = isDE
+  ? [
+      'Doppelte Prozessverantwortung: eine Freigabe, zwei parallele Systeme',
+      'Schlüsselpersonenabhängigkeit: Mid-Office-Wissen bei nur einer Person',
+      'Risiko bei der Kundenübergabe: Beziehungen gefährdet im Übergang',
+    ]
+  : [
+      'Duplicate process ownership: one approval, two overlapping systems',
+      'Key-person dependency: mid-office knowledge held by one person',
+      'Client handover risk: relationships at risk mid-transition',
+    ];
+
+// Verbatim strings from the current AnswerCard/AnswerList anatomy
+// (messages/en.json, messages/de.json — setup.toolCard.set_exploration_map,
+// setup.answerCard.{count.angles,question,confirm,edit}).
+const cardTitle = isDE ? 'Erkundungsfelder kartiert' : 'Mapped the exploration angles';
+const cardCount = isDE ? '3 Felder' : '3 angles';
+const cardQuestion = isDE ? 'Passt das?' : 'Does this fit?';
+const confirmLabel = isDE ? 'Passt so' : 'Looks good';
+const editLabel = isDE ? 'Ändern' : 'Change';
+
+const placeholder = isDE
+  ? 'Antworte oder bitte den Assistenten, den Katalog anzupassen…'
+  : 'Reply or ask the assistant to adjust the catalog…';
+---
+
+<div class="jscene" style="--t0: 0" aria-hidden="true">
+  <div class="setup-scroll">
+    <div class="setup-thread">
+
+      <div class="turn turn--assistant">
+        <span class="avatar avatar--bot jpart" data-axis="down" data-weight="chrome" style="--g: 0" set:html={logoIconRaw} />
+        <div class="assistant-col">
+          <p class="assistant-text jpart" data-axis="up" style="--g: 0">{turn1}</p>
+        </div>
+      </div>
+
+      <div class="turn turn--user">
+        <span class="avatar avatar--user jpart" data-axis="down" data-weight="chrome" style="--g: 1">H</span>
+        <div class="bubble jpart" data-axis="up" style="--g: 1">{turn2}</div>
+      </div>
+
+      <div class="turn turn--assistant">
+        <span class="avatar avatar--bot jpart" data-axis="down" data-weight="chrome" style="--g: 2" set:html={logoIconRaw} />
+        <div class="assistant-col">
+          <p class="assistant-text jpart" data-axis="up" style="--g: 2">{leadIn}</p>
+
+          <div class="answer-card jpart" data-axis="up" style="--g: 2">
+            <div class="answer-card__head">
+              <span class="answer-card__check" set:html={checkIcon} />
+              <span class="answer-card__title">{cardTitle}</span>
+              <span class="answer-card__count">{cardCount}</span>
+            </div>
+            <div class="answer-card__divider"></div>
+            <div class="answer-card__body">
+              {rows.map((r) => (
+                <div class="answer-row">
+                  <span class="answer-row__rail" />
+                  <span class="answer-row__text">{r}</span>
+                </div>
+              ))}
+            </div>
+            <div class="answer-card__divider"></div>
+            <div class="answer-card__foot">
+              <p class="answer-card__question">{cardQuestion}</p>
+              <div class="answer-card__actions">
+                <span class="answer-card__btn answer-card__btn--confirm">{confirmLabel}</span>
+                <span class="answer-card__btn answer-card__btn--edit">{editLabel}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="composer-bar">
+    <div class="composer-shell">
+      <div class="composer jpart" data-axis="up" data-weight="chrome" style="--g: 4">
+        <div class="composer-placeholder">{placeholder}</div>
+        <div class="composer-actions">
+          <span class="send-btn" set:html={sendIcon} />
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .jscene { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; background: var(--color-surface); font-family: var(--font-family); }
+  .setup-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* bottom-anchored: overflow clips at the top, not into the composer */
+  .setup-thread { display: flex; flex-direction: column; margin-top: auto; gap: 18px; max-width: 768px; width: 100%; margin: 0 auto; padding: 16px 20px 20px; }
+
+  .turn { display: flex; gap: 12px; }
+  .turn--user { flex-direction: row-reverse; }
+
+  .avatar { flex-shrink: 0; width: 28px; height: 28px; border-radius: var(--radius-ui); border: 1px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; }
+  .avatar--bot :global(svg) { width: 16px; height: 16px; display: block; }
+  .avatar--user { background: var(--color-surface-elevated); font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+
+  .assistant-col { width: 100%; max-width: 68ch; display: flex; flex-direction: column; gap: 10px; }
+  .assistant-text { font-size: 15px; line-height: 1.65; color: var(--color-text-primary); background: transparent; }
+
+  .bubble { max-width: 80%; background: var(--dash-cta); color: var(--dash-cta-text); border-radius: var(--radius-xl) var(--radius-xl) 6px var(--radius-xl); padding: 10px 16px; font-size: 15px; line-height: 1.6; }
+
+  /* The current AnswerCard anatomy: head (glyph + title + count) / content
+     (railed rows) / foot (question + two actions), each band hairline-divided. */
+  .answer-card { border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface); overflow: hidden; }
+  .answer-card__head { display: flex; align-items: center; gap: 8px; padding: 10px 16px; }
+  .answer-card__check { flex-shrink: 0; color: var(--color-success); }
+  .answer-card__check :global(svg) { width: 16px; height: 16px; display: block; }
+  .answer-card__title { font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--color-text-primary); }
+  .answer-card__count { margin-left: auto; flex-shrink: 0; font-size: 13px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+  .answer-card__divider { height: 1px; background: var(--color-border-subtle); }
+  .answer-card__body { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px; }
+  .answer-row { display: flex; align-items: stretch; gap: 8px; }
+  .answer-row__rail { width: 2px; flex-shrink: 0; border-radius: var(--radius-full); background: var(--color-border); }
+  .answer-row__text { font-size: 15px; line-height: 1.5; color: var(--color-text-primary); }
+  .answer-card__foot { display: flex; flex-direction: column; gap: 10px; padding: 10px 16px; }
+  .answer-card__question { font-size: 15px; line-height: 1.5; color: var(--color-text-primary); }
+  .answer-card__actions { display: flex; gap: 8px; }
+  .answer-card__btn { display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 14px; border-radius: var(--radius-ui); font-size: 14px; font-weight: 500; }
+  .answer-card__btn--confirm { background: var(--dash-cta); color: var(--dash-cta-text); }
+  .answer-card__btn--edit { background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border-strong); }
+
+  .composer-bar { flex-shrink: 0; background: var(--color-surface); padding: 0 20px 20px; }
+  .composer-shell { max-width: 768px; width: 100%; margin: 0 auto; }
+  .composer { border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface); padding: 10px 12px; }
+  .composer-placeholder { font-size: 15px; color: var(--color-text-tertiary); }
+  .composer-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .send-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--dash-cta); color: var(--dash-cta-text); display: flex; align-items: center; justify-content: center; }
+  .send-btn :global(svg) { width: 16px; height: 16px; display: block; }
+
+  @media (max-width: 1023px) {
+    .setup-thread { gap: 16px; padding: 14px 16px 16px; }
+    .composer-bar { padding: 0 16px 16px; }
+    .assistant-text, .bubble { font-size: 14px; }
+  }
+</style>

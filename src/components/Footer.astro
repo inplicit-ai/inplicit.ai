@@ -27,10 +27,32 @@ const legalLinks = lang === 'de'
       { href: '/privacy', label: 'Privacy' },
       { href: '/terms', label: 'Terms' },
     ];
+
+// EU flag: 12 stars evenly spaced on a circle (drawn, not emoji — emoji flags don't render on Windows)
+const euStars = Array.from({ length: 12 }, (_, i) => {
+  const angle = (i * Math.PI) / 6;
+  return { x: 12 + 4.6 * Math.sin(angle), y: 8 - 4.6 * Math.cos(angle) };
+});
+const starPath = 'M0,-0.85 0.2,-0.26 0.81,-0.26 0.32,0.1 0.5,0.69 0,0.33 -0.5,0.69 -0.32,0.1 -0.81,-0.26 -0.2,-0.26 Z';
+
+const markSquare = 'M47.8331 41.851L5.98219 47.8331L0 5.98219L41.851 0L47.8331 41.851ZM29.3794 20.3663C28.7568 16.0109 24.7216 12.9848 20.3663 13.6073C16.0109 14.2299 12.9849 18.2652 13.6073 22.6205C14.2299 26.9758 18.2651 30.0018 22.6205 29.3794C26.9759 28.7568 30.0019 24.7216 29.3794 20.3663Z';
+const markDot = 'M34.1808 25.6463C33.5582 21.2909 29.5228 18.2648 25.1674 18.8874C20.812 19.51 17.7859 23.5454 18.4085 27.9008C19.0311 32.2562 23.0665 35.2822 27.4219 34.6597C31.7773 34.0371 34.8033 30.0017 34.1808 25.6463Z';
 ---
 
 <footer class="footer">
   <div class="footer__inner container">
+
+    <!-- straddles the footer's top edge: dark half sits on the light section, white half on the black footer -->
+    <div class="footer__mark" aria-hidden="true">
+      <svg class="footer__mark-half footer__mark-half--above" viewBox="0 0 48 48" fill="none">
+        <path d={markSquare} fill="var(--color-text-primary)" />
+        <path d={markDot} fill="var(--color-accent)" />
+      </svg>
+      <svg class="footer__mark-half footer__mark-half--below" viewBox="0 0 48 48" fill="none">
+        <path d={markSquare} fill="#ffffff" />
+        <path d={markDot} fill="var(--color-accent)" />
+      </svg>
+    </div>
 
     <div class="footer__top">
      <a href={lang === 'de' ? '/de/' : '/'} class="nav__logo" aria-label="inplicit.ai home">
@@ -73,6 +95,16 @@ const legalLinks = lang === 'de'
       </nav>
     </div>
 
+    <p class="footer__origin">
+      {lang === 'de' ? 'Mit Liebe in Europa gebaut' : 'Shipped from Europe with love'}
+      <svg class="footer__flag" width="24" height="16" viewBox="0 0 24 16" aria-label={lang === 'de' ? 'Europäische Union' : 'European Union'} role="img">
+        <rect width="24" height="16" rx="1.5" fill="#003399" />
+        {euStars.map((s) => (
+          <path d={starPath} fill="#FFCC00" transform={`translate(${s.x} ${s.y})`} />
+        ))}
+      </svg>
+    </p>
+
   </div>
 </footer>
 
@@ -84,23 +116,46 @@ const legalLinks = lang === 'de'
 
 <style>
   .footer {
+    --footer-pad-top: var(--space-24);
+    --mark-size: 120px;
     background-color: #0a0a0a;
     border-top: none;
-    padding: var(--space-12) 0 var(--space-8);
+    padding: var(--footer-pad-top) 0 var(--space-16);
     color: #ffffff;
   }
 
   .footer__inner {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-10);
   }
 
   .footer__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-8);
   }
+
+  .footer__mark {
+    position: absolute;
+    right: 0;
+    top: calc(-1 * var(--footer-pad-top));
+    width: var(--mark-size);
+    height: var(--mark-size);
+    transform: translateY(-50%);
+  }
+
+  .footer__mark-half {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .footer__mark-half--above { clip-path: inset(0 0 50% 0); }
+  .footer__mark-half--below { clip-path: inset(50% 0 0 0); }
 
     .nav__logo {
     display: flex;
@@ -111,7 +166,7 @@ const legalLinks = lang === 'de'
   .nav__logo:hover { opacity: 0.7; }
 
   .footer__logo-img {
-    height: 20px;
+    height: 24px;
     width: auto;
     display: block;
   }
@@ -187,7 +242,26 @@ const legalLinks = lang === 'de'
     cursor: pointer;
   }
 
+  .footer__origin {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .footer__flag {
+    display: block;
+    border-radius: 2px;
+  }
+
   @media (max-width: 640px) {
+    .footer {
+      --footer-pad-top: var(--space-16);
+      --mark-size: 80px;
+      padding: var(--footer-pad-top) 0 var(--space-12);
+    }
+    .footer__logo-img { height: 20px; }
     .footer__bottom { flex-direction: column; align-items: flex-start; }
     .footer__copy { margin-right: 0; }
   }

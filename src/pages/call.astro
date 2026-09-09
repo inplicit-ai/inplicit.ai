@@ -17,9 +17,9 @@ import CalBooking from '../components/CalBooking.astro';
     <!-- Geist self-hosted via @fontsource-variable/geist (no Google Fonts) -->
   </head>
   <body>
-    <Nav lang="en" langToggleHref="/de/call" />
-    <main>
-      <CalBooking lang="en" />
+    <Nav solid lang="en" langToggleHref="/de/call" />
+    <main class="call">
+      <CalBooking lang="en" discovery />
     </main>
     <script>
       const observer = new IntersectionObserver(
@@ -41,5 +41,6 @@ import CalBooking from '../components/CalBooking.astro';
 <style is:global>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--color-bg); }
-  .cal { border-top: none; padding-top: var(--space-6); }
+  /* beats the scoped .cal[data-astro-cid] padding shorthand */
+  main.call .cal { border-top: none; padding-top: var(--space-40); }
 </style>

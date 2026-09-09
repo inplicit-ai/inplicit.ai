@@ -1,0 +1,241 @@
+---
+/**
+ * SceneChat — static mock of the dashboard's Knowledge Chat, the "temporal"
+ * payoff scene: the answer arrives line by line as the user scrolls, then the
+ * citation chips snap into the Sources row. This is the LAST scene (data-last)
+ * — it never reverses out; the pin releases while it stands fully assembled.
+ * Citations are anonymous by construction (rag.rs:22) — never a name/email/
+ * job title in a chip. No "email you when results are ready" UI exists in the
+ * product (that is a code comment, not a shipped feature) — do not render it.
+ *
+ * Scenario: an M&A advisory running post-merger integration (PMI) diligence
+ * for a client — acquirer "Halden" acquiring "Meridian". The closing
+ * paragraph from the original mock is cut here so the answer, all 3 bullets,
+ * the Sources row and the provenance footer stay fully visible inside the
+ * ~1010x520 work area with no internal scroll.
+ */
+import logoIconRaw from '../../assets/logo_icon.svg?raw';
+
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const question = isDE
+  ? 'Wo konzentriert sich das Retention-Risiko im Meridian-Team nach der Ankündigung?'
+  : 'Where is retention risk concentrated among the Meridian team after the announcement?';
+
+const u1 = isDE
+  ? 'In 3 Interviewrunden nennen beide Seiten dasselbe Fenster: die ersten zwei Quartale nach Closing, bevor neue Berichtslinien feststehen.'
+  : 'Across 3 interview batches, both sides point to the same window: the first two quarters after close, before new reporting lines are settled.';
+
+const bullets = isDE
+  ? [
+      { b: 'Retention-Risiko', t: ': zwei leitende Meridian-Account-Manager wurden bereits von Headhuntern angesprochen und sehen für sich keine klare Rolle nach dem Closing.' },
+      { b: 'Undokumentierte Zusagen', t: ': mehrere Sonderabsprachen von Meridian mit Kunden stehen nur in persönlichen Notizen, nicht im CRM oder im Datenraum.' },
+      { b: 'Lücken bei der CRM-Konsolidierung', t: ': Meridians Pipeline-Stufen lassen sich nicht sauber auf Haldens CRM übertragen, wodurch Deals bei der Migration verloren gehen können.' },
+    ]
+  : [
+      { b: 'Retention risk', t: ': two senior Meridian account leads have already had recruiter contact and see no clear role for themselves post-close.' },
+      { b: 'Undocumented commitments', t: ": several Meridian side-agreements with clients exist only in personal notes, not in the CRM or the data room." },
+      { b: 'CRM consolidation gaps', t: ": Meridian's pipeline stages don't map cleanly onto Halden's CRM, so deals risk being mis-tracked during migration." },
+    ];
+
+const sourcesLabel = isDE ? 'Quellen' : 'Sources';
+const footer = isDE
+  ? 'KI-generiert aus anonymisierten Interviewdaten'
+  : 'AI-generated from anonymized interview data';
+
+const chips = [
+  { id: 'ANON-7C41F2', n: 6 },
+  { id: 'ANON-2B90AD', n: 14 },
+  { id: 'ANON-5E17C8', n: 3 },
+  { id: 'ANON-9A03D6', n: 9 },
+];
+---
+
+<div class="jscene" style="--t0: 3" data-last aria-hidden="true">
+  <div class="chat-frame">
+    <div class="chat-pane">
+      <div class="chat-thread">
+
+        <div class="turn turn--user">
+          <span class="avatar avatar--user jpart" data-weight="chrome" style="--g: 0">H</span>
+          <div class="bubble jpart" data-axis="up" style="--g: 0">{question}</div>
+        </div>
+
+        <div class="turn turn--assistant">
+          <span class="avatar avatar--bot jpart" data-weight="chrome" style="--g: 1" set:html={logoIconRaw} />
+          <div class="answer-col">
+            <p class="answer-p jpart" style="--g: 1">{u1}</p>
+
+            <div class="bullet-list">
+              {bullets.map((row, i) => (
+                <div class="bullet jpart" style={`--g: ${i < 2 ? 2 : 3}`}>
+                  <span class="bullet-dot"></span>
+                  <span><strong>{row.b}</strong>{row.t}</span>
+                </div>
+              ))}
+            </div>
+
+            <div class="sources-block">
+              <div class="sources-divider jpart" data-weight="chrome" style="--g: 4"></div>
+              <div class="sources-row">
+                <span class="sources-label jpart" style="--g: 4">{sourcesLabel}</span>
+                {chips.map((c) => (
+                  <span class="chip jpart" style="--g: 4">
+                    <span>{c.id}</span>
+                    <span class="chip-dot">·</span>
+                    <span>#{c.n}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <p class="footer jpart" data-weight="chrome" style="--g: 4">{footer}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .jscene {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .chat-frame {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .chat-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--color-surface);
+    font-family: var(--font-family);
+      justify-content: center;
+  }
+
+  .chat-thread {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 32px;
+  }
+
+  .turn { display: flex; gap: 12px; }
+  .turn--user { flex-direction: row-reverse; }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-ui);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .avatar--bot :global(svg) { width: 16px; height: 16px; display: block; }
+  .avatar--user {
+    background: var(--color-surface-elevated);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  .bubble {
+    max-width: 80%;
+    background: var(--dash-cta);
+    color: var(--dash-cta-text);
+    border-radius: var(--radius-xl) var(--radius-xl) 6px var(--radius-xl);
+    padding: 10px 16px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .answer-col {
+    max-width: 68ch;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .answer-p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-text-primary);
+  }
+  .answer-p :global(strong) { font-weight: 600; color: var(--color-text-primary); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet { display: flex; gap: 8px; font-size: 15px; line-height: 1.65; color: var(--color-text-primary); }
+  .bullet strong { font-weight: 600; color: var(--color-text-primary); }
+  .bullet-dot {
+    flex-shrink: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-text-tertiary);
+    margin-top: 11px;
+  }
+
+  .sources-block { display: flex; flex-direction: column; }
+  .sources-divider { height: 0; border-top: 1px solid var(--color-border-subtle); margin-top: 16px; }
+  .sources-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding-top: 16px;
+  }
+  .sources-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-elevated);
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
+  .chip-dot { color: var(--color-text-tertiary); }
+
+  .footer {
+    font-size: 12px;
+    color: var(--color-text-quaternary);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 1023px) {
+    .chat-frame { border-radius: 0; border-left: none; border-right: none; }
+    .chat-thread { gap: 16px; padding: 16px 20px; }
+    .answer-col { gap: 8px; }
+    .bullet-list { gap: 6px; }
+    .sources-divider { margin-top: 12px; }
+    .sources-row { padding-top: 12px; }
+    .bubble, .answer-p, .bullet { font-size: 14px; }
+  }
+</style>
