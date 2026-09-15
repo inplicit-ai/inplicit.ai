@@ -64,11 +64,6 @@ const windows = Array.from({ length: COLS * ROWS }, (_, i) => {
     clock: `${String(4 + Math.floor(next() * 17)).padStart(2, '0')}:${String(Math.floor(next() * 60)).padStart(2, '0')}`,
     // The strand reaches row 0 first, so that is the order cards land in.
     g: row,
-    // Where the merge point sits, relative to this card, as a share of the
-    // card's own box: sideways to the centre column, downward past the
-    // remaining rows plus the lead band below the grid.
-    dx: +(((COLS - 1) / 2 - col) * 106).toFixed(1),
-    dy: +(((ROWS - 0.5 - row) * 112) + 75).toFixed(1),
     beat: (1.05 + next() * 0.5).toFixed(2),
     // Distance back to the centre of the grid, as a share of the card's own
     // box (a column step is one card plus one gap, hence slightly over 100).
@@ -119,7 +114,7 @@ const t = isDE
 
       <div class="iv__grid">
         {windows.map((w) => (
-          <div class="win" style={`--r:${w.row};--dx:${w.dx}%;--dy:${w.dy}%;--beat:${w.beat}s`}>
+          <div class="win" style={`--r:${w.row};--beat:${w.beat}s`}>
             <div class="win__top">
               <span class="win__no">{t.label} {w.no}</span>
               <span class="win__clock"><span class="disc disc--live"></span>{w.clock}</span>
@@ -298,10 +293,13 @@ const t = isDE
   :global(.jstage.is-live) .iv {
     pointer-events: none;
     --drop: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
-    transform: translate3d(0, calc(var(--drop-px, 0px) * var(--drop)), 0);
+    /* And out the top when it is done, as one piece. */
+    --exit: clamp(0, calc((var(--t) - 4.92) / 0.40), 1);
+    transform: translate3d(0,
+      calc(var(--drop-px, 0px) * var(--drop) - 118% * var(--exit)), 0);
     opacity: min(
       clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
-      clamp(0, calc((5.38 - var(--t)) / 0.10), 1)
+      clamp(0, calc((5.46 - var(--t)) / 0.08), 1)
     );
   }
 
@@ -335,21 +333,16 @@ const t = isDE
      it must not move sideways: it has to stay on its line. On the way out it
      follows the merge instead, gathering down and inward to the point the
      strands run into, bottom row leading. */
+  /* The cards only land. They neither fade nor gather: the whole section
+     leaves as one piece, the way a page scrolls, and the insight frame is
+     built below it. Moving the cards individually on the way out made the
+     exit a second animation competing with that. */
   :global(.jstage.is-live) .win {
     --in: clamp(0, calc((var(--t) - 4.26 - var(--r) * 0.12) / 0.13), 1);
-    --home: clamp(0, calc((var(--t) - 4.92 - (2 - var(--r)) * 0.035) / 0.20), 1);
-    /* No exit fade. They are not dismissed, they are collected: each one
-       travels to the merge point and stacks behind the one before it. What
-       clears the pile afterwards is the layer's own ramp, by which time they
-       are a fifth of their size and sitting on top of each other. */
     opacity: var(--in);
-    transform:
-      translate3d(calc(var(--dx) * var(--home)),
-                  calc(-10px * (1 - var(--in)) + var(--dy) * var(--home)), 0)
-      scale(calc(0.96 + 0.04 * var(--in) - 0.78 * var(--home)));
+    transform: translate3d(0, calc(-10px * (1 - var(--in))), 0)
+               scale(calc(0.96 + 0.04 * var(--in)));
   }
-  /* Bottom row leaves first, so it has to land at the bottom of the stack. */
-  :global(.jstage.is-live) .win { z-index: calc(3 - var(--r)); }
 
   /* Then each conversation builds a turn at a time while you keep scrolling. */
   :global(.jstage.is-live) .turn {
@@ -457,7 +450,7 @@ const t = isDE
     const sync = () => {
       if (!dropOk) measureDrop();
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
-      const next = t > 3.9 && t < 5.40;
+      const next = t > 3.9 && t < 5.48;
       iv.classList.toggle('is-live-beat', next);
       if (next === live) return;
       live = next;

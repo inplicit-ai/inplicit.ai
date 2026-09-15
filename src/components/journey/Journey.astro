@@ -25,24 +25,15 @@ const isDE = lang === 'de';
        sits at journey time 5. -->
   <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <!-- One line down the whole journey. Vertical, because its job is to
-           pull the eye from one beat to the next: a horizontal line sits
-           across the story, a vertical one leads through it. It draws itself
-           as --t advances and is the only element spanning all six beats.
-           Revealed with a clip-path rather than a dash offset:
-           stroke-dashoffset is a LENGTH in CSS, so a unitless progress value
-           silently reads as 1px and the line just sits there fully drawn. -->
-      <svg class="jthread" viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden="true">
-        <path
-          class="jthread__path"
-          vector-effect="non-scaling-stroke"
-          d="M100 -20 C 100 60 58 120 58 215 S 142 345 142 445 S 62 585 100 700 L 100 1020"
-          fill="none"
-          stroke="var(--color-accent)"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        />
-      </svg>
+      <!-- One line down the whole journey: a plain rule on the frame's vertical
+           centre, revealed top to bottom as --t advances. Deliberately NOT an
+           SVG path. The frame is about 1016x720 and any viewBox that is not
+           that shape gets sheared by preserveAspectRatio="none", which turned
+           every wave into a bow sweeping across the whole picture. A rule has
+           no aspect ratio to distort, and it sits exactly where the fan, the
+           strands and the merge sit, so the split reads as this same line
+           opening and closing rather than as a second drawing. -->
+      <span class="jthread" aria-hidden="true"></span>
 
       <SceneKnowledgeLoss lang={lang} />
       <SceneAsk lang={lang} />
@@ -115,15 +106,12 @@ const isDE = lang === 'de';
   /* The mock sits on a white section, so without its own edge it dissolves
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
-  /* ONE line for the whole journey. It waves through the first beats and then
-     runs dead straight down the centre from the interviews onward, because
-     that is where it has to branch: the fan, the strands and the merge all sit
-     on the frame's vertical centre line, so a thread that is also on it reads
-     as the same line splitting and closing rather than as a second drawing.
-     It is never hidden; hiding it was what broke the continuity. */
   .jthread {
     grid-area: 1 / 1;
-    width: 100%; height: 100%;
+    justify-self: center;
+    width: 1.5px;
+    height: 100%;
+    background: var(--color-accent);
     pointer-events: none;
     opacity: 0.62;
   }
