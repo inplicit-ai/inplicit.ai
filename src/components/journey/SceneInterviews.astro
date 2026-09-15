@@ -2,18 +2,24 @@
 /**
  * SceneInterviews — beat 4. The campaign is out, so the conversations run.
  *
- * The orange thread that has led down the whole journey splits here: it feeds
- * into a bus above the grid, runs down one strand per column behind the
- * windows, and merges into a second bus below that hands on to the insight
- * frame.
+ * The orange thread that has led down the whole journey splits here: it fans
+ * out above the grid, runs down one strand per column, and merges again below
+ * into the insight frame.
+ *
+ * The cards do not appear on their own schedule. Each strand draws downward
+ * and a card lands where it arrives: row 0 first, then row 1, then row 2. That
+ * is the whole point of the beat, so nothing here may move the cards off their
+ * strands. An earlier version scaled the grid up from the centre, which looked
+ * like a bloom and left the lines running through empty space beside it.
  *
  * The strands are plain elements positioned with the grid's own column
  * arithmetic, so they sit dead centre under each column at any width. The fans
- * are SVG, but STRAIGHT lines only: preserveAspectRatio="none" stretches X and
- * Y by different factors, and a straight line survives that unchanged while
- * every curve turns into a wide flat sweep. A node sits at each junction, which
- * is also what absorbs the sub-pixel disagreement between the fan's naive
- * column centre and the strand's gap-aware one.
+ * are SVG curves. The trick that makes them stay ROUND rather than shearing
+ * into chevrons is the viewBox: it is shaped to the fan band's real pixel
+ * aspect (about 16:1), so preserveAspectRatio="none" ends up scaling X and Y
+ * by nearly the same factor and the curves keep their shape. A node sits at
+ * each junction, which also absorbs the hairline disagreement between the
+ * fan's column centre and the strand's gap-aware one.
  *
  * The orb in every card is Silas' ACTUAL orb, not a stand-in: one real WebGL
  * instance renders offscreen and its frame is blitted into fifteen small 2d
@@ -56,13 +62,11 @@ const windows = Array.from({ length: COLS * ROWS }, (_, i) => {
     // words would be noise.
     lines: Array.from({ length: 3 }, (_, k) => ({ me: k === 1, w: Math.round((k === 1 ? 54 : 72) + next() * 24) })),
     clock: `${String(4 + Math.floor(next() * 17)).padStart(2, '0')}:${String(Math.floor(next() * 60)).padStart(2, '0')}`,
-    // deal order runs outward from the middle of the grid
-    g: Math.round(Math.hypot(col - (COLS - 1) / 2, (row - (ROWS - 1) / 2) * 1.6) * 1.35),
+    // The strand reaches row 0 first, so that is the order cards land in.
+    g: row,
     beat: (1.05 + next() * 0.5).toFixed(2),
     // Distance back to the centre of the grid, as a share of the card's own
     // box (a column step is one card plus one gap, hence slightly over 100).
-    dx: +(((COLS - 1) / 2 - col) * 106).toFixed(1),
-    dy: +(((ROWS - 1) / 2 - row) * 112).toFixed(1),
   };
 });
 
@@ -85,10 +89,10 @@ const t = isDE
     <div class="iv__stage">
       <!-- The thread, split into one strand per column and merged again. -->
       <div class="iv__wires" aria-hidden="true">
-        <svg class="iv__fan iv__fan--in" viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <svg class="iv__fan iv__fan--in" viewBox="0 0 1000 63" preserveAspectRatio="none">
           {strands.map((c) => (
-            <line x1="500" y1="0" x2={(c + 0.5) * 200} y2="100"
-                  stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+            <path d={`M500 0 C 500 30, ${(c + 0.5) * 200} 33, ${(c + 0.5) * 200} 63`}
+                  fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
           ))}
         </svg>
 
@@ -96,17 +100,17 @@ const t = isDE
         {strands.map((c) => <span class="iv__strand" style={`--c:${c}`}></span>)}
         {strands.map((c) => <span class="iv__node iv__node--out" style={`--c:${c}`}></span>)}
 
-        <svg class="iv__fan iv__fan--out" viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <svg class="iv__fan iv__fan--out" viewBox="0 0 1000 63" preserveAspectRatio="none">
           {strands.map((c) => (
-            <line x1={(c + 0.5) * 200} y1="0" x2="500" y2="100"
-                  stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+            <path d={`M${(c + 0.5) * 200} 0 C ${(c + 0.5) * 200} 30, 500 33, 500 63`}
+                  fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
           ))}
         </svg>
       </div>
 
       <div class="iv__grid">
         {windows.map((w) => (
-          <div class="win" style={`--g:${w.g};--dx:${w.dx}%;--dy:${w.dy}%;--beat:${w.beat}s`}>
+          <div class="win" style={`--r:${w.row};--beat:${w.beat}s`}>
             <div class="win__top">
               <span class="win__no">{t.label} {w.no}</span>
               <span class="win__clock"><span class="disc disc--live"></span>{w.clock}</span>
@@ -115,8 +119,8 @@ const t = isDE
             <div class="win__body">
               <canvas class="win__orb" width="96" height="96" data-orb-cell></canvas>
               <div class="win__transcript" aria-hidden="true">
-                {w.lines.map((l) => (
-                  <span class={`turn${l.me ? ' turn--u' : ''}`}>
+                {w.lines.map((l, k) => (
+                  <span class={`turn${l.me ? ' turn--u' : ''}`} style={`--k:${k}`}>
                     <span class="turn__mark"></span>
                     <span class="turn__bubble" style={`width:${l.w}%`}></span>
                   </span>
@@ -147,7 +151,15 @@ const t = isDE
   }
   .iv__sub { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
 
-  .iv__stage { position: relative; --gap: var(--space-3); --lead: 46px; }
+  .iv__stage {
+    position: relative;
+    --gap: var(--space-3);
+    --lead: 64px;
+    /* One column's width, and the centre of the first column. Everything that
+       has to line up with the grid is derived from these two. */
+    --colw: calc((100% - 4 * var(--gap)) / 5);
+    --s0: calc(var(--colw) / 2);
+  }
 
   /* The wire layer reaches past the grid at both ends: that overhang is where
      the single thread becomes five and five become one again. */
@@ -159,7 +171,18 @@ const t = isDE
     opacity: 0.62;
   }
 
-  .iv__fan { position: absolute; left: 0; right: 0; height: var(--lead); overflow: visible; }
+  /* The fan's viewBox puts its outer endpoints at x 100 and 900 of 1000, i.e.
+     across the middle 80% of the SVG. Sizing the SVG so that those two points
+     land exactly on the outer strands is what makes the curves MEET the lines
+     instead of ending near them: width = (span between outer strands) / 0.8,
+     shifted left by the remaining 10%. */
+  .iv__fan {
+    position: absolute;
+    height: var(--lead);
+    overflow: visible;
+    width: calc((100% - var(--colw)) * 1.25);
+    left: calc(var(--s0) - (100% - var(--colw)) * 0.125);
+  }
   .iv__fan--in { top: 0; }
   .iv__fan--out { bottom: 0; }
 
@@ -261,18 +284,23 @@ const t = isDE
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 
-  /* Out from the centre along the fan, and back into it along the merge: the
-     cards travel the same vectors the orange strands do. --off is 1 when a
-     card is stacked at the centre and 0 when it sits in its column, so one
-     expression covers both the explosion and the implosion. */
+  /* A card lands just after the strand front has passed its row, and leaves
+     bottom row first as the merge pulls the strands back together. It never
+     moves horizontally: it has to stay on its line. */
   :global(.jstage.is-live) .win {
-    --in: clamp(0, calc((var(--t) - 4.02 - var(--g) * 0.05) / 0.30), 1);
-    --home: clamp(0, calc((var(--t) - 4.72 + var(--g) * 0.02) / 0.26), 1);
-    --off: calc((1 - var(--in)) + var(--home));
+    --in: clamp(0, calc((var(--t) - 3.97 - var(--r) * 0.085) / 0.17), 1);
+    --home: clamp(0, calc((var(--t) - 4.74 - (2 - var(--r)) * 0.05) / 0.20), 1);
     opacity: calc(var(--in) * (1 - var(--home)));
-    transform:
-      translate3d(calc(var(--dx) * var(--off)), calc(var(--dy) * var(--off)), 0)
-      scale(calc(1 - 0.5 * (1 - var(--in)) - 0.5 * var(--home)));
+    transform: translate3d(0, calc(-10px * (1 - var(--in))), 0)
+               scale(calc(0.96 + 0.04 * var(--in) - 0.12 * var(--home)));
+  }
+
+  /* Then each conversation builds a turn at a time while you keep scrolling. */
+  :global(.jstage.is-live) .turn {
+    opacity: clamp(0, calc((var(--t) - 4.20 - var(--r) * 0.04 - var(--k) * 0.07) / 0.14), 1);
+  }
+  :global(.jstage.is-live) .win__typing {
+    opacity: clamp(0, calc((var(--t) - 4.52) / 0.14), 1);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -316,13 +344,20 @@ const t = isDE
 
     if (!reduced && cells.length) {
       source = document.createElement('canvas');
-      source.width = source.height = 96;
+      /* The orb sizes itself from canvas.clientWidth. A detached canvas has a
+         client size of 0, so resize() bails and nothing ever renders, which is
+         exactly why the cards came out blank. It has to be in the document
+         with a real CSS box: parked off-screen, not display:none. */
+      source.style.cssText =
+        'position:fixed;left:-200px;top:0;width:96px;height:96px;pointer-events:none;opacity:0';
+      source.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(source);
       orb = createImplicitOrb(source, { breathe: true, preserveDrawingBuffer: true });
-      if (!orb.supported) orb = null;
+      if (!orb.supported) { orb = null; source.remove(); source = null; }
     }
 
     const blit = () => {
-      if (!source) return;
+      if (!source || !source.width || !source.height) return;
       for (let i = 0; i < ctxs.length; i++) {
         const ctx = ctxs[i];
         if (!ctx) continue;

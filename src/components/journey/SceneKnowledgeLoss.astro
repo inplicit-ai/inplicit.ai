@@ -253,6 +253,10 @@ const t = isDE
 
   /* The one at the centre is the person the second beat is about. */
   .kf__person {
+    /* display is load-bearing: a bare <span> is inline, and an inline box
+       ignores width/height and does not clip its overflow, which left the
+       portrait sitting square on top of a round frame. */
+    display: block;
     position: absolute;
     left: 50%;
     top: 50%;
