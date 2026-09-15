@@ -298,18 +298,19 @@ const t = isDE
        frame-height still leaves its bottom edge inside the viewport. It has
        to be COMPLETELY gone before the insight frame starts growing, or that
        frame's white ground simply covers what is still standing there. */
-    /* The travel is not a round number, it is exactly the distance from the
-       merge point to the insight card's top edge (--stub below the frame top).
-       That way the strands come to rest ON the card's edge instead of near it,
-       and the card never has to be moved to meet them. */
+    /* Simply scrolled off the top: the layer is as tall as the frame, so a
+       shove of its own height plus a little clears everything, merge tip
+       included. The connection to the card is carried by the stub in the gap
+       above it, which is drawn as the tip passes through that point. */
     --exit: clamp(0, calc((var(--t) - 4.90) / 0.16), 1);
     transform: translate3d(0,
-      calc(var(--drop-px, 0px) * var(--drop)
-           - (var(--thread-stop, 0.9) * 100% - var(--stub, 90px)) * var(--exit)), 0);
-    opacity: min(
-      clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
-      clamp(0, calc((5.10 - var(--t)) / 0.04), 1)
-    );
+      calc(var(--drop-px, 0px) * var(--drop) - (100% + 24px) * var(--exit)), 0);
+    /* No fade on the way out. The section leaves by travelling, full stop:
+       it is pushed far enough that the grid is above the frame, and what is
+       left standing at the bottom of its travel is the merge tip, which lands
+       on the card's top edge and is exactly the connection that should stay
+       visible. */
+    opacity: clamp(0, calc((var(--t) - 3.88) / 0.12), 1);
   }
 
   :global(.jstage.is-live) .iv__head {

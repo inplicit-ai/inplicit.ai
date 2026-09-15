@@ -29,12 +29,16 @@ const isDE = lang === 'de';
       <SceneAsk lang={lang} />
       <SceneInterviews lang={lang} />
 
-      <!-- The insight frame is not placed on top of the line, it GROWS OUT of
-           it: the clip starts as a hairline-wide sliver sitting on the thread
-           at the top centre and opens outward and downward into the full card.
-           Because the frame's own orange edge is revealed by that same clip,
-           the outline draws itself as a consequence of the growth rather than
-           as a second animation on top of it. -->
+      <!-- The last stretch of line: it fills the --stub gap, so it runs from
+           where the strands come to rest down to the insight card's top edge.
+           This is the piece the card grows out of, and the only line left once
+           the interviews layer has gone. -->
+      <span class="jstub" aria-hidden="true"></span>
+
+      <!-- The insight frame is not placed on top of that line, it GROWS OUT of
+           its lower end: the card is --stub shorter than the frame and sits at
+           its bottom, so its top edge is exactly where the line stops, and the
+           card only ever scales out of that edge. -->
       <div class="jshell">
         <AppShell lang={lang}>
           <nav class="jtopbar crumb" slot="topbar">
@@ -102,6 +106,27 @@ const isDE = lang === 'de';
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
+
+  .jstub {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: start;
+    width: 1.5px;
+    height: var(--stub);
+    background: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+  }
+  /* Drawn downward as the strands arrive, held while the card grows out of its
+     lower end, gone once the card stands on its own. */
+  .jsec :global(.jstage.is-live) .jstub {
+    transform-origin: center top;
+    transform: scaleY(clamp(0, calc((var(--t) - 4.92) / 0.10), 1));
+    opacity: calc(0.62 * min(
+      clamp(0, calc((var(--t) - 4.92) / 0.06), 1),
+      clamp(0, calc((5.52 - var(--t)) / 0.12), 1)
+    ));
+  }
 
   .jshell {
     position: relative;
