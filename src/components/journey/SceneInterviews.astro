@@ -298,12 +298,17 @@ const t = isDE
        frame-height still leaves its bottom edge inside the viewport. It has
        to be COMPLETELY gone before the insight frame starts growing, or that
        frame's white ground simply covers what is still standing there. */
-    --exit: clamp(0, calc((var(--t) - 4.92) / 0.24), 1);
+    /* The travel is not a round number, it is exactly the distance from the
+       merge point to the insight card's top edge (--stub below the frame top).
+       That way the strands come to rest ON the card's edge instead of near it,
+       and the card never has to be moved to meet them. */
+    --exit: clamp(0, calc((var(--t) - 4.90) / 0.16), 1);
     transform: translate3d(0,
-      calc(var(--drop-px, 0px) * var(--drop) - 150% * var(--exit)), 0);
+      calc(var(--drop-px, 0px) * var(--drop)
+           - (var(--thread-stop, 0.9) * 100% - var(--stub, 90px)) * var(--exit)), 0);
     opacity: min(
       clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
-      clamp(0, calc((5.20 - var(--t)) / 0.04), 1)
+      clamp(0, calc((5.10 - var(--t)) / 0.04), 1)
     );
   }
 
@@ -470,7 +475,7 @@ const t = isDE
     const sync = () => {
       if (!dropOk) measureDrop();
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
-      const next = t > 3.9 && t < 5.22;
+      const next = t > 3.9 && t < 5.12;
       iv.classList.toggle('is-live-beat', next);
       if (next === live) return;
       live = next;

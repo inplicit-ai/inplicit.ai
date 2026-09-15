@@ -74,6 +74,10 @@ const isDE = lang === 'de';
   .jsec {
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
+    /* The gap the thread's last stretch lives in, above the insight card.
+       The card is that much shorter than the frame and sits at its bottom, so
+       its top edge is a FIXED point the strands can be brought to rest on. */
+    --stub: 90px;
   }
 
   /* Five beats run before the dashboard appears, so the product tour's own
@@ -87,7 +91,9 @@ const isDE = lang === 'de';
                   what is left is a short stub above the card rather than a rule
                   the height of the frame. */
   .jsec :global(.jstage.is-live) {
-    --retract: clamp(0, calc((var(--t) - 4.98) / 0.26), 1);
+    --retract: clamp(0, calc((var(--t) - 5.00) / 0.20), 1);
+    /* Mirrors the interviews section's own exit ramp. */
+    --exit-th: clamp(0, calc((var(--t) - 4.90) / 0.16), 1);
   }
 
   /* Not full-bleed: the mock sits inside the normal content column. */
@@ -131,22 +137,29 @@ const isDE = lang === 'de';
            frame is born and the frame covers it as it opens. */
     --drop-th: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
     --apex-now: calc(var(--thread-apex, 1) + var(--drop-frac, 0) * var(--drop-th));
-    --rejoin: clamp(0, calc((var(--t) - 4.88) / 0.24), 1);
-    --cap: calc(var(--apex-now) + (var(--thread-stop, 1) - var(--apex-now)) * var(--rejoin));
-    --p: min(var(--raw), var(--cap));
-    /* Top pulled down once the strands are one line again: a stub above the
-       card, not a rule down the whole frame. */
+    --rejoin: clamp(0, calc((var(--t) - 4.88) / 0.22), 1);
+    /* All of this in LENGTHS, because the end of the line has to land on the
+       card's top edge, and that edge is --stub from the frame's bottom section
+       rather than a percentage. */
+    --apex-len: calc(var(--apex-now) * 100%);
+    --merge-len: calc(var(--thread-stop, 0.9) * 100%
+                      - (var(--thread-stop, 0.9) * 100% - var(--stub)) * var(--exit-th));
+    --cap-len: calc(var(--apex-len) + (var(--merge-len) - var(--apex-len)) * var(--rejoin));
+    --raw-len: calc(var(--raw) * 100%);
+    /* Top pulled down once the strands are one line again, leaving exactly the
+       stub above the card instead of a rule down the whole frame. */
     clip-path: inset(
-      calc((var(--thread-stop, 1) * 100% - 90px) * var(--retract))
+      calc(max(0px, var(--cap-len) - var(--stub)) * var(--retract))
       0
-      calc(100% - 100% * var(--p))
+      calc(100% - min(var(--raw-len), var(--cap-len)))
       0
     );
   }
 
   .jshell {
     position: relative;
-    width: 100%; height: 100%;
+    align-self: end;
+    width: 100%; height: calc(100% - var(--stub));
     border-radius: var(--radius-xl);
     overflow: hidden;
   }
@@ -158,17 +171,17 @@ const isDE = lang === 'de';
      done. A version that started below and rose into place read as sliding in,
      which is the opposite of being built. */
   .jsec :global(.jstage.is-live) .jshell {
-    /* Strictly after the merge has closed at 4.90, and after the section has
-       had a moment to start clearing out. */
-    --born: clamp(0, calc((var(--t) - 4.98) / 0.36), 1);
-    --settled: clamp(0, calc((var(--t) - 5.34) / 0.10), 1);
+    /* Strictly after the section has finished leaving at 5.06. */
+    --born: clamp(0, calc((var(--t) - 5.08) / 0.34), 1);
+    --settled: clamp(0, calc((var(--t) - 5.42) / 0.10), 1);
     /* Top centre on the merge point, opening downward and sideways from it.
        The point itself travels up with the departing section, so the card
        ends up in place without ever being slid there. */
+    /* Pure growth out of its own top edge. No translate at all: the card's top
+       IS the point the strands were brought to, so there is nothing left to
+       move it to. */
     transform-origin: 50% 0;
-    transform:
-      translate3d(0, calc(var(--thread-stop, 0.9) * 100% * (1 - var(--born))), 0)
-      scale(calc(0.02 + 0.98 * var(--born)));
+    transform: scale(calc(0.02 + 0.98 * var(--born)));
     /* Orange while it is being drawn, the ordinary hairline once it stands. */
     border: 1.5px solid color-mix(in srgb, var(--color-border) calc(var(--settled) * 100%), var(--color-accent));
     box-shadow: 0 calc(18px * var(--settled)) calc(44px * var(--settled)) calc(-22px * var(--settled)) rgba(11, 12, 16, 0.16);
