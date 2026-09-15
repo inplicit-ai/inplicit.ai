@@ -293,21 +293,26 @@ const t = isDE
   :global(.jstage.is-live) .kf { --lt: var(--t); }
 
   :global(.jstage.is-live) .kf__b {
-    /* rings fill outward, so the middle (hers) is populated first */
-    --d: calc(var(--g) * 0.09);
-    --in: clamp(0, calc((var(--lt) - var(--d)) / 0.42), 1);
+    /* Rings fill outward, so the middle (hers) is populated first. The +0.2
+       head start is deliberate: the stage pins the moment the hero leaves, and
+       an empty frame that only rewards you after a screen of scrolling reads
+       as a dead section. Half the field is already there when you arrive, the
+       rest fills under your thumb. */
+    --d: calc(var(--g) * 0.06);
+    --in: clamp(0, calc((var(--lt) + 0.20 - var(--d)) / 0.34), 1);
     opacity: calc(0.92 * var(--in));
     transform: translate(-50%, -50%) scale(calc(0.35 + 0.65 * var(--in)));
   }
 
   :global(.jstage.is-live) .kf__b--lost {
     --gone: clamp(0, calc((var(--lt) - 1.02 - var(--g) * 0.03) / 0.44), 1);
+    /* fills on the same head start as every other ring */
     opacity: calc(var(--in) * (1 - var(--gone)));
     transform: translate(-50%, -50%) scale(calc((0.35 + 0.65 * var(--in)) * (1 - 0.55 * var(--gone))));
   }
 
   :global(.jstage.is-live) .kf__person {
-    --inp: clamp(0, calc((var(--lt) - 0.22) / 0.40), 1);
+    --inp: clamp(0, calc((var(--lt) + 0.04) / 0.34), 1);
     --gonep: clamp(0, calc((var(--lt) - 1.00) / 0.40), 1);
     top: calc(50% - 7% * var(--gonep));
     opacity: calc(var(--inp) * (1 - var(--gonep)));
@@ -320,8 +325,13 @@ const t = isDE
   }
 
   :global(.jstage.is-live) .kf__chip {
-    opacity: clamp(0, calc(var(--lt) / 0.30), 1);
+    opacity: clamp(0, calc((var(--lt) + 0.14) / 0.30), 1);
   }
+
+  /* The opening line is on screen the moment the section pins, not a scroll
+     later. --d is journey.css's own stagger knob, so a negative value is a
+     head start within the contract rather than a fight with it. */
+  :global(.jstage.is-live) .pcopy__scenes > .jscene:first-child .jpart { --d: -0.16; }
 
   /* ── Stacked below the 2-column breakpoint ──────────────────────────── */
   @media (max-width: 1023px) {
