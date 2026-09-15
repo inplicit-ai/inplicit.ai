@@ -36,7 +36,7 @@ const isDE = lang === 'de';
         <path
           class="jthread__path"
           vector-effect="non-scaling-stroke"
-          d="M100 -20 C 100 60 60 110 60 190 S 140 300 140 390 S 60 520 60 610 S 140 740 140 830 S 100 960 100 1020"
+          d="M100 -20 C 100 60 58 120 58 215 S 142 345 142 445 S 62 585 100 700 L 100 1020"
           fill="none"
           stroke="var(--color-accent)"
           stroke-width="1.5"
@@ -115,11 +115,17 @@ const isDE = lang === 'de';
   /* The mock sits on a white section, so without its own edge it dissolves
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
+  /* ONE line for the whole journey. It waves through the first beats and then
+     runs dead straight down the centre from the interviews onward, because
+     that is where it has to branch: the fan, the strands and the merge all sit
+     on the frame's vertical centre line, so a thread that is also on it reads
+     as the same line splitting and closing rather than as a second drawing.
+     It is never hidden; hiding it was what broke the continuity. */
   .jthread {
     grid-area: 1 / 1;
     width: 100%; height: 100%;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.62;
   }
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
   .jsec :global(.jstage.is-live) .jthread {
@@ -127,12 +133,6 @@ const isDE = lang === 'de';
        section arrives, not after a screen of scrolling. */
     --p: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
-    /* While the interviews run, the thread IS the split: one line crossing the
-       grid on top of five strands would just read as a stray diagonal. */
-    opacity: calc(0.5 * max(
-      clamp(0, calc((3.92 - var(--t)) / 0.16), 1),
-      clamp(0, calc((var(--t) - 4.98) / 0.16), 1)
-    ));
   }
 
   .jshell {
