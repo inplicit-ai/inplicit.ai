@@ -29,7 +29,7 @@ Website/
         │   ├── Hero.astro       ← headline + CTAs, fade-up anim; hosts HeroNetworkViz
         │   ├── HeroNetworkViz.astro ← isometric "role → role-context" extraction animation
         │   ├── HowItWorks.astro ← 6-step accordion; auf der Startseite auskommentiert (ersetzt durch journey/)
-        │   ├── TheProblem.astro ← "Die Herausforderung": Wissensverlust, Kostenzahl, 3 Symptome (1. Sektion nach dem Hero)
+        │   ├── TheProblem.astro ← "Die Herausforderung" als eigene ScrollStage: Wissens-Bubblefeld, eine Person geht und reisst eine Luecke hinein
         │   ├── Applications.astro ← 4-card gallery of use-case applications; auf der Startseite auskommentiert
         │   ├── LogoCloud.astro  ← 3 Referenzlogos; auf der Startseite auskommentiert
         │   ├── scroll/ScrollStage.astro ← Pin-Primitive, schreibt --t (Szenen-Einheiten) pro Frame
