@@ -25,12 +25,6 @@ const isDE = lang === 'de';
        sits at journey time 5. -->
   <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <!-- One line down the whole journey: a plain rule on the frame's vertical
-           centre, revealed top to bottom as --t advances. It sits exactly where
-           the fan, the strands and the merge sit, so the split reads as this
-           same line coming apart and closing again. -->
-      <span class="jthread" aria-hidden="true"></span>
-
       <SceneKnowledgeLoss lang={lang} />
       <SceneAsk lang={lang} />
       <SceneInterviews lang={lang} />
@@ -74,9 +68,9 @@ const isDE = lang === 'de';
   .jsec {
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
-    /* The gap the thread's last stretch lives in, above the insight card.
-       The card is that much shorter than the frame and sits at its bottom, so
-       its top edge is a FIXED point the strands can be brought to rest on. */
+    /* The gap above the insight card. The card is that much shorter than the
+       frame and sits at its bottom, so its top edge is a FIXED point the
+       strands are brought to rest on. */
     --stub: 90px;
   }
 
@@ -85,13 +79,9 @@ const isDE = lang === 'de';
      --shell-in is when the chrome is allowed on screen at all. */
   .jsec :global(.jstage) { --t-off: 5; --shell-in: 4.84; }
 
-  /* The line's whole life, in one place.
-       --cap-lo   how far down it is drawn (it ends at the fan, then at the merge)
-       --retract  how far its TOP has been pulled down after the merge, so that
-                  what is left is a short stub above the card rather than a rule
-                  the height of the frame. */
+  /* --exit-th mirrors the interviews section's own exit ramp, so the frame
+     below can be positioned against where that section comes to rest. */
   .jsec :global(.jstage.is-live) {
-    --retract: clamp(0, calc((var(--t) - 5.00) / 0.20), 1);
     /* Mirrors the interviews section's own exit ramp. */
     --exit-th: clamp(0, calc((var(--t) - 4.90) / 0.16), 1);
   }
@@ -111,50 +101,7 @@ const isDE = lang === 'de';
   /* The mock sits on a white section, so without its own edge it dissolves
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
-  .jthread {
-    grid-area: 1 / 1;
-    justify-self: center;
-    width: 1.5px;
-    height: 100%;
-    background: var(--color-accent);
-    pointer-events: none;
-    opacity: 0.62;
-  }
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
-  .jsec :global(.jstage.is-live) .jthread {
-    /* Starts with a head already drawn: the line has to be there when the
-       section arrives, not after a screen of scrolling. */
-    --raw: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
-    /* The line has to END where the fan begins, or it just runs through the
-       split and the whole thing reads as two drawings laid over each other
-       instead of one line coming apart.
-         - during the split it stops at the fan's apex (which sits lower while
-           the layer is still dropped against the campaign card, hence the
-           --drop-frac term: the cap follows it),
-         - once the strands have merged it runs on to that merge point, one
-           line again,
-         - and there it stops for good, because that is where the insight
-           frame is born and the frame covers it as it opens. */
-    --drop-th: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
-    --apex-now: calc(var(--thread-apex, 1) + var(--drop-frac, 0) * var(--drop-th));
-    --rejoin: clamp(0, calc((var(--t) - 4.88) / 0.22), 1);
-    /* All of this in LENGTHS, because the end of the line has to land on the
-       card's top edge, and that edge is --stub from the frame's bottom section
-       rather than a percentage. */
-    --apex-len: calc(var(--apex-now) * 100%);
-    --merge-len: calc(var(--thread-stop, 0.9) * 100%
-                      - (var(--thread-stop, 0.9) * 100% - var(--stub)) * var(--exit-th));
-    --cap-len: calc(var(--apex-len) + (var(--merge-len) - var(--apex-len)) * var(--rejoin));
-    --raw-len: calc(var(--raw) * 100%);
-    /* Top pulled down once the strands are one line again, leaving exactly the
-       stub above the card instead of a rule down the whole frame. */
-    clip-path: inset(
-      calc(max(0px, var(--cap-len) - var(--stub)) * var(--retract))
-      0
-      calc(100% - min(var(--raw-len), var(--cap-len)))
-      0
-    );
-  }
 
   .jshell {
     position: relative;
