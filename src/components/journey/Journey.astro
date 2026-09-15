@@ -79,9 +79,11 @@ const isDE = lang === 'de';
   .jsec {
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
-    /* One full period of the wave. Starts and ends on the centre line with a
+    /* One full period of the wave: 480px tall, 14px of sway. Long and slow,
+       the way it looked before. A short period at this amplitude reads as a
+       crinkle rather than a wave. Starts and ends on the centre line with a
        vertical tangent, so the tile joins itself seamlessly. */
-    --thread-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='96'%20viewBox='0%200%2032%2096'%3E%3Cpath%20d='M16%200%20C%2016%2012%2029%2012%2029%2024%20C%2029%2036%2016%2036%2016%2048%20C%2016%2060%203%2060%203%2072%20C%203%2084%2016%2084%2016%2096'%20fill='none'%20stroke='black'%20stroke-width='1.5'%20stroke-linecap='round'/%3E%3C/svg%3E");
+    --thread-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='480'%20viewBox='0%200%2040%20480'%3E%3Cpath%20d='M20%200%20C%2020%2060%2034%2060%2034%20120%20C%2034%20180%2020%20180%2020%20240%20C%2020%20300%206%20300%206%20360%20C%206%20420%2020%20420%2020%20480'%20fill='none'%20stroke='black'%20stroke-width='1.5'%20stroke-linecap='round'/%3E%3C/svg%3E");
   }
 
   /* Five beats run before the dashboard appears, so the product tour's own
@@ -107,7 +109,7 @@ const isDE = lang === 'de';
   .jthread {
     grid-area: 1 / 1;
     justify-self: center;
-    width: 32px;
+    width: 40px;
     height: 100%;
     /* Colour stays a token: the mask carries the shape, the background the
        colour. A background-image would have had to hardcode the hex. */
@@ -116,8 +118,8 @@ const isDE = lang === 'de';
     mask-image: var(--thread-wave);
     -webkit-mask-repeat: repeat-y;
     mask-repeat: repeat-y;
-    -webkit-mask-size: 32px 96px;
-    mask-size: 32px 96px;
+    -webkit-mask-size: 40px 480px;
+    mask-size: 40px 480px;
     -webkit-mask-position: center top;
     mask-position: center top;
     pointer-events: none;
@@ -127,7 +129,13 @@ const isDE = lang === 'de';
   .jsec :global(.jstage.is-live) .jthread {
     /* Starts with a head already drawn: the line has to be there when the
        section arrives, not after a screen of scrolling. */
-    --p: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
+    --raw: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
+    /* ...and stops at the point the strands run back together, until the
+       insight frame begins to grow out of that point. Without the cap the
+       line simply carried on down an empty frame below the convergence. */
+    --release: clamp(0, calc((var(--t) - 5.10) / 0.26), 1);
+    --cap: calc(var(--thread-stop, 1) + (1 - var(--thread-stop, 1)) * var(--release));
+    --p: min(var(--raw), var(--cap));
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 

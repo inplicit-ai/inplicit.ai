@@ -402,13 +402,20 @@ const t = isDE
     const ivStage = document.querySelector<HTMLElement>('.iv__stage');
     if (!frame || !card || !ivStage || !iv) return;
     const lead = parseFloat(getComputedStyle(ivStage).getPropertyValue('--lead')) || 0;
+    /* Where the strands run back together, as a fraction of the frame. The
+       thread is capped there until the insight frame grows out of it, so the
+       line never runs on down an empty frame past the convergence. */
+    const mergeY = topWithin(ivStage, frame) + ivStage.offsetHeight + lead;
+    if (frame.offsetHeight > 0) {
+      frame.style.setProperty('--thread-stop', (mergeY / frame.offsetHeight).toFixed(3));
+    }
     const need = Math.round(topWithin(card, frame) + card.offsetHeight - (topWithin(ivStage, frame) - lead));
     /* On the very first run the frame can still be laying out and every offset
        reads 0. Rather than bake that in, leave it unset and try again on the
        next scroll: the beat is five screens away, there is plenty of time. */
     if (need <= 0) { dropOk = false; return; }
     dropOk = true;
-    iv.style.setProperty('--drop-px', need + 'px');
+    (document.querySelector('.jframe') as HTMLElement).style.setProperty('--drop-px', need + 'px');
   };
   const cells = [...document.querySelectorAll<HTMLCanvasElement>('[data-orb-cell]')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
