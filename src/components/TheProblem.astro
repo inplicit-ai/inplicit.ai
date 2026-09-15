@@ -1,207 +1,242 @@
 ---
+// "Die Herausforderung" — the first section after the hero. It names the pain
+// (undocumented knowledge leaving the company) before the product is shown, so
+// the ProcessFlow animation that follows has something to answer.
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
 
-const cards = lang === 'de' ? [
-  {
-    tag: 'Verborgenes Prozesswissen',
-    title: 'Organisationswissen steckt in Köpfen',
-    body: 'Viele Abläufe und Entscheidungen sind nicht sauber dokumentiert. Wenn Mitarbeitende gehen oder Teams wachsen, geht genau dieses Wissen leicht verloren.',
-    cta: 'Inplicit macht verborgenes Wissen durch KI-Interviews sichtbar und strukturiert nutzbar.',
-    grad: 'linear-gradient(135deg, #7a3e00 0%, #c47208 55%, #f5a623 100%)',
-  },
-  {
-    tag: 'Fehlendes operatives Know-how',
-    title: 'Entscheidungen brauchen mehr internen Kontext',
-    body: 'Oft fehlt Management der Blick auf das, was operativ wirklich passiert. Dadurch werden wichtige Entscheidungen mit zu wenig Nähe zur Praxis getroffen.',
-    cta: 'Inplicit bringt die operative Realität strukturiert zur Entscheidungsebene.',
-    grad: 'linear-gradient(150deg, #7a3e00 0%, #bf6e0a 50%, #e8830f 100%)',
-  },
-  {
-    tag: 'Fehlende Kontext-Ebene',
-    title: 'KI braucht Unternehmensrealität',
-    body: 'Damit KI im Unternehmen sinnvoll hilft, braucht sie mehr als Dokumente. Sie braucht Kontext aus Menschen, Prozessen und gelebter Erfahrung.',
-    cta: 'Inplicit liefert die Kontext-Ebene und belastbares Organisationswissen, auf das KI-Systeme zugreifen können.',
-    grad: 'linear-gradient(120deg, #7a3e00 0%, #c47208 50%, #f5a623 100%)',
-  },
-] : [
-  {
-    tag: 'Hidden process knowledge',
-    title: 'Organisational knowledge lives in people\'s heads',
-    body: 'Many processes and decisions are never properly documented. When employees leave or teams grow, exactly this knowledge is easily lost.',
-    cta: 'inplicit makes hidden knowledge visible and structured through AI-led interviews.',
-    grad: 'linear-gradient(135deg, #7a3e00 0%, #c47208 55%, #f5a623 100%)',
-  },
-  {
-    tag: 'Missing operational context',
-    title: 'Decisions need more internal context',
-    body: 'Management often lacks visibility into what is actually happening operationally. Important decisions get made without sufficient proximity to practice.',
-    cta: 'inplicit brings operational reality to the decision-making level in structured form.',
-    grad: 'linear-gradient(150deg, #7a3e00 0%, #bf6e0a 50%, #e8830f 100%)',
-  },
-  {
-    tag: 'Missing context layer',
-    title: 'AI needs organisational reality',
-    body: 'For AI to be genuinely useful, it needs more than documents. It needs context from people, processes, and lived organisational experience.',
-    cta: 'inplicit delivers the context layer and reliable organisational knowledge that AI systems can draw on.',
-    grad: 'linear-gradient(120deg, #7a3e00 0%, #c47208 50%, #f5a623 100%)',
-  },
-]
+const t = isDE
+  ? {
+      eyebrow: 'Die Herausforderung',
+      statValue: '26,5 Mio. $',
+      statBody: 'verliert ein Unternehmen mit 10.000 Mitarbeitenden jedes Jahr an Produktivität, weil Wissen nicht geteilt wird. 5,3 Stunden pro Woche und Kopf gehen dafür drauf, auf Informationen zu warten oder Wissen neu zu erarbeiten.',
+      statSource: 'Panopto Workplace Knowledge and Productivity Report, 2018',
+      headA: 'Wissen verlässt Ihr Unternehmen,',
+      headB: 'bevor es jemand aufschreibt.',
+      lead: 'Rund 80 Prozent dessen, was Ihre Organisation weiß, steht in keinem Dokument. Es steckt in Erfahrung, in Gewohnheiten, in Gesprächen auf dem Flur. Und es geht mit jedem Wechsel, jeder Kündigung und jedem Ruhestand ein Stück verloren.',
+      note: 'Klassische Mitarbeiterbefragungen ändern daran wenig: zu grob, zu selten, zu teuer.',
+      items: [
+        {
+          title: 'Menschen gehen, ihr Wissen geht mit',
+          body: 'Wenn erfahrene Mitarbeitende das Haus verlassen, verschwindet undokumentiertes Wissen mit ihnen. Die Nachfolge beginnt wieder bei null.',
+        },
+        {
+          title: 'Entscheidungen ohne das Wissen aus der Praxis',
+          body: 'Was in Berichte und Präsentationen wandert, ist bereits stark verdichtet. Wie die Arbeit tatsächlich läuft, wissen die Menschen, die sie täglich machen.',
+        },
+        {
+          title: 'KI ohne Unternehmensrealität',
+          body: 'Ihre KI-Tools lesen Dokumente. Das Wissen darüber, wie in Ihrem Haus tatsächlich gearbeitet wird, fehlt ihnen komplett.',
+        },
+      ],
+    }
+  : {
+      eyebrow: 'The challenge',
+      statValue: '$26.5M',
+      statBody: 'is what a company of 10,000 people loses in productivity every year because knowledge is not shared. 5.3 hours per person per week go into waiting for information or recreating knowledge that already exists.',
+      statSource: 'Panopto Workplace Knowledge and Productivity Report, 2018',
+      headA: 'Knowledge leaves your company',
+      headB: 'before anyone writes it down.',
+      lead: 'Around 80 percent of what your organisation knows appears in no document. It lives in experience, in habits, in hallway conversations. And a piece of it goes every time someone moves on, resigns or retires.',
+      note: 'Classic employee surveys barely change this: too coarse, too rare, too expensive.',
+      items: [
+        {
+          title: 'People leave, their knowledge leaves with them',
+          body: 'When experienced employees walk out, undocumented knowledge walks out too. Their successors start again from zero.',
+        },
+        {
+          title: 'Decisions without the knowledge from practice',
+          body: 'What makes it into reports and slide decks is already heavily condensed. How the work actually runs is known by the people who do it every day.',
+        },
+        {
+          title: 'AI without organisational reality',
+          body: 'Your AI tools read documents. The knowledge of how your company actually works is missing entirely.',
+        },
+      ],
+    };
 ---
 
-<section class="problem" id="the-problem">
+<section class="tp" id="the-problem">
   <div class="container">
-    <p class="section-eyebrow section-fade">
-      {lang === 'de' ? 'Probleme & Usecases' : 'Problems & use cases'}
-    </p>
 
-    <div class="problem__cols">
-      {cards.map((card, i) => (
-        <article class="problem__card section-fade" style={`--delay: ${i * 80}ms`}>
-          <div class="problem__card-image" style={`background: ${card.grad}`} aria-hidden="true"></div>
-          <div class="problem__card-body-wrap">
-            <div class="problem__card-tag">{card.tag}</div>
-            <h3 class="problem__card-title">{card.title}</h3>
-            <p class="problem__card-body">{card.body}</p>
-            <div class="problem__card-footer">
-              <div class="problem__card-rule" aria-hidden="true"></div>
-              <p class="problem__card-cta">
-                <span aria-hidden="true">→ </span>{card.cta}
-              </p>
-            </div>
-          </div>
-        </article>
-      ))}
+    <div class="tp__head section-fade">
+      <h2 class="tp__heading">
+        <span class="section-eyebrow tp__eyebrow">{t.eyebrow}</span>
+        <span class="tp__line">{t.headA}</span>
+        <span class="tp__line tp__line--ghost">{t.headB}</span>
+      </h2>
+      <p class="tp__lead">{t.lead}</p>
     </div>
+
+    <div class="tp__stat section-fade">
+      <p class="tp__stat-value">{t.statValue}</p>
+      <div class="tp__stat-copy">
+        <p class="tp__stat-body">{t.statBody}</p>
+        <p class="tp__stat-source">
+          <a href="https://www.panopto.com/company/news/inefficient-knowledge-sharing-costs-large-businesses-47-million-per-year/" target="_blank" rel="noopener noreferrer">{t.statSource}</a>
+        </p>
+      </div>
+    </div>
+
+    <ul class="tp__grid">
+      {t.items.map((item, i) => (
+        <li class="tp__item section-fade" style={`--delay: ${i * 90}ms`}>
+          <span class="tp__rule" aria-hidden="true"></span>
+          <span class="tp__num">{`0${i + 1}`}</span>
+          <h3 class="tp__item-title">{item.title}</h3>
+          <p class="tp__item-body">{item.body}</p>
+        </li>
+      ))}
+    </ul>
+
+    <p class="tp__note section-fade">{t.note}</p>
+
   </div>
 </section>
 
 <style>
-  .problem {
+  .tp {
     padding: var(--space-section) 0;
+    background-color: var(--color-bg);
+  }
+  @media (max-width: 767px) { .tp { padding: var(--space-24) 0; } }
+
+  /* Stacked like the other section heads, so the headline gets a full line. */
+  .tp__head {
+    max-width: 760px;
+    margin-bottom: var(--space-12);
+  }
+
+  .tp__eyebrow { display: block; margin-bottom: var(--space-5); }
+
+  .tp__heading {
+    font-size: clamp(var(--text-xl), 4vw, var(--text-2xl));
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+  }
+  .tp__line { color: var(--color-text-primary); }
+  .tp__line--ghost { opacity: 0.3; }
+
+  .tp__lead {
+    margin-top: var(--space-5);
+    font-size: var(--text-base);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    max-width: 60ch;
+  }
+
+  /* One number carries the cost of the problem before the three symptoms. */
+  .tp__stat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: var(--space-6) var(--space-10);
+    padding: var(--space-10) 0;
+    margin-bottom: var(--space-16);
     border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
-
   @media (max-width: 767px) {
-    .problem { padding: var(--space-24) 0; }
+    .tp__stat { grid-template-columns: 1fr; gap: var(--space-4); padding: var(--space-8) 0; margin-bottom: var(--space-12); }
   }
 
-  .problem__eyebrow {
+  .tp__stat-value {
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .tp__stat-copy { max-width: 56ch; }
+
+  .tp__stat-body {
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-text-primary);
+  }
+
+  .tp__stat-source {
+    margin-top: var(--space-3);
     font-size: var(--text-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
     color: var(--color-text-tertiary);
-    margin-bottom: var(--space-10);
   }
+  .tp__stat-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .tp__stat-source a:hover { color: var(--color-text-secondary); }
 
-  .problem__cols {
+  .tp__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-6);
-    align-items: stretch;
-  }
-
-  @media (max-width: 860px) {
-    .problem__cols { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 560px) {
-    .problem__cols { grid-template-columns: 1fr; }
-  }
-
-  /* Card shell */
-  .problem__card {
-    display: flex;
-    flex-direction: column;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 18px;
-    overflow: hidden;
-    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
-                box-shadow 0.28s cubic-bezier(0.22,1,0.36,1),
-                border-color 0.28s ease;
-  }
-
-  .problem__card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 24px 48px -20px rgba(15,23,42,0.18), 0 0 0 1px rgba(15,23,42,0.05);
-    border-color: rgba(0,0,0,0.11);
-  }
-
-  /* Gradient image area */
-  .problem__card-image {
-    width: 100%;
-    height: 160px;
-    flex-shrink: 0;
-  }
-
-  /* Content area */
-  .problem__card-body-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-6);
-    flex: 1;
-  }
-
-  /* Black pill tag */
-  .problem__card-tag {
-    display: inline-flex;
-    align-self: flex-start;
-    padding: 4px 10px;
-    background: #111111;
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    border-radius: 6px;
-    line-height: 1.4;
-  }
-
-  .problem__card-title {
-    font-size: var(--text-lg);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    color: var(--color-text-primary);
+    gap: var(--space-10) var(--space-8);
+    list-style: none;
+    padding: 0;
     margin: 0;
   }
+  @media (max-width: 860px) { .tp__grid { grid-template-columns: 1fr; gap: var(--space-8); } }
 
-  .problem__card-body {
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-  }
+  .tp__item { display: flex; flex-direction: column; }
 
-  /* Footer: amber rule + CTA */
-  .problem__card-footer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    margin-top: auto;
-    padding-top: var(--space-3);
-    border-top: 1px solid rgba(0,0,0,0.06);
-  }
-
-  .problem__card-rule {
-    width: 28px;
+  .tp__rule {
+    display: block;
     height: 2px;
+    width: 100%;
+    background: var(--color-border);
+    border-radius: 2px;
+    margin-bottom: var(--space-5);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Orange head on the rule, so the three items read as one measured sequence. */
+  .tp__rule::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 34px;
     background: var(--color-accent);
     border-radius: 2px;
   }
 
-  .problem__card-cta {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-accent);
-    line-height: 1.65;
+  .tp__num {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-3);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .problem__card { transition: none; }
-    .problem__card:hover { transform: none; }
+  .tp__item-title {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-3);
   }
+
+  .tp__item-body {
+    font-size: var(--text-sm);
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+  }
+
+  .tp__note {
+    margin-top: var(--space-16);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-text-primary);
+    max-width: 62ch;
+  }
+  @media (max-width: 767px) { .tp__note { margin-top: var(--space-12); } }
 </style>

@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import TheProblem from '../../components/TheProblem.astro';
+import ProcessFlow from '../../components/ProcessFlow.astro';
 import HowItWorks from '../../components/HowItWorks.astro';
 import DataPrivacy from '../../components/DataPrivacy.astro';
 import Applications from '../../components/Applications.astro';
@@ -25,9 +27,11 @@ const lang = 'de';
   <main>
     <Hero lang={lang} />
     <!-- <LogoCloud lang={lang} /> -->
-    <HowItWorks lang={lang} />
+    <TheProblem lang={lang} />
+    <ProcessFlow lang={lang} />
+    <!-- Ersetzt durch ProcessFlow: <HowItWorks lang={lang} /> -->
     <!-- <DataPrivacy lang={lang} /> -->
-    <Applications lang={lang} />
+    <!-- Geht inhaltlich in TheProblem + Campaigns auf: <Applications lang={lang} /> -->
     <Campaigns lang={lang} />
     <!-- <ValidationLoop lang={lang} /> -->
     <USP lang={lang} />

@@ -1,0 +1,781 @@
+---
+/*
+  ProcessFlow.astro — pinned, scroll-driven horizontal process sequence.
+
+  Vertical scroll progress (0→1 over a tall wrapper) drives one displayed value
+  `cur`, eased toward the scroll target every frame. `cur` controls:
+    • the horizontal track translate (panel 0 → 3),
+    • every reveal element via a per-element [data-s, data-e] window (smoothstep),
+    • the progressive draw of every orange connector (stroke-dashoffset).
+  Because every visual is a pure function of `cur`, scrolling back up resolves
+  the sequence in reverse with no pop-ins. On ≤1023px or reduced-motion the JS
+  bails and `.pf--static` renders a clean vertical stack with everything visible.
+*/
+import logoIconRaw from '../assets/logo_icon.svg?raw';
+
+export interface Props { lang?: 'en' | 'de'; }
+const { lang = 'de' } = Astro.props;
+const isDE = lang === 'de';
+
+const t = {
+  eyebrow: isDE ? 'So funktioniert Inplicit' : 'How Inplicit works',
+  title: isDE ? 'Von der Frage zur Wirkung.' : 'From question to impact.',
+  steps: [
+    { tag: isDE ? 'Setup' : 'Setup',
+      head: isDE ? 'Fragen Sie Ihre Mitarbeitenden. Alles.' : 'Ask your people. Anything.',
+      copy: isDE
+        ? 'Starten Sie mit einer konkreten Frage und geben Sie den Kontext vor: aus Tools, Dokumenten und Rollen.'
+        : 'Start with a concrete question and set the context: from tools, documents and roles.' },
+    { tag: isDE ? 'Interviews' : 'Interviews',
+      head: isDE ? 'Unsere KI interviewt alle relevanten Mitarbeitenden.' : 'Our AI interviews every relevant person.',
+      copy: isDE
+        ? 'Nicht nur irgendein Feedback, sondern die Perspektiven der Menschen, die den Kontext wirklich tragen.'
+        : 'Not just any feedback, but the perspectives of the people who truly carry the context.' },
+    { tag: isDE ? 'Synthese' : 'Synthesis',
+      head: isDE ? 'Synthese der Interviews.' : 'Synthesis of the interviews.',
+      copy: isDE
+        ? 'Viele Gespräche werden zu einer strukturierten Sicht auf Muster, Spannungen und Zusammenhänge.'
+        : 'Many conversations become one structured view of patterns, tensions and connections.' },
+    { tag: isDE ? 'Outcomes' : 'Outcomes',
+      head: isDE ? 'Nutzbare Outcomes.' : 'Usable outcomes.',
+      copy: isDE
+        ? 'Von Prozessverbesserungen über neue Potenziale bis zu Kontext für KI-Workflows, alles später in einfachen Worten abfragbar.'
+        : 'From process improvements to new potential to context for AI workflows, all queryable later in plain words.' },
+  ],
+};
+
+// Context modules for step 1
+const modules = isDE
+  ? ['Tools / Systeme', 'Dokumente', 'Rollen-Kontext', 'Zielgruppe & Bereich']
+  : ['Tools / Systems', 'Documents', 'Role context', 'Audience & area'];
+
+// Avatars for step 2 — initials + optional role label; `c` = connected to the agent.
+const avatars = [
+  { x: 33, y: 22, i: 'AM', c: true,  role: isDE ? 'Operations' : 'Operations' },
+  { x: 50, y: 13, i: 'TK', c: false },
+  { x: 70, y: 17, i: 'JD', c: true,  role: isDE ? 'Logistik' : 'Logistics' },
+  { x: 81, y: 33, i: 'PL', c: false },
+  { x: 78, y: 56, i: 'RS', c: true,  role: isDE ? 'Finance' : 'Finance' },
+  { x: 67, y: 74, i: 'MK', c: false },
+  { x: 49, y: 80, i: 'NB', c: true,  role: 'HR' },
+  { x: 33, y: 70, i: 'EV', c: false },
+  { x: 25, y: 50, i: 'LW', c: true,  role: 'IT' },
+  { x: 41, y: 38, i: 'SD', c: false },
+  { x: 62, y: 36, i: 'CG', c: false },
+  { x: 58, y: 58, i: 'HF', c: false },
+  { x: 44, y: 60, i: 'OB', c: false },
+];
+
+// Synthesis fragments (step 3) — left-side scattered signal chips.
+const fragments = isDE
+  ? ['„drei Tools für einen Export"', '„Übergabe unklar"', '„Wartezeit auf Zugang"', '„doppelte Erfassung"', '„kein Ansprechpartner"', '„Medienbruch"', '„Wissen nicht geteilt"', '„manuelle Prüfung"']
+  : ['"three tools for one export"', '"handover unclear"', '"waiting for access"', '"double entry"', '"no clear owner"', '"media break"', '"knowledge not shared"', '"manual check"'];
+
+const insightBlocks = isDE
+  ? [{ n: '23', l: 'Prozessreibung' }, { n: '17', l: 'Digitalisierungslücken' }, { n: '11', l: 'Neue Ideen' }]
+  : [{ n: '23', l: 'Process friction' }, { n: '17', l: 'Digitalisation gaps' }, { n: '11', l: 'New ideas' }];
+
+const outcomes = isDE
+  ? [
+      { l: 'Prozessverbesserungen', d: 'Konkrete Engpässe mit Zeit- und Kostenhebel.' },
+      { l: 'Neue Potenziale', d: 'Geschäftsideen und ungenutzte Chancen.' },
+      { l: 'Reibung sichtbar', d: 'Spannungen zwischen Rollen und Teams.' },
+      { l: 'Kontext für KI', d: 'Wissen für Ihre Tools und Workflows.' },
+    ]
+  : [
+      { l: 'Process improvements', d: 'Concrete bottlenecks with time and cost leverage.' },
+      { l: 'New potential', d: 'Business ideas and untapped opportunity.' },
+      { l: 'Friction made visible', d: 'Tensions between roles and teams.' },
+      { l: 'Context for AI', d: 'Knowledge for your tools and workflows.' },
+    ];
+
+const askQuestions = isDE
+  ? ['Was bremst unseren Vertrieb aktuell am meisten?', 'Welche Ideen kamen aus den Onboarding-Interviews?', 'Was sollte unsere KI über IT × Operations wissen?']
+  : ['What is slowing our sales down the most right now?', 'Which ideas came out of the onboarding interviews?', 'What should our AI know about IT × Operations?'];
+---
+
+<section class="pf" id="process-flow" aria-label={t.eyebrow}>
+  <div class="pf__wrap" data-pf-wrap>
+    <div class="pf__pin" data-pf-pin>
+
+      <!-- persistent header -->
+      <header class="pf__bar">
+        <span class="pf__eyebrow">{t.eyebrow}</span>
+        <h2 class="pf__title">{t.title}</h2>
+      </header>
+
+      <!-- step rail -->
+      <nav class="pf__rail" aria-hidden="true" data-pf-rail>
+        {t.steps.map((s, i) => (
+          <div class="pf__tick" data-tick={i}>
+            <span class="pf__tick-num">{`0${i + 1}`}</span>
+            <span class="pf__tick-label">{s.tag}</span>
+            <span class="pf__tick-bar"><span class="pf__tick-fill"></span></span>
+          </div>
+        ))}
+      </nav>
+
+      <div class="pf__track" data-pf-track>
+
+        <!-- cross-panel connecting thread (the recurring orange motif) -->
+        <svg class="pf__thread" viewBox="0 0 4000 1000" preserveAspectRatio="none" aria-hidden="true">
+          <path class="pf-line pf__thread-path" data-line data-s="0.02" data-e="0.99"
+            d="M 360 560 C 700 560 760 360 1000 360 S 1300 560 1500 560 S 1800 380 2030 470 S 2400 600 2560 470 S 2900 360 3120 470 S 3520 540 3680 470"
+            fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+          <circle class="pf-rev pf__thread-node" data-s="0.00" data-e="0.06" data-ty="0" cx="500"  cy="540" r="7" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"/>
+          <circle class="pf-rev pf__thread-node" data-s="0.30" data-e="0.38" data-ty="0" cx="1500" cy="560" r="7" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"/>
+          <circle class="pf-rev pf__thread-node" data-s="0.62" data-e="0.70" data-ty="0" cx="2530" cy="470" r="7" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"/>
+          <circle class="pf-rev pf__thread-node" data-s="0.90" data-e="0.98" data-ty="0" cx="3500" cy="490" r="7" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"/>
+        </svg>
+
+        <!-- ─────────────── PANEL 0 · SETUP ─────────────── -->
+        <article class="pf__panel" data-panel="0">
+          <div class="pf__panel-grid">
+            <div class="pf__text">
+              <span class="pf__step-tag">01 · {t.steps[0].tag}</span>
+              <h3 class="pf__head">{t.steps[0].head}</h3>
+              <p class="pf__copy">{t.steps[0].copy}</p>
+            </div>
+            <div class="pf__visual">
+              <div class="stage stage--setup">
+                <svg class="stage__svg" viewBox="0 0 960 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <path class="pf-line" data-line data-s="0.11" data-e="0.17" d="M 250 130 C 292 130 268 172 300 172" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.12" data-e="0.18" d="M 250 390 C 292 390 268 348 300 348" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.13" data-e="0.19" d="M 710 130 C 668 130 692 172 660 172" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.14" data-e="0.20" d="M 710 390 C 668 390 692 348 660 348" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <circle class="pf-rev" data-s="0.15" data-e="0.2" data-ty="0" cx="300" cy="172" r="3.5" fill="var(--color-accent)"/>
+                  <circle class="pf-rev" data-s="0.16" data-e="0.21" data-ty="0" cx="300" cy="348" r="3.5" fill="var(--color-accent)"/>
+                  <circle class="pf-rev" data-s="0.17" data-e="0.22" data-ty="0" cx="660" cy="172" r="3.5" fill="var(--color-accent)"/>
+                  <circle class="pf-rev" data-s="0.18" data-e="0.23" data-ty="0" cx="660" cy="348" r="3.5" fill="var(--color-accent)"/>
+                </svg>
+
+                <div class="mod mod--tl pf-rev" data-s="0.07" data-e="0.13" data-ty="12"><span class="mod__dot"></span>{modules[0]}</div>
+                <div class="mod mod--bl pf-rev" data-s="0.08" data-e="0.14" data-ty="12"><span class="mod__dot"></span>{modules[1]}</div>
+                <div class="mod mod--tr pf-rev" data-s="0.09" data-e="0.15" data-ty="12"><span class="mod__dot"></span>{modules[2]}</div>
+                <div class="mod mod--br pf-rev" data-s="0.10" data-e="0.16" data-ty="12"><span class="mod__dot"></span>{modules[3]}</div>
+
+                <div class="chatcard">
+                  <div class="chatcard__head">
+                    <span class="chatcard__avatar" set:html={logoIconRaw} />
+                    <div>
+                      <div class="chatcard__title">Inplicit Agent</div>
+                      <div class="chatcard__sub">{isDE ? 'Neue Kampagne' : 'New campaign'}</div>
+                    </div>
+                    <span class="chatcard__live"></span>
+                  </div>
+                  <div class="chatcard__body">
+                    <div class="bubble bubble--user">
+                      {isDE ? 'Wo verlieren wir aktuell die meiste Zeit in der Auftragsabwicklung?' : 'Where are we losing the most time in order processing right now?'}
+                    </div>
+                    <div class="chatcard__meta pf-rev" data-s="0.1" data-e="0.15" data-ty="8">
+                      {isDE ? 'Kontext: 4 Quellen verknüpft' : 'Context: 4 sources linked'}
+                    </div>
+                  </div>
+                  <div class="chatcard__composer">
+                    <span>{isDE ? 'Zielgruppe & Tiefe festlegen…' : 'Set audience & depth…'}</span>
+                    <span class="chatcard__send">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─────────────── PANEL 1 · INTERVIEWS ─────────────── -->
+        <article class="pf__panel" data-panel="1">
+          <div class="pf__panel-grid pf__panel-grid--rev">
+            <div class="pf__text">
+              <span class="pf__step-tag pf-rev" data-s="0.20" data-e="0.25" data-ty="14">02 · {t.steps[1].tag}</span>
+              <h3 class="pf__head pf-rev" data-s="0.21" data-e="0.27" data-ty="16">{t.steps[1].head}</h3>
+              <p class="pf__copy pf-rev" data-s="0.23" data-e="0.29" data-ty="16">{t.steps[1].copy}</p>
+            </div>
+            <div class="pf__visual">
+              <div class="stage stage--people">
+                <svg class="stage__svg" viewBox="0 0 960 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  {avatars.filter(a => a.c).map((a, i) => {
+                    const cx = a.x / 100 * 960, cy = a.y / 100 * 520;
+                    const mx = (cx + 540) / 2, my = (cy + 260) / 2 - 36;
+                    return (
+                      <path class="pf-line" data-line data-s={`${0.30 + i * 0.012}`} data-e={`${0.37 + i * 0.012}`}
+                        d={`M 540 260 C ${mx} ${my} ${mx} ${my} ${cx} ${cy}`} fill="none" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.85"/>
+                    );
+                  })}
+                </svg>
+
+                <div class="agentnode pf-rev" data-s="0.21" data-e="0.27" data-ty="0" style="left:56.25%;top:50%">
+                  <span class="agentnode__icon" set:html={logoIconRaw} />
+                  <span class="agentnode__ring"></span>
+                </div>
+
+                {avatars.map((a, i) => (
+                  <div class={`av pf-rev${a.c ? ' av--on' : ''}`} style={`left:${a.x}%;top:${a.y}%`}
+                    data-s={`${0.22 + (i % 7) * 0.014}`} data-e={`${0.30 + (i % 7) * 0.014}`}>
+                    <span class="av__circle">{a.i}</span>
+                    {a.c && <span class="av__pulse"></span>}
+                    {a.role && <span class="av__role">{a.role}</span>}
+                  </div>
+                ))}
+
+                <div class="livechip pf-rev" data-s="0.32" data-e="0.38" data-ty="8" style="left:50%;top:6%">
+                  <span class="livechip__dot"></span>{isDE ? '12 Interviews aktiv' : '12 interviews live'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─────────────── PANEL 2 · SYNTHESIS ─────────────── -->
+        <article class="pf__panel" data-panel="2">
+          <div class="pf__panel-grid">
+            <div class="pf__text">
+              <span class="pf__step-tag pf-rev" data-s="0.50" data-e="0.55" data-ty="14">03 · {t.steps[2].tag}</span>
+              <h3 class="pf__head pf-rev" data-s="0.51" data-e="0.57" data-ty="16">{t.steps[2].head}</h3>
+              <p class="pf__copy pf-rev" data-s="0.53" data-e="0.59" data-ty="16">{t.steps[2].copy}</p>
+            </div>
+            <div class="pf__visual">
+              <div class="stage stage--synth">
+                <svg class="stage__svg" viewBox="0 0 960 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  {[120, 175, 235, 285, 150, 205, 260, 320].map((fy, i) => {
+                    const fx = (i % 2 === 0) ? 235 : 290;
+                    const sy = 120 + i * 38;
+                    const ay = Math.min(sy, 430);
+                    return (
+                      <path class="pf-line" data-line data-s={`${0.58 + i * 0.008}`} data-e={`${0.64 + i * 0.008}`}
+                        d={`M ${fx} ${ay} C 380 ${ay} 420 260 480 260`} fill="none" stroke="var(--color-accent)" stroke-width="1.3" opacity="0.7"/>
+                    );
+                  })}
+                  <path class="pf-line" data-line data-s="0.64" data-e="0.7" d="M 600 260 C 660 260 680 165 740 165" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.65" data-e="0.71" d="M 600 260 L 740 260" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.66" data-e="0.72" d="M 600 260 C 660 260 680 355 740 355" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                </svg>
+
+                {fragments.map((f, i) => (
+                  <div class="frag" style={`left:${i % 2 === 0 ? 17 : 23}%;top:${18 + i * 8.2}%`}
+                    data-s={`${0.52 + i * 0.008}`} data-e={`${0.58 + i * 0.008}`} data-ty="8">{f}</div>
+                ))}
+
+                <div class="synthcore pf-rev" data-s="0.6" data-e="0.66" data-ty="0" style="left:56.25%;top:50%">
+                  <span class="synthcore__icon" set:html={logoIconRaw} />
+                </div>
+
+                {insightBlocks.map((b, i) => (
+                  <div class="iblock pf-rev" style={`left:84%;top:${31.7 + i * 18.3}%`}
+                    data-s={`${0.66 + i * 0.012}`} data-e={`${0.72 + i * 0.012}`} data-ty="10">
+                    <span class="iblock__n">{b.n}</span>
+                    <span class="iblock__l">{b.l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─────────────── PANEL 3 · OUTCOMES ─────────────── -->
+        <article class="pf__panel" data-panel="3">
+          <div class="pf__panel-grid pf__panel-grid--rev">
+            <div class="pf__text">
+              <span class="pf__step-tag pf-rev" data-s="0.80" data-e="0.85" data-ty="14">04 · {t.steps[3].tag}</span>
+              <h3 class="pf__head pf-rev" data-s="0.81" data-e="0.87" data-ty="16">{t.steps[3].head}</h3>
+              <p class="pf__copy pf-rev" data-s="0.83" data-e="0.89" data-ty="16">{t.steps[3].copy}</p>
+            </div>
+            <div class="pf__visual">
+              <div class="stage stage--outcomes">
+                <svg class="stage__svg" viewBox="0 0 960 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <path class="pf-line" data-line data-s="0.84" data-e="0.9" d="M 150 248 C 230 160 262 132 298 132" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.85" data-e="0.91" d="M 160 252 C 380 252 470 132 664 132" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.86" data-e="0.92" d="M 150 272 C 230 360 262 288 298 288" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.87" data-e="0.93" d="M 160 268 C 380 288 470 288 664 288" fill="none" stroke="var(--color-accent)" stroke-width="1.6"/>
+                  <path class="pf-line" data-line data-s="0.92" data-e="0.97" d="M 150 285 C 260 430 380 446 560 446" fill="none" stroke="var(--color-accent)" stroke-width="1.4" opacity="0.7"/>
+                </svg>
+
+                <div class="synthcore synthcore--sm pf-rev" data-s="0.82" data-e="0.88" data-ty="0" style="left:12%;top:50%">
+                  <span class="synthcore__icon" set:html={logoIconRaw} />
+                </div>
+
+                {outcomes.map((o, i) => (
+                  <div class="ocard pf-rev" style={`left:${i % 2 === 0 ? 31 : 69}%;top:${i < 2 ? 24 : 56}%`}
+                    data-s={`${0.86 + i * 0.012}`} data-e={`${0.92 + i * 0.012}`}>
+                    <span class="ocard__check">
+                      <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2.25 2.25L7.5 2" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="ocard__l">{o.l}</span>
+                    <span class="ocard__d">{o.d}</span>
+                  </div>
+                ))}
+
+                <div class="askbar pf-rev" data-s="0.92" data-e="0.98" data-ty="14" style="left:61.5%;top:86%">
+                  <div class="askbar__input">
+                    <span class="askbar__q">{askQuestions[0]}</span>
+                    <span class="askbar__send">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                    </span>
+                  </div>
+                  <div class="askbar__chips">
+                    <span class="askbar__chip">{askQuestions[1]}</span>
+                    <span class="askbar__chip">{askQuestions[2]}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+(function () {
+  var section = document.getElementById('process-flow');
+  if (!section) return;
+  var wrap = section.querySelector('[data-pf-wrap]');
+  var pin = section.querySelector('[data-pf-pin]');
+  var track = section.querySelector('[data-pf-track]');
+  var ticks = section.querySelectorAll('.pf__tick');
+  var revEls = Array.prototype.slice.call(section.querySelectorAll('[data-s]'));
+  var N = 4;
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function shouldRun() {
+    return !reduced && window.matchMedia('(min-width: 1024px)').matches;
+  }
+
+  // Static fallback (mobile / reduced-motion): no pin, no rAF. The fixed-coordinate
+  // stages are scaled to fit their column so nothing overlaps. (rAF is suspended
+  // here, but this path needs none.)
+  if (!shouldRun()) {
+    section.classList.add('pf--static');
+    var stages = section.querySelectorAll('.stage');
+    function fitStages() {
+      for (var i = 0; i < stages.length; i++) {
+        var st = stages[i];
+        st.style.transform = 'none'; st.style.marginBottom = '';
+        var avail = st.parentElement.clientWidth;
+        var s = Math.min(1, avail / st.offsetWidth);
+        if (s < 1) {
+          st.style.transformOrigin = 'top center';
+          st.style.transform = 'scale(' + s + ')';
+          st.style.marginBottom = (-(1 - s) * st.offsetHeight) + 'px';
+        }
+      }
+    }
+    fitStages();
+    window.addEventListener('resize', fitStages, { passive: true });
+    return;
+  }
+
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function smooth(a, b, x) {
+    if (b <= a) return x >= b ? 1 : 0;
+    var t = clamp((x - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  // Init connector dash state.
+  revEls.forEach(function (el) {
+    if (el.hasAttribute('data-line')) {
+      var len = el.getTotalLength();
+      el._len = len;
+      el.style.strokeDasharray = len;
+      el.style.strokeDashoffset = len;
+    }
+  });
+
+  function target() {
+    var total = wrap.offsetHeight - window.innerHeight;
+    if (total <= 0) return 0;
+    return clamp(-wrap.getBoundingClientRect().top / total, 0, 1);
+  }
+
+  function apply(p) {
+    var w = pin.clientWidth;
+    track.style.transform = 'translate3d(' + (-p * (N - 1) * w) + 'px,0,0)';
+
+    for (var i = 0; i < revEls.length; i++) {
+      var el = revEls[i];
+      var s = parseFloat(el.getAttribute('data-s'));
+      var e = parseFloat(el.getAttribute('data-e'));
+      var r = smooth(s, e, p);
+      if (el.hasAttribute('data-line')) {
+        el.style.strokeDashoffset = (el._len * (1 - r));
+      } else {
+        // Opacity-only reveal: never touch transform, so elements centered via
+        // translate(-50%,-50%) keep their centering. Movement comes from the
+        // line-draw and the horizontal track, per the calm/precise direction.
+        el.style.opacity = r;
+      }
+    }
+
+    // step rail: active = nearest panel; fill = within-panel progress
+    var seg = p * (N - 1);
+    var active = Math.round(seg);
+    for (var k = 0; k < ticks.length; k++) {
+      var on = k <= seg + 0.001;
+      ticks[k].classList.toggle('is-active', k === active);
+      ticks[k].classList.toggle('is-done', k < active);
+      var fill = ticks[k].querySelector('.pf__tick-fill');
+      var f = clamp(seg - k, 0, 1);
+      fill.style.transform = 'scaleX(' + f + ')';
+    }
+  }
+
+  // Scroll-driven easing loop. `cur` eases toward the scroll-derived `goal`
+  // every frame; the loop self-pauses once settled and is woken by scroll/resize.
+  // (Driven by the scroll event rather than IntersectionObserver for reliability.)
+  var cur = target();
+  var goal = cur;
+  var rafId = null;
+  var settled = 0;
+
+  function frame() {
+    goal = target();
+    cur += (goal - cur) * 0.14;
+    if (Math.abs(goal - cur) < 0.0004) { cur = goal; settled++; } else { settled = 0; }
+    apply(cur);
+    if (settled > 8) { rafId = null; return; } // idle until the next scroll
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function wake() { if (rafId == null) { settled = 0; rafId = requestAnimationFrame(frame); } }
+
+  window.addEventListener('scroll', wake, { passive: true });
+  // rAF is suspended on hidden tabs — re-sync when the page becomes visible again.
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) wake(); });
+  window.addEventListener('resize', function () {
+    revEls.forEach(function (el) {
+      if (el.hasAttribute('data-line')) {
+        var len = el.getTotalLength();
+        el._len = len; el.style.strokeDasharray = len;
+      }
+    });
+    wake();
+  }, { passive: true });
+
+  apply(cur);
+  wake();
+})();
+</script>
+
+<style>
+  .pf {
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  /* Tall wrapper provides the vertical scroll range that drives the pin. */
+  .pf__wrap { height: 460vh; position: relative; }
+
+  .pf__pin {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden;
+    display: block;
+  }
+
+  /* persistent header */
+  .pf__bar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+    /* clears the fixed nav pill (24px top + 54px tall) while the section is pinned */
+    padding: 6.5rem var(--space-12) 0;
+    display: flex; flex-direction: column; gap: var(--space-2);
+    pointer-events: none;
+  }
+  .pf__eyebrow {
+    align-self: flex-start;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .pf__title {
+    font-size: clamp(1.4rem, 2.1vw, 2rem); font-weight: 400; letter-spacing: -0.03em;
+    color: var(--color-text-primary); line-height: 1;
+  }
+
+  /* step rail */
+  .pf__rail {
+    position: absolute; left: var(--space-12); right: var(--space-12); bottom: var(--space-10); z-index: 4;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);
+    pointer-events: none;
+  }
+  .pf__tick { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+  .pf__tick-num {
+    font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+    color: var(--color-text-tertiary); transition: color 0.3s ease;
+  }
+  .pf__tick-label {
+    font-size: 12px; font-weight: 500; letter-spacing: -0.01em;
+    color: var(--color-text-tertiary); transition: color 0.3s ease;
+  }
+  .pf__tick-bar {
+    flex: 1 0 100%; height: 2px; margin-top: 8px; border-radius: 2px;
+    background: var(--color-border); overflow: hidden;
+  }
+  .pf__tick-fill {
+    display: block; height: 100%; width: 100%; border-radius: 2px;
+    background: var(--color-accent); transform: scaleX(0); transform-origin: left center;
+  }
+  .pf__tick.is-active .pf__tick-num { color: var(--color-accent); }
+  .pf__tick.is-active .pf__tick-label,
+  .pf__tick.is-done .pf__tick-label { color: var(--color-text-primary); }
+  .pf__tick.is-done .pf__tick-num { color: var(--color-text-secondary); }
+
+  /* horizontal track */
+  .pf__track {
+    display: flex; width: 400%; height: 100%;
+    will-change: transform;
+  }
+  .pf__panel { flex: 0 0 25%; height: 100%; position: relative; }
+
+  .pf__thread {
+    position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
+    pointer-events: none;
+  }
+  .pf__thread-node { will-change: opacity; }
+
+  .pf__panel-grid {
+    position: relative; z-index: 1;
+    height: 100%; max-width: 1240px; margin: 0 auto;
+    padding: 8rem var(--space-12) 7rem;
+    display: grid; grid-template-columns: 0.82fr 1.35fr; align-items: center; gap: var(--space-10);
+  }
+  .pf__panel-grid--rev { grid-template-columns: 1.35fr 0.82fr; }
+  .pf__panel-grid--rev .pf__text { order: 2; }
+  .pf__panel-grid--rev .pf__visual { order: 1; }
+
+  .pf__text { max-width: 30rem; }
+  .pf__step-tag {
+    display: inline-block; margin-bottom: var(--space-5);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .pf__head {
+    font-size: clamp(1.6rem, 2.6vw, 2.5rem); font-weight: 400; letter-spacing: -0.035em; line-height: 1.06;
+    color: var(--color-text-primary); margin-bottom: var(--space-5);
+  }
+  .pf__copy {
+    font-size: var(--text-base); line-height: 1.7; color: var(--color-text-secondary);
+  }
+
+  .pf__visual { display: flex; align-items: center; justify-content: center; height: 100%; }
+
+  /* fixed-coordinate stage: HTML anchors in %, SVG overlay in same 960×520 space */
+  .stage {
+    position: relative; width: 100%; max-width: 940px; aspect-ratio: 960 / 520;
+  }
+  .stage__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 1; }
+
+  .pf-rev { opacity: 0; will-change: opacity; }
+  .pf-line { will-change: stroke-dashoffset; }
+
+  /* ── element placement helpers (centered on their anchor point) ── */
+  .mod, .av, .agentnode, .synthcore, .frag, .iblock, .ocard, .askbar, .livechip {
+    position: absolute; transform: translate(-50%, -50%);
+  }
+
+  /* ── Step 1 · chat card + context modules ── */
+  .chatcard {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 38%; min-width: 320px; z-index: 2;
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-card); box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .chatcard__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: 12px 14px; border-bottom: 1px solid var(--color-border); background: var(--color-surface);
+  }
+  .chatcard__avatar {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: var(--color-accent-light); border: 1px solid var(--color-accent-muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chatcard__avatar :global(svg) { width: 15px; height: 15px; }
+  .chatcard__avatar :global(path) { fill: #000; }
+  .chatcard__avatar :global(rect) { fill: var(--color-accent); }
+  .chatcard__title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  .chatcard__sub { font-size: 10px; color: var(--color-text-tertiary); }
+  .chatcard__live {
+    margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent);
+    animation: pf-pulse 1.8s ease-in-out infinite;
+  }
+  .chatcard__body { padding: 16px 14px; display: flex; flex-direction: column; gap: 8px; min-height: 96px; }
+  .bubble--user {
+    align-self: flex-end; max-width: 92%;
+    background: var(--color-cta-bg); color: var(--color-cta-text);
+    padding: 9px 12px; border-radius: 12px 12px 3px 12px; font-size: 12px; line-height: 1.45;
+  }
+  .chatcard__meta { align-self: flex-start; font-size: 10.5px; color: var(--color-text-tertiary); display: inline-flex; align-items: center; gap: 5px; }
+  .chatcard__meta::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); }
+  .chatcard__composer {
+    display: flex; align-items: center; gap: 8px; padding: 9px 10px 9px 13px;
+    border-top: 1px solid var(--color-border); background: var(--color-surface);
+  }
+  .chatcard__composer > span:first-child { flex: 1; font-size: 11px; color: var(--color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chatcard__send {
+    width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+    background: var(--color-cta-bg); color: var(--color-cta-text);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .mod {
+    display: inline-flex; align-items: center; gap: 8px; z-index: 2;
+    padding: 10px 14px; background: var(--color-bg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-sm); font-size: 12px; font-weight: 500; color: var(--color-text-primary);
+    white-space: nowrap;
+  }
+  .mod__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; }
+  .mod--tl { left: 15.6%; top: 25%; }
+  .mod--bl { left: 15.6%; top: 75%; }
+  .mod--tr { left: 84.4%; top: 25%; }
+  .mod--br { left: 84.4%; top: 75%; }
+
+  /* ── Step 2 · people cluster ── */
+  .agentnode { z-index: 3; width: 64px; height: 64px; display: grid; place-items: center; }
+  .agentnode__icon {
+    position: relative; z-index: 2; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--color-bg); border: 1px solid var(--color-accent-muted); box-shadow: var(--shadow-md);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .agentnode__icon :global(svg) { width: 24px; height: 24px; }
+  .agentnode__icon :global(path) { fill: #000; }
+  .agentnode__icon :global(rect) { fill: var(--color-accent); }
+  .agentnode__ring {
+    position: absolute; inset: -2px; border-radius: 50%; border: 1.5px solid var(--color-accent-muted);
+    animation: pf-ring 2.8s ease-in-out infinite;
+  }
+
+  .av { z-index: 2; }
+  .av__circle {
+    display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--color-surface-elevated); border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xs); font-size: 12px; font-weight: 600; color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+  .av--on .av__circle {
+    background: var(--color-bg); border-color: var(--color-accent-muted); color: var(--color-text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .av__pulse {
+    position: absolute; top: -2px; right: -2px; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--color-accent); border: 2px solid var(--color-bg);
+    animation: pf-pulse 1.8s ease-in-out infinite;
+  }
+  .av__role {
+    position: absolute; left: 50%; top: calc(100% + 4px); transform: translateX(-50%);
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
+    color: var(--color-text-tertiary);
+  }
+  .livechip {
+    z-index: 3; display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-full); box-shadow: var(--shadow-sm);
+    font-size: 11px; font-weight: 600; color: var(--color-text-secondary);
+  }
+  .livechip__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); animation: pf-pulse 1.8s ease-in-out infinite; }
+
+  /* ── Step 3 · synthesis ── */
+  .frag {
+    z-index: 2; padding: 6px 10px; max-width: 150px;
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-xs); font-size: 10.5px; font-style: italic; line-height: 1.3;
+    color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .synthcore { z-index: 3; width: 58px; height: 58px; display: grid; place-items: center;
+    background: var(--color-bg); border: 1px solid var(--color-accent-muted); border-radius: 50%;
+    box-shadow: var(--shadow-md); }
+  .synthcore--sm { width: 50px; height: 50px; }
+  .synthcore__icon { display: flex; }
+  .synthcore__icon :global(svg) { width: 26px; height: 26px; }
+  .synthcore--sm .synthcore__icon :global(svg) { width: 22px; height: 22px; }
+  .synthcore__icon :global(path) { fill: #000; }
+  .synthcore__icon :global(rect) { fill: var(--color-accent); }
+
+  .iblock {
+    z-index: 2; display: flex; flex-direction: column; gap: 1px; width: 150px;
+    padding: 11px 14px; background: var(--color-bg);
+    border: 1px solid var(--color-border); border-left: 2px solid var(--color-accent);
+    border-radius: var(--radius-ui); box-shadow: var(--shadow-sm);
+  }
+  .iblock__n { font-size: 20px; font-weight: 800; letter-spacing: -0.04em; color: var(--color-accent); line-height: 1; }
+  .iblock__l { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); }
+
+  /* ── Step 4 · outcomes ── */
+  .ocard {
+    z-index: 2; display: grid; grid-template-columns: auto 1fr; gap: 3px 9px; align-items: start;
+    width: 200px; padding: 13px 15px; background: var(--color-bg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-sm);
+  }
+  .ocard__check {
+    grid-row: 1 / span 2; width: 18px; height: 18px; border-radius: 50%; margin-top: 1px;
+    background: var(--color-accent-light); border: 1px solid var(--color-accent-muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ocard__l { font-size: 13px; font-weight: 600; color: var(--color-text-primary); letter-spacing: -0.01em; }
+  .ocard__d { font-size: 11px; line-height: 1.45; color: var(--color-text-tertiary); }
+
+  .askbar { z-index: 3; width: 70%; max-width: 480px; display: flex; flex-direction: column; gap: 8px; }
+  .askbar__input {
+    display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 14px;
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-md);
+  }
+  .askbar__q { flex: 1; font-size: 12px; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .askbar__send {
+    width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0;
+    background: var(--color-cta-bg); color: var(--color-cta-text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .askbar__chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .askbar__chip {
+    font-size: 10.5px; color: var(--color-text-secondary);
+    padding: 4px 10px; background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-full); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48%;
+  }
+
+  @keyframes pf-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @keyframes pf-ring { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.18); opacity: 0.2; } }
+
+  /* ───────────── static fallback (≤1023px or reduced-motion) ───────────── */
+  .pf--static .pf__wrap { height: auto; }
+  .pf--static .pf__pin { position: static; height: auto; overflow: visible; }
+  .pf--static .pf__bar { position: static; padding: var(--space-16) var(--space-6) 0; }
+  .pf--static .pf__rail { display: none; }
+  .pf--static .pf__thread { display: none; }
+  .pf--static .pf__track { display: block; width: 100%; transform: none !important; }
+  .pf--static .pf__panel { height: auto; }
+  .pf--static .pf__panel-grid,
+  .pf--static .pf__panel-grid--rev {
+    display: block; height: auto; max-width: 640px; padding: var(--space-16) var(--space-6);
+  }
+  .pf--static .pf__panel-grid--rev .pf__text,
+  .pf--static .pf__panel-grid--rev .pf__visual { order: 0; }
+  .pf--static .pf__text { max-width: none; margin-bottom: var(--space-10); }
+  .pf--static .pf-rev { opacity: 1 !important; }
+  .pf--static .pf-line { stroke-dashoffset: 0 !important; }
+  .pf--static .pf__visual { overflow: hidden; }
+  .pf--static .stage { width: 860px; max-width: 860px; flex: none; margin: 0 auto; }
+
+  @media (max-width: 1023px) {
+    .pf__wrap { height: auto; }
+    .pf__pin { position: static; height: auto; overflow: visible; }
+    .pf__bar { position: static; padding: var(--space-16) var(--space-6) 0; }
+    .pf__rail, .pf__thread { display: none; }
+    .pf__track { display: block; width: 100%; transform: none; }
+    .pf__panel { height: auto; }
+    .pf__panel-grid, .pf__panel-grid--rev {
+      display: block; height: auto; max-width: 640px; padding: var(--space-12) var(--space-6);
+    }
+    .pf__text { max-width: none; margin-bottom: var(--space-8); }
+    .pf-rev { opacity: 1 !important; }
+    .pf-line { stroke-dashoffset: 0 !important; }
+    .pf__visual { overflow: hidden; }
+    .stage { width: 860px; max-width: 860px; flex: none; margin: 0 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chatcard__live, .av__pulse, .livechip__dot, .agentnode__ring { animation: none; }
+    .pf-rev { opacity: 1 !important; }
+    .pf-line { stroke-dashoffset: 0 !important; }
+  }
+</style>
