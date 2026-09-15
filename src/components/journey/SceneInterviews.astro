@@ -2,15 +2,24 @@
 /**
  * SceneInterviews — beat 4. The campaign is out, so the conversations run.
  *
- * The orange thread that has led down the whole journey splits here: one
- * strand per column, running behind the windows, and merging again at the
- * bottom into the insight frame. The wires are one SVG over the same box as
- * the grid, in a 0-100 viewBox with preserveAspectRatio="none", so the strands
- * line up with the columns at any width without measuring anything.
+ * The orange thread that has led down the whole journey splits here: it feeds
+ * into a bus above the grid, runs down one strand per column behind the
+ * windows, and merges into a second bus below that hands on to the insight
+ * frame.
  *
- * Each window is the interview room in miniature: the agent's orb on the left,
- * the conversation hinted on the right. The count is deliberately not in the
- * copy, only in how many windows there happen to be.
+ * The strands are plain elements positioned with the grid's own column
+ * arithmetic, so they sit dead centre under each column at any width. The fans
+ * are SVG, but STRAIGHT lines only: preserveAspectRatio="none" stretches X and
+ * Y by different factors, and a straight line survives that unchanged while
+ * every curve turns into a wide flat sweep. A node sits at each junction, which
+ * is also what absorbs the sub-pixel disagreement between the fan's naive
+ * column centre and the strand's gap-aware one.
+ *
+ * Each window is SceneInterview's room in miniature and keeps its anatomy:
+ * the live disc and the clock along the top, the orb on the left, the
+ * transcript on the right with a mark per turn, the mic at the foot. Only the
+ * words are gone, because at this size they would be noise. The count is
+ * deliberately not in the copy, only in how many windows there happen to be.
  *
  * Everything is a function of absolute journey time, so scrolling back deals
  * the windows out again. The typing dots are the one exception: a conversation
@@ -39,17 +48,21 @@ const windows = Array.from({ length: COLS * ROWS }, (_, i) => {
     col, row,
     // three hinted turns: agent, reply, agent. Widths only; at this size the
     // words would be noise.
-    lines: Array.from({ length: 3 }, (_, k) => ({ me: k === 1, w: Math.round((k === 1 ? 52 : 70) + next() * 26) })),
+    lines: Array.from({ length: 3 }, (_, k) => ({ me: k === 1, w: Math.round((k === 1 ? 54 : 72) + next() * 24) })),
+    clock: `${String(4 + Math.floor(next() * 17)).padStart(2, '0')}:${String(Math.floor(next() * 60)).padStart(2, '0')}`,
     // deal order runs outward from the middle of the grid
     g: Math.round(Math.hypot(col - (COLS - 1) / 2, (row - (ROWS - 1) / 2) * 1.6) * 1.35),
     beat: (1.05 + next() * 0.5).toFixed(2),
-    dx: ((COLS - 1) / 2 - col) * 100,
-    dy: ((ROWS - 1) / 2 - row) * 100,
+    // Distance back to the centre of the grid, as a share of the card's own
+    // box (a column step is one card plus one gap, hence slightly over 100).
+    dx: +(((COLS - 1) / 2 - col) * 106).toFixed(1),
+    dy: +(((ROWS - 1) / 2 - row) * 112).toFixed(1),
   };
 });
 
-// Column centres in the 0-100 wire viewBox.
-const strands = Array.from({ length: COLS }, (_, c) => +(((c + 0.5) / COLS) * 100).toFixed(2));
+// One strand per column. The exact centre accounts for the grid gap, so a
+// strand sits under the middle of its column at any width.
+const strands = Array.from({ length: COLS }, (_, c) => c);
 
 const t = isDE
   ? { head: 'Jede Person wird einzeln befragt.', sub: 'Anonym, im Gespräch mit dem Agenten, wann es ihr passt.', label: 'Interview' }
@@ -65,32 +78,49 @@ const t = isDE
 
     <div class="iv__stage">
       <!-- The thread, split into one strand per column and merged again. -->
-      <svg class="iv__wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        {strands.map((x) => (
-          <path
-            class="iv__wire"
-            vector-effect="non-scaling-stroke"
-            d={`M50 -14 C 50 -2 ${x} 0 ${x} 12 L ${x} 88 C ${x} 100 50 102 50 114`}
-            fill="none"
-            stroke="var(--color-accent)"
-            stroke-width="1.25"
-            stroke-linecap="round"
-          />
-        ))}
-      </svg>
+      <div class="iv__wires" aria-hidden="true">
+        <svg class="iv__fan iv__fan--in" viewBox="0 0 1000 100" preserveAspectRatio="none">
+          {strands.map((c) => (
+            <line x1="500" y1="0" x2={(c + 0.5) * 200} y2="100"
+                  stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          ))}
+        </svg>
+
+        {strands.map((c) => <span class="iv__node iv__node--in" style={`--c:${c}`}></span>)}
+        {strands.map((c) => <span class="iv__strand" style={`--c:${c}`}></span>)}
+        {strands.map((c) => <span class="iv__node iv__node--out" style={`--c:${c}`}></span>)}
+
+        <svg class="iv__fan iv__fan--out" viewBox="0 0 1000 100" preserveAspectRatio="none">
+          {strands.map((c) => (
+            <line x1={(c + 0.5) * 200} y1="0" x2="500" y2="100"
+                  stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          ))}
+        </svg>
+      </div>
 
       <div class="iv__grid">
         {windows.map((w) => (
           <div class="win" style={`--g:${w.g};--dx:${w.dx}%;--dy:${w.dy}%;--beat:${w.beat}s`}>
-            <span class="win__no">{t.label} {w.no}</span>
+            <div class="win__top">
+              <span class="win__no">{t.label} {w.no}</span>
+              <span class="win__clock"><span class="disc disc--live"></span>{w.clock}</span>
+            </div>
+
             <div class="win__body">
               <span class="win__orb"></span>
-              <div class="win__thread" aria-hidden="true">
+              <div class="win__transcript" aria-hidden="true">
                 {w.lines.map((l) => (
-                  <span class={`win__line${l.me ? ' win__line--me' : ''}`} style={`width:${l.w}%`}></span>
+                  <span class={`turn${l.me ? ' turn--u' : ''}`}>
+                    <span class="turn__mark"></span>
+                    <span class="turn__bubble" style={`width:${l.w}%`}></span>
+                  </span>
                 ))}
-                <span class="win__typing"><span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span></span>
               </div>
+            </div>
+
+            <div class="win__foot" aria-hidden="true">
+              <span class="win__mic"></span>
+              <span class="win__typing"><span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span></span>
             </div>
           </div>
         ))}
@@ -111,8 +141,42 @@ const t = isDE
   }
   .iv__sub { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
 
-  .iv__stage { position: relative; }
-  .iv__wires { position: absolute; inset: -6% 0; width: 100%; height: 112%; pointer-events: none; opacity: 0.45; }
+  .iv__stage { position: relative; --gap: var(--space-3); --lead: 46px; }
+
+  /* The wire layer reaches past the grid at both ends: that overhang is where
+     the single thread becomes five and five become one again. */
+  .iv__wires {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(-1 * var(--lead)); bottom: calc(-1 * var(--lead));
+    pointer-events: none;
+    opacity: 0.62;
+  }
+
+  .iv__fan { position: absolute; left: 0; right: 0; height: var(--lead); overflow: visible; }
+  .iv__fan--in { top: 0; }
+  .iv__fan--out { bottom: 0; }
+
+  /* Column centre c, gaps included:
+     ((100% - (COLS-1) * gap) / COLS) * (c + .5) + c * gap */
+  .iv__strand {
+    position: absolute;
+    top: var(--lead); bottom: var(--lead);
+    width: 1.5px;
+    background: var(--color-accent);
+    left: calc((100% - 4 * var(--gap)) / 5 * (var(--c) + 0.5) + var(--c) * var(--gap) - 0.75px);
+  }
+
+  /* The junction node: it marks where the thread becomes five, and covers the
+     hairline disagreement between the fan's and the strand's column centre. */
+  .iv__node {
+    position: absolute;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--color-accent);
+    left: calc((100% - 4 * var(--gap)) / 5 * (var(--c) + 0.5) + var(--c) * var(--gap) - 2.5px);
+  }
+  .iv__node--in { top: calc(var(--lead) - 2.5px); }
+  .iv__node--out { bottom: calc(var(--lead) - 2.5px); }
 
   .iv__grid {
     position: relative;
@@ -122,32 +186,50 @@ const t = isDE
   }
 
   .win {
-    display: flex; flex-direction: column; gap: 7px;
-    padding: 9px 10px;
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 8px 9px;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     box-shadow: var(--shadow-xs);
     min-width: 0;
   }
+  /* Top line of the room: who this is, and the clock with its live disc. */
+  .win__top { display: flex; align-items: center; gap: 6px; min-width: 0; }
   .win__no {
     font-size: 9.5px; font-weight: 600; letter-spacing: 0.03em;
     color: var(--color-text-tertiary);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .win__clock {
+    display: inline-flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0;
+    font-size: 8.5px; color: var(--color-text-quaternary); font-variant-numeric: tabular-nums;
+  }
+  .disc { width: 4px; height: 4px; border-radius: 50%; background: var(--color-text-quaternary); flex-shrink: 0; }
+  .disc--live { background: var(--color-accent); }
 
-  /* The interview room in miniature: orb left, conversation right. */
+  /* Body: orb left, transcript right, exactly as the full room is laid out. */
   .win__body { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .win__orb {
-    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-    background: radial-gradient(circle at 34% 30%, #fff 0%, var(--orb-teal) 46%, color-mix(in srgb, var(--orb-teal) 62%, var(--color-canvas-dark)) 100%);
-    box-shadow: 0 0 0 3px var(--orb-teal-soft);
+    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+    /* Brand tokens only: periwinkle into navy, both straight from design.css. */
+    background: radial-gradient(circle at 32% 28%, var(--brand-periwinkle-weak) 0%, var(--brand-periwinkle) 42%, var(--brand-blue) 100%);
+    box-shadow: 0 0 0 3px var(--brand-blue-weak);
   }
-  .win__thread { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-  .win__line { height: 4px; border-radius: 2px; background: var(--color-border); }
-  .win__line--me { align-self: flex-end; background: color-mix(in srgb, var(--orb-teal) 34%, transparent); }
-  .win__typing { display: inline-flex; gap: 3px; margin-top: 1px; }
-  .win__typing span { width: 3px; height: 3px; border-radius: 50%; background: var(--orb-teal); opacity: 0.45; }
+
+  .win__transcript { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  /* One mark plus one bubble per turn, the same anatomy as the real transcript. */
+  .turn { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .turn--u { flex-direction: row-reverse; }
+  .turn__mark { width: 6px; height: 6px; border-radius: 2px; flex-shrink: 0; background: var(--color-border-strong); }
+  .turn--u .turn__mark { background: var(--brand-periwinkle); }
+  .turn__bubble { height: 5px; border-radius: 2px; background: var(--color-surface-elevated); }
+  .turn--u .turn__bubble { background: var(--brand-periwinkle-weak); }
+
+  .win__foot { display: flex; align-items: center; gap: 6px; }
+  .win__mic { width: 12px; height: 12px; border-radius: 50%; background: var(--color-surface-elevated); flex-shrink: 0; }
+  .win__typing { display: inline-flex; gap: 3px; }
+  .win__typing span { width: 3px; height: 3px; border-radius: 50%; background: var(--brand-periwinkle); }
 
   /* ── Live choreography ─────────────────────────────────────────────────── */
   /* Absolute journey time.  4.0 windows deal in · 4.74 they converge ·
@@ -170,17 +252,22 @@ const t = isDE
   /* The split draws itself just before the windows land on it, and stays until
      the merge has pulled everything into the insight frame. */
   :global(.jstage.is-live) .iv__wires {
-    --p: clamp(0, calc((var(--t) - 3.96) / 0.30), 1);
+    --p: clamp(0, calc((var(--t) - 3.96) / 0.34), 1);
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 
+  /* Out from the centre along the fan, and back into it along the merge: the
+     cards travel the same vectors the orange strands do. --off is 1 when a
+     card is stacked at the centre and 0 when it sits in its column, so one
+     expression covers both the explosion and the implosion. */
   :global(.jstage.is-live) .win {
-    --in: clamp(0, calc((var(--t) - 4.06 - var(--g) * 0.045) / 0.26), 1);
-    --home: clamp(0, calc((var(--t) - 4.74) / 0.26), 1);
+    --in: clamp(0, calc((var(--t) - 4.02 - var(--g) * 0.05) / 0.30), 1);
+    --home: clamp(0, calc((var(--t) - 4.72 + var(--g) * 0.02) / 0.26), 1);
+    --off: calc((1 - var(--in)) + var(--home));
     opacity: calc(var(--in) * (1 - var(--home)));
     transform:
-      translate3d(calc(var(--dx) * var(--home) * 0.5), calc(14px * (1 - var(--in)) + var(--dy) * var(--home) * 0.5), 0)
-      scale(calc((0.94 + 0.06 * var(--in)) * (1 - 0.35 * var(--home))));
+      translate3d(calc(var(--dx) * var(--off)), calc(var(--dy) * var(--off)), 0)
+      scale(calc(1 - 0.5 * (1 - var(--in)) - 0.5 * var(--home)));
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -197,7 +284,7 @@ const t = isDE
   @media (max-width: 1023px) {
     .iv__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
     .iv__inner { gap: var(--space-6); }
-    .win__orb { width: 18px; height: 18px; }
+    .win__orb { width: 20px; height: 20px; }
     .iv__wires { display: none; }
   }
 </style>

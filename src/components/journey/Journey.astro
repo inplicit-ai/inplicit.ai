@@ -114,6 +114,12 @@ const isDE = lang === 'de';
   .jsec :global(.jstage.is-live) .jthread {
     --p: clamp(0, calc(var(--t) / 5.4), 1);
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
+    /* While the interviews run, the thread IS the split: one line crossing the
+       grid on top of five strands would just read as a stray diagonal. */
+    opacity: calc(0.5 * max(
+      clamp(0, calc((3.92 - var(--t)) / 0.16), 1),
+      clamp(0, calc((var(--t) - 4.98) / 0.16), 1)
+    ));
   }
 
   .jshell {
