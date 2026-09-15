@@ -39,19 +39,13 @@ const isDE = lang === 'de';
       <SceneAsk lang={lang} />
       <SceneInterviews lang={lang} />
 
-      <!-- The dashboard only introduces itself once there is something in it,
-           and it does not simply appear: the thread arrives at its top edge and
-           DRAWS the frame. Six segments rather than a stroked path, because a
-           dash offset is a length in CSS and a responsive perimeter is not a
-           number you can know at build time. The line splits at the top centre,
-           runs down both sides and closes at the bottom. -->
+      <!-- The insight frame is not placed on top of the line, it GROWS OUT of
+           it: the clip starts as a hairline-wide sliver sitting on the thread
+           at the top centre and opens outward and downward into the full card.
+           Because the frame's own orange edge is revealed by that same clip,
+           the outline draws itself as a consequence of the growth rather than
+           as a second animation on top of it. -->
       <div class="jshell">
-        <span class="jedge jedge--tl"></span>
-        <span class="jedge jedge--tr"></span>
-        <span class="jedge jedge--l"></span>
-        <span class="jedge jedge--r"></span>
-        <span class="jedge jedge--bl"></span>
-        <span class="jedge jedge--br"></span>
         <AppShell lang={lang}>
           <nav class="jtopbar crumb" slot="topbar">
             <span class="crumb__link">{isDE ? 'Kampagnen' : 'Campaigns'}</span>
@@ -89,7 +83,7 @@ const isDE = lang === 'de';
   /* Five beats run before the dashboard appears, so the product tour's own
      scene 0 sits at journey time 5. journey.css derives --jt from this, and
      --shell-in is when the chrome is allowed on screen at all. */
-  .jsec :global(.jstage) { --t-off: 5; --shell-in: 4.86; }
+  .jsec :global(.jstage) { --t-off: 5; --shell-in: 4.78; }
 
   /* Not full-bleed: the mock sits inside the normal content column. */
   .jframe {
@@ -130,45 +124,26 @@ const isDE = lang === 'de';
     overflow: hidden;
   }
 
-  .jedge { position: absolute; background: var(--color-accent); z-index: 4; pointer-events: none; }
-  .jedge--tl, .jedge--tr, .jedge--bl, .jedge--br { height: 1.5px; width: 50%; }
-  .jedge--l, .jedge--r { width: 1.5px; top: 0; bottom: 0; }
-  .jedge--tl { top: 0; right: 50%; transform-origin: right center; }
-  .jedge--tr { top: 0; left: 50%; transform-origin: left center; }
-  .jedge--l  { left: 0; transform-origin: center top; }
-  .jedge--r  { right: 0; transform-origin: center top; }
-  .jedge--bl { bottom: 0; left: 0; transform-origin: left center; }
-  .jedge--br { bottom: 0; right: 0; transform-origin: right center; }
-
-  /* Live: the frame grows from the point the thread arrives at, the segments
-     draw the outline in order, and the permanent hairline takes over once the
-     outline has closed. */
+  /* Live: born on the thread, opening outward and down. */
   .jsec :global(.jstage.is-live) .jshell {
-    --grow: clamp(0, calc((var(--t) - 4.98) / 0.42), 1);
-    --edge: clamp(0, calc((var(--t) - 5.38) / 0.10), 1);
-    opacity: clamp(0, calc((var(--t) - 4.96) / 0.10), 1);
-    transform: scale(calc(0.86 + 0.14 * var(--grow)));
-    transform-origin: center top;
-    border: 1px solid color-mix(in srgb, var(--color-border) calc(var(--edge) * 100%), transparent);
-    box-shadow: 0 calc(18px * var(--edge)) calc(44px * var(--edge)) calc(-22px * var(--edge)) rgba(11, 12, 16, 0.16);
+    --born: clamp(0, calc((var(--t) - 4.98) / 0.38), 1);
+    --settled: clamp(0, calc((var(--t) - 5.36) / 0.12), 1);
+    clip-path: inset(
+      0
+      calc((50% - 0.75px) * (1 - var(--born)))
+      calc(100% * (1 - var(--born)))
+      calc((50% - 0.75px) * (1 - var(--born)))
+    );
+    /* Orange while it is being drawn, the ordinary hairline once it stands. */
+    border: 1.5px solid color-mix(in srgb, var(--color-border) calc(var(--settled) * 100%), var(--color-accent));
+    box-shadow: 0 calc(18px * var(--settled)) calc(44px * var(--settled)) calc(-22px * var(--settled)) rgba(11, 12, 16, 0.16);
   }
-  .jsec :global(.jstage.is-live) .jedge {
-    /* fades out once the hairline border has arrived under it */
-    opacity: clamp(0, calc((5.54 - var(--t)) / 0.12), 1);
-  }
-  .jsec :global(.jstage.is-live) .jedge--tl,
-  .jsec :global(.jstage.is-live) .jedge--tr { transform: scaleX(clamp(0, calc((var(--t) - 5.00) / 0.12), 1)); }
-  .jsec :global(.jstage.is-live) .jedge--l,
-  .jsec :global(.jstage.is-live) .jedge--r  { transform: scaleY(clamp(0, calc((var(--t) - 5.10) / 0.18), 1)); }
-  .jsec :global(.jstage.is-live) .jedge--bl,
-  .jsec :global(.jstage.is-live) .jedge--br { transform: scaleX(clamp(0, calc((var(--t) - 5.26) / 0.14), 1)); }
 
   /* No JS / reduced motion: the frame is simply there, with no drawn outline. */
   .jsec :global(.jstage:not(.is-live)) .jshell {
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-lg);
   }
-  .jsec :global(.jstage:not(.is-live)) .jedge { display: none; }
 
   /* Breadcrumb — 13px, grey links, ink current page, chevron separators. */
   .crumb { display: flex; align-items: center; gap: 6px; font-size: 13px; min-width: 0; }
