@@ -227,8 +227,11 @@ const t = isDE
     --in: clamp(0, calc((var(--t) - 3.02) / 0.26), 1);
     --sent: clamp(0, calc((var(--t) - 3.92) / 0.20), 1);
     opacity: var(--in);
-    transform: translate3d(0, calc(26px * (1 - var(--in)) - 46% * var(--sent)), 0)
-               scale(calc(0.985 + 0.015 * var(--in) - 0.62 * var(--sent)));
+    /* On send it lifts away, it does not shrink. Scaling it down read as the
+       card receding backwards into the page, which is the opposite of the
+       thing leaving it. */
+    transform: translate3d(0, calc(26px * (1 - var(--in)) - 34px * var(--sent)), 0)
+               scale(calc(0.985 + 0.015 * var(--in)));
   }
 
   /* The question types itself. A width clamp, not a character count: a width

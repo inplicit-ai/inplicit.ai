@@ -267,13 +267,16 @@ const t = isDE
      5.0 handed over to the insight frame. */
   /* The fan has to leave the UNDERSIDE of the campaign card, and that card
      sits low in the frame while this layer's apex sits high in it. So the
-     whole layer starts dropped past the card and HOLDS there until the card
-     has left, then eases up to its own position. Releasing it earlier is what
-     pulled the apex up into the card and ran the curves across it. */
+     whole layer starts dropped so that its apex meets the card's bottom edge,
+     HOLDS there until the card has left, and only then eases up to its own
+     position. Releasing it earlier pulled the apex into the card and ran the
+     curves across it; a guessed percentage left a gap instead, because the
+     distance depends on the frame's height and the card's. --drop-px is that
+     distance, measured once in the script below. */
   :global(.jstage.is-live) .iv {
     pointer-events: none;
     --drop: clamp(0, calc((4.28 - var(--t)) / 0.18), 1);
-    transform: translate3d(0, calc(46% * var(--drop)), 0);
+    transform: translate3d(0, calc(var(--drop-px, 0px) * var(--drop)), 0);
     opacity: min(
       clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
       clamp(0, calc((5.02 - var(--t)) / 0.16), 1)
@@ -346,6 +349,31 @@ const t = isDE
 
   const iv = document.querySelector<HTMLElement>('.iv');
   const stage = document.querySelector<HTMLElement>('[data-stage]');
+
+  /* How far this layer has to start dropped for the fan's apex to sit on the
+     campaign card's bottom edge. Layout positions, not rects: the rects carry
+     the scroll-driven transforms, offsets do not. Recomputed on resize only. */
+  const topWithin = (el: HTMLElement | null, root: HTMLElement) => {
+    let y = 0;
+    let node: HTMLElement | null = el;
+    while (node && node !== root) { y += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
+    return y;
+  };
+  let dropOk = false;
+  const measureDrop = () => {
+    const frame = document.querySelector<HTMLElement>('.jframe');
+    const card = document.querySelector<HTMLElement>('.card');
+    const ivStage = document.querySelector<HTMLElement>('.iv__stage');
+    if (!frame || !card || !ivStage || !iv) return;
+    const lead = parseFloat(getComputedStyle(ivStage).getPropertyValue('--lead')) || 0;
+    const need = Math.round(topWithin(card, frame) + card.offsetHeight - (topWithin(ivStage, frame) - lead));
+    /* On the very first run the frame can still be laying out and every offset
+       reads 0. Rather than bake that in, leave it unset and try again on the
+       next scroll: the beat is five screens away, there is plenty of time. */
+    if (need <= 0) { dropOk = false; return; }
+    dropOk = true;
+    iv.style.setProperty('--drop-px', need + 'px');
+  };
   const cells = [...document.querySelectorAll<HTMLCanvasElement>('[data-orb-cell]')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -388,6 +416,7 @@ const t = isDE
     };
 
     const sync = () => {
+      if (!dropOk) measureDrop();
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
       const next = t > 3.9 && t < 5.05;
       iv.classList.toggle('is-live-beat', next);
@@ -398,8 +427,9 @@ const t = isDE
     };
 
     addEventListener('scroll', sync, { passive: true });
-    addEventListener('resize', sync, { passive: true });
+    addEventListener('resize', () => { dropOk = false; sync(); }, { passive: true });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+    measureDrop();
     sync();
   }
 </script>
