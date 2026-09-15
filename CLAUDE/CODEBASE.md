@@ -29,11 +29,12 @@ Website/
         │   ├── Hero.astro       ← headline + CTAs, fade-up anim; hosts HeroNetworkViz
         │   ├── HeroNetworkViz.astro ← isometric "role → role-context" extraction animation
         │   ├── HowItWorks.astro ← 6-step accordion; auf der Startseite auskommentiert (ersetzt durch journey/)
-        │   ├── TheProblem.astro ← "Die Herausforderung" als eigene ScrollStage: Wissens-Bubblefeld, eine Person geht und reisst eine Luecke hinein
         │   ├── Applications.astro ← 4-card gallery of use-case applications; auf der Startseite auskommentiert
         │   ├── LogoCloud.astro  ← 3 Referenzlogos; auf der Startseite auskommentiert
         │   ├── scroll/ScrollStage.astro ← Pin-Primitive, schreibt --t (Szenen-Einheiten) pro Frame
-        │   ├── journey/         ← Scroll-Journey: Journey, AppShell, SceneSetup/Interview/Themes/Chat
+        │   ├── journey/         ← Scroll-Journey (6 Beats in EINER Buehne): Journey, AppShell,
+        │   │                      SceneKnowledgeLoss (Beats 0-1: Bubblefeld, Person geht, Luecke bleibt),
+        │   │                      SceneSetup/Interview/Themes/Chat (Beats 2-5)
         │   ├── ValidationLoop.astro ← 5-stage Listen→Converge card flow
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)

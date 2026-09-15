@@ -1,8 +1,8 @@
 ---
 /**
- * TheProblem — "Die Herausforderung" as a pinned, scroll-driven stage on the
- * same primitive as the product journey (ScrollStage writes --t in scene units;
- * everything below is a pure CSS function of it).
+ * SceneKnowledgeLoss — the two beats the journey opens on, before any product
+ * is shown. It is a frame-level layer inside the journey's own stage, NOT a
+ * separate section: the whole thing is one continuous scroll.
  *
  * Two beats:
  *   0 → 1  the knowledge field fills in. Every bubble is one piece of knowledge
@@ -13,12 +13,16 @@
  * The field is deliberately NOT inside a .jscene: it persists across both beats
  * on absolute journey time (--lt: var(--t)), the same trick AppShell uses for
  * the dashboard chrome. Only the left-hand copy swaps, so the loss reads as one
- * continuous picture instead of two slides.
+ * continuous picture instead of two slides. The whole layer then clears out as
+ * the product tour takes over at --t 2.
  *
  * Base markup (no .is-live) is the full, assembled field with nobody gone. That
  * is the no-JS and reduced-motion state, per the journey.css contract.
  */
-import ScrollStage from './scroll/ScrollStage.astro';
+// The choreography contract this scene is written against. ScrollStage pulls it
+// in too, but this scene reads .jstage/.jscene/.jpart directly, so it declares
+// the dependency itself rather than relying on a sibling to have loaded it.
+import '../../styles/journey.css';
 
 export interface Props { lang?: 'en' | 'de' }
 const { lang = 'en' } = Astro.props;
@@ -64,22 +68,18 @@ for (let tries = 0; tries < 9000 && field.length < 124; tries++) {
 
 const t = isDE
   ? {
-      eyebrow: 'Die Herausforderung',
-      head0: 'Das meiste Wissen Ihrer Organisation steht nirgends geschrieben.',
-      sub0: 'Es steckt in Erfahrung, in Gewohnheiten, in Gesprächen auf dem Flur.',
+      head0: 'Jeden Tag geht Wissen im Unternehmen verloren.',
+      sub0: 'Das meiste davon steht nirgends geschrieben. Es steckt in Erfahrung, in Gewohnheiten, in Gesprächen auf dem Flur.',
       chip: 'Wissen der Organisation',
-      person: 'Seit 14 Jahren dabei',
       head1: 'Geht eine Person, geht ihr Wissen mit.',
       statValue: '11 Mrd. €',
       statBody: 'Umsatz entgehen allein den deutschen IT-Unternehmen jedes Jahr, weil Wissen und Kompetenz mit den Menschen gehen.',
       statSource: 'Fraunhofer IAO und Bitkom, Befragung von 203 IT- und Telekommunikationsunternehmen',
     }
   : {
-      eyebrow: 'The challenge',
-      head0: 'Most of what your organisation knows is written down nowhere.',
-      sub0: 'It lives in experience, in habits, in conversations by the coffee machine.',
+      head0: 'Every day, knowledge leaves your company.',
+      sub0: 'Most of it is written down nowhere. It lives in experience, in habits, in conversations by the coffee machine.',
       chip: 'What the organisation knows',
-      person: '14 years in the company',
       head1: 'When a person leaves, their knowledge leaves with them.',
       statValue: '11 Mrd. €',
       statBody: 'in revenue is lost by German IT companies alone every year, because knowledge and competence walk out with the people.',
@@ -87,19 +87,17 @@ const t = isDE
     };
 ---
 
-<ScrollStage scenes={2} travel={230} id="the-problem" class="pstage">
+<div class="kl">
   <div class="pframe">
 
     <div class="pcopy">
-      <p class="section-eyebrow pcopy__eyebrow">{t.eyebrow}</p>
-
       <div class="pcopy__scenes">
         <div class="jscene" style="--t0: 0">
           <h2 class="pcopy__head jpart" data-axis="up" style="--g: 0">{t.head0}</h2>
           <p class="pcopy__sub jpart" data-axis="up" style="--g: 1">{t.sub0}</p>
         </div>
 
-        <div class="jscene" style="--t0: 1" data-last>
+        <div class="jscene" style="--t0: 1">
           <h2 class="pcopy__head jpart" data-axis="up" style="--g: 0">{t.head1}</h2>
           <p class="pcopy__stat jpart" data-axis="up" style="--g: 1">
             <span class="pcopy__stat-value">{t.statValue}</span>{t.statBody}
@@ -125,22 +123,21 @@ const t = isDE
         <span class="kf__person">
           <img src="/people/s3.png" alt="" width="96" height="96" loading="lazy" decoding="async" />
         </span>
-        <span class="kf__person-label">{t.person}</span>
       </div>
 
       <p class="kf__chip">{t.chip}</p>
     </div>
 
   </div>
-</ScrollStage>
+</div>
 
 <style>
-  /* ── Frame ──────────────────────────────────────────────────────────── */
+  /* ── Layer ──────────────────────────────────────────────────────────── */
+  /* Stacks in the journey frame's single cell, like .jshell does. */
+  .kl { grid-area: 1 / 1; display: flex; align-items: center; width: 100%; height: 100%; }
+
   .pframe {
     width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 var(--space-8);
     display: grid;
     grid-template-columns: 0.92fr 1fr;
     align-items: center;
@@ -149,7 +146,6 @@ const t = isDE
 
   /* ── Copy ───────────────────────────────────────────────────────────── */
   .pcopy { display: flex; flex-direction: column; gap: var(--space-6); }
-  .pcopy__eyebrow { display: block; }
 
   /* Both copy beats share one cell and start on the same line, so the heading
      does not jump when the scenes swap. */
@@ -242,26 +238,9 @@ const t = isDE
     border-radius: 50%;
     overflow: hidden;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 4px var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 4px var(--color-accent);
   }
   .kf__person img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  /* Sits on top of the bubble cluster, so it needs its own ground to stay
-     legible against whatever bubble happens to be behind it. */
-  .kf__person-label {
-    position: absolute;
-    left: 50%;
-    top: calc(50% + 10%);
-    transform: translateX(-50%);
-    white-space: nowrap;
-    padding: 3px 9px;
-    border-radius: var(--radius-full, 999px);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-xs);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-  }
 
   .kf__chip {
     font-size: var(--text-xs);
@@ -270,6 +249,12 @@ const t = isDE
   }
 
   /* ── Live choreography (pure functions of --t) ───────────────────────── */
+  /* The opening owns the frame for two beats, then hands it to the tour. */
+  :global(.jstage.is-live) .kl {
+    pointer-events: none;
+    opacity: clamp(0, calc((2.12 - var(--t)) / 0.12), 1);
+  }
+
   /* The field runs on ABSOLUTE journey time: it has to survive the scene swap. */
   :global(.jstage.is-live) .kf { --lt: var(--t); }
 
@@ -287,17 +272,13 @@ const t = isDE
     transform: translate(-50%, -50%) scale(calc((0.35 + 0.65 * var(--in)) * (1 - 0.55 * var(--gone))));
   }
 
-  :global(.jstage.is-live) .kf__person,
-  :global(.jstage.is-live) .kf__person-label {
+  :global(.jstage.is-live) .kf__person {
     --inp: clamp(0, calc((var(--lt) - 0.22) / 0.40), 1);
     --gonep: clamp(0, calc((var(--lt) - 1.00) / 0.40), 1);
     top: calc(50% - 7% * var(--gonep));
     opacity: calc(var(--inp) * (1 - var(--gonep)));
-  }
-  :global(.jstage.is-live) .kf__person {
     transform: translate(-50%, -50%) scale(calc(0.6 + 0.4 * var(--inp)));
   }
-  :global(.jstage.is-live) .kf__person-label { top: calc(50% + 10% - 7% * var(--gonep)); }
 
   /* The hole only exists once her bubbles are actually gone. */
   :global(.jstage.is-live) .kf__hole {
@@ -312,8 +293,7 @@ const t = isDE
   @media (max-width: 1023px) {
     .pframe {
       grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-10);
-      padding: 0 var(--space-6);
+      gap: var(--space-8);
     }
     .pcopy__head { max-width: none; }
     .pcopy__sub, .pcopy__stat { max-width: none; }

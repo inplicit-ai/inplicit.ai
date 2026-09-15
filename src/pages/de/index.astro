@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
-import TheProblem from '../../components/TheProblem.astro';
 import Journey from '../../components/journey/Journey.astro';
 import HowItWorks from '../../components/HowItWorks.astro';
 import DataPrivacy from '../../components/DataPrivacy.astro';
@@ -27,11 +26,10 @@ const lang = 'de';
   <main>
     <Hero lang={lang} />
     <!-- <LogoCloud lang={lang} /> -->
-    <TheProblem lang={lang} />
     <Journey lang={lang} />
     <!-- Ersetzt durch Journey: <HowItWorks lang={lang} /> -->
     <!-- <DataPrivacy lang={lang} /> -->
-    <!-- Geht inhaltlich in TheProblem + Campaigns auf: <Applications lang={lang} /> -->
+    <!-- Geht inhaltlich in die Journey-Eroeffnung + Kampagnen auf: <Applications lang={lang} /> -->
     <Campaigns lang={lang} />
     <!-- <ValidationLoop lang={lang} /> -->
     <USP lang={lang} />

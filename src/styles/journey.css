@@ -16,6 +16,7 @@
 /* Registered so the browser stores numbers instead of re-parsing token streams
    on every frame — this is what keeps ~80 parts cheap. */
 @property --t   { syntax: '<number>'; inherits: true;  initial-value: 0; }
+@property --jt  { syntax: '<number>'; inherits: true;  initial-value: 0; }
 @property --lt  { syntax: '<number>'; inherits: true;  initial-value: 0; }
 @property --in  { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --out { syntax: '<number>'; inherits: false; initial-value: 1; }
@@ -28,6 +29,12 @@
 .jstage.is-live {
   /* --scenes scene-lengths of travel, plus the pin's own viewport. */
   height: calc(100svh + var(--travel, 400) * 1svh);
+
+  /* Product-tour time. Beats can run IN FRONT of the tour inside the same
+     stage (the knowledge-loss opening does), so chrome that keys off absolute
+     journey time reads --jt instead of --t: the tour's own scene numbering,
+     shifted by whatever plays before it. --t-off is that shift. */
+  --jt: calc(var(--t) - var(--t-off, 0));
 }
 
 .jstage.is-live .jstage__pin {
@@ -157,9 +164,15 @@
   grid-area: 1 / 1;
   /* Chrome assembles against absolute journey time, not a scene's local time. */
   --lt: var(--t);
-  opacity: max(
-    clamp(0, calc((1.0 - var(--t)) / 0.08), 1),
-    clamp(0, calc((var(--t) - 2.0) / 0.08), 1)
+  /* Gated three ways: nothing before the tour begins (--jt < 0, where the
+     knowledge-loss beats own the frame), full through setup, away again while
+     the interview room has the stage, back for themes and chat. */
+  opacity: min(
+    clamp(0, calc((var(--jt) + 0.10) / 0.12), 1),
+    max(
+      clamp(0, calc((1.0 - var(--jt)) / 0.08), 1),
+      clamp(0, calc((var(--jt) - 2.0) / 0.08), 1)
+    )
   );
 }
 
@@ -173,13 +186,13 @@
 
 /* The sidebar's active item follows the step. */
 .jstage.is-live .sidebar__item[data-nav="create"] {
-  --on: clamp(0, calc((1.0 - var(--t)) / 0.1), 1);
+  --on: clamp(0, calc((1.0 - var(--jt)) / 0.1), 1);
 }
 .jstage.is-live .sidebar__item[data-nav="campaigns"] {
-  --on: min(clamp(0, calc((var(--t) - 2.0) / 0.1), 1), clamp(0, calc((3.0 - var(--t)) / 0.1), 1));
+  --on: min(clamp(0, calc((var(--jt) - 2.0) / 0.1), 1), clamp(0, calc((3.0 - var(--jt)) / 0.1), 1));
 }
 .jstage.is-live .sidebar__item[data-nav="chat"] {
-  --on: clamp(0, calc((var(--t) - 3.0) / 0.1), 1);
+  --on: clamp(0, calc((var(--jt) - 3.0) / 0.1), 1);
 }
 
 /* Topbar lead variants cross-fade like scenes. */
