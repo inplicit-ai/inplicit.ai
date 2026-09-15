@@ -223,7 +223,10 @@ function createImplicitOrb(canvas, options) {
     stencil: false,
     antialias: true,
     premultipliedAlpha: false,
-    preserveDrawingBuffer: false,
+    // Opt-in only. Callers that copy the orb's frame elsewhere (the interviews
+    // beat blits one orb into fifteen cards) need the buffer to survive the
+    // compositing step; everyone else keeps OGL's cheaper default.
+    preserveDrawingBuffer: opts.preserveDrawingBuffer === true,
     powerPreference: "default",
   };
 

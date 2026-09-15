@@ -189,7 +189,7 @@ const t = isDE
     pointer-events: none;
     opacity: min(
       clamp(0, calc((var(--t) - 2.02) / 0.16), 1),
-      clamp(0, calc((4.10 - var(--t)) / 0.12), 1)
+      clamp(0, calc((4.16 - var(--t)) / 0.14), 1)
     );
   }
 
@@ -201,12 +201,14 @@ const t = isDE
     transform: translate3d(0, calc(20px * (1 - clamp(0, calc((var(--t) - 2.05) / 0.28), 1))), 0);
   }
 
+  /* On send the card does not just leave: it collapses upward into the point
+     the orange strands fan out from, so the lines read as coming out of it. */
   :global(.jstage.is-live) .card {
     --in: clamp(0, calc((var(--t) - 3.02) / 0.26), 1);
-    --sent: clamp(0, calc((var(--t) - 3.88) / 0.16), 1);
+    --sent: clamp(0, calc((var(--t) - 3.86) / 0.30), 1);
     opacity: var(--in);
-    transform: translate3d(0, calc(26px * (1 - var(--in)) - 16px * var(--sent)), 0)
-               scale(calc(0.985 + 0.015 * var(--in) - 0.03 * var(--sent)));
+    transform: translate3d(0, calc(26px * (1 - var(--in)) - 46% * var(--sent)), 0)
+               scale(calc(0.985 + 0.015 * var(--in) - 0.62 * var(--sent)));
   }
 
   /* The question types itself. A width clamp, not a character count: a width

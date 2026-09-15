@@ -15,6 +15,12 @@
  * is also what absorbs the sub-pixel disagreement between the fan's naive
  * column centre and the strand's gap-aware one.
  *
+ * The orb in every card is Silas' ACTUAL orb, not a stand-in: one real WebGL
+ * instance renders offscreen and its frame is blitted into fifteen small 2d
+ * canvases. Fifteen GL contexts would hit the browser's limit; one context and
+ * fifteen drawImage calls do not. That also settles the colour question for
+ * good, since the pixels come from the shader rather than from a guess.
+ *
  * Each window is SceneInterview's room in miniature and keeps its anatomy:
  * the live disc and the clock along the top, the orb on the left, the
  * transcript on the right with a mark per turn, the mic at the foot. Only the
@@ -107,7 +113,7 @@ const t = isDE
             </div>
 
             <div class="win__body">
-              <span class="win__orb"></span>
+              <canvas class="win__orb" width="96" height="96" data-orb-cell></canvas>
               <div class="win__transcript" aria-hidden="true">
                 {w.lines.map((l) => (
                   <span class={`turn${l.me ? ' turn--u' : ''}`}>
@@ -210,12 +216,9 @@ const t = isDE
 
   /* Body: orb left, transcript right, exactly as the full room is laid out. */
   .win__body { display: flex; align-items: center; gap: 8px; min-width: 0; }
-  .win__orb {
-    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
-    /* Brand tokens only: periwinkle into navy, both straight from design.css. */
-    background: radial-gradient(circle at 32% 28%, var(--brand-periwinkle-weak) 0%, var(--brand-periwinkle) 42%, var(--brand-blue) 100%);
-    box-shadow: 0 0 0 3px var(--brand-blue-weak);
-  }
+  /* The real orb, blitted in. No background and no ring: the shader's own
+     premultiplied output already carries the soft edge. */
+  .win__orb { width: 26px; height: 26px; flex-shrink: 0; display: block; }
 
   .win__transcript { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
   /* One mark plus one bubble per turn, the same anatomy as the real transcript. */
@@ -237,7 +240,7 @@ const t = isDE
   :global(.jstage.is-live) .iv {
     pointer-events: none;
     opacity: min(
-      clamp(0, calc((var(--t) - 3.94) / 0.14), 1),
+      clamp(0, calc((var(--t) - 3.84) / 0.12), 1),
       clamp(0, calc((5.02 - var(--t)) / 0.16), 1)
     );
   }
@@ -251,8 +254,10 @@ const t = isDE
 
   /* The split draws itself just before the windows land on it, and stays until
      the merge has pulled everything into the insight frame. */
+  /* Drawn from the moment the send is pressed, so the strands leave the card
+     rather than appearing next to it. */
   :global(.jstage.is-live) .iv__wires {
-    --p: clamp(0, calc((var(--t) - 3.96) / 0.34), 1);
+    --p: clamp(0, calc((var(--t) - 3.86) / 0.40), 1);
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 
@@ -290,18 +295,61 @@ const t = isDE
 </style>
 
 <script>
-  /* The typing dots are the only time-driven thing in the journey. Run them
-     only while this beat is on screen: fifteen looping animations behind a
-     section nobody is looking at is a battery bill for nothing. */
+  /* Two time-driven things live here, and both stop when the beat is off
+     screen: the typing dots, and the shared orb whose frame is copied into
+     every card. Fifteen idling WebGL contexts, or fifteen loops running behind
+     a section nobody is looking at, is a battery bill for nothing. */
+  import { createImplicitOrb } from '../../scripts/orb.js';
+
   const iv = document.querySelector<HTMLElement>('.iv');
   const stage = document.querySelector<HTMLElement>('[data-stage]');
-  if (iv && stage && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const cells = [...document.querySelectorAll<HTMLCanvasElement>('[data-orb-cell]')];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (iv && stage) {
+    let live = false;
+    let orb: ReturnType<typeof createImplicitOrb> | null = null;
+    let source: HTMLCanvasElement | null = null;
+    let raf = 0;
+
+    const ctxs = cells.map((c) => c.getContext('2d'));
+
+    if (!reduced && cells.length) {
+      source = document.createElement('canvas');
+      source.width = source.height = 96;
+      orb = createImplicitOrb(source, { breathe: true, preserveDrawingBuffer: true });
+      if (!orb.supported) orb = null;
+    }
+
+    const blit = () => {
+      if (!source) return;
+      for (let i = 0; i < ctxs.length; i++) {
+        const ctx = ctxs[i];
+        if (!ctx) continue;
+        ctx.clearRect(0, 0, 96, 96);
+        ctx.drawImage(source, 0, 0, 96, 96);
+      }
+    };
+
+    const loop = () => {
+      if (!live) return;
+      blit();
+      raf = requestAnimationFrame(loop);
+    };
+
     const sync = () => {
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
-      iv.classList.toggle('is-live-beat', t > 3.9 && t < 5.05);
+      const next = t > 3.9 && t < 5.05;
+      iv.classList.toggle('is-live-beat', next);
+      if (next === live) return;
+      live = next;
+      if (live) { orb?.start(); raf = requestAnimationFrame(loop); }
+      else { orb?.stop(); cancelAnimationFrame(raf); blit(); }
     };
+
     addEventListener('scroll', sync, { passive: true });
     addEventListener('resize', sync, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
     sync();
   }
 </script>
