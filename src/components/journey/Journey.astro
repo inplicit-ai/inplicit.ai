@@ -135,18 +135,17 @@ const isDE = lang === 'de';
     overflow: hidden;
   }
 
-  /* Live: the card is built BELOW the end of the thread and grows from its
-     own middle outward, rising into place as it does. Opening a clip upward
-     from that point meant it built into the space the interviews were still
-     vacating; starting it below and letting it come up is the same move the
-     rest of the section makes. */
+  /* Live: the card is ANCHORED at the point the strands run into and scales
+     up out of it. Nothing translates, so it grows rather than arriving: the
+     transform origin is that point, which means the card opens outward around
+     it in every direction and its edges reach the frame exactly when it is
+     done. A version that started below and rose into place read as sliding in,
+     which is the opposite of being built. */
   .jsec :global(.jstage.is-live) .jshell {
     --born: clamp(0, calc((var(--t) - 4.92) / 0.38), 1);
     --settled: clamp(0, calc((var(--t) - 5.30) / 0.10), 1);
-    transform-origin: center top;
-    transform:
-      translate3d(0, calc(var(--thread-stop, 0.9) * 100% * (1 - var(--born))), 0)
-      scale(calc(0.22 + 0.78 * var(--born)));
+    transform-origin: 50% calc(var(--thread-stop, 0.9) * 100%);
+    transform: scale(calc(0.02 + 0.98 * var(--born)));
     /* Orange while it is being drawn, the ordinary hairline once it stands. */
     border: 1.5px solid color-mix(in srgb, var(--color-border) calc(var(--settled) * 100%), var(--color-accent));
     box-shadow: 0 calc(18px * var(--settled)) calc(44px * var(--settled)) calc(-22px * var(--settled)) rgba(11, 12, 16, 0.16);
