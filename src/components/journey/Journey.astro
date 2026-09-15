@@ -85,7 +85,7 @@ const isDE = lang === 'de';
   /* Five beats run before the dashboard appears, so the product tour's own
      scene 0 sits at journey time 5. journey.css derives --jt from this, and
      --shell-in is when the chrome is allowed on screen at all. */
-  .jsec :global(.jstage) { --t-off: 5; --shell-in: 5.02; }
+  .jsec :global(.jstage) { --t-off: 5; --shell-in: 4.84; }
 
   /* Not full-bleed: the mock sits inside the normal content column. */
   .jframe {
@@ -145,8 +145,8 @@ const isDE = lang === 'de';
      hanging out below the window, because the line stops at --thread-stop and
      the window's lower edge was still on its way past it. */
   .jsec :global(.jstage.is-live) .jshell {
-    --born: clamp(0, calc((var(--t) - 5.12) / 0.32), 1);
-    --settled: clamp(0, calc((var(--t) - 5.44) / 0.10), 1);
+    --born: clamp(0, calc((var(--t) - 4.92) / 0.38), 1);
+    --settled: clamp(0, calc((var(--t) - 5.30) / 0.10), 1);
     --origin: calc(var(--thread-stop, 0.5) * 100%);
     clip-path: inset(
       calc(var(--origin) * (1 - var(--born)))
