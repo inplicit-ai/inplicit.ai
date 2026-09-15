@@ -48,8 +48,19 @@ const isDE = lang === 'de';
       <SceneAsk lang={lang} />
       <SceneInterviews lang={lang} />
 
-      <!-- The dashboard only introduces itself once there is something in it. -->
+      <!-- The dashboard only introduces itself once there is something in it,
+           and it does not simply appear: the thread arrives at its top edge and
+           DRAWS the frame. Six segments rather than a stroked path, because a
+           dash offset is a length in CSS and a responsive perimeter is not a
+           number you can know at build time. The line splits at the top centre,
+           runs down both sides and closes at the bottom. -->
       <div class="jshell">
+        <span class="jedge jedge--tl"></span>
+        <span class="jedge jedge--tr"></span>
+        <span class="jedge jedge--l"></span>
+        <span class="jedge jedge--r"></span>
+        <span class="jedge jedge--bl"></span>
+        <span class="jedge jedge--br"></span>
         <AppShell lang={lang}>
           <nav class="jtopbar crumb" slot="topbar">
             <span class="crumb__link">{isDE ? 'Kampagnen' : 'Campaigns'}</span>
@@ -125,19 +136,51 @@ const isDE = lang === 'de';
   }
 
   .jshell {
+    position: relative;
     width: 100%; height: 100%;
     border-radius: var(--radius-xl);
     overflow: hidden;
   }
+
+  .jedge { position: absolute; background: var(--color-accent); z-index: 4; pointer-events: none; }
+  .jedge--tl, .jedge--tr, .jedge--bl, .jedge--br { height: 1.5px; width: 50%; }
+  .jedge--l, .jedge--r { width: 1.5px; top: 0; bottom: 0; }
+  .jedge--tl { top: 0; right: 50%; transform-origin: right center; }
+  .jedge--tr { top: 0; left: 50%; transform-origin: left center; }
+  .jedge--l  { left: 0; transform-origin: center top; }
+  .jedge--r  { right: 0; transform-origin: center top; }
+  .jedge--bl { bottom: 0; left: 0; transform-origin: left center; }
+  .jedge--br { bottom: 0; right: 0; transform-origin: right center; }
+
+  /* Live: the frame grows from the point the thread arrives at, the segments
+     draw the outline in order, and the permanent hairline takes over once the
+     outline has closed. */
   .jsec :global(.jstage.is-live) .jshell {
-    --edge: clamp(0, calc((var(--jt) + 0.35) / 0.45), 1);
+    --grow: clamp(0, calc((var(--t) - 4.98) / 0.42), 1);
+    --edge: clamp(0, calc((var(--t) - 5.38) / 0.10), 1);
+    opacity: clamp(0, calc((var(--t) - 4.96) / 0.10), 1);
+    transform: scale(calc(0.86 + 0.14 * var(--grow)));
+    transform-origin: center top;
     border: 1px solid color-mix(in srgb, var(--color-border) calc(var(--edge) * 100%), transparent);
     box-shadow: 0 calc(18px * var(--edge)) calc(44px * var(--edge)) calc(-22px * var(--edge)) rgba(11, 12, 16, 0.16);
   }
+  .jsec :global(.jstage.is-live) .jedge {
+    /* fades out once the hairline border has arrived under it */
+    opacity: clamp(0, calc((5.54 - var(--t)) / 0.12), 1);
+  }
+  .jsec :global(.jstage.is-live) .jedge--tl,
+  .jsec :global(.jstage.is-live) .jedge--tr { transform: scaleX(clamp(0, calc((var(--t) - 5.00) / 0.12), 1)); }
+  .jsec :global(.jstage.is-live) .jedge--l,
+  .jsec :global(.jstage.is-live) .jedge--r  { transform: scaleY(clamp(0, calc((var(--t) - 5.10) / 0.18), 1)); }
+  .jsec :global(.jstage.is-live) .jedge--bl,
+  .jsec :global(.jstage.is-live) .jedge--br { transform: scaleX(clamp(0, calc((var(--t) - 5.26) / 0.14), 1)); }
+
+  /* No JS / reduced motion: the frame is simply there, with no drawn outline. */
   .jsec :global(.jstage:not(.is-live)) .jshell {
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-lg);
   }
+  .jsec :global(.jstage:not(.is-live)) .jedge { display: none; }
 
   /* Breadcrumb — 13px, grey links, ink current page, chevron separators. */
   .crumb { display: flex; align-items: center; gap: 6px; font-size: 13px; min-width: 0; }

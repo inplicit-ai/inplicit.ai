@@ -149,10 +149,18 @@ const t = isDE
 </div>
 
 <style>
-  .iv { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-  .iv__inner { display: flex; flex-direction: column; gap: var(--space-8); width: 100%; max-width: 960px; padding: 0 var(--space-6); }
+  /* --lead lives here, not on the stage, because the gap below the header has
+     to be derived from it: the fan band reaches --lead above the grid, and a
+     smaller gap than that runs the curves straight through the subheading. */
+  .iv { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; --lead: 64px; }
+  .iv__inner {
+    display: flex; flex-direction: column;
+    gap: calc(var(--lead) + var(--space-4));
+    width: 100%; max-width: 960px; padding: 0 var(--space-6);
+  }
 
-  .iv__head { text-align: center; }
+  /* Type is never crossed by the drawing, whatever the spacing works out to. */
+  .iv__head { text-align: center; position: relative; z-index: 2; }
   .iv__title {
     font-size: clamp(1.35rem, 2.6vw, 2.1rem);
     font-weight: 400; letter-spacing: -0.035em; line-height: 1.15;
@@ -163,7 +171,6 @@ const t = isDE
   .iv__stage {
     position: relative;
     --gap: var(--space-3);
-    --lead: 64px;
     /* One column's width, and the centre of the first column. Everything that
        has to line up with the grid is derived from these two. */
     --colw: calc((100% - 4 * var(--gap)) / 5);
@@ -359,6 +366,7 @@ const t = isDE
   @media (max-width: 1023px) {
     .iv__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
     .iv__inner { gap: var(--space-6); }
+    .iv { --lead: 0px; }
     .win__orb { width: 20px; height: 20px; }
     .iv__wires { display: none; }
   }
