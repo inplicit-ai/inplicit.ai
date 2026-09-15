@@ -405,17 +405,26 @@ const t = isDE
     /* Where the strands run back together, as a fraction of the frame. The
        thread is capped there until the insight frame grows out of it, so the
        line never runs on down an empty frame past the convergence. */
+    const apexY = topWithin(ivStage, frame) - lead;
     const mergeY = topWithin(ivStage, frame) + ivStage.offsetHeight + lead;
-    if (frame.offsetHeight > 0) {
-      frame.style.setProperty('--thread-stop', (mergeY / frame.offsetHeight).toFixed(3));
+    const fh = frame.offsetHeight;
+    if (fh > 0) {
+      /* Where the single line ends and the fan takes over... */
+      frame.style.setProperty('--thread-apex', (apexY / fh).toFixed(3));
+      /* ...and where the strands come back together, which is where the
+         insight frame is born. */
+      frame.style.setProperty('--thread-stop', (mergeY / fh).toFixed(3));
     }
-    const need = Math.round(topWithin(card, frame) + card.offsetHeight - (topWithin(ivStage, frame) - lead));
+    const need = Math.round(topWithin(card, frame) + card.offsetHeight - apexY);
     /* On the very first run the frame can still be laying out and every offset
        reads 0. Rather than bake that in, leave it unset and try again on the
        next scroll: the beat is five screens away, there is plenty of time. */
     if (need <= 0) { dropOk = false; return; }
     dropOk = true;
-    (document.querySelector('.jframe') as HTMLElement).style.setProperty('--drop-px', need + 'px');
+    frame.style.setProperty('--drop-px', need + 'px');
+    /* The same shove as a fraction, so the thread can follow the apex while
+       the layer is still dropped against the campaign card. */
+    frame.style.setProperty('--drop-frac', (need / fh).toFixed(3));
   };
   const cells = [...document.querySelectorAll<HTMLCanvasElement>('[data-orb-cell]')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
