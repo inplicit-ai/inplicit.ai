@@ -265,26 +265,25 @@ const t = isDE
   /* ── Live choreography ─────────────────────────────────────────────────── */
   /* Absolute journey time.  4.0 windows deal in · 4.74 they converge ·
      5.0 handed over to the insight frame. */
-  /* The fan has to appear to leave the UNDERSIDE of the campaign card, and
-     that card sits low in the frame while this layer's apex sits high in it.
-     So the whole layer starts dropped by roughly the distance between the two
-     and eases up to its own position while the strands draw. Nothing is
-     visible yet at that point except the strands, so the move costs nothing
-     and buys the one thing that makes it read as a flow. */
+  /* The fan has to leave the UNDERSIDE of the campaign card, and that card
+     sits low in the frame while this layer's apex sits high in it. So the
+     whole layer starts dropped past the card and HOLDS there until the card
+     has left, then eases up to its own position. Releasing it earlier is what
+     pulled the apex up into the card and ran the curves across it. */
   :global(.jstage.is-live) .iv {
     pointer-events: none;
-    --drop: clamp(0, calc((4.08 - var(--t)) / 0.22), 1);
+    --drop: clamp(0, calc((4.28 - var(--t)) / 0.18), 1);
     transform: translate3d(0, calc(46% * var(--drop)), 0);
     opacity: min(
-      clamp(0, calc((var(--t) - 3.84) / 0.12), 1),
+      clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
       clamp(0, calc((5.02 - var(--t)) / 0.16), 1)
     );
   }
 
   :global(.jstage.is-live) .iv__head {
     opacity: min(
-      clamp(0, calc((var(--t) - 4.02) / 0.20), 1),
-      clamp(0, calc((4.76 - var(--t)) / 0.14), 1)
+      clamp(0, calc((var(--t) - 4.30) / 0.18), 1),
+      clamp(0, calc((4.80 - var(--t)) / 0.14), 1)
     );
   }
 
@@ -293,7 +292,7 @@ const t = isDE
   /* Drawn from the moment the send is pressed, so the strands leave the card
      rather than appearing next to it. */
   :global(.jstage.is-live) .iv__wires {
-    --p: clamp(0, calc((var(--t) - 3.86) / 0.40), 1);
+    --p: clamp(0, calc((var(--t) - 3.90) / 0.34), 1);
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 
@@ -302,8 +301,8 @@ const t = isDE
      follows the merge instead, gathering down and inward to the point the
      strands run into, bottom row leading. */
   :global(.jstage.is-live) .win {
-    --in: clamp(0, calc((var(--t) - 3.97 - var(--r) * 0.085) / 0.17), 1);
-    --home: clamp(0, calc((var(--t) - 4.70 - (2 - var(--r)) * 0.045) / 0.26), 1);
+    --in: clamp(0, calc((var(--t) - 4.26 - var(--r) * 0.075) / 0.16), 1);
+    --home: clamp(0, calc((var(--t) - 4.76 - (2 - var(--r)) * 0.04) / 0.24), 1);
     opacity: calc(var(--in) * (1 - var(--home)));
     transform:
       translate3d(calc(var(--dx) * var(--home)),
@@ -313,10 +312,10 @@ const t = isDE
 
   /* Then each conversation builds a turn at a time while you keep scrolling. */
   :global(.jstage.is-live) .turn {
-    opacity: clamp(0, calc((var(--t) - 4.20 - var(--r) * 0.04 - var(--k) * 0.07) / 0.14), 1);
+    opacity: clamp(0, calc((var(--t) - 4.50 - var(--r) * 0.03 - var(--k) * 0.055) / 0.12), 1);
   }
   :global(.jstage.is-live) .win__typing {
-    opacity: clamp(0, calc((var(--t) - 4.52) / 0.14), 1);
+    opacity: clamp(0, calc((var(--t) - 4.70) / 0.12), 1);
   }
 
   @media (prefers-reduced-motion: no-preference) {
