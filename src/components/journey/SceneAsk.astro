@@ -1,0 +1,251 @@
+---
+/**
+ * SceneAsk — the turn of the journey, in two beats.
+ *
+ *   2 → 3  One line, centred, nothing else on screen: the question the whole
+ *          product answers.
+ *   3 → 4  A composer assembles under it and the question TYPES ITSELF as you
+ *          scroll. The reveal is a width clamp driven by --lt, so scrolling
+ *          back un-types it exactly. No timers, no keyframes: a character
+ *          count is not something you can rewind, a width is.
+ *          The beat ends on the send, which hands over to the interviews.
+ *
+ * Standalone card, no dashboard chrome: the product does not introduce itself
+ * until there is something to show.
+ */
+import logoIconRaw from '../../assets/logo_icon.svg?raw';
+import '../../styles/journey.css';
+
+export interface Props { lang?: 'en' | 'de' }
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const t = isDE
+  ? {
+      head: 'Was wenn Sie Ihre Mitarbeitenden ganz einfach fragen könnten?',
+      agent: 'Inplicit Agent',
+      agentSub: 'Neue Kampagne',
+      question: 'Wo verlieren wir in der Auftragsabwicklung die meiste Zeit?',
+      audience: 'Zielgruppe',
+      audienceValue: 'Operations, Logistik, Vertrieb',
+      send: 'Kampagne an 15 Personen senden',
+    }
+  : {
+      head: 'What if you could simply ask the people who know?',
+      agent: 'Inplicit Agent',
+      agentSub: 'New campaign',
+      question: 'Where do we lose the most time in order processing?',
+      audience: 'Audience',
+      audienceValue: 'Operations, logistics, sales',
+      send: 'Send campaign to 15 people',
+    };
+---
+
+<div class="ask">
+  <div class="ask__inner">
+
+    <!-- Not .jscene elements: the headline has to survive into the next beat
+         while the card builds under it, which a scene envelope would not allow.
+         Both run on absolute journey time instead, in the block below. -->
+    <div class="ask__headline-scene">
+      <h2 class="ask__head">{t.head}</h2>
+    </div>
+
+    <div class="ask__card-scene">
+      <div class="card">
+        <div class="card__head">
+          <span class="card__avatar" set:html={logoIconRaw} />
+          <div class="card__id">
+            <span class="card__name">{t.agent}</span>
+            <span class="card__sub">{t.agentSub}</span>
+          </div>
+          <span class="card__live"></span>
+        </div>
+
+        <div class="card__body">
+          <!-- The dashboard's own composer, same anatomy as SceneSetup:
+               rounded card, hairline border, text line, send button bottom
+               right in the dashboard CTA colour. -->
+          <div class="composer">
+            <p class="composer__text">
+              <span class="composer__typed"><span class="composer__inner">{t.question}</span></span><span class="composer__caret"></span>
+            </p>
+            <div class="composer__actions">
+              <span class="meta">
+                <span class="meta__label">{t.audience}</span>
+                <span class="meta__value">{t.audienceValue}</span>
+              </span>
+              <span class="send-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <p class="sendnote">{t.send}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .ask { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+  .ask__inner {
+    display: grid;
+    grid-template-rows: minmax(0, auto) minmax(0, auto);
+    /* Explicit column: without it the implicit auto track grows to the
+       nowrap question's max-content width and pushes the whole page sideways
+       on narrow screens. */
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--space-12);
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 var(--space-6);
+    /* The headline is sized against THIS box, not the viewport, so the
+       one-line rule holds whatever the frame is doing around it. */
+    container-type: inline-size;
+  }
+  /* Both beats live in their own row rather than stacked in one cell: the
+     headline has to stay put while the card appears underneath it. */
+  .ask__headline-scene { grid-row: 1; min-width: 0; max-width: 100%; }
+  .ask__card-scene { grid-row: 2; width: 100%; min-width: 0; max-width: 720px; }
+
+  .ask__head {
+    /* 3.2cqw is the largest size at which this sentence still fits one line
+       inside .ask__inner. Bigger would break the beat; the cap keeps it from
+       turning into a billboard on wide screens. */
+    font-size: min(2.3rem, max(1.3rem, 3.2cqw));
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    text-align: center;
+    color: var(--color-text-primary);
+    /* The line is the whole beat, so it must not break. It scales down before
+       it wraps, and only gives up at phone widths. */
+    text-wrap: balance;
+  }
+  @media (min-width: 1024px) { .ask__head { white-space: nowrap; } }
+
+  /* ── The composer card ─────────────────────────────────────────────────── */
+  .card {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 18px 44px -22px rgba(11, 12, 16, 0.18);
+    overflow: hidden;
+  }
+  .card__head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--color-border-subtle); }
+  .card__avatar { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--color-canvas-dark); color: var(--color-surface); }
+  .card__avatar :global(svg) { width: 14px; height: 14px; }
+  .card__id { display: flex; flex-direction: column; line-height: 1.25; }
+  .card__name { font-size: 13px; font-weight: 600; color: var(--color-text-primary); }
+  .card__sub { font-size: 11px; color: var(--color-text-tertiary); }
+  .card__live { width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); margin-left: auto; flex-shrink: 0; }
+
+  .card__body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* Verbatim anatomy from SceneSetup's composer. */
+  .composer { border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface); padding: 10px 12px; }
+  .composer__actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%; margin-left: auto; flex-shrink: 0;
+    background: var(--dash-cta); color: var(--dash-cta-text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .composer__text {
+    display: flex; align-items: baseline; min-width: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    min-height: 1.5em;
+  }
+  /* The typing reveal: a clipping box whose width is a function of --lt. The
+     text inside never reflows, so characters appear left to right and the
+     line never jumps. */
+  .composer__typed { display: inline-block; overflow: hidden; white-space: nowrap; max-width: 100%; vertical-align: bottom; }
+  .composer__inner { display: inline-block; }
+  .composer__caret { display: inline-block; width: 2px; align-self: stretch; min-height: 1.2em; background: var(--color-accent); margin-left: 2px; flex-shrink: 0; }
+
+  .meta { display: inline-flex; align-items: baseline; gap: 8px; font-size: 12px; min-width: 0; }
+  .meta__label { color: var(--color-text-tertiary); flex-shrink: 0; }
+  .meta__value { color: var(--color-text-secondary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .sendnote { font-size: 12px; color: var(--color-text-tertiary); text-align: right; }
+
+  /* ── Live choreography ─────────────────────────────────────────────────── */
+  /* Written in ABSOLUTE journey time, not scene-local time, because the
+     headline has to outlive its own beat. Every value below is a pure function
+     of --t, so scrolling up un-types the question and un-sends the campaign,
+     frame for frame, with nothing to reset.
+     Timeline:  2.0 headline in · 3.0 card in · 3.2-3.7 typing ·
+                3.7 audience · 3.8 send · 3.9 sent, card lifts · 4.05 gone. */
+  :global(.jstage.is-live) .ask {
+    pointer-events: none;
+    opacity: min(
+      clamp(0, calc((var(--t) - 2.02) / 0.16), 1),
+      clamp(0, calc((4.10 - var(--t)) / 0.12), 1)
+    );
+  }
+
+  :global(.jstage.is-live) .ask__head {
+    opacity: min(
+      clamp(0, calc((var(--t) - 2.05) / 0.28), 1),
+      clamp(0, calc((4.02 - var(--t)) / 0.16), 1)
+    );
+    transform: translate3d(0, calc(20px * (1 - clamp(0, calc((var(--t) - 2.05) / 0.28), 1))), 0);
+  }
+
+  :global(.jstage.is-live) .card {
+    --in: clamp(0, calc((var(--t) - 3.02) / 0.26), 1);
+    --sent: clamp(0, calc((var(--t) - 3.88) / 0.16), 1);
+    opacity: var(--in);
+    transform: translate3d(0, calc(26px * (1 - var(--in)) - 16px * var(--sent)), 0)
+               scale(calc(0.985 + 0.015 * var(--in) - 0.03 * var(--sent)));
+  }
+
+  /* The question types itself. A width clamp, not a character count: a width
+     is something scrolling backwards can undo. */
+  @media (min-width: 1024px) {
+    :global(.jstage.is-live) .composer__typed {
+      width: calc(100% * clamp(0, calc((var(--t) - 3.20) / 0.46), 1));
+    }
+    /* The caret shows up with the first character and retires with the last. */
+    :global(.jstage.is-live) .composer__caret {
+      opacity: min(
+        clamp(0, calc((var(--t) - 3.18) / 0.06), 1),
+        clamp(0, calc((3.78 - var(--t)) / 0.08), 1)
+      );
+    }
+  }
+  /* On a phone the question is wider than the field, so a left-to-right reveal
+     would only ever show its first half. It wraps and fades in instead: the
+     same beat, without pretending to be a text cursor. */
+  @media (max-width: 1023px) {
+    .composer__typed { white-space: normal; overflow: visible; }
+    .composer__caret { display: none; }
+    :global(.jstage.is-live) .composer__typed {
+      opacity: clamp(0, calc((var(--t) - 3.18) / 0.40), 1);
+    }
+  }
+
+  /* Audience and send arrive once the question stands, in that order. */
+  :global(.jstage.is-live) .meta { opacity: clamp(0, calc((var(--t) - 3.64) / 0.12), 1); }
+  :global(.jstage.is-live) .sendnote { opacity: clamp(0, calc((var(--t) - 3.76) / 0.10), 1); }
+  :global(.jstage.is-live) .send-btn {
+    --ready: clamp(0, calc((var(--t) - 3.70) / 0.12), 1);
+    --press: clamp(0, calc((var(--t) - 3.88) / 0.10), 1);
+    opacity: var(--ready);
+    transform: scale(calc(0.9 + 0.1 * var(--ready) - 0.08 * var(--press)));
+  }
+
+  @media (max-width: 1023px) {
+    .ask__inner { gap: var(--space-8); }
+    .composer__text { font-size: 1rem; }
+  }
+</style>

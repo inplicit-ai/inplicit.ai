@@ -1,20 +1,21 @@
 ---
 /**
  * SceneKnowledgeLoss — the two beats the journey opens on, before any product
- * is shown. It is a frame-level layer inside the journey's own stage, NOT a
- * separate section: the whole thing is one continuous scroll.
+ * is shown. A frame-level layer inside the journey's own stage, NOT a separate
+ * section: the whole thing is one continuous scroll.
  *
- * Two beats:
- *   0 → 1  the knowledge field fills in. Every bubble is one piece of knowledge
- *          that only lives in somebody's head. The orange ones are hers.
- *   1 → 2  she leaves. Her bubbles drift after her and fade out, and the hole
- *          they leave stays on screen as a dashed ring.
+ *   0 → 1  The field fills in. Every bubble is one piece of knowledge, and
+ *          almost all of them are drawn as hollow rings: the knowledge is
+ *          there, nobody can see or reach it. The handful of filled dots are
+ *          the fraction that actually got written down somewhere.
+ *   1 → 2  One person leaves. Her rings drift after her and fade out, and the
+ *          hole they leave stays on screen.
  *
  * The field is deliberately NOT inside a .jscene: it persists across both beats
  * on absolute journey time (--lt: var(--t)), the same trick AppShell uses for
  * the dashboard chrome. Only the left-hand copy swaps, so the loss reads as one
- * continuous picture instead of two slides. The whole layer then clears out as
- * the product tour takes over at --t 2.
+ * continuous picture instead of two slides. The layer then clears out as the
+ * question takes over at --t 2.
  *
  * Base markup (no .is-live) is the full, assembled field with nobody gone. That
  * is the no-JS and reduced-motion state, per the journey.css contract.
@@ -38,11 +39,11 @@ const rand = (s: number) => () => {
 
 const CENTRE = 50;
 const R_FIELD = 48;   // field radius, in % of the square stage
-const R_CLEAR = 9;    // no bubble this close to her: she needs her own space
+const R_CLEAR = 8;    // her own node needs room
 const R_LOST = 26;    // roughly where her knowledge ends
 
 const next = rand(20260915);
-const field: { x: number; y: number; w: number; g: number; lost: boolean; ddx: number; ddy: number }[] = [];
+const field: { x: number; y: number; w: number; g: number; lost: boolean; filled: boolean; ddx: number; ddy: number }[] = [];
 for (let tries = 0; tries < 9000 && field.length < 124; tries++) {
   const a = next() * Math.PI * 2;
   // sqrt keeps the disc evenly covered instead of crowding the middle
@@ -58,6 +59,9 @@ for (let tries = 0; tries < 9000 && field.length < 124; tries++) {
   const lost = d < R_LOST * (0.8 + 0.4 * next()) || (r < 1.9 && next() < 0.07);
   field.push({
     x, y, w: r * 2,
+    // The small minority that somebody actually wrote down. Everything else
+    // stays a hollow ring: present, unreadable, unreachable.
+    filled: next() < 0.12,
     g: Math.min(4, Math.floor((d / R_FIELD) * 5)),
     lost,
     // her knowledge drifts after her: inward, then up and out
@@ -68,22 +72,22 @@ for (let tries = 0; tries < 9000 && field.length < 124; tries++) {
 
 const t = isDE
   ? {
-      head0: 'Jeden Tag geht Wissen im Unternehmen verloren.',
-      sub0: 'Das meiste davon steht nirgends geschrieben. Es steckt in Erfahrung, in Gewohnheiten, in Gesprächen auf dem Flur.',
+      head0: 'Das meiste Wissen Ihrer Organisation sieht niemand.',
+      sub0: 'Es steckt in Erfahrung, in Gewohnheiten, in Gesprächen auf dem Flur. Aufgeschrieben ist fast nichts davon.',
       chip: 'Wissen der Organisation',
-      head1: 'Geht eine Person, geht ihr Wissen mit.',
-      statValue: '11 Mrd. €',
-      statBody: 'Umsatz entgehen allein den deutschen IT-Unternehmen jedes Jahr, weil Wissen und Kompetenz mit den Menschen gehen.',
-      statSource: 'Fraunhofer IAO und Bitkom, Befragung von 203 IT- und Telekommunikationsunternehmen',
+      legendHidden: 'nicht dokumentiert',
+      legendKnown: 'irgendwo festgehalten',
+      head1: 'Und jeden Tag geht davon etwas verloren.',
+      sub1: 'Verlässt jemand das Unternehmen, geht sein Wissen mit. Die Nachfolge fängt wieder bei null an.',
     }
   : {
-      head0: 'Every day, knowledge leaves your company.',
-      sub0: 'Most of it is written down nowhere. It lives in experience, in habits, in conversations by the coffee machine.',
+      head0: 'Most of what your organisation knows, nobody can see.',
+      sub0: 'It lives in experience, in habits, in conversations by the coffee machine. Almost none of it is written down.',
       chip: 'What the organisation knows',
-      head1: 'When a person leaves, their knowledge leaves with them.',
-      statValue: '11 Mrd. €',
-      statBody: 'in revenue is lost by German IT companies alone every year, because knowledge and competence walk out with the people.',
-      statSource: 'Fraunhofer IAO and Bitkom, survey of 203 IT and telecoms companies',
+      legendHidden: 'not documented',
+      legendKnown: 'written down somewhere',
+      head1: 'And every day, some of it leaves.',
+      sub1: 'When someone leaves the company, their knowledge goes with them. Their successor starts from zero.',
     };
 ---
 
@@ -99,12 +103,7 @@ const t = isDE
 
         <div class="jscene" style="--t0: 1">
           <h2 class="pcopy__head jpart" data-axis="up" style="--g: 0">{t.head1}</h2>
-          <p class="pcopy__stat jpart" data-axis="up" style="--g: 1">
-            <span class="pcopy__stat-value">{t.statValue}</span>{t.statBody}
-          </p>
-          <p class="pcopy__source jpart" data-axis="up" style="--g: 2">
-            <a href="https://www.computerwoche.de/article/2875892/teurer-wissensverlust.html" target="_blank" rel="noopener noreferrer">{t.statSource}</a>
-          </p>
+          <p class="pcopy__sub jpart" data-axis="up" style="--g: 1">{t.sub1}</p>
         </div>
       </div>
     </div>
@@ -115,17 +114,18 @@ const t = isDE
 
         {field.map((b) => (
           <span
-            class={`kf__b${b.lost ? ' kf__b--lost' : ''}`}
+            class={`kf__b${b.lost ? ' kf__b--lost' : ''}${b.filled ? ' kf__b--known' : ''}`}
             style={`--x:${b.x.toFixed(2)}%;--y:${b.y.toFixed(2)}%;--w:${b.w.toFixed(2)}%;--g:${b.g}${b.lost ? `;--ddx:${b.ddx.toFixed(1)}%;--ddy:${b.ddy.toFixed(1)}%` : ''}`}
           ></span>
         ))}
 
-        <span class="kf__person">
-          <img src="/people/s3.png" alt="" width="96" height="96" loading="lazy" decoding="async" />
-        </span>
+        <span class="kf__person"></span>
       </div>
 
-      <p class="kf__chip">{t.chip}</p>
+      <p class="kf__chip">
+        <span class="kf__key"><span class="kf__key-dot kf__key-dot--hidden"></span>{t.legendHidden}</span>
+        <span class="kf__key"><span class="kf__key-dot kf__key-dot--known"></span>{t.legendKnown}</span>
+      </p>
     </div>
 
   </div>
@@ -172,26 +172,6 @@ const t = isDE
     color: var(--color-text-secondary);
     max-width: 44ch;
   }
-  .pcopy__stat {
-    margin-top: var(--space-6);
-    font-size: var(--text-base);
-    line-height: 1.7;
-    color: var(--color-text-primary);
-    max-width: 44ch;
-  }
-  .pcopy__stat-value {
-    display: block;
-    font-size: clamp(2.4rem, 5vw, 3.6rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 1;
-    color: var(--color-accent);
-    font-variant-numeric: tabular-nums;
-    margin-bottom: var(--space-3);
-  }
-  .pcopy__source { margin-top: var(--space-4); font-size: var(--text-xs); color: var(--color-text-tertiary); }
-  .pcopy__source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-  .pcopy__source a:hover { color: var(--color-text-secondary); }
 
   /* ── Knowledge field ────────────────────────────────────────────────── */
   .kf { display: flex; flex-direction: column; align-items: center; gap: var(--space-5); }
@@ -211,11 +191,17 @@ const t = isDE
     aspect-ratio: 1;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    background: var(--color-border-strong);
+    /* A ring, not a dot: the knowledge is there, and there is nothing to read
+       inside it. A flat 1.5px reads as a ring at every bubble size here
+       (roughly 6px to 30px across). */
+    border: 1.5px solid var(--color-border-strong);
   }
+  /* The fraction somebody actually wrote down. */
+  .kf__b--known { background: var(--color-border-strong); border-color: transparent; }
   /* Hers are orange from the first beat, so the thing that disappears is the
      thing the eye was already tracking. */
-  .kf__b--lost { background: var(--color-accent); }
+  .kf__b--lost { border-color: var(--color-accent); }
+  .kf__b--lost.kf__b--known { background: var(--color-accent); border-color: transparent; }
 
   .kf__hole {
     position: absolute;
@@ -229,24 +215,33 @@ const t = isDE
     opacity: 0;
   }
 
+  /* The person at the centre is a node like the rest of the field, only
+     heavier. A photograph would make it one named individual; the point is
+     that it is anybody. */
   .kf__person {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 14%;
+    width: 9%;
     aspect-ratio: 1;
     border-radius: 50%;
-    overflow: hidden;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 4px var(--color-accent);
+    background: var(--color-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 18%, transparent);
   }
-  .kf__person img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .kf__chip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-5);
     font-size: var(--text-xs);
-    letter-spacing: 0.04em;
     color: var(--color-text-tertiary);
   }
+  .kf__key { display: inline-flex; align-items: center; gap: 7px; }
+  .kf__key-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .kf__key-dot--hidden { border: 1.5px solid var(--color-border-strong); }
+  .kf__key-dot--known { background: var(--color-border-strong); }
 
   /* ── Live choreography (pure functions of --t) ───────────────────────── */
   /* The opening owns the frame for two beats, then hands it to the tour. */
@@ -296,7 +291,7 @@ const t = isDE
       gap: var(--space-8);
     }
     .pcopy__head { max-width: none; }
-    .pcopy__sub, .pcopy__stat { max-width: none; }
+    .pcopy__sub { max-width: none; }
     /* The pin is one viewport tall and the copy sits above the field on this
        breakpoint, so the disc has to leave room for both. */
     .kf__disc { max-width: min(330px, 68vw); }

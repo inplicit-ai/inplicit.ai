@@ -164,15 +164,12 @@
   grid-area: 1 / 1;
   /* Chrome assembles against absolute journey time, not a scene's local time. */
   --lt: var(--t);
-  /* Gated three ways: nothing before the tour begins (--jt < 0, where the
-     knowledge-loss beats own the frame), full through setup, away again while
-     the interview room has the stage, back for themes and chat. */
+  /* The chrome is not the story. It arrives when the journey reaches the part
+     of the product that actually needs a dashboard around it, and --shell-in
+     is where that is in journey time. --shell-out is open by default. */
   opacity: min(
-    clamp(0, calc((var(--jt) + 0.10) / 0.12), 1),
-    max(
-      clamp(0, calc((1.0 - var(--jt)) / 0.08), 1),
-      clamp(0, calc((var(--jt) - 2.0) / 0.08), 1)
-    )
+    clamp(0, calc((var(--t) - var(--shell-in, 0)) / 0.14), 1),
+    clamp(0, calc((var(--shell-out, 99) - var(--t)) / 0.14), 1)
   );
 }
 

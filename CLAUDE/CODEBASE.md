@@ -32,9 +32,12 @@ Website/
         │   ├── Applications.astro ← 4-card gallery of use-case applications; auf der Startseite auskommentiert
         │   ├── LogoCloud.astro  ← 3 Referenzlogos; auf der Startseite auskommentiert
         │   ├── scroll/ScrollStage.astro ← Pin-Primitive, schreibt --t (Szenen-Einheiten) pro Frame
-        │   ├── journey/         ← Scroll-Journey (6 Beats in EINER Buehne): Journey, AppShell,
-        │   │                      SceneKnowledgeLoss (Beats 0-1: Bubblefeld, Person geht, Luecke bleibt),
-        │   │                      SceneSetup/Interview/Themes/Chat (Beats 2-5)
+        │   ├── journey/         ← Scroll-Journey, 6 Beats in EINER Buehne, eine Wellenlinie durchgehend:
+        │   │                      0-1 SceneKnowledgeLoss (unsichtbares Wissen, Person geht, Luecke bleibt)
+        │   │                      2-3 SceneAsk (die Frage, dann tippt sie sich ins Composer-Feld)
+        │   │                      4   SceneInterviews (15 Fenster mit tuerkisem Orb, fliessen zusammen)
+        │   │                      5   SceneThemes (Insights) + AppShell-Chrome
+        │   │                      ungenutzt: SceneSetup, SceneInterview, SceneChat
         │   ├── ValidationLoop.astro ← 5-stage Listen→Converge card flow
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)

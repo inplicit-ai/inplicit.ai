@@ -1,11 +1,10 @@
 ---
 import ScrollStage from '../scroll/ScrollStage.astro';
 import SceneKnowledgeLoss from './SceneKnowledgeLoss.astro';
+import SceneAsk from './SceneAsk.astro';
+import SceneInterviews from './SceneInterviews.astro';
 import AppShell from './AppShell.astro';
-import SceneSetup from './SceneSetup.astro';
-import SceneInterview from './SceneInterview.astro';
 import SceneThemes from './SceneThemes.astro';
-import SceneChat from './SceneChat.astro';
 
 export interface Props { lang?: 'en' | 'de' }
 const { lang = 'en' } = Astro.props;
@@ -15,44 +14,54 @@ const isDE = lang === 'de';
 <section class="jsec" id="how-it-works">
   <!-- Full-bleed. The product labels itself through its own breadcrumb, so the
        journey carries no marketing copy of its own. -->
-  <!-- Six beats: two of problem, four of product. --t-off tells the dashboard
-       chrome that the tour's own scene 0 starts at journey time 2. -->
-  <ScrollStage scenes={6} travel={620}>
+  <!-- One continuous flow, six beats:
+         0  the knowledge in the organisation, invisible
+         1  a person leaves and takes a piece of it
+         2  the question
+         3  the question gets typed and the campaign goes out
+         4  fifteen interviews running, converging
+         5  what comes back
+       --t-off tells the dashboard chrome that the product tour's own scene 0
+       sits at journey time 5. -->
+  <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <SceneKnowledgeLoss lang={lang} />
+      <!-- One line through the whole journey. It draws itself as --t advances
+           and is the only element that spans all six beats, so the thing tying
+           the beats together is literally a thread. First child, so everything
+           else paints over it. Revealed with a clip-path rather than a dash
+           offset: stroke-dashoffset is a LENGTH in CSS, so a unitless progress
+           value silently reads as 1px and the line just sits there fully
+           drawn. A clip needs no path arithmetic at all. -->
+      <svg class="jthread" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          class="jthread__path"
+          vector-effect="non-scaling-stroke"
+          d="M-20 430 C 110 300 190 300 320 430 S 530 560 660 430 S 870 300 1000 430 S 1150 520 1220 470"
+          fill="none"
+          stroke="var(--color-accent)"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
 
-      <!-- The dashboard chrome persists across steps; only the breadcrumb and
-           the work area change. It steps aside for the interview room, which is
-           a standalone participant view with no sidebar. -->
+      <SceneKnowledgeLoss lang={lang} />
+      <SceneAsk lang={lang} />
+      <SceneInterviews lang={lang} />
+
+      <!-- The dashboard only introduces itself once there is something in it. -->
       <div class="jshell">
         <AppShell lang={lang}>
-          <div class="jtopbar" slot="topbar">
-            <!-- Setup shows the flow's step pills, not a breadcrumb. -->
-            <div class="jcrumb steps" style="--t0: 2">
-              <span class="steps__pill steps__pill--on">{isDE ? 'Konfigurieren' : 'Configure'}</span>
-              <span class="steps__pill">{isDE ? 'Prüfen' : 'Review'}</span>
-              <span class="steps__pill steps__pill--off">{isDE ? 'Starten' : 'Launch'}</span>
-            </div>
-            <div class="jcrumb" style="--t0: 3"></div>
-            <nav class="jcrumb crumb" style="--t0: 4">
-              <span class="crumb__link">{isDE ? 'Kampagnen' : 'Campaigns'}</span>
-              <span class="crumb__sep">›</span>
-              <span class="crumb__link">Post-Merger Integration: Meridian</span>
-              <span class="crumb__sep">›</span>
-              <span class="crumb__now">Insights</span>
-            </nav>
-            <nav class="jcrumb crumb" style="--t0: 5" data-last>
-              <span class="crumb__now">{isDE ? 'Wissens-Chat' : 'Knowledge Chat'}</span>
-            </nav>
-          </div>
+          <nav class="jtopbar crumb" slot="topbar">
+            <span class="crumb__link">{isDE ? 'Kampagnen' : 'Campaigns'}</span>
+            <span class="crumb__sep">›</span>
+            <span class="crumb__link">Post-Merger Integration: Meridian</span>
+            <span class="crumb__sep">›</span>
+            <span class="crumb__now">Insights</span>
+          </nav>
 
-          <SceneSetup lang={lang} />
           <SceneThemes lang={lang} />
-          <SceneChat lang={lang} />
         </AppShell>
       </div>
-
-      <SceneInterview lang={lang} />
     </div>
 
     <!-- Scroll cue: the stage pins on entry, so without this the page looks
@@ -75,9 +84,10 @@ const isDE = lang === 'de';
     background: var(--color-surface);
   }
 
-  /* Two knowledge-loss beats run before the product tour, so the tour's own
-     scene 0 sits at journey time 2. journey.css derives --jt from this. */
-  .jsec :global(.jstage) { --t-off: 2; }
+  /* Five beats run before the dashboard appears, so the product tour's own
+     scene 0 sits at journey time 5. journey.css derives --jt from this, and
+     --shell-in is when the chrome is allowed on screen at all. */
+  .jsec :global(.jstage) { --t-off: 5; --shell-in: 4.86; }
 
   /* Not full-bleed: the mock sits inside the normal content column. */
   .jframe {
@@ -94,6 +104,18 @@ const isDE = lang === 'de';
   /* The mock sits on a white section, so without its own edge it dissolves
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
+  .jthread {
+    grid-area: 1 / 1;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  /* Base state (no JS, reduced motion): the whole line, already drawn. */
+  .jsec :global(.jstage.is-live) .jthread {
+    --p: clamp(0, calc(var(--t) / 5.4), 1);
+    clip-path: inset(0 calc(100% - 100% * var(--p)) 0 0);
+  }
+
   .jshell {
     width: 100%; height: 100%;
     border-radius: var(--radius-xl);
@@ -115,34 +137,6 @@ const isDE = lang === 'de';
   .crumb__sep { color: var(--color-text-quaternary); }
   .crumb__now { color: var(--color-text-primary); font-weight: 500; white-space: nowrap; }
 
-  /* Setup flow step pills. */
-  .steps {
-    display: inline-flex; gap: 4px; padding: 4px; width: fit-content;
-    border-radius: var(--radius-ui); border: 1px solid var(--color-border);
-    background: var(--color-surface-elevated);
-  }
-  .steps__pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    height: 32px; padding: 0 13px;
-    border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
-    color: var(--color-text-secondary); white-space: nowrap;
-  }
-  /* A numbered dot per step, so the bar reads as "step 1 of 3" at a glance
-     instead of as three unexplained words. */
-  .steps__pill::before {
-    content: counter(step); counter-increment: step;
-    display: grid; place-items: center;
-    width: 17px; height: 17px; border-radius: var(--radius-full);
-    background: var(--color-border); color: var(--color-surface);
-    font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums;
-  }
-  .steps { counter-reset: step; }
-  .steps__pill--on {
-    background: var(--color-surface); color: var(--color-text-primary);
-    box-shadow: var(--shadow-xs);
-  }
-  .steps__pill--on::before { background: var(--color-accent); color: var(--color-text-primary); }
-  .steps__pill--off { color: var(--color-text-tertiary); }
 
   .jcue {
     position: absolute; left: 50%; bottom: var(--space-4);
@@ -166,7 +160,7 @@ const isDE = lang === 'de';
   @media (min-width: 768px) { .jframe { padding: 0 var(--space-8); } }
 
   @media (max-width: 1023px) {
-    .jsec :global(.jstage.is-live) { height: calc(100svh + 420 * 1svh); }
+    .jsec :global(.jstage.is-live) { height: calc(100svh + 480 * 1svh); }
     .jframe { max-height: none; }
   }
 
