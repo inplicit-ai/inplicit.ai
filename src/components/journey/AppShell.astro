@@ -1,0 +1,70 @@
+---
+/**
+ * AppShell — the dashboard chrome around the scroll-driven tour scenes.
+ * Topbar only: the sidebar is deliberately omitted, the tour is about the work
+ * surface, not the navigation. Persistent across steps — the breadcrumb and the
+ * work area swap beneath it rather than the chrome rebuilding each time.
+ * Icon paths copied verbatim from inplicit-dashboard/components/icons.tsx
+ * (24 viewBox, stroke-width 1.75, round caps/joins).
+ */
+export interface Props { lang?: 'en' | 'de' }
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'en' ? false : true;
+
+const ICON: Record<string, string> = {
+  message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+};
+const icon = (n: string, size = 15) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
+---
+
+<div class="shell">
+  <header class="topbar">
+    <div class="topbar__lead"><slot name="topbar" /></div>
+    <div class="topbar__end jpart jhold" data-axis="down" data-weight="chrome" style="--g:1">
+      <span class="pill">
+        <span class="pill__icon" set:html={icon('message')} />
+        <span>Feedback</span>
+      </span>
+      <span class="pill">
+        <span class="pill__icon" set:html={icon('globe')} />
+        <span>{isDE ? 'Deutsch' : 'English'}</span>
+      </span>
+      <span class="avatar">M</span>
+    </div>
+  </header>
+
+  <div class="shell__work"><slot /></div>
+</div>
+
+<style>
+  .shell {
+    display: grid; grid-template-rows: auto minmax(0, 1fr);
+    height: 100%; background: var(--color-surface);
+  }
+  .topbar { height: 60px; display: flex; align-items: center; gap: 12px; padding: 0 4px; }
+  .topbar__lead { flex: 1; min-width: 0; }
+  .topbar__end { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+
+  .pill {
+    height: 34px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 0 12px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-ui); background: var(--color-surface);
+    color: var(--color-text-secondary); font-size: 12px; font-weight: 500; white-space: nowrap;
+  }
+  .pill__icon { display: flex; flex-shrink: 0; }
+  .avatar {
+    width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center;
+    justify-content: center; border-radius: var(--radius-full);
+    background: var(--brand-periwinkle-weak); color: var(--brand-blue);
+    font-size: 12px; font-weight: 500;
+  }
+
+  .shell__work { overflow: hidden; position: relative; min-height: 0; }
+
+  @media (max-width: 1023px) {
+    .topbar { padding: 0; height: 52px; }
+    .pill { display: none; }
+  }
+</style>

@@ -93,6 +93,20 @@
   --ease-smooth: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
 
+  /* ---- Dashboard-parity tokens (additive resync with inplicit-dashboard) ----
+     Used by the product mocks in the scroll journey so they render 1:1 with the
+     real UI. The site's own CTA stays Signal Orange; --dash-cta is the
+     dashboard's CTA and appears only inside a mock. */
+  --color-border-strong: #D3D6DD;
+  --color-text-quaternary: #C4C8D1;
+  --color-accent-soft: #FEF0E3;
+  --color-pain-muted: rgba(217, 58, 46, 0.28);
+  --color-gap-muted: rgba(30, 52, 144, 0.24);
+  --dash-cta: #6468D0;
+  --dash-cta-text: #FFFFFF;
+  --radius-sm: 6px;
+  --shadow-card: none;
+
   /* Layout */
   --max-width: 1080px;
   --section-padding: var(--space-section) var(--space-4);

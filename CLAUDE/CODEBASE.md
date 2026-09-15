@@ -28,9 +28,12 @@ Website/
         │   ├── Nav.astro        ← sticky nav, logo SVG, theme toggle, CTA
         │   ├── Hero.astro       ← headline + CTAs, fade-up anim; hosts HeroNetworkViz
         │   ├── HeroNetworkViz.astro ← isometric "role → role-context" extraction animation
-        │   ├── HowItWorks.astro ← 01/02/03/04 numbered steps (2-col grid)
-        │   ├── TheProblem.astro ← 2-col Kodak framing (signal + aggregation)
-        │   ├── Applications.astro ← 4-card gallery of use-case applications
+        │   ├── HowItWorks.astro ← 6-step accordion; auf der Startseite auskommentiert (ersetzt durch journey/)
+        │   ├── TheProblem.astro ← "Die Herausforderung": Wissensverlust, Kostenzahl, 3 Symptome (1. Sektion nach dem Hero)
+        │   ├── Applications.astro ← 4-card gallery of use-case applications; auf der Startseite auskommentiert
+        │   ├── LogoCloud.astro  ← 3 Referenzlogos; auf der Startseite auskommentiert
+        │   ├── scroll/ScrollStage.astro ← Pin-Primitive, schreibt --t (Szenen-Einheiten) pro Frame
+        │   ├── journey/         ← Scroll-Journey: Journey, AppShell, SceneSetup/Interview/Themes/Chat
         │   ├── ValidationLoop.astro ← 5-stage Listen→Converge card flow
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)
