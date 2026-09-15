@@ -70,6 +70,20 @@ for (let tries = 0; tries < 9000 && field.length < 124; tries++) {
   });
 }
 
+// A few of the nodes are visibly people. Not all of them: the point is that
+// every ring is somebody, and showing fifteen faces would turn the field into
+// a team page. Picked from the larger, well-spaced bubbles so the portraits
+// never collide, and never from her cluster, which has to disappear cleanly.
+const FACE_SLOTS = 7;
+const faces: number[] = [];
+field.forEach((b, i) => {
+  if (faces.length >= FACE_SLOTS) return;
+  if (b.lost || b.w < 4.6) return;
+  if (faces.some((j) => Math.hypot(field[j].x - b.x, field[j].y - b.y) < 22)) return;
+  faces.push(i);
+});
+faces.forEach((i, k) => { (field[i] as any).face = `/people/s${k + 11}.png`; });
+
 const t = isDE
   ? {
       head0: 'Das meiste Wissen Ihrer Organisation sieht niemand.',
@@ -113,13 +127,28 @@ const t = isDE
         <span class="kf__hole"></span>
 
         {field.map((b) => (
-          <span
-            class={`kf__b${b.lost ? ' kf__b--lost' : ''}${b.filled ? ' kf__b--known' : ''}`}
-            style={`--x:${b.x.toFixed(2)}%;--y:${b.y.toFixed(2)}%;--w:${b.w.toFixed(2)}%;--g:${b.g}${b.lost ? `;--ddx:${b.ddx.toFixed(1)}%;--ddy:${b.ddy.toFixed(1)}%` : ''}`}
-          ></span>
+          (b as any).face ? (
+            <img
+              class="kf__b kf__b--face"
+              src={(b as any).face}
+              alt=""
+              width="64"
+              height="64"
+              loading="lazy"
+              decoding="async"
+              style={`--x:${b.x.toFixed(2)}%;--y:${b.y.toFixed(2)}%;--w:${Math.max(b.w, 6.4).toFixed(2)}%;--g:${b.g}`}
+            />
+          ) : (
+            <span
+              class={`kf__b${b.lost ? ' kf__b--lost' : ''}${b.filled ? ' kf__b--known' : ''}`}
+              style={`--x:${b.x.toFixed(2)}%;--y:${b.y.toFixed(2)}%;--w:${b.w.toFixed(2)}%;--g:${b.g}${b.lost ? `;--ddx:${b.ddx.toFixed(1)}%;--ddy:${b.ddy.toFixed(1)}%` : ''}`}
+            ></span>
+          )
         ))}
 
-        <span class="kf__person"></span>
+        <span class="kf__person">
+          <img src="/people/s3.png" alt="" width="96" height="96" loading="lazy" decoding="async" />
+        </span>
       </div>
 
       <p class="kf__chip">
@@ -215,20 +244,26 @@ const t = isDE
     opacity: 0;
   }
 
-  /* The person at the centre is a node like the rest of the field, only
-     heavier. A photograph would make it one named individual; the point is
-     that it is anybody. */
+  /* Faces in the field: some of the nodes are visibly people. */
+  .kf__b--face {
+    object-fit: cover;
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 1px 6px rgba(11, 12, 16, 0.14);
+  }
+
+  /* The one at the centre is the person the second beat is about. */
   .kf__person {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 9%;
+    width: 11%;
     aspect-ratio: 1;
     border-radius: 50%;
+    overflow: hidden;
     transform: translate(-50%, -50%);
-    background: var(--color-accent);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 18%, transparent);
+    box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 4.5px var(--color-accent);
   }
+  .kf__person img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .kf__chip {
     display: flex;

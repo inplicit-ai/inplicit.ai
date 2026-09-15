@@ -4,7 +4,7 @@ import SceneKnowledgeLoss from './SceneKnowledgeLoss.astro';
 import SceneAsk from './SceneAsk.astro';
 import SceneInterviews from './SceneInterviews.astro';
 import AppShell from './AppShell.astro';
-import SceneThemes from './SceneThemes.astro';
+import SceneInsights from './SceneInsights.astro';
 
 export interface Props { lang?: 'en' | 'de' }
 const { lang = 'en' } = Astro.props;
@@ -25,18 +25,18 @@ const isDE = lang === 'de';
        sits at journey time 5. -->
   <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <!-- One line through the whole journey. It draws itself as --t advances
-           and is the only element that spans all six beats, so the thing tying
-           the beats together is literally a thread. First child, so everything
-           else paints over it. Revealed with a clip-path rather than a dash
-           offset: stroke-dashoffset is a LENGTH in CSS, so a unitless progress
-           value silently reads as 1px and the line just sits there fully
-           drawn. A clip needs no path arithmetic at all. -->
-      <svg class="jthread" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+      <!-- One line down the whole journey. Vertical, because its job is to
+           pull the eye from one beat to the next: a horizontal line sits
+           across the story, a vertical one leads through it. It draws itself
+           as --t advances and is the only element spanning all six beats.
+           Revealed with a clip-path rather than a dash offset:
+           stroke-dashoffset is a LENGTH in CSS, so a unitless progress value
+           silently reads as 1px and the line just sits there fully drawn. -->
+      <svg class="jthread" viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden="true">
         <path
           class="jthread__path"
           vector-effect="non-scaling-stroke"
-          d="M-20 430 C 110 300 190 300 320 430 S 530 560 660 430 S 870 300 1000 430 S 1150 520 1220 470"
+          d="M100 -20 C 100 60 60 110 60 190 S 140 300 140 390 S 60 520 60 610 S 140 740 140 830 S 100 960 100 1020"
           fill="none"
           stroke="var(--color-accent)"
           stroke-width="1.5"
@@ -59,7 +59,7 @@ const isDE = lang === 'de';
             <span class="crumb__now">Insights</span>
           </nav>
 
-          <SceneThemes lang={lang} />
+          <SceneInsights lang={lang} />
         </AppShell>
       </div>
     </div>
@@ -113,7 +113,7 @@ const isDE = lang === 'de';
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
   .jsec :global(.jstage.is-live) .jthread {
     --p: clamp(0, calc(var(--t) / 5.4), 1);
-    clip-path: inset(0 calc(100% - 100% * var(--p)) 0 0);
+    clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }
 
   .jshell {

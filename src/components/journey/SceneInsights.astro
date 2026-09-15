@@ -1,0 +1,232 @@
+---
+/**
+ * SceneInsights — beat 5, what comes back. The interview windows merge into
+ * this frame, so it has to read as an evaluation at a glance: numbers, bars,
+ * a split. Cards with paragraphs would be a wall of text at this size.
+ *
+ * Charts follow the dataviz procedure:
+ *  - form by job: three stat tiles for the headline numbers, a horizontal bar
+ *    chart for magnitude (mentions per theme), one donut for composition.
+ *  - the bar chart is ONE measure, so it is one hue and carries no legend.
+ *    The donut is categorical, so it gets the fixed three-hue order plus a
+ *    legend AND direct labels.
+ *  - palette #F08A3C / #6468D0 / #4CC2E9 (accent-dark, dash-cta, orb-teal),
+ *    validated with the dataviz validator: lightness band, chroma floor, CVD
+ *    separation (worst adjacent ΔE 21.8 deutan) and normal-vision floor all
+ *    pass. Contrast vs surface WARNs, which obligates visible labels: every
+ *    slice and every bar is labelled, so nothing is carried by colour alone.
+ *  - text stays in ink tokens; only the marks wear the series colour.
+ *
+ * No hover layer: the whole frame sits inside a pinned scroll stage and is
+ * pointer-events:none, so a tooltip could never be reached. The numbers are
+ * on the marks instead.
+ */
+import '../../styles/journey.css';
+
+export interface Props { lang?: 'en' | 'de' }
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const t = isDE
+  ? {
+      heading: 'Insights',
+      tiles: [
+        { n: '15', l: 'Interviews' },
+        { n: '9', l: 'Themen' },
+        { n: '84 %', l: 'Konfidenz' },
+      ],
+      barsTitle: 'Nennungen je Thema',
+      bars: [
+        { l: 'Freigaben', v: 12 },
+        { l: 'Doppelte Erfassung', v: 10 },
+        { l: 'Übergaben', v: 8 },
+        { l: 'Systemwechsel', v: 6 },
+        { l: 'Wartezeiten', v: 5 },
+        { l: 'Rückfragen', v: 3 },
+      ],
+      splitTitle: 'Art der Einblicke',
+      split: [
+        { l: 'Problem', v: 47 },
+        { l: 'Idee', v: 31 },
+        { l: 'Chance', v: 22 },
+      ],
+    }
+  : {
+      heading: 'Insights',
+      tiles: [
+        { n: '15', l: 'Interviews' },
+        { n: '9', l: 'Themes' },
+        { n: '84%', l: 'Confidence' },
+      ],
+      barsTitle: 'Mentions per theme',
+      bars: [
+        { l: 'Approvals', v: 12 },
+        { l: 'Double entry', v: 10 },
+        { l: 'Handovers', v: 8 },
+        { l: 'System switches', v: 6 },
+        { l: 'Waiting time', v: 5 },
+        { l: 'Follow-up questions', v: 3 },
+      ],
+      splitTitle: 'Type of insight',
+      split: [
+        { l: 'Problem', v: 47 },
+        { l: 'Idea', v: 31 },
+        { l: 'Opportunity', v: 22 },
+      ],
+    };
+
+const barMax = Math.max(...t.bars.map((b) => b.v));
+
+// Donut geometry. A 2px surface gap between segments, per the mark spec, is
+// subtracted from each arc rather than added between them, so the ring still
+// closes exactly.
+const R = 54;
+const C = +(2 * Math.PI * R).toFixed(2);
+const GAP = 2.4;
+let cursor = 0;
+const arcs = t.split.map((sgm, i) => {
+  const len = (sgm.v / 100) * C;
+  const arc = { ...sgm, i, dash: +(len - GAP).toFixed(2), rest: +(C - len + GAP).toFixed(2), offset: +(-cursor).toFixed(2) };
+  cursor += len;
+  return arc;
+});
+---
+
+<div class="jscene ins" style="--t0: 5" data-last aria-hidden="true">
+  <h3 class="ins__h jpart" data-axis="up" data-weight="chrome" style="--g: 0">{t.heading}</h3>
+
+  <div class="ins__tiles">
+    {t.tiles.map((tile, i) => (
+      <div class="tile jpart" data-axis="up" style={`--g: ${i}`}>
+        <span class="tile__n">{tile.n}</span>
+        <span class="tile__l">{tile.l}</span>
+      </div>
+    ))}
+  </div>
+
+  <div class="ins__charts">
+    <section class="panel jpart" data-axis="up" style="--g: 1">
+      <h4 class="panel__h">{t.barsTitle}</h4>
+      <div class="bars">
+        {t.bars.map((b, i) => (
+          <div class="bar" style={`--i: ${i}`}>
+            <span class="bar__l">{b.l}</span>
+            <span class="bar__track">
+              <span class="bar__fill" style={`--pct: ${Math.round((b.v / barMax) * 100)}%`}></span>
+            </span>
+            <span class="bar__v">{b.v}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="panel panel--split jpart" data-axis="up" style="--g: 2">
+      <h4 class="panel__h">{t.splitTitle}</h4>
+      <div class="split">
+        <svg class="donut" viewBox="0 0 140 140" role="img" aria-label={t.splitTitle}>
+          <g transform="rotate(-90 70 70)">
+            {arcs.map((a) => (
+              <circle
+                class={`donut__seg donut__seg--${a.i}`}
+                cx="70" cy="70" r={R}
+                fill="none"
+                stroke-width="17"
+                stroke-dasharray={`${a.dash} ${a.rest}`}
+                stroke-dashoffset={a.offset}
+              />
+            ))}
+          </g>
+        </svg>
+        <ul class="legend">
+          {t.split.map((sgm, i) => (
+            <li class="legend__i">
+              <span class={`legend__dot legend__dot--${i}`}></span>
+              <span class="legend__l">{sgm.l}</span>
+              <span class="legend__v">{sgm.v} %</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>
+
+<style>
+  .ins {
+    display: flex; flex-direction: column; gap: 14px;
+    width: 100%; height: 100%; padding: 4px 2px 2px;
+    overflow: hidden; background: var(--color-surface); font-family: var(--font-family);
+  }
+  .ins__h { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: var(--color-text-primary); }
+
+  /* ── Stat tiles ────────────────────────────────────────────────────────── */
+  .ins__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .tile {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .tile__n { font-size: 26px; font-weight: 400; letter-spacing: -0.04em; line-height: 1; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+  .tile__l { font-size: 11px; color: var(--color-text-tertiary); }
+
+  /* ── Panels ────────────────────────────────────────────────────────────── */
+  .ins__charts { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 10px; flex: 1; min-height: 0; }
+  .panel {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 12px 14px; min-width: 0; min-height: 0;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .panel__h { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--color-text-secondary); }
+
+  /* ── Bar chart: one measure, one hue, value direct-labelled ───────────── */
+  .bars { display: flex; flex-direction: column; gap: 9px; }
+  .bar { display: grid; grid-template-columns: minmax(0, 96px) minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+  .bar__l { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar__track { height: 10px; border-radius: 5px; background: var(--color-surface-elevated); overflow: hidden; }
+  .bar__fill {
+    display: block; height: 100%; width: var(--pct);
+    border-radius: 5px;
+    background: var(--color-accent-dark);
+    transform-origin: left center;
+  }
+  .bar__v { font-size: 11px; font-weight: 600; color: var(--color-text-primary); font-variant-numeric: tabular-nums; min-width: 1.4em; text-align: right; }
+
+  /* ── Donut: categorical, fixed hue order, legend AND direct values ─────── */
+  .panel--split { align-items: stretch; }
+  .split { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; min-height: 0; justify-content: center; }
+  .donut { width: 108px; height: 108px; flex-shrink: 0; }
+  /* The 2px surface gap between fills comes from the dasharray, and the round
+     cap would eat it back, so the caps stay butt. */
+  .donut__seg { stroke-linecap: butt; transform-origin: 70px 70px; }
+  .donut__seg--0 { stroke: var(--color-accent-dark); }
+  .donut__seg--1 { stroke: var(--dash-cta); }
+  .donut__seg--2 { stroke: var(--orb-teal); }
+
+  .legend { display: flex; flex-direction: column; gap: 5px; width: 100%; list-style: none; margin: 0; padding: 0; }
+  .legend__i { display: flex; align-items: center; gap: 7px; font-size: 11px; }
+  .legend__dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .legend__dot--0 { background: var(--color-accent-dark); }
+  .legend__dot--1 { background: var(--dash-cta); }
+  .legend__dot--2 { background: var(--orb-teal); }
+  .legend__l { color: var(--color-text-secondary); }
+  .legend__v { margin-left: auto; color: var(--color-text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ── Live choreography ─────────────────────────────────────────────────── */
+  /* The bars grow and the ring closes as the beat assembles. Both are pure
+     functions of the scene's own --lt, so scrolling back empties them. */
+  :global(.jstage.is-live) .bar__fill {
+    transform: scaleX(clamp(0, calc((var(--lt) - 0.22 - var(--i) * 0.04) / 0.34), 1));
+  }
+  :global(.jstage.is-live) .donut__seg {
+    transform: scale(calc(0.72 + 0.28 * clamp(0, calc((var(--lt) - 0.26) / 0.36), 1)));
+    opacity: clamp(0, calc((var(--lt) - 0.26) / 0.30), 1);
+  }
+
+  @media (max-width: 1023px) {
+    .ins__charts { grid-template-columns: minmax(0, 1fr); }
+    .panel--split { display: none; }
+    .bar { grid-template-columns: minmax(0, 84px) minmax(0, 1fr) auto; }
+  }
+</style>

@@ -1,18 +1,16 @@
 ---
 /**
- * SceneInterviews — beat 4. The campaign is out, so fifteen conversations are
- * running at once.
+ * SceneInterviews — beat 4. The campaign is out, so the conversations run.
  *
- * Fifteen small windows deal in, each showing a conversation in progress with
- * the agent, and in the last quarter of the beat they all converge on the
- * centre of the frame and hand over to Insights. The convergence is the
- * transition: the windows do not fade out and the insight cards fade in, the
- * windows BECOME them.
+ * The orange thread that has led down the whole journey splits here: one
+ * strand per column, running behind the windows, and merging again at the
+ * bottom into the insight frame. The wires are one SVG over the same box as
+ * the grid, in a 0-100 viewBox with preserveAspectRatio="none", so the strands
+ * line up with the columns at any width without measuring anything.
  *
- * The agent wears the orb's own turquoise (--orb-teal) in every window, so the
- * thing conducting the interviews is recognisably the same thing throughout.
- * Fifteen WebGL orbs would be absurd, so these are flat circles in the orb's
- * base colour rather than the shader.
+ * Each window is the interview room in miniature: the agent's orb on the left,
+ * the conversation hinted on the right. The count is deliberately not in the
+ * copy, only in how many windows there happen to be.
  *
  * Everything is a function of absolute journey time, so scrolling back deals
  * the windows out again. The typing dots are the one exception: a conversation
@@ -33,39 +31,29 @@ const rand = (s: number) => () => {
 };
 const next = rand(4815162342);
 
-const roles = isDE
-  ? ['Operations', 'Logistik', 'Vertrieb', 'Disposition', 'Einkauf', 'Lager', 'Fertigung', 'Service',
-     'Qualität', 'Planung', 'Versand', 'Kundendienst', 'Arbeitsvorbereitung', 'IT', 'Finanzen']
-  : ['Operations', 'Logistics', 'Sales', 'Dispatch', 'Purchasing', 'Warehouse', 'Production', 'Service',
-     'Quality', 'Planning', 'Shipping', 'Customer care', 'Work scheduling', 'IT', 'Finance'];
-
-// 5 x 3 grid of windows; each carries its own deal-in delay, waveform rhythm
-// and a vector back to the centre for the hand-over.
 const COLS = 5, ROWS = 3;
-const windows = roles.map((role, i) => {
+const windows = Array.from({ length: COLS * ROWS }, (_, i) => {
   const col = i % COLS, row = Math.floor(i / COLS);
-  // Each window shows the tail of its own conversation: agent line, reply,
-  // agent line. Widths only, because at this size the text would be noise.
-  const lines = Array.from({ length: 3 }, (_, k) => ({
-    me: k === 1,
-    w: Math.round((k === 1 ? 45 : 62) + next() * 30),
-  }));
   return {
-    role,
+    no: String(i + 1).padStart(2, '0'),
     col, row,
-    lines,
-    // deal order runs outward from the middle of the grid, not left to right
+    // three hinted turns: agent, reply, agent. Widths only; at this size the
+    // words would be noise.
+    lines: Array.from({ length: 3 }, (_, k) => ({ me: k === 1, w: Math.round((k === 1 ? 52 : 70) + next() * 26) })),
+    // deal order runs outward from the middle of the grid
     g: Math.round(Math.hypot(col - (COLS - 1) / 2, (row - (ROWS - 1) / 2) * 1.6) * 1.35),
     beat: (1.05 + next() * 0.5).toFixed(2),
-    // where this window sits relative to the centre, as a share of the grid
     dx: ((COLS - 1) / 2 - col) * 100,
     dy: ((ROWS - 1) / 2 - row) * 100,
   };
 });
 
+// Column centres in the 0-100 wire viewBox.
+const strands = Array.from({ length: COLS }, (_, c) => +(((c + 0.5) / COLS) * 100).toFixed(2));
+
 const t = isDE
-  ? { head: '15 Gespräche, gleichzeitig.', sub: 'Jede Person wird einzeln befragt, anonym, wann es ihr passt.', live: 'läuft' }
-  : { head: '15 conversations at once.', sub: 'Everyone is interviewed separately, anonymously, whenever it suits them.', live: 'live' };
+  ? { head: 'Jede Person wird einzeln befragt.', sub: 'Anonym, im Gespräch mit dem Agenten, wann es ihr passt.', label: 'Interview' }
+  : { head: 'Everyone is interviewed separately.', sub: 'Anonymously, in conversation with the agent, whenever it suits them.', label: 'Interview' };
 ---
 
 <div class="iv">
@@ -75,24 +63,38 @@ const t = isDE
       <p class="iv__sub">{t.sub}</p>
     </header>
 
-    <div class="iv__grid">
-      {windows.map((w) => (
-        <div class="win" style={`--g:${w.g};--dx:${w.dx}%;--dy:${w.dy}%;--beat:${w.beat}s`}>
-          <div class="win__bar">
-            <span class="win__orb"></span>
-            <span class="win__role">{w.role}</span>
-            <span class="win__live"><span class="win__dot"></span>{t.live}</span>
+    <div class="iv__stage">
+      <!-- The thread, split into one strand per column and merged again. -->
+      <svg class="iv__wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {strands.map((x) => (
+          <path
+            class="iv__wire"
+            vector-effect="non-scaling-stroke"
+            d={`M50 -14 C 50 -2 ${x} 0 ${x} 12 L ${x} 88 C ${x} 100 50 102 50 114`}
+            fill="none"
+            stroke="var(--color-accent)"
+            stroke-width="1.25"
+            stroke-linecap="round"
+          />
+        ))}
+      </svg>
+
+      <div class="iv__grid">
+        {windows.map((w) => (
+          <div class="win" style={`--g:${w.g};--dx:${w.dx}%;--dy:${w.dy}%;--beat:${w.beat}s`}>
+            <span class="win__no">{t.label} {w.no}</span>
+            <div class="win__body">
+              <span class="win__orb"></span>
+              <div class="win__thread" aria-hidden="true">
+                {w.lines.map((l) => (
+                  <span class={`win__line${l.me ? ' win__line--me' : ''}`} style={`width:${l.w}%`}></span>
+                ))}
+                <span class="win__typing"><span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span></span>
+              </div>
+            </div>
           </div>
-          <div class="win__thread" aria-hidden="true">
-            {w.lines.map((l) => (
-              <span class={`win__line${l.me ? ' win__line--me' : ''}`} style={`width:${l.w}%`}></span>
-            ))}
-            <span class="win__typing">
-              <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
-            </span>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </div>
 </div>
@@ -109,45 +111,47 @@ const t = isDE
   }
   .iv__sub { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
 
+  .iv__stage { position: relative; }
+  .iv__wires { position: absolute; inset: -6% 0; width: 100%; height: 112%; pointer-events: none; opacity: 0.45; }
+
   .iv__grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: var(--space-3);
   }
 
   .win {
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 10px;
+    display: flex; flex-direction: column; gap: 7px;
+    padding: 9px 10px;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     box-shadow: var(--shadow-xs);
     min-width: 0;
   }
-  .win__bar { display: flex; align-items: center; gap: 6px; min-width: 0; }
-  /* The agent, in the orb's own colour: same presence in every window. */
-  .win__orb {
-    width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
-    background: radial-gradient(circle at 34% 30%, #fff 0%, var(--orb-teal) 46%, color-mix(in srgb, var(--orb-teal) 62%, #0B0C10) 100%);
-    box-shadow: 0 0 0 3px var(--orb-teal-soft);
-  }
-  .win__role {
-    font-size: 10.5px; font-weight: 600; color: var(--color-text-primary);
+  .win__no {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.03em;
+    color: var(--color-text-tertiary);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .win__live { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0; font-size: 9px; color: var(--color-text-tertiary); }
-  .win__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orb-teal); }
 
-  /* The conversation: agent lines left, the person's reply right. */
-  .win__thread { display: flex; flex-direction: column; gap: 4px; }
-  .win__line { height: 5px; border-radius: 3px; background: var(--color-border); }
+  /* The interview room in miniature: orb left, conversation right. */
+  .win__body { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .win__orb {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    background: radial-gradient(circle at 34% 30%, #fff 0%, var(--orb-teal) 46%, color-mix(in srgb, var(--orb-teal) 62%, var(--color-canvas-dark)) 100%);
+    box-shadow: 0 0 0 3px var(--orb-teal-soft);
+  }
+  .win__thread { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .win__line { height: 4px; border-radius: 2px; background: var(--color-border); }
   .win__line--me { align-self: flex-end; background: color-mix(in srgb, var(--orb-teal) 34%, transparent); }
   .win__typing { display: inline-flex; gap: 3px; margin-top: 1px; }
-  .win__typing span { width: 4px; height: 4px; border-radius: 50%; background: var(--orb-teal); opacity: 0.45; }
+  .win__typing span { width: 3px; height: 3px; border-radius: 50%; background: var(--orb-teal); opacity: 0.45; }
 
   /* ── Live choreography ─────────────────────────────────────────────────── */
-  /* Absolute journey time.  4.0 windows deal in · 4.72 they converge ·
-     4.98 handed over to the insight frame. */
+  /* Absolute journey time.  4.0 windows deal in · 4.74 they converge ·
+     5.0 handed over to the insight frame. */
   :global(.jstage.is-live) .iv {
     pointer-events: none;
     opacity: min(
@@ -163,10 +167,15 @@ const t = isDE
     );
   }
 
+  /* The split draws itself just before the windows land on it, and stays until
+     the merge has pulled everything into the insight frame. */
+  :global(.jstage.is-live) .iv__wires {
+    --p: clamp(0, calc((var(--t) - 3.96) / 0.30), 1);
+    clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
+  }
+
   :global(.jstage.is-live) .win {
-    /* deal-in, staggered outward from the middle of the grid */
-    --in: clamp(0, calc((var(--t) - 4.04 - var(--g) * 0.045) / 0.26), 1);
-    /* the hand-over: every window travels to the centre and collapses */
+    --in: clamp(0, calc((var(--t) - 4.06 - var(--g) * 0.045) / 0.26), 1);
     --home: clamp(0, calc((var(--t) - 4.74) / 0.26), 1);
     opacity: calc(var(--in) * (1 - var(--home)));
     transform:
@@ -174,8 +183,6 @@ const t = isDE
       scale(calc((0.94 + 0.06 * var(--in)) * (1 - 0.35 * var(--home))));
   }
 
-  /* A frozen waveform reads as a dead call, so this one bar of the scene runs
-     on its own clock. It only runs while the beat is the active one. */
   @media (prefers-reduced-motion: no-preference) {
     :global(.jstage.is-live) .iv.is-live-beat .win__typing span {
       animation: iv-typing var(--beat) ease-in-out infinite;
@@ -190,17 +197,15 @@ const t = isDE
   @media (max-width: 1023px) {
     .iv__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
     .iv__inner { gap: var(--space-6); }
-    .win__line { height: 4px; }
-  }
-  @media (max-width: 560px) {
-    .win__live { display: none; }
+    .win__orb { width: 18px; height: 18px; }
+    .iv__wires { display: none; }
   }
 </style>
 
 <script>
-  /* The waveform is the only time-driven thing in the journey. Run it only
-     while this beat is on screen: fifteen looping animations behind a section
-     nobody is looking at is a battery bill for nothing. */
+  /* The typing dots are the only time-driven thing in the journey. Run them
+     only while this beat is on screen: fifteen looping animations behind a
+     section nobody is looking at is a battery bill for nothing. */
   const iv = document.querySelector<HTMLElement>('.iv');
   const stage = document.querySelector<HTMLElement>('[data-stage]');
   if (iv && stage && !matchMedia('(prefers-reduced-motion: reduce)').matches) {

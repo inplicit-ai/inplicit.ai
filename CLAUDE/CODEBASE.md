@@ -36,8 +36,8 @@ Website/
         │   │                      0-1 SceneKnowledgeLoss (unsichtbares Wissen, Person geht, Luecke bleibt)
         │   │                      2-3 SceneAsk (die Frage, dann tippt sie sich ins Composer-Feld)
         │   │                      4   SceneInterviews (15 Fenster mit tuerkisem Orb, fliessen zusammen)
-        │   │                      5   SceneThemes (Insights) + AppShell-Chrome
-        │   │                      ungenutzt: SceneSetup, SceneInterview, SceneChat
+        │   │                      5   SceneInsights (Kennzahlen, Balken, Donut) + AppShell-Chrome
+        │   │                      ungenutzt: SceneSetup, SceneInterview, SceneThemes, SceneChat
         │   ├── ValidationLoop.astro ← 5-stage Listen→Converge card flow
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)
