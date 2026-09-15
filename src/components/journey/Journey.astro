@@ -25,17 +25,11 @@ const isDE = lang === 'de';
        sits at journey time 5. -->
   <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <!-- One line down the whole journey. The path is generated from the
-           frame's MEASURED pixel size, so the viewBox is 1:1 with the box and
-           preserveAspectRatio has nothing left to distort: that shear is what
-           turned earlier versions into bows sweeping across the picture, and a
-           tiled mask fixed the shear but could not stop waving where the
-           strands need the centre. Here the sway tapers to nothing before the
-           split, so the line is a long clean curve above and dead centre where
-           it matters. -->
-      <svg class="jthread" data-thread preserveAspectRatio="none" aria-hidden="true">
-        <path class="jthread__path" fill="none" stroke-linecap="round" stroke-width="1.5" />
-      </svg>
+      <!-- One line down the whole journey: a plain rule on the frame's vertical
+           centre, revealed top to bottom as --t advances. It sits exactly where
+           the fan, the strands and the merge sit, so the split reads as this
+           same line coming apart and closing again. -->
+      <span class="jthread" aria-hidden="true"></span>
 
       <SceneKnowledgeLoss lang={lang} />
       <SceneAsk lang={lang} />
@@ -104,12 +98,13 @@ const isDE = lang === 'de';
      floating in it. Border and shadow resolve LAST, per the choreography. */
   .jthread {
     grid-area: 1 / 1;
-    width: 100%; height: 100%;
+    justify-self: center;
+    width: 1.5px;
+    height: 100%;
+    background: var(--color-accent);
     pointer-events: none;
     opacity: 0.62;
-    overflow: visible;
   }
-  .jthread__path { stroke: var(--color-accent); }
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
   .jsec :global(.jstage.is-live) .jthread {
     /* Starts with a head already drawn: the line has to be there when the
@@ -140,20 +135,18 @@ const isDE = lang === 'de';
     overflow: hidden;
   }
 
-  /* Live: born AT THE END OF THE THREAD and opening outward from there, up as
-     well as down. Growing it from the frame's top edge instead left the line
-     hanging out below the window, because the line stops at --thread-stop and
-     the window's lower edge was still on its way past it. */
+  /* Live: the card is built BELOW the end of the thread and grows from its
+     own middle outward, rising into place as it does. Opening a clip upward
+     from that point meant it built into the space the interviews were still
+     vacating; starting it below and letting it come up is the same move the
+     rest of the section makes. */
   .jsec :global(.jstage.is-live) .jshell {
     --born: clamp(0, calc((var(--t) - 4.92) / 0.38), 1);
     --settled: clamp(0, calc((var(--t) - 5.30) / 0.10), 1);
-    --origin: calc(var(--thread-stop, 0.5) * 100%);
-    clip-path: inset(
-      calc(var(--origin) * (1 - var(--born)))
-      calc((50% - 0.75px) * (1 - var(--born)))
-      calc((100% - var(--origin)) * (1 - var(--born)))
-      calc((50% - 0.75px) * (1 - var(--born)))
-    );
+    transform-origin: center top;
+    transform:
+      translate3d(0, calc(var(--thread-stop, 0.9) * 100% * (1 - var(--born))), 0)
+      scale(calc(0.22 + 0.78 * var(--born)));
     /* Orange while it is being drawn, the ordinary hairline once it stands. */
     border: 1.5px solid color-mix(in srgb, var(--color-border) calc(var(--settled) * 100%), var(--color-accent));
     box-shadow: 0 calc(18px * var(--settled)) calc(44px * var(--settled)) calc(-22px * var(--settled)) rgba(11, 12, 16, 0.16);
@@ -204,70 +197,3 @@ const isDE = lang === 'de';
   }
   .jsec :global(.jstage:not(.is-live)) .jcue { display: none; }
 </style>
-
-<script>
-  /* Draws the thread. Everything is in the frame's own pixels: the viewBox is
-     set to the measured box, so one user unit is one device-independent pixel
-     and nothing is scaled. The sway fades out above --thread-stop, the point
-     where the strands come back together, because a line that is still
-     wandering sideways there crosses the fan at an angle and reads as a
-     mistake rather than as the same line splitting. */
-  const svg = document.querySelector<SVGSVGElement>('[data-thread]');
-  const path = svg?.querySelector<SVGPathElement>('.jthread__path');
-  const frame = document.querySelector<HTMLElement>('.jframe');
-
-  if (svg && path && frame) {
-    const PERIOD = 420;   // px per wave
-    const SWAY = 26;      // px either side at full amplitude
-    const STEPS = 14;
-
-    let lastKey = '';
-
-    const build = () => {
-      const w = frame.clientWidth;
-      const h = frame.clientHeight;
-      if (!w || !h) return;
-      const stop = parseFloat(getComputedStyle(frame).getPropertyValue('--thread-stop')) || 1;
-      const key = `${w}x${h}x${stop.toFixed(3)}`;
-      if (key === lastKey) return;
-      lastKey = key;
-
-      const cx = w / 2;
-      const stopY = stop * h;
-      // Amplitude: full until well before the convergence, nothing by the time
-      // it arrives. Smoothstep so the taper itself has no corner in it.
-      const amp = (y: number) => {
-        const a = stopY * 0.5;
-        if (y <= a) return SWAY;
-        if (y >= stopY) return 0;
-        const t = (y - a) / (stopY - a);
-        return SWAY * (1 - t * t * (3 - 2 * t));
-      };
-      const xAt = (y: number) => cx + amp(y) * Math.sin((2 * Math.PI * y) / PERIOD);
-
-      // Cubic segments with tangents from a finite difference: few segments,
-      // exactly smooth joins, no polyline faceting.
-      const step = h / STEPS;
-      let d = `M${xAt(0).toFixed(2)} 0`;
-      for (let i = 0; i < STEPS; i++) {
-        const y0 = i * step;
-        const y1 = y0 + step;
-        const dx0 = (xAt(y0 + 0.5) - xAt(y0 - 0.5));
-        const dx1 = (xAt(y1 + 0.5) - xAt(y1 - 0.5));
-        const k = step / 3;
-        d += ` C${(xAt(y0) + dx0 * k).toFixed(2)} ${(y0 + k).toFixed(2)}`
-           + ` ${(xAt(y1) - dx1 * k).toFixed(2)} ${(y1 - k).toFixed(2)}`
-           + ` ${xAt(y1).toFixed(2)} ${y1.toFixed(2)}`;
-      }
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      path.setAttribute('d', d);
-    };
-
-    build();
-    addEventListener('resize', build, { passive: true });
-    /* --thread-stop is measured by the interviews scene on its first scroll,
-       so keep checking until it has settled. build() is a no-op once the
-       inputs stop changing. */
-    addEventListener('scroll', build, { passive: true });
-  }
-</script>
