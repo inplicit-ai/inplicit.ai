@@ -293,13 +293,17 @@ const t = isDE
   :global(.jstage.is-live) .iv {
     pointer-events: none;
     --drop: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
-    /* And out the top when it is done, as one piece. */
-    --exit: clamp(0, calc((var(--t) - 4.92) / 0.40), 1);
+    /* And out the top when it is done, as one piece, at full opacity. 150%
+       and not 118%: the layer is as tall as the frame, so a shove of one
+       frame-height still leaves its bottom edge inside the viewport. It has
+       to be COMPLETELY gone before the insight frame starts growing, or that
+       frame's white ground simply covers what is still standing there. */
+    --exit: clamp(0, calc((var(--t) - 4.88) / 0.22), 1);
     transform: translate3d(0,
-      calc(var(--drop-px, 0px) * var(--drop) - 118% * var(--exit)), 0);
+      calc(var(--drop-px, 0px) * var(--drop) - 150% * var(--exit)), 0);
     opacity: min(
       clamp(0, calc((var(--t) - 3.88) / 0.12), 1),
-      clamp(0, calc((5.46 - var(--t)) / 0.08), 1)
+      clamp(0, calc((5.16 - var(--t)) / 0.04), 1)
     );
   }
 
@@ -450,7 +454,7 @@ const t = isDE
     const sync = () => {
       if (!dropOk) measureDrop();
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
-      const next = t > 3.9 && t < 5.48;
+      const next = t > 3.9 && t < 5.18;
       iv.classList.toggle('is-live-beat', next);
       if (next === live) return;
       live = next;

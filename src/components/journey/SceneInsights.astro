@@ -17,9 +17,9 @@
  *    slice and every bar is labelled, so nothing is carried by colour alone.
  *  - text stays in ink tokens; only the marks wear the series colour.
  *
- * The scene starts at --t0 5.36, not 5: the frame it sits in is drawn by the
- * orange thread between 5.0 and 5.4, and content appearing inside a box that
- * is still being drawn reads as two things happening at once.
+ * The scene starts at --t0 5.46, not 5: the interviews leave first, then the
+ * frame grows out of the thread, and only then does anything appear inside it.
+ * All three overlapping was what put a white box on top of the interviews.
  *
  * No hover layer: the whole frame sits inside a pinned scroll stage and is
  * pointer-events:none, so a tooltip could never be reached. The numbers are
@@ -96,7 +96,7 @@ const arcs = t.split.map((sgm, i) => {
 });
 ---
 
-<div class="jscene ins" style="--t0: 5.36" data-last aria-hidden="true">
+<div class="jscene ins" style="--t0: 5.46" data-last aria-hidden="true">
   <h3 class="ins__h jpart" data-axis="up" data-weight="chrome" style="--g: 0">{t.heading}</h3>
 
   <div class="ins__tiles">
