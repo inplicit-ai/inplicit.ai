@@ -25,10 +25,6 @@ const isDE = lang === 'de';
        sits at journey time 5. -->
   <ScrollStage scenes={6} travel={660}>
     <div class="jframe">
-      <SceneKnowledgeLoss lang={lang} />
-      <SceneAsk lang={lang} />
-      <SceneInterviews lang={lang} />
-
       <!-- The line that runs the whole journey. The path is generated from the
            frame's MEASURED pixel size, so the viewBox is 1:1 with the box and
            preserveAspectRatio has nothing to distort. Its sway tapers to zero
@@ -37,6 +33,10 @@ const isDE = lang === 'de';
       <svg class="jline" data-jline preserveAspectRatio="none" aria-hidden="true">
         <path class="jline__path" fill="none" stroke-linecap="round" stroke-width="1.5" />
       </svg>
+
+      <SceneKnowledgeLoss lang={lang} />
+      <SceneAsk lang={lang} />
+      <SceneInterviews lang={lang} />
 
       <!-- The last stretch of line: it fills the --stub gap, so it runs from
            where the strands come to rest down to the insight card's top edge.
@@ -129,11 +129,14 @@ const isDE = lang === 'de';
      on to the merge point once the strands are one line again, and stops there
      for good: from there the stub carries on to the card. */
   .jsec :global(.jstage.is-live) .jline {
-    --drop-th: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
-    --apex-now: calc(var(--thread-apex, 1) + var(--drop-frac, 0) * var(--drop-th));
+    /* --jline-cap is the fan's apex as it stands RIGHT NOW, measured in the
+       script below rather than modelled from a resting fraction plus a drop
+       term. The modelled version drifted apart from the real fan whenever the
+       two ramps disagreed, and a line that stops a hundred pixels past where
+       the split begins reads as a break. */
     --rejoin: clamp(0, calc((var(--t) - 4.88) / 0.22), 1);
     --raw: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
-    --cap: calc(var(--apex-now) + (var(--thread-stop, 1) - var(--apex-now)) * var(--rejoin));
+    --cap: calc(var(--jline-cap, 1) + (var(--thread-stop, 1) - var(--jline-cap, 1)) * var(--rejoin));
     --p: min(var(--raw), var(--cap));
     clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
   }

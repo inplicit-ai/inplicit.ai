@@ -520,8 +520,23 @@ const t = isDE
       raf = requestAnimationFrame(loop);
     };
 
+    /* Where the fan's apex is at this instant, as a fraction of the frame.
+       The through-line is clipped to exactly this, so it stops where the split
+       begins however the layer happens to be positioned. */
+    const frameEl = document.querySelector<HTMLElement>('.jframe');
+    const wires = document.querySelector<HTMLElement>('.iv__wires');
+    const publishCap = () => {
+      if (!frameEl || !wires) return;
+      const h = frameEl.clientHeight;
+      if (!h) return;
+      const f = frameEl.getBoundingClientRect();
+      const cap = Math.min(1, Math.max(0, (wires.getBoundingClientRect().top - f.top) / h));
+      frameEl.style.setProperty('--jline-cap', cap.toFixed(4));
+    };
+
     const sync = () => {
       if (!dropOk) measureDrop();
+      publishCap();
       const t = Number(getComputedStyle(stage).getPropertyValue('--t')) || 0;
       const next = t > 3.9 && t < 5.12;
       iv.classList.toggle('is-live-beat', next);
