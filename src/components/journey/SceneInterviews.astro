@@ -73,6 +73,11 @@ const windows = Array.from({ length: COLS * ROWS }, (_, i) => {
 // One strand per column. The exact centre accounts for the grid gap, so a
 // strand sits under the middle of its column at any width.
 const strands = Array.from({ length: COLS }, (_, c) => c);
+// Phones lay the grid out in three columns, so the wiring needs a second set:
+// same construction, different column count. Endpoint x is the centre of
+// column c in a 1000-wide viewBox.
+const MOBILE_COLS = 3;
+const fanX = (c: number, n: number) => +(((c + 0.5) / n) * 1000).toFixed(1);
 
 const t = isDE
   ? { head: 'Jede Person wird einzeln befragt.', sub: 'Anonym, im Gespräch mit dem Agenten, wann es ihr passt.', label: 'Interview' }
@@ -89,24 +94,36 @@ const t = isDE
     <div class="iv__stage">
       <!-- The thread, split into one strand per column and merged again. -->
       <div class="iv__wires" aria-hidden="true">
-        <svg class="iv__fan iv__fan--in" viewBox="0 0 1000 63" preserveAspectRatio="none">
+        <svg class="iv__fan iv__fan--in iv__wide" viewBox="0 0 1000 63" preserveAspectRatio="none">
           {strands.map((c) => (
-            <path d={`M500 0 C 500 30, ${(c + 0.5) * 200} 33, ${(c + 0.5) * 200} 63`}
+            <path d={`M500 0 C 500 30, ${fanX(c, COLS)} 33, ${fanX(c, COLS)} 63`}
+                  fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          ))}
+        </svg>
+        <svg class="iv__fan iv__fan--in iv__narrow" viewBox="0 0 1000 63" preserveAspectRatio="none">
+          {Array.from({ length: MOBILE_COLS }, (_, c) => (
+            <path d={`M500 0 C 500 30, ${fanX(c, MOBILE_COLS)} 33, ${fanX(c, MOBILE_COLS)} 63`}
                   fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
           ))}
         </svg>
 
-        {strands.map((c) => <span class="iv__node iv__node--in" style={`--c:${c}`}></span>)}
-        {strands.map((c) => <span class="iv__strand" style={`--c:${c}`}></span>)}
+        {strands.map((c) => <span class="iv__node iv__node--in" data-c={c} style={`--c:${c}`}></span>)}
+        {strands.map((c) => <span class="iv__strand" data-c={c} style={`--c:${c}`}></span>)}
       </div>
 
       <!-- The merge is its own layer because it must not draw with the rest:
            nothing runs back together until every conversation has been had. -->
       <div class="iv__merge" aria-hidden="true">
-        {strands.map((c) => <span class="iv__node iv__node--out" style={`--c:${c}`}></span>)}
-        <svg class="iv__fan iv__fan--out" viewBox="0 0 1000 63" preserveAspectRatio="none">
+        {strands.map((c) => <span class="iv__node iv__node--out" data-c={c} style={`--c:${c}`}></span>)}
+        <svg class="iv__fan iv__fan--out iv__wide" viewBox="0 0 1000 63" preserveAspectRatio="none">
           {strands.map((c) => (
-            <path d={`M${(c + 0.5) * 200} 0 C ${(c + 0.5) * 200} 30, 500 33, 500 63`}
+            <path d={`M${fanX(c, COLS)} 0 C ${fanX(c, COLS)} 30, 500 33, 500 63`}
+                  fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          ))}
+        </svg>
+        <svg class="iv__fan iv__fan--out iv__narrow" viewBox="0 0 1000 63" preserveAspectRatio="none">
+          {Array.from({ length: MOBILE_COLS }, (_, c) => (
+            <path d={`M${fanX(c, MOBILE_COLS)} 0 C ${fanX(c, MOBILE_COLS)} 30, 500 33, 500 63`}
                   fill="none" stroke="var(--color-accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
           ))}
         </svg>
@@ -196,6 +213,9 @@ const t = isDE
      land exactly on the outer strands is what makes the curves MEET the lines
      instead of ending near them: width = (span between outer strands) / 0.8,
      shifted left by the remaining 10%. */
+  /* The fan's viewBox puts its outer endpoints across the middle 80% of the
+     SVG, so sizing the SVG to (span between outer strands) / 0.8 lands them
+     exactly on those strands. Both column counts use the same construction. */
   .iv__fan {
     position: absolute;
     height: var(--lead);
@@ -203,6 +223,7 @@ const t = isDE
     width: calc((100% - var(--colw)) * 1.25);
     left: calc(var(--s0) - (100% - var(--colw)) * 0.125);
   }
+  .iv__narrow { display: none; }
   .iv__fan--in { top: 0; }
   .iv__fan--out { top: 0; }
 
@@ -377,11 +398,34 @@ const t = isDE
   }
 
   @media (max-width: 1023px) {
+    /* Three columns, so the wiring is rebuilt for three rather than hidden.
+       The split is the point of the beat; a phone that never sees it misses
+       what the section is about. */
     .iv__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
-    .iv__inner { gap: var(--space-6); }
-    .iv { --lead: 0px; }
+    .iv__inner { gap: calc(var(--lead) + var(--space-3)); }
+    .iv { --lead: 34px; }
+    .iv__stage { --gap: var(--space-2); --colw: calc((100% - 2 * var(--gap)) / 3); }
     .win__orb { width: 20px; height: 20px; }
-    .iv__wires { display: none; }
+
+    /* Column centre for three: ((100% - 2*gap) / 3) * (c + .5) + c * gap */
+    .iv__strand {
+      left: calc(var(--colw) * (var(--c) + 0.5) + var(--c) * var(--gap) - 0.75px);
+    }
+    .iv__node {
+      left: calc(var(--colw) * (var(--c) + 0.5) + var(--c) * var(--gap) - 2.5px);
+    }
+    /* Columns 4 and 5 have nothing to sit under any more. */
+    .iv__strand[data-c="3"], .iv__strand[data-c="4"],
+    .iv__node[data-c="3"], .iv__node[data-c="4"] { display: none; }
+
+    .iv__wide { display: none; }
+    .iv__narrow { display: block; }
+    /* Outer endpoints of three sit at x 167 and 833, i.e. across the middle
+       two thirds, so the SVG is (span) / 0.666 wide. */
+    .iv__fan {
+      width: calc((100% - var(--colw)) * 1.5);
+      left: calc(var(--colw) / 2 - (100% - var(--colw)) * 0.25);
+    }
   }
 </style>
 

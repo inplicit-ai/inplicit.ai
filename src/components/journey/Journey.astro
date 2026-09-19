@@ -29,6 +29,15 @@ const isDE = lang === 'de';
       <SceneAsk lang={lang} />
       <SceneInterviews lang={lang} />
 
+      <!-- The line that runs the whole journey. The path is generated from the
+           frame's MEASURED pixel size, so the viewBox is 1:1 with the box and
+           preserveAspectRatio has nothing to distort. Its sway tapers to zero
+           before the fan, because below that point the split owns the centre
+           and a line still wandering sideways there crosses it at an angle. -->
+      <svg class="jline" data-jline preserveAspectRatio="none" aria-hidden="true">
+        <path class="jline__path" fill="none" stroke-linecap="round" stroke-width="1.5" />
+      </svg>
+
       <!-- The last stretch of line: it fills the --stub gap, so it runs from
            where the strands come to rest down to the insight card's top edge.
            This is the piece the card grows out of, and the only line left once
@@ -106,6 +115,28 @@ const isDE = lang === 'de';
      into the page and the pinned frame reads as empty space with a toolbar
      floating in it. Border and shadow resolve LAST, per the choreography. */
   /* Base state (no JS, reduced motion): the whole line, already drawn. */
+
+  .jline {
+    grid-area: 1 / 1;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.62;
+    overflow: visible;
+  }
+  .jline__path { stroke: var(--color-accent); }
+
+  /* Drawn top to bottom. It stops at the fan while the split is running, runs
+     on to the merge point once the strands are one line again, and stops there
+     for good: from there the stub carries on to the card. */
+  .jsec :global(.jstage.is-live) .jline {
+    --drop-th: clamp(0, calc((4.24 - var(--t)) / 0.12), 1);
+    --apex-now: calc(var(--thread-apex, 1) + var(--drop-frac, 0) * var(--drop-th));
+    --rejoin: clamp(0, calc((var(--t) - 4.88) / 0.22), 1);
+    --raw: clamp(0, calc((var(--t) + 0.34) / 5.74), 1);
+    --cap: calc(var(--apex-now) + (var(--thread-stop, 1) - var(--apex-now)) * var(--rejoin));
+    --p: min(var(--raw), var(--cap));
+    clip-path: inset(0 0 calc(100% - 100% * var(--p)) 0);
+  }
 
   .jstub {
     grid-area: 1 / 1;
@@ -204,3 +235,62 @@ const isDE = lang === 'de';
   }
   .jsec :global(.jstage:not(.is-live)) .jcue { display: none; }
 </style>
+
+<script>
+  /* Builds the line. Everything is in the frame's own pixels: the viewBox is
+     the measured box, so one user unit is one device-independent pixel and
+     nothing gets scaled. The sway fades out above --thread-apex, the point
+     where the fan takes over. Rebuilt only when the inputs actually change. */
+  const svg = document.querySelector<SVGSVGElement>('[data-jline]');
+  const path = svg?.querySelector<SVGPathElement>('.jline__path');
+  const frame = document.querySelector<HTMLElement>('.jframe');
+
+  if (svg && path && frame) {
+    const PERIOD = 380;  // px per wave
+    const SWAY = 24;     // px either side at full amplitude
+    const STEPS = 16;
+    let lastKey = '';
+
+    const build = () => {
+      const w = frame.clientWidth;
+      const h = frame.clientHeight;
+      if (!w || !h) return;
+      const apex = parseFloat(getComputedStyle(frame).getPropertyValue('--thread-apex')) || 1;
+      const key = `${w}x${h}x${apex.toFixed(3)}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
+      const cx = w / 2;
+      const apexY = apex * h;
+      const amp = (y: number) => {
+        const full = apexY * 0.45;
+        if (y <= full) return SWAY;
+        if (y >= apexY) return 0;
+        const t = (y - full) / (apexY - full);
+        return SWAY * (1 - t * t * (3 - 2 * t));   // smoothstep, no corner
+      };
+      const xAt = (y: number) => cx + amp(y) * Math.sin((2 * Math.PI * y) / PERIOD);
+
+      // Cubic segments with tangents from a finite difference: few segments,
+      // exactly smooth joins, no polyline faceting.
+      const step = h / STEPS;
+      let d = `M${xAt(0).toFixed(2)} 0`;
+      for (let i = 0; i < STEPS; i++) {
+        const y0 = i * step, y1 = y0 + step, k = step / 3;
+        const dx0 = xAt(y0 + 0.5) - xAt(y0 - 0.5);
+        const dx1 = xAt(y1 + 0.5) - xAt(y1 - 0.5);
+        d += ` C${(xAt(y0) + dx0 * k).toFixed(2)} ${(y0 + k).toFixed(2)}`
+           + ` ${(xAt(y1) - dx1 * k).toFixed(2)} ${(y1 - k).toFixed(2)}`
+           + ` ${xAt(y1).toFixed(2)} ${y1.toFixed(2)}`;
+      }
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      path.setAttribute('d', d);
+    };
+
+    build();
+    addEventListener('resize', build, { passive: true });
+    /* --thread-apex is measured by the interviews scene on its first scroll,
+       so keep checking until it settles; build() is a no-op after that. */
+    addEventListener('scroll', build, { passive: true });
+  }
+</script>
