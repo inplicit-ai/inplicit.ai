@@ -1,6 +1,6 @@
 ---
 // Vollflaechiger Video-Hero. Bis zum ersten Scroll zeigt die Seite nur das
-// weisse Logo (aus Nav.astro) und die Headline — Pillbar und Aktionen blenden
+// weisse Logo (aus Nav.astro) und die Headline. Pillbar und Aktionen blenden
 // sich erst per .scrolled ein, genau wie auf der alten Seite.
 export interface Props {
   lang?: 'en' | 'de';
@@ -44,14 +44,14 @@ const isDE = lang === 'de';
       {isDE ? (
         <>
           Inplicit macht das Erfahrungswissen Eurer Mitarbeitenden sichtbar.<br />
-          Durch KI-gestützte Interviews werden bewährte Lösungswege, Prozesswissen und
-          Verbesserungspotenziale erfasst, strukturiert nutzbar gemacht.
+          Unsere KI führt Interviews, erkennt konkrete Lösungswege und zeigt
+          Verbesserungspotenziale auf.
         </>
       ) : (
         <>
           Inplicit makes your people’s practical experience visible.<br />
-          AI-led interviews capture proven approaches, process knowledge and room for
-          improvement, and turn them into something you can use.
+          Our AI runs the interviews, spots concrete solutions and surfaces
+          room for improvement.
         </>
       )}
     </p>
@@ -116,7 +116,8 @@ const isDE = lang === 'de';
   }
 
   .rhero__sub {
-    max-width: 66ch;
+    max-width: 62ch;
+    text-wrap: pretty;
     margin-top: var(--space-6);
     font-size: clamp(1rem, 1.35vw, 1.25rem);
     line-height: 1.55;

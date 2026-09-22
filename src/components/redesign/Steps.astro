@@ -11,16 +11,16 @@ const t = isDE ? {
   eyebrow: 'Die Lösung',
   h1: 'Sie stellen eine Frage.',
   h2: 'Ihre Organisation antwortet.',
-  s1: { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie wissen müssen, und wen es betrifft. Eine Kampagne, eine Frage, eine Zielgruppe.' },
-  s2: { n: '02', title: 'Alle antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig — anonym, mit echten Rückfragen, wann es der Person passt.' },
+  s1: { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie herausfinden wollen, und legen fest, welche Mitarbeitenden dazu befragt werden.' },
+  s2: { n: '02', title: 'Mitarbeitende antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig. Anonym, mit echten Rückfragen, wann es der Person passt.' },
   s3: { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
   agent: 'Inplicit Agent',
   prompt: 'Was möchten Sie herausfinden?',
-  question: 'Wo verlieren wir die meiste Zeit',
+  question: 'Wo verlieren wir die meiste Zeit?',
   typing: 'tippt …',
-  interview: 'Interview 04 · 12:32',
+  interview: 'Interview',
   ask: 'Wann hakt es bei einem Eilauftrag zuerst?',
-  answer: '„Bei Eilaufträgen rufe ich direkt in der Buchhaltung an — sonst wartet die Freigabe zwei Tage."',
+  answer: '„Bei Eilaufträgen rufe ich direkt in der Buchhaltung an, sonst wartet die Freigabe zwei Tage."',
   followup: 'Und wenn die Person im Urlaub ist?',
   insights: 'Einblicke',
   themes: [
@@ -32,16 +32,16 @@ const t = isDE ? {
   eyebrow: 'How it works',
   h1: 'You ask a question.',
   h2: 'Your organisation answers.',
-  s1: { n: '01', title: 'Ask one question', body: 'You describe what you need to know and who it concerns. One campaign, one question, one audience.' },
-  s2: { n: '02', title: 'Everyone answers', body: 'The agent runs hundreds of interviews at once — anonymous, with real follow-ups, whenever it suits the person.' },
+  s1: { n: '01', title: 'Ask one question', body: 'You describe what you want to find out and choose which people should be interviewed.' },
+  s2: { n: '02', title: 'People answer', body: 'The agent runs hundreds of interviews at once. Anonymous, with real follow-ups, whenever it suits the person.' },
   s3: { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
   agent: 'Inplicit Agent',
   prompt: 'What do you want to find out?',
-  question: 'Where do we lose the most time',
+  question: 'Where do we lose the most time?',
   typing: 'typing …',
-  interview: 'Interview 04 · 12:32',
+  interview: 'Interview',
   ask: 'Where does a rush order stall first?',
-  answer: '“For rush orders I call finance directly — otherwise approval waits two days.”',
+  answer: '“For rush orders I call finance directly, otherwise approval waits two days.”',
   followup: 'And when that person is on holiday?',
   insights: 'Insights',
   themes: [
@@ -55,7 +55,7 @@ const t = isDE ? {
 <section class="steps" id="so-gehts">
   <div class="container">
     <div class="steps__head section-fade">
-      <p class="section-eyebrow">{t.eyebrow}</p>
+      <p class="rlabel">{t.eyebrow}</p>
       <h2 class="steps__heading">
         <span>{t.h1}</span>
         <span>{t.h2}</span>
@@ -138,6 +138,7 @@ const t = isDE ? {
   }
 
   .steps__head { text-align: center; margin-bottom: var(--space-16); }
+  .steps__heading { margin-top: var(--space-4); }
 
   .steps__heading {
     display: flex;

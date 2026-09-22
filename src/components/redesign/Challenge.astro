@@ -1,16 +1,11 @@
 ---
-// „Die Herausforderung" — die Headline zaehlt auf, was die Belegschaft weiss.
-// Der Wechsel laeuft rein in CSS, damit er ohne JS und bei reduzierter
-// Bewegung sauber auf die erste Zeile zurueckfaellt.
+// Die Herausforderung. Eine Aussage, kein Wechsler: was sich wirklich aendern
+// muss, ist die Zeile, die eine Entscheiderin betrifft.
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
-
-const knows = isDE
-  ? ['wo es hakt.', 'was besser laufen kann.', 'wie Prozesse verbessert werden können.', 'was sich wirklich ändern muss.']
-  : ['where it gets stuck.', 'what could run better.', 'how processes can improve.', 'what really has to change.'];
 
 // Feste Punktmatrix: ein paar gefuellte (dokumentiert), der Rest hohl.
 const COLS = 9;
@@ -30,27 +25,17 @@ for (let r = 0; r < ROWS; r++) {
 <section class="chal" id="herausforderung">
   <div class="container chal__inner">
     <div class="chal__copy section-fade">
-      <p class="section-eyebrow">{isDE ? 'Die Herausforderung' : 'The challenge'}</p>
+      <p class="rlabel">{isDE ? 'Die Herausforderung' : 'The challenge'}</p>
 
       <h2 class="chal__heading">
         <span class="chal__lead">{isDE ? 'Ihre Mitarbeitenden wissen,' : 'Your people know'}</span>
-        <span class="chal__rot" aria-hidden="true">
-          {knows.map((k, i) => (
-            <span class="chal__rot-item" style={`--i: ${i}`}>{k}</span>
-          ))}
-        </span>
-        <span class="sr-only">{knows.join(' ')}</span>
+        <span class="chal__focus">{isDE ? 'was sich wirklich ändern muss.' : 'what really has to change.'}</span>
       </h2>
 
       <p class="chal__body">
         {isDE
-          ? 'Vor jeder größeren Entscheidung steht eine Frage, für die es keine Auswertung gibt: Wo hakt es wirklich? Was hat sich über die Jahre eingespielt? Was weiß nur die Person, die es jeden Tag macht?'
-          : 'Before every major decision there is a question no report answers: where does it actually get stuck, what has quietly become routine, what does only the person doing it every day know?'}
-      </p>
-      <p class="chal__punch">
-        {isDE
-          ? 'Diese Antworten gibt es nur im Gespräch — und Gespräche mit hunderten Mitarbeitenden dauern heute Monate.'
-          : 'Those answers only exist in conversation — and conversations with hundreds of people take months today.'}
+          ? 'Vor jeder größeren Entscheidung steht eine Frage, für die es keine Auswertung gibt: Wo hakt es wirklich? Was hat sich über die Jahre eingespielt? Was weiß nur die Person, die es jeden Tag macht? Diese Antworten gibt es nur im Gespräch, und Gespräche mit hunderten Mitarbeitenden dauern heute Monate.'
+          : 'Before every major decision there is a question no report answers: where does it actually get stuck, what has quietly become routine, what does only the person doing it every day know? Those answers only exist in conversation, and conversations with hundreds of people take months today.'}
       </p>
     </div>
 
@@ -85,7 +70,7 @@ for (let r = 0; r < ROWS; r++) {
   }
 
   .chal__heading {
-    margin: var(--space-6) 0 var(--space-6);
+    margin: var(--space-4) 0 var(--space-4);
     font-size: clamp(1.75rem, 3vw, 2.5rem);
     font-weight: 400;
     line-height: 1.16;
@@ -93,45 +78,13 @@ for (let r = 0; r < ROWS; r++) {
   }
 
   .chal__lead { display: block; }
+  .chal__focus { display: block; color: var(--color-accent-dark); }
 
-  /* Der Wechsler haelt die Hoehe von zwei Zeilen frei, damit der laengste
-     Eintrag nichts verschiebt. */
-  .chal__rot {
-    position: relative;
-    display: block;
-    min-height: 2.32em;
-    color: var(--color-accent-dark);
-  }
-
-  .chal__rot-item {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transform: translateY(0.35em);
-    animation: chal-rot 11.2s var(--ease-out) infinite;
-    animation-delay: calc(var(--i) * 2.8s);
-  }
-
-  @keyframes chal-rot {
-    0%    { opacity: 0; transform: translateY(0.35em); }
-    3.5%  { opacity: 1; transform: none; }
-    21%   { opacity: 1; transform: none; }
-    25%   { opacity: 0; transform: translateY(-0.3em); }
-    100%  { opacity: 0; transform: translateY(-0.3em); }
-  }
-
-  .chal__body,
-  .chal__punch {
+  .chal__body {
     max-width: 56ch;
     font-size: 1.0625rem;
     line-height: 1.62;
     color: var(--color-text-secondary);
-  }
-
-  .chal__punch {
-    margin-top: var(--space-5);
-    color: var(--color-text-primary);
-    font-weight: 500;
   }
 
   .chal__field {
@@ -158,11 +111,7 @@ for (let r = 0; r < ROWS; r++) {
     background: var(--color-accent);
     border-color: var(--color-accent);
   }
-  /* Die Punkte tauchen gestaffelt auf, sobald die Sektion sichtbar wird. */
-  .chal__viz.is-visible .chal__dot {
-    opacity: 1;
-    transform: none;
-  }
+  .chal__viz.is-visible .chal__dot { opacity: 1; transform: none; }
 
   .chal__legend {
     display: flex;
@@ -175,16 +124,6 @@ for (let r = 0; r < ROWS; r++) {
   .chal__key { display: inline-flex; align-items: center; gap: 8px; }
   .chal__key .chal__dot { width: 11px; height: 11px; opacity: 1; transform: none; transition: none; }
 
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
   @media (max-width: 1023px) {
     .chal__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
     .chal__field { margin: 0 auto; }
@@ -194,13 +133,9 @@ for (let r = 0; r < ROWS; r++) {
   @media (max-width: 767px) {
     .chal { padding: var(--space-24) 0; }
     .chal__field { gap: 13px; max-width: 320px; }
-    .chal__rot { min-height: 3.4em; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .chal__rot { min-height: 0; }
-    .chal__rot-item { animation: none; position: static; opacity: 1; transform: none; display: none; }
-    .chal__rot-item:first-child { display: block; }
     .chal__dot { opacity: 1; transform: none; transition: none; }
   }
 </style>

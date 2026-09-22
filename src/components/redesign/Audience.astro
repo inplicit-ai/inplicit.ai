@@ -6,23 +6,23 @@ const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
 const groups = isDE ? [
-  { tag: 'Geschäftsführung', title: 'Entscheiden, ohne zu raten', body: 'Ein ehrliches Bild vom eigenen Haus — bevor Sie Struktur, Standort oder Strategie verändern.', img: '/audience/geschaeftsfuehrung.jpg' },
-  { tag: 'Transformation & Change', title: 'Erst verstehen, dann verändern', body: 'Die Ist-Aufnahme, die jeder Transformation fehlt: wo Rückenwind ist und wo Widerstand.', img: '/audience/transformation.jpg' },
-  { tag: 'HR & People', title: 'Wissen, was die Belegschaft weiß', body: 'Qualifikationslücken, Erfahrungswissen vor dem Ruhestand, echte Stimmung statt Score.', img: '/audience/belegschaft.jpg' },
+  { tag: 'Geschäftsführung', title: 'Entscheiden mit Plan', body: 'Ein ehrliches Bild vom eigenen Haus, bevor Sie Struktur, Standort oder Strategie verändern.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'Transformation & Change', title: 'Erst verstehen, dann verändern', body: 'Die Ist-Aufnahme, auf der jede Transformation aufbaut: wo Rückenwind ist und wo Widerstand.', img: '/audience/transformation.jpg' },
+  { tag: 'HR & People', title: 'Wissen, was die Belegschaft weiß', body: 'Qualifikationen, Erfahrungswissen vor dem Ruhestand und die echte Stimmung im Haus.', img: '/audience/belegschaft.jpg' },
 ] : [
-  { tag: 'Leadership', title: 'Decide without guessing', body: 'An honest picture of your own company — before you change structure, sites or strategy.', img: '/audience/geschaeftsfuehrung.jpg' },
-  { tag: 'Transformation & change', title: 'Understand first, then change', body: 'The baseline every transformation lacks: where there is momentum and where there is resistance.', img: '/audience/transformation.jpg' },
-  { tag: 'HR & people', title: 'Know what your workforce knows', body: 'Skill gaps, experience about to retire, real sentiment instead of a score.', img: '/audience/belegschaft.jpg' },
+  { tag: 'Leadership', title: 'Decide with a plan', body: 'An honest picture of your own company, before you change structure, sites or strategy.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'Transformation & change', title: 'Understand first, then change', body: 'The baseline every transformation builds on: where there is momentum and where there is resistance.', img: '/audience/transformation.jpg' },
+  { tag: 'HR & people', title: 'Know what your workforce knows', body: 'Skills, experience about to retire and the real mood in the building.', img: '/audience/belegschaft.jpg' },
 ];
 ---
 
 <section class="aud" id="fuer-wen">
   <div class="container">
     <div class="aud__head section-fade">
-      <p class="section-eyebrow">{isDE ? 'Für wen' : 'Who it is for'}</p>
+      <p class="rlabel">{isDE ? 'Für wen' : 'Who it is for'}</p>
       <h2 class="aud__heading">
         <span>{isDE ? 'Für alle, die über die Organisation' : 'For everyone who has to decide'}</span>
-        <span>{isDE ? 'entscheiden müssen.' : 'about the organisation.'}</span>
+        <span>{isDE ? 'entscheiden.' : 'about the organisation.'}</span>
       </h2>
     </div>
 
@@ -52,6 +52,7 @@ const groups = isDE ? [
   }
 
   .aud__head { text-align: center; margin-bottom: var(--space-16); }
+  .aud__heading { margin-top: var(--space-4); }
 
   .aud__heading {
     display: flex;

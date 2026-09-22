@@ -197,3 +197,12 @@ img {
   }
 }
 
+
+/* Sektions-Label im Redesign: schlichte Versalien statt Pill/Chip. */
+.rlabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}

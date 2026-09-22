@@ -1,0 +1,82 @@
+---
+// Deutschland-, DSGVO- und EU-Signet als SVG. Alles rechnet vom Mittelpunkt
+// 24/24 im 48er Raster, damit Kreis, Sternenkranz und Schild exakt
+// konzentrisch sitzen.
+export interface Props {
+  kind: 'de' | 'gdpr' | 'eu';
+  size?: number;
+  label?: string;
+}
+const { kind, size = 52, label } = Astro.props;
+
+const C = 24;
+const RING = 15;      // Radius des Sternenkranzes
+const STAR = 3.1;     // Aussenradius eines Sterns
+const EU_BLUE = '#003399';
+const GOLD = '#FFCC00';
+
+function starPoints(cx: number, cy: number, r: number) {
+  const pts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 === 0 ? r : r * 0.382;
+    const a = ((-90 + i * 36) * Math.PI) / 180;
+    pts.push(`${(cx + rad * Math.cos(a)).toFixed(2)},${(cy + rad * Math.sin(a)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+}
+
+const stars = Array.from({ length: 12 }, (_, k) => {
+  const a = ((-90 + k * 30) * Math.PI) / 180;
+  return starPoints(C + RING * Math.cos(a), C + RING * Math.sin(a), STAR);
+});
+
+const uid = `tb-${kind}-${Math.random().toString(36).slice(2, 8)}`;
+const SHIELD = 0.74;                       // Skalierung des 24er Schild-Pfads
+const shieldShift = (C - 12 * SHIELD).toFixed(2);
+---
+
+<svg
+  class="tbadge"
+  viewBox="0 0 48 48"
+  width={size}
+  height={size}
+  role="img"
+  aria-label={label}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {kind === 'de' && (
+    <>
+      <defs>
+        <clipPath id={uid}><circle cx="24" cy="24" r="24" /></clipPath>
+      </defs>
+      <g clip-path={`url(#${uid})`}>
+        <rect x="0" y="0" width="48" height="16" fill="#000000" />
+        <rect x="0" y="16" width="48" height="16" fill="#DD0000" />
+        <rect x="0" y="32" width="48" height="16" fill="#FFCE00" />
+      </g>
+    </>
+  )}
+
+  {kind !== 'de' && (
+    <>
+      <circle cx="24" cy="24" r="24" fill={EU_BLUE} />
+      {stars.map((p) => <polygon points={p} fill={GOLD} />)}
+    </>
+  )}
+
+  {kind === 'gdpr' && (
+    <g transform={`translate(${shieldShift} ${shieldShift}) scale(${SHIELD})`}>
+      <path
+        d="M12 21.5c5-2.3 7.2-5.6 7.2-9.6V5.4L12 2.8 4.8 5.4v6.5c0 4 2.2 7.3 7.2 9.6z"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="2.1"
+        stroke-linejoin="round"
+      />
+    </g>
+  )}
+</svg>
+
+<style>
+  .tbadge { display: block; flex: 0 0 auto; }
+</style>

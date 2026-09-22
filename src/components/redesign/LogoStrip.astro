@@ -1,5 +1,5 @@
 ---
-// Eigene weisse Sektion unter dem Hero — im Hero selbst sind keine Logos.
+// Eigene weisse Sektion unter dem Hero; im Hero selbst sind keine Logos.
 // Die Hoehen sind pro Logo gesetzt, weil die Dateien unterschiedlich viel
 // Weissraum mitbringen; eine gemeinsame Hoehe laesst sie sonst ungleich wirken.
 export interface Props {
@@ -12,7 +12,7 @@ const isDE = lang === 'de';
 // gemeinsame Hoehe falsch: ein breites Wortzeichen traegt optisch mehr als ein
 // quadratisches Signet. Die Hoehen sind auf gleiches Gewicht gerechnet.
 const logos = [
-  { name: 'Wunder Mobility', src: '/logos/wunder-mobility.png', h: 17 },
+  { name: 'Wunder Mobility', src: '/logos/wunder-mobility.png', h: 15 },
   { name: 'IHK Lüneburg-Wolfsburg', src: '/logos/ihk.png', h: 24 },
   { name: 'SKI', src: '/logos/ski.png', h: 28 },
   { name: 'buhck Gruppe', src: '/logos/buhck.png', h: 20 },
@@ -23,7 +23,7 @@ const logos = [
 
 <section class="lstrip" id="kunden">
   <div class="container">
-    <p class="lstrip__label">{isDE ? 'Kunden und Partner' : 'Customers and partners'}</p>
+    <p class="rlabel lstrip__label">{isDE ? 'Kunden und Partner' : 'Customers and partners'}</p>
     <div class="lstrip__row">
       {logos.map((l) => (
         <img
@@ -65,7 +65,7 @@ const logos = [
 
   .lstrip__img {
     width: auto;
-    max-width: 200px;
+    max-width: 160px;
     object-fit: contain;
     opacity: 0.78;
     transition: opacity 0.2s var(--ease-smooth);

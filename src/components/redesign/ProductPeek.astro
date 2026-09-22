@@ -1,6 +1,6 @@
 ---
 // Das Ergebnisfenster. Die Zahlen sind Beispielwerte aus einer Kampagne und
-// als solche gekennzeichnet — sie stammen nicht aus einem echten Piloten.
+// als solche gekennzeichnet; sie stammen nicht aus einem echten Piloten.
 export interface Props {
   lang?: 'en' | 'de';
 }
@@ -50,20 +50,18 @@ const arcs = slices.map((s, i) => {
 <section class="peek" id="produkt">
   <div class="container">
     <div class="peek__head section-fade">
-      <p class="section-eyebrow">{isDE ? 'Das Produkt' : 'The product'}</p>
+      <p class="rlabel">{isDE ? 'Das Produkt' : 'The product'}</p>
       <h2 class="peek__heading">{isDE ? 'Und so sieht das Ergebnis aus.' : 'And this is what you get.'}</h2>
       <p class="peek__sub">
         {isDE
-          ? 'Ein Bericht, der auf Gesprächen beruht — jede Zahl lässt sich bis zur Aussage zurückverfolgen.'
-          : 'A report built from conversations — every number traces back to what someone said.'}
+          ? 'Ein Bericht, der auf Gesprächen beruht. Jede Zahl lässt sich bis zur Aussage zurückverfolgen.'
+          : 'A report built from conversations. Every number traces back to what someone said.'}
       </p>
     </div>
 
     <div class="peek__win section-fade" style="--delay: 90ms">
       <div class="peek__bar">
         <span>{isDE ? 'Kampagnen' : 'Campaigns'}</span>
-        <span class="peek__sep">›</span>
-        <span>Post-Merger-Integration: Meridian</span>
         <span class="peek__sep">›</span>
         <span class="peek__here">{isDE ? 'Einblicke' : 'Insights'}</span>
       </div>
@@ -124,6 +122,7 @@ const arcs = slices.map((s, i) => {
   }
 
   .peek__head { text-align: center; margin-bottom: var(--space-12); }
+  .peek__heading { margin-top: var(--space-4); }
 
   .peek__heading {
     font-size: clamp(2rem, 3.6vw, 3rem);
