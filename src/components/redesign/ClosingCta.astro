@@ -11,12 +11,12 @@ const target = href ?? (isDE ? '/de/call' : '/call');
 <section class="close">
   <div class="container close__inner section-fade">
     <h2 class="close__heading">
-      <span>{isDE ? 'Startet mit einem Team' : 'Start with one team'}</span>
+      <span>{isDE ? 'Starten Sie mit einem Team' : 'Start with one team'}</span>
       <span>{isDE ? 'und einer Frage.' : 'and one question.'}</span>
     </h2>
     <p class="close__sub">
       {isDE
-        ? 'Die erste Kampagne kann bei einem Prozess ansetzen, bei einer Entscheidung oder bei einem Bereich. Was Ihr dabei erfahrt, bleibt nutzbar, wenn der Rahmen später wächst.'
+        ? 'Die erste Kampagne kann bei einem Prozess ansetzen, bei einer Entscheidung oder bei einem Bereich. Was Sie dabei erfahren, bleibt nutzbar, wenn der Rahmen später wächst.'
         : 'The first campaign can focus on a single process, a single decision or a single part of the organisation. What you learn stays useful as the scope grows.'}
     </p>
     <a href={target} class="close__cta">
@@ -86,6 +86,18 @@ const target = href ?? (isDE ? '/de/call' : '/call');
     transition: transform 0.25s var(--ease-out);
   }
   .close__cta:hover i { transform: translateX(3px); }
+
+  /* Der feste Umbruch nach "Team" ist eine Desktop-Komposition. Auf dem
+     Handy passt die erste Zeile nicht mehr und bricht ein zweites Mal, dann
+     steht "Team" allein. Dort laeuft der Satz deshalb frei. */
+  @media (max-width: 767px) {
+    .close__heading {
+      display: block;
+      font-size: clamp(1.875rem, 8.4vw, 2.5rem);
+      text-wrap: balance;
+    }
+    .close__heading span { display: inline; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .close__cta, .close__cta i { transition: none; }

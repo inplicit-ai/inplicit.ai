@@ -6,7 +6,7 @@ const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
 const groups = isDE ? [
-  { tag: 'Geschäftsführung', title: 'Entscheiden mit Plan', body: 'Ein ehrliches Bild vom eigenen Haus, bevor Ihr Struktur, Standort oder Strategie verändert.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'Geschäftsführung', title: 'Entscheiden mit Plan', body: 'Ein ehrliches Bild vom eigenen Haus, bevor Sie Struktur, Standort oder Strategie verändern.', img: '/audience/geschaeftsfuehrung.jpg' },
   { tag: 'Transformation & Change', title: 'Erst verstehen, dann verändern', body: 'Die Ist-Aufnahme, auf der jede Transformation aufbaut: wo Rückenwind ist und wo Widerstand.', img: '/audience/transformation.jpg' },
   { tag: 'HR & People', title: 'Wissen, was die Belegschaft weiß', body: 'Qualifikationen, Erfahrungswissen vor dem Ruhestand und die echte Stimmung im Haus.', img: '/audience/belegschaft.jpg' },
 ] : [
@@ -126,5 +126,8 @@ const groups = isDE ? [
   @media (max-width: 767px) {
     .aud { padding: var(--space-24) 0; }
     .aud__head { margin-bottom: var(--space-12); }
+    /* gleicher Grund wie im Abschluss: ein Satz, kein fester Umbruch */
+    .aud__heading { display: block; text-wrap: balance; }
+    .aud__heading span { display: inline; }
   }
 </style>
