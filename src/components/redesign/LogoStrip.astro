@@ -1,0 +1,83 @@
+---
+// Eigene weisse Sektion unter dem Hero — im Hero selbst sind keine Logos.
+// Die Hoehen sind pro Logo gesetzt, weil die Dateien unterschiedlich viel
+// Weissraum mitbringen; eine gemeinsame Hoehe laesst sie sonst ungleich wirken.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+// Die Dateien sind auf die Artwork-Kante beschnitten, deshalb wirkt eine
+// gemeinsame Hoehe falsch: ein breites Wortzeichen traegt optisch mehr als ein
+// quadratisches Signet. Die Hoehen sind auf gleiches Gewicht gerechnet.
+const logos = [
+  { name: 'Wunder Mobility', src: '/logos/wunder-mobility.png', h: 17 },
+  { name: 'IHK Lüneburg-Wolfsburg', src: '/logos/ihk.png', h: 24 },
+  { name: 'SKI', src: '/logos/ski.png', h: 28 },
+  { name: 'buhck Gruppe', src: '/logos/buhck.png', h: 20 },
+  { name: 'heimWatt', src: '/logos/heimwatt.png', h: 18 },
+  { name: 'KnowWay', src: '/logos/knowway.png', h: 20 },
+];
+---
+
+<section class="lstrip" id="kunden">
+  <div class="container">
+    <p class="lstrip__label">{isDE ? 'Kunden und Partner' : 'Customers and partners'}</p>
+    <div class="lstrip__row">
+      {logos.map((l) => (
+        <img
+          class="lstrip__img"
+          src={l.src}
+          alt={l.name}
+          style={`height:${l.h}px`}
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .lstrip {
+    padding: var(--space-16) 0;
+    background: var(--color-surface);
+  }
+
+  .lstrip__label {
+    margin-bottom: var(--space-10);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .lstrip__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .lstrip__img {
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    opacity: 0.78;
+    transition: opacity 0.2s var(--ease-smooth);
+  }
+  .lstrip__img:hover { opacity: 1; }
+
+  @media (max-width: 767px) {
+    .lstrip { padding: var(--space-12) 0; }
+    .lstrip__row {
+      justify-content: center;
+      gap: var(--space-8) var(--space-10);
+    }
+    .lstrip__img { max-width: 128px; }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const groups = isDE ? [
+  { tag: 'Geschäftsführung', title: 'Entscheiden, ohne zu raten', body: 'Ein ehrliches Bild vom eigenen Haus — bevor Sie Struktur, Standort oder Strategie verändern.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'Transformation & Change', title: 'Erst verstehen, dann verändern', body: 'Die Ist-Aufnahme, die jeder Transformation fehlt: wo Rückenwind ist und wo Widerstand.', img: '/audience/transformation.jpg' },
+  { tag: 'HR & People', title: 'Wissen, was die Belegschaft weiß', body: 'Qualifikationslücken, Erfahrungswissen vor dem Ruhestand, echte Stimmung statt Score.', img: '/audience/belegschaft.jpg' },
+] : [
+  { tag: 'Leadership', title: 'Decide without guessing', body: 'An honest picture of your own company — before you change structure, sites or strategy.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'Transformation & change', title: 'Understand first, then change', body: 'The baseline every transformation lacks: where there is momentum and where there is resistance.', img: '/audience/transformation.jpg' },
+  { tag: 'HR & people', title: 'Know what your workforce knows', body: 'Skill gaps, experience about to retire, real sentiment instead of a score.', img: '/audience/belegschaft.jpg' },
+];
+---
+
+<section class="aud" id="fuer-wen">
+  <div class="container">
+    <div class="aud__head section-fade">
+      <p class="section-eyebrow">{isDE ? 'Für wen' : 'Who it is for'}</p>
+      <h2 class="aud__heading">
+        <span>{isDE ? 'Für alle, die über die Organisation' : 'For everyone who has to decide'}</span>
+        <span>{isDE ? 'entscheiden müssen.' : 'about the organisation.'}</span>
+      </h2>
+    </div>
+
+    <div class="aud__grid">
+      {groups.map((g, i) => (
+        <article class="aud__card section-fade" style={`--delay: ${i * 70}ms`}>
+          <div class="aud__media">
+            <img src={g.img} alt="" loading="lazy" decoding="async" width="820" height="380" />
+            <span class="aud__tint" aria-hidden="true"></span>
+          </div>
+          <div class="aud__body">
+            <p class="aud__tag">{g.tag}</p>
+            <h3 class="aud__title">{g.title}</h3>
+            <p class="aud__text">{g.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .aud {
+    padding: var(--space-section) 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .aud__head { text-align: center; margin-bottom: var(--space-16); }
+
+  .aud__heading {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .aud__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .aud__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+
+  /* Der Verlauf zieht die drei unterschiedlichen Fotos optisch zusammen. */
+  .aud__media {
+    position: relative;
+    aspect-ratio: 820 / 380;
+  }
+  .aud__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .aud__tint {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 12, 16, 0.06) 0%, rgba(11, 12, 16, 0.22) 55%, rgba(11, 12, 16, 0.48) 100%);
+  }
+
+  .aud__body { padding: var(--space-7, 1.75rem) var(--space-6) var(--space-8); }
+
+  .aud__tag {
+    margin-bottom: var(--space-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-dark);
+  }
+
+  .aud__title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .aud__text {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1023px) {
+    .aud__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .aud { padding: var(--space-24) 0; }
+    .aud__head { margin-bottom: var(--space-12); }
+  }
+</style>

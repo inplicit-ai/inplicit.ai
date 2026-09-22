@@ -1,0 +1,93 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+  href?: string;
+}
+const { lang = 'en', href } = Astro.props;
+const isDE = lang === 'de';
+const target = href ?? (isDE ? '/de/call' : '/call');
+---
+
+<section class="close">
+  <div class="container close__inner section-fade">
+    <h2 class="close__heading">
+      <span>{isDE ? 'Starten Sie mit einem Team' : 'Start with one team'}</span>
+      <span>{isDE ? 'und einer Frage.' : 'and one question.'}</span>
+    </h2>
+    <p class="close__sub">
+      {isDE
+        ? 'Die erste Kampagne kann bei einem Prozess ansetzen, bei einer Entscheidung oder bei einem Bereich. Was Sie dabei erfahren, bleibt nutzbar, wenn der Rahmen später wächst.'
+        : 'The first campaign can focus on a single process, a single decision or a single part of the organisation. What you learn stays useful as the scope grows.'}
+    </p>
+    <a href={target} class="close__cta">
+      <span>{isDE ? 'Demo buchen' : 'Book a demo'}</span>
+      <i aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </i>
+    </a>
+  </div>
+</section>
+
+<style>
+  .close {
+    padding: clamp(5rem, 10vw, 8.5rem) 0;
+    background: var(--color-canvas-dark, #0b0c10);
+  }
+  .close__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .close__heading {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+  }
+  .close__sub {
+    max-width: 52ch;
+    margin-top: var(--space-6);
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.64);
+  }
+  .close__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    height: 56px;
+    margin-top: var(--space-10);
+    padding: 0 6px 0 var(--space-8);
+    background: var(--color-cta-bg);
+    /* Label bewusst in Weiss (Figma-Vorgabe) — siehe Hinweis im Team-Log:
+       Weiss auf Signal Orange erreicht die AA-Schwelle nicht. */
+    color: #fff;
+    font-size: var(--text-base);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: var(--radius-full, 999px);
+    transition: background-color 0.25s var(--ease-out);
+  }
+  .close__cta:hover { background: var(--color-cta-hover); }
+  .close__cta i {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-cta-text);
+    color: var(--color-cta-bg);
+    transition: transform 0.25s var(--ease-out);
+  }
+  .close__cta:hover i { transform: translateX(3px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .close__cta, .close__cta i { transition: none; }
+  }
+</style>

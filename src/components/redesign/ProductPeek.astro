@@ -1,0 +1,234 @@
+---
+// Das Ergebnisfenster. Die Zahlen sind Beispielwerte aus einer Kampagne und
+// als solche gekennzeichnet — sie stammen nicht aus einem echten Piloten.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const tiles = isDE
+  ? [{ v: '128', l: 'Interviews geführt' }, { v: '9', l: 'Themen erkannt' }, { v: '84 %', l: 'Konfidenz' }]
+  : [{ v: '128', l: 'Interviews run' }, { v: '9', l: 'Themes found' }, { v: '84 %', l: 'Confidence' }];
+
+const bars = isDE ? [
+  { l: 'Freigaben hängen', v: 34 },
+  { l: 'Doppelte Erfassung', v: 28 },
+  { l: 'Übergaben unklar', v: 22 },
+  { l: 'Systemwechsel', v: 17 },
+  { l: 'Wartezeiten', v: 13 },
+  { l: 'Rückfragen', v: 8 },
+] : [
+  { l: 'Approvals stall', v: 34 },
+  { l: 'Duplicate entry', v: 28 },
+  { l: 'Unclear handovers', v: 22 },
+  { l: 'System switching', v: 17 },
+  { l: 'Waiting time', v: 13 },
+  { l: 'Follow-up queries', v: 8 },
+];
+const max = 34;
+
+const slices = isDE
+  ? [{ l: 'Problem', v: 47 }, { l: 'Idee', v: 31 }, { l: 'Chance', v: 22 }]
+  : [{ l: 'Problem', v: 47 }, { l: 'Idea', v: 31 }, { l: 'Opportunity', v: 22 }];
+const hues = ['var(--color-accent-dark)', 'var(--brand-blue)', 'var(--brand-periwinkle)'];
+
+// Der Ring wird als SVG gezeichnet, nicht als conic-gradient: der Verlauf kam
+// in Chromium hier als `none` an, die Bogenlaenge ist zuverlaessiger.
+const R = 54;
+const C = 2 * Math.PI * R;
+const GAP = 3;
+let acc = 0;
+const arcs = slices.map((s, i) => {
+  const start = (acc / 100) * C;
+  acc += s.v;
+  const len = Math.max(1, (s.v / 100) * C - GAP);
+  return { hue: hues[i], dash: `${len} ${C - len}`, offset: -start };
+});
+---
+
+<section class="peek" id="produkt">
+  <div class="container">
+    <div class="peek__head section-fade">
+      <p class="section-eyebrow">{isDE ? 'Das Produkt' : 'The product'}</p>
+      <h2 class="peek__heading">{isDE ? 'Und so sieht das Ergebnis aus.' : 'And this is what you get.'}</h2>
+      <p class="peek__sub">
+        {isDE
+          ? 'Ein Bericht, der auf Gesprächen beruht — jede Zahl lässt sich bis zur Aussage zurückverfolgen.'
+          : 'A report built from conversations — every number traces back to what someone said.'}
+      </p>
+    </div>
+
+    <div class="peek__win section-fade" style="--delay: 90ms">
+      <div class="peek__bar">
+        <span>{isDE ? 'Kampagnen' : 'Campaigns'}</span>
+        <span class="peek__sep">›</span>
+        <span>Post-Merger-Integration: Meridian</span>
+        <span class="peek__sep">›</span>
+        <span class="peek__here">{isDE ? 'Einblicke' : 'Insights'}</span>
+      </div>
+
+      <div class="peek__body">
+        <div class="peek__tiles">
+          {tiles.map((t) => (
+            <div class="peek__tile">
+              <p class="peek__tile-v">{t.v}</p>
+              <p class="peek__tile-l">{t.l}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="peek__charts">
+          <div class="peek__card">
+            <p class="peek__card-t">{isDE ? 'Nennungen je Thema' : 'Mentions per theme'}</p>
+            <ul class="peek__bars">
+              {bars.map((b) => (
+                <li class="peek__row">
+                  <span class="peek__row-l">{b.l}</span>
+                  <span class="peek__track"><i style={`width:${(b.v / max) * 100}%`}></i></span>
+                  <span class="peek__row-v">{b.v}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="peek__card peek__card--donut">
+            <p class="peek__card-t">{isDE ? 'Art der Einblicke' : 'Type of insight'}</p>
+            <svg class="peek__donut" viewBox="0 0 140 140" role="img" aria-label={slices.map((s) => `${s.l} ${s.v} Prozent`).join(', ')}>
+              <g transform="rotate(-90 70 70)" fill="none" stroke-width="20">
+                {arcs.map((a) => (
+                  <circle cx="70" cy="70" r={R} stroke={a.hue} stroke-dasharray={a.dash} stroke-dashoffset={a.offset} />
+                ))}
+              </g>
+            </svg>
+            <ul class="peek__legend">
+              {slices.map((s, i) => (
+                <li>
+                  <span class="peek__key"><i style={`background:${hues[i]}`}></i>{s.l}</span>
+                  <span class="peek__pct">{s.v} %</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .peek {
+    padding: var(--space-section) 0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .peek__head { text-align: center; margin-bottom: var(--space-12); }
+
+  .peek__heading {
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .peek__sub {
+    max-width: 56ch;
+    margin: var(--space-5) auto 0;
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  .peek__win {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: 0 22px 54px -26px rgba(11, 12, 16, 0.22);
+  }
+
+  .peek__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+  .peek__sep { color: var(--color-text-tertiary); }
+  .peek__here { color: var(--color-text-primary); font-weight: 500; }
+
+  .peek__body { padding: var(--space-8) var(--space-8) var(--space-10); }
+
+  .peek__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+  }
+  .peek__tile {
+    padding: var(--space-6);
+    background: var(--color-bg);
+    border-radius: var(--radius-card);
+  }
+  .peek__tile-v { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; }
+  .peek__tile-l { margin-top: 2px; font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+  .peek__charts {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: stretch;
+  }
+
+  .peek__card {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .peek__card-t { margin-bottom: var(--space-5); font-size: var(--text-sm); font-weight: 500; }
+
+  .peek__bars { display: flex; flex-direction: column; gap: var(--space-4); }
+  .peek__row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .peek__row-l { font-size: var(--text-sm); color: var(--color-text-secondary); text-align: right; }
+  .peek__track { display: block; height: 20px; }
+  .peek__track i {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    background: var(--color-accent-dark);
+  }
+  .peek__row-v { font-size: var(--text-sm); font-weight: 500; }
+
+  .peek__card--donut { display: flex; flex-direction: column; align-items: center; }
+  .peek__donut {
+    width: 190px;
+    height: 190px;
+    margin: var(--space-2) 0 var(--space-6);
+  }
+  .peek__legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .peek__legend li { display: flex; align-items: center; justify-content: space-between; font-size: var(--text-sm); }
+  .peek__key { display: inline-flex; align-items: center; gap: 10px; color: var(--color-text-secondary); }
+  .peek__key i { width: 11px; height: 11px; border-radius: 3px; }
+  .peek__pct { font-weight: 500; }
+
+  @media (max-width: 1023px) {
+    .peek__charts { grid-template-columns: minmax(0, 1fr); }
+    .peek__row { grid-template-columns: 120px minmax(0, 1fr) 24px; }
+  }
+  @media (max-width: 767px) {
+    .peek { padding: var(--space-24) 0; }
+    .peek__body { padding: var(--space-5); }
+    .peek__tiles { grid-template-columns: minmax(0, 1fr); }
+    .peek__row { grid-template-columns: 96px minmax(0, 1fr) 22px; gap: var(--space-3); }
+    .peek__row-l { font-size: var(--text-xs); }
+  }
+</style>

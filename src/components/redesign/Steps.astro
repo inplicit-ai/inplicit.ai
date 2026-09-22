@@ -1,0 +1,107 @@
+---
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const steps = isDE ? [
+  { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie wissen müssen, und wen es betrifft. Eine Kampagne, eine Frage, eine Zielgruppe.' },
+  { n: '02', title: 'Alle antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig — anonym, mit echten Rückfragen, wann es der Person passt.' },
+  { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
+] : [
+  { n: '01', title: 'Ask one question', body: 'You describe what you need to know and who it concerns. One campaign, one question, one audience.' },
+  { n: '02', title: 'Everyone answers', body: 'The agent runs hundreds of interviews at once — anonymous, with real follow-ups, whenever it suits the person.' },
+  { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
+];
+---
+
+<section class="steps" id="so-gehts">
+  <div class="container">
+    <div class="steps__head section-fade">
+      <p class="section-eyebrow">{isDE ? 'Die Lösung' : 'How it works'}</p>
+      <h2 class="steps__heading">
+        <span>{isDE ? 'Sie stellen eine Frage.' : 'You ask a question.'}</span>
+        <span>{isDE ? 'Ihre Organisation antwortet.' : 'Your organisation answers.'}</span>
+      </h2>
+    </div>
+
+    <div class="steps__grid">
+      {steps.map((s, i) => (
+        <article class="steps__card section-fade" style={`--delay: ${i * 70}ms`}>
+          <span class="steps__num">{s.n}</span>
+          <h3 class="steps__title">{s.title}</h3>
+          <p class="steps__body">{s.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps {
+    padding: var(--space-section) 0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .steps__head {
+    text-align: center;
+    margin-bottom: var(--space-16);
+  }
+
+  .steps__heading {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .steps__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .steps__card {
+    padding: var(--space-8) var(--space-8) var(--space-10);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+  }
+
+  .steps__num {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--space-6);
+    border-radius: 50%;
+    background: rgba(252, 161, 87, 0.16);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .steps__title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .steps__body {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1023px) {
+    .steps__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .steps { padding: var(--space-24) 0; }
+    .steps__head { margin-bottom: var(--space-12); }
+  }
+</style>

@@ -9,11 +9,11 @@ const year = new Date().getFullYear();
 const mainLinks = lang === 'de'
   ? [
       { href: '/de/#how-it-works', label: 'Wie es funktioniert' },
-      { href: '/de/#book-demo', label: 'Demo buchen' },
+      { href: '/de/call', label: 'Demo buchen' },
     ]
   : [
       { href: '/#how-it-works', label: 'How it works' },
-      { href: '/#book-demo', label: 'Book demo' },
+      { href: '/call', label: 'Book demo' },
     ];
 
 const legalLinks = lang === 'de'
@@ -85,7 +85,7 @@ const legalLinks = lang === 'de'
 <style>
   .footer {
     background-color: #0a0a0a;
-    border-top: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding: var(--space-12) 0 var(--space-8);
     color: #ffffff;
   }

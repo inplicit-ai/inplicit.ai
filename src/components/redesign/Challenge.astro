@@ -1,0 +1,143 @@
+---
+// „Die Herausforderung" — bewusst nicht „Sie kennen Ihre Organisation nicht",
+// sondern: es gibt Fragen, die nur die Belegschaft beantworten kann.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+// Feste Punktmatrix: ein paar gefuellte (dokumentiert), der Rest hohl.
+const COLS = 9;
+const ROWS = 8;
+const FILLED = new Set([4, 13, 27, 41, 52, 63]);
+const dots: { on: boolean }[] = [];
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const dx = (c - 4) / 4.2;
+    const dy = (r - 3.5) / 3.9;
+    const i = r * COLS + c;
+    dots.push({ on: dx * dx + dy * dy <= 1.06 ? FILLED.has(i) : null as unknown as boolean });
+  }
+}
+---
+
+<section class="chal" id="herausforderung">
+  <div class="container chal__inner">
+    <div class="chal__copy section-fade">
+      <p class="section-eyebrow">{isDE ? 'Die Herausforderung' : 'The challenge'}</p>
+      <h2 class="chal__heading">
+        {isDE ? (
+          <>Manche Fragen beantwortet nur, wer die Arbeit macht.</>
+        ) : (
+          <>Some questions are only answered by the people doing the work.</>
+        )}
+      </h2>
+      <p class="chal__body">
+        {isDE
+          ? 'Vor jeder größeren Entscheidung steht eine Frage, für die es keine Auswertung gibt: Wo hakt es wirklich? Was hat sich über die Jahre eingespielt? Was weiß nur die Person, die es jeden Tag macht?'
+          : 'Before every major decision there is a question no report answers: where does it actually get stuck, what has quietly become routine, what does only the person doing it every day know?'}
+      </p>
+      <p class="chal__punch">
+        {isDE
+          ? 'Diese Antworten gibt es nur im Gespräch — und Gespräche mit hunderten Mitarbeitenden dauern heute Monate.'
+          : 'Those answers only exist in conversation — and conversations with hundreds of people take months today.'}
+      </p>
+    </div>
+
+    <div class="chal__viz section-fade" style="--delay: 90ms" aria-hidden="true">
+      <div class="chal__field">
+        {dots.map((d) => (
+          d.on === null
+            ? <span class="chal__gap"></span>
+            : <span class:list={['chal__dot', { 'is-on': d.on }]}></span>
+        ))}
+      </div>
+      <div class="chal__legend">
+        <span class="chal__key"><i class="chal__dot is-on"></i>{isDE ? 'dokumentiert' : 'documented'}</span>
+        <span class="chal__key"><i class="chal__dot"></i>{isDE ? 'nur in Köpfen' : 'only in people’s heads'}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chal {
+    padding: var(--space-section) 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .chal__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .chal__heading {
+    margin: var(--space-6) 0 var(--space-6);
+    max-width: 13ch;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .chal__body,
+  .chal__punch {
+    max-width: 52ch;
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  .chal__punch {
+    margin-top: var(--space-5);
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .chal__field {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 18px;
+    max-width: 440px;
+    margin-left: auto;
+  }
+
+  .chal__gap { display: block; aspect-ratio: 1; }
+
+  .chal__dot {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5px solid #d3d6dd;
+  }
+  .chal__dot.is-on {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .chal__legend {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+  .chal__key { display: inline-flex; align-items: center; gap: 8px; }
+  .chal__key .chal__dot { width: 11px; height: 11px; }
+
+  @media (max-width: 1023px) {
+    .chal__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
+    .chal__field { margin: 0 auto; }
+    .chal__legend { justify-content: center; }
+  }
+
+  @media (max-width: 767px) {
+    .chal { padding: var(--space-24) 0; }
+    .chal__field { gap: 13px; max-width: 320px; }
+  }
+</style>
