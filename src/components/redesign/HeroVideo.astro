@@ -39,6 +39,20 @@ const isDE = lang === 'de';
         </>
       )}
     </h1>
+
+    <p class="rhero__sub">
+      {isDE ? (
+        <>
+          Inplicit befragt Ihre Mitarbeitenden im echten Gespräch — hunderte gleichzeitig.<br />
+          Sie sehen, wie Ihr Unternehmen wirklich arbeitet.
+        </>
+      ) : (
+        <>
+          Inplicit interviews your people in real conversation — hundreds at once.<br />
+          You see how your company actually works.
+        </>
+      )}
+    </p>
   </div>
 </section>
 
@@ -77,8 +91,10 @@ const isDE = lang === 'de';
     position: absolute;
     inset: 0;
     background:
+      /* Kopf-Vignette: sonst verschwindet das weisse Logo, wenn das Video oben hell ist */
+      linear-gradient(180deg, rgba(11, 12, 16, 0.52) 0%, rgba(11, 12, 16, 0) 18%),
       linear-gradient(90deg, rgba(11, 12, 16, 0.58) 0%, rgba(11, 12, 16, 0.22) 44%, rgba(11, 12, 16, 0) 68%),
-      linear-gradient(0deg, rgba(11, 12, 16, 0.62) 0%, rgba(11, 12, 16, 0.18) 52%, rgba(11, 12, 16, 0.08) 100%);
+      linear-gradient(0deg, rgba(11, 12, 16, 0.72) 0%, rgba(11, 12, 16, 0.2) 54%, rgba(11, 12, 16, 0.08) 100%);
   }
 
   .rhero__inner {
@@ -97,12 +113,23 @@ const isDE = lang === 'de';
     letter-spacing: -0.045em;
   }
 
-  .rhero__line {
+  .rhero__sub {
+    max-width: 58ch;
+    margin-top: var(--space-6);
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+    text-shadow: 0 1px 12px rgba(11, 12, 16, 0.45);
+  }
+
+  .rhero__line,
+  .rhero__sub {
     opacity: 0;
     transform: translateY(18px);
     animation: rhero-in 0.85s var(--ease-out) forwards;
   }
   .rhero__line:nth-child(2) { animation-delay: 0.09s; }
+  .rhero__sub { animation-delay: 0.2s; }
 
   @keyframes rhero-in {
     to { opacity: 1; transform: none; }
@@ -114,7 +141,8 @@ const isDE = lang === 'de';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rhero__line { animation: none; opacity: 1; transform: none; }
+    .rhero__line,
+    .rhero__sub { animation: none; opacity: 1; transform: none; }
     .rhero__video { display: none; }
   }
 </style>

@@ -43,7 +43,7 @@ const arcs = slices.map((s, i) => {
   const start = (acc / 100) * C;
   acc += s.v;
   const len = Math.max(1, (s.v / 100) * C - GAP);
-  return { hue: hues[i], dash: `${len} ${C - len}`, offset: -start };
+  return { hue: hues[i], dash: `${len} ${C - len}`, offset: -start, delay: 0.15 + i * 0.16 };
 });
 ---
 
@@ -85,7 +85,7 @@ const arcs = slices.map((s, i) => {
               {bars.map((b) => (
                 <li class="peek__row">
                   <span class="peek__row-l">{b.l}</span>
-                  <span class="peek__track"><i style={`width:${(b.v / max) * 100}%`}></i></span>
+                  <span class="peek__track"><i style={`--w:${(b.v / max) * 100}%; --i:${bars.indexOf(b)}`}></i></span>
                   <span class="peek__row-v">{b.v}</span>
                 </li>
               ))}
@@ -97,7 +97,7 @@ const arcs = slices.map((s, i) => {
             <svg class="peek__donut" viewBox="0 0 140 140" role="img" aria-label={slices.map((s) => `${s.l} ${s.v} Prozent`).join(', ')}>
               <g transform="rotate(-90 70 70)" fill="none" stroke-width="20">
                 {arcs.map((a) => (
-                  <circle cx="70" cy="70" r={R} stroke={a.hue} stroke-dasharray={a.dash} stroke-dashoffset={a.offset} />
+                  <circle cx="70" cy="70" r={R} stroke={a.hue} stroke-dashoffset={a.offset} style={`--dash:${a.dash}; --d:${a.delay}s`} />
                 ))}
               </g>
             </svg>
@@ -202,10 +202,14 @@ const arcs = slices.map((s, i) => {
   .peek__track { display: block; height: 20px; }
   .peek__track i {
     display: block;
+    width: 0;
     height: 100%;
     border-radius: 5px;
     background: var(--color-accent-dark);
+    transition: width 0.75s var(--ease-out);
+    transition-delay: calc(0.15s + var(--i, 0) * 0.07s);
   }
+  .peek__win.is-visible .peek__track i { width: var(--w); }
   .peek__row-v { font-size: var(--text-sm); font-weight: 500; }
 
   .peek__card--donut { display: flex; flex-direction: column; align-items: center; }
@@ -213,6 +217,18 @@ const arcs = slices.map((s, i) => {
     width: 190px;
     height: 190px;
     margin: var(--space-2) 0 var(--space-6);
+  }
+  /* Die Boegen zeichnen sich nacheinander, sobald das Fenster sichtbar wird. */
+  .peek__donut circle {
+    stroke-dasharray: 0 400;
+    transition: stroke-dasharray 0.8s var(--ease-out);
+    transition-delay: var(--d, 0s);
+  }
+  .peek__win.is-visible .peek__donut circle { stroke-dasharray: var(--dash); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .peek__donut circle { stroke-dasharray: var(--dash); transition: none; }
+    .peek__track i { width: var(--w); transition: none; }
   }
   .peek__legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
   .peek__legend li { display: flex; align-items: center; justify-content: space-between; font-size: var(--text-sm); }

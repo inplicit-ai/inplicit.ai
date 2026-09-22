@@ -1,39 +1,131 @@
 ---
+// Drei Schritte. Beim Hover waechst unter jedem Schritt das passende
+// Produktfenster auf: Chat, Interview mit Orb, Einblicke.
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-const steps = isDE ? [
-  { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie wissen müssen, und wen es betrifft. Eine Kampagne, eine Frage, eine Zielgruppe.' },
-  { n: '02', title: 'Alle antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig — anonym, mit echten Rückfragen, wann es der Person passt.' },
-  { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
-] : [
-  { n: '01', title: 'Ask one question', body: 'You describe what you need to know and who it concerns. One campaign, one question, one audience.' },
-  { n: '02', title: 'Everyone answers', body: 'The agent runs hundreds of interviews at once — anonymous, with real follow-ups, whenever it suits the person.' },
-  { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
-];
+const t = isDE ? {
+  eyebrow: 'Die Lösung',
+  h1: 'Sie stellen eine Frage.',
+  h2: 'Ihre Organisation antwortet.',
+  s1: { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie wissen müssen, und wen es betrifft. Eine Kampagne, eine Frage, eine Zielgruppe.' },
+  s2: { n: '02', title: 'Alle antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig — anonym, mit echten Rückfragen, wann es der Person passt.' },
+  s3: { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
+  agent: 'Inplicit Agent',
+  prompt: 'Was möchten Sie herausfinden?',
+  question: 'Wo verlieren wir die meiste Zeit',
+  typing: 'tippt …',
+  interview: 'Interview 04 · 12:32',
+  ask: 'Wann hakt es bei einem Eilauftrag zuerst?',
+  answer: '„Bei Eilaufträgen rufe ich direkt in der Buchhaltung an — sonst wartet die Freigabe zwei Tage."',
+  followup: 'Und wenn die Person im Urlaub ist?',
+  insights: 'Einblicke',
+  themes: [
+    { l: 'Freigaben hängen', v: 100 },
+    { l: 'Doppelte Erfassung', v: 78 },
+    { l: 'Übergaben unklar', v: 58 },
+  ],
+} : {
+  eyebrow: 'How it works',
+  h1: 'You ask a question.',
+  h2: 'Your organisation answers.',
+  s1: { n: '01', title: 'Ask one question', body: 'You describe what you need to know and who it concerns. One campaign, one question, one audience.' },
+  s2: { n: '02', title: 'Everyone answers', body: 'The agent runs hundreds of interviews at once — anonymous, with real follow-ups, whenever it suits the person.' },
+  s3: { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
+  agent: 'Inplicit Agent',
+  prompt: 'What do you want to find out?',
+  question: 'Where do we lose the most time',
+  typing: 'typing …',
+  interview: 'Interview 04 · 12:32',
+  ask: 'Where does a rush order stall first?',
+  answer: '“For rush orders I call finance directly — otherwise approval waits two days.”',
+  followup: 'And when that person is on holiday?',
+  insights: 'Insights',
+  themes: [
+    { l: 'Approvals stall', v: 100 },
+    { l: 'Duplicate entry', v: 78 },
+    { l: 'Unclear handovers', v: 58 },
+  ],
+};
 ---
 
 <section class="steps" id="so-gehts">
   <div class="container">
     <div class="steps__head section-fade">
-      <p class="section-eyebrow">{isDE ? 'Die Lösung' : 'How it works'}</p>
+      <p class="section-eyebrow">{t.eyebrow}</p>
       <h2 class="steps__heading">
-        <span>{isDE ? 'Sie stellen eine Frage.' : 'You ask a question.'}</span>
-        <span>{isDE ? 'Ihre Organisation antwortet.' : 'Your organisation answers.'}</span>
+        <span>{t.h1}</span>
+        <span>{t.h2}</span>
       </h2>
     </div>
 
     <div class="steps__grid">
-      {steps.map((s, i) => (
-        <article class="steps__card section-fade" style={`--delay: ${i * 70}ms`}>
-          <span class="steps__num">{s.n}</span>
-          <h3 class="steps__title">{s.title}</h3>
-          <p class="steps__body">{s.body}</p>
-        </article>
-      ))}
+      <article class="steps__card section-fade" tabindex="0">
+        <span class="steps__num">{t.s1.n}</span>
+        <h3 class="steps__title">{t.s1.title}</h3>
+        <p class="steps__body">{t.s1.body}</p>
+
+        <div class="steps__reveal"><div class="steps__reveal-in">
+          <div class="win">
+            <div class="win__bar"><i class="win__dot"></i>{t.agent}</div>
+            <div class="win__body">
+              <p class="win__label">{t.prompt}</p>
+              <p class="win__typed">
+                <span class="win__q" style={`--len: ${t.question.length}`}>{t.question}</span><i class="win__caret"></i>
+              </p>
+              <div class="win__foot">
+                <span class="win__hint">{t.typing}</span>
+                <span class="win__send" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M8 12.5V4M4.5 7.5L8 4l3.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="steps__card section-fade" style="--delay: 70ms" tabindex="0">
+        <span class="steps__num">{t.s2.n}</span>
+        <h3 class="steps__title">{t.s2.title}</h3>
+        <p class="steps__body">{t.s2.body}</p>
+
+        <div class="steps__reveal"><div class="steps__reveal-in">
+          <div class="win">
+            <div class="win__bar"><i class="win__dot"></i>{t.interview}</div>
+            <div class="win__body win__body--chat">
+              <div class="chat__row">
+                <span class="orb" aria-hidden="true"><span class="orb__ring"></span></span>
+                <span class="bub bub--agent">{t.ask}</span>
+              </div>
+              <span class="bub bub--self">{t.answer}</span>
+              <span class="bub bub--agent bub--late">{t.followup}</span>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="steps__card section-fade" style="--delay: 140ms" tabindex="0">
+        <span class="steps__num">{t.s3.n}</span>
+        <h3 class="steps__title">{t.s3.title}</h3>
+        <p class="steps__body">{t.s3.body}</p>
+
+        <div class="steps__reveal"><div class="steps__reveal-in">
+          <div class="win">
+            <div class="win__bar"><i class="win__dot"></i>{t.insights}</div>
+            <div class="win__body">
+              {t.themes.map((th, i) => (
+                <div class="theme" style={`--w: ${th.v}%; --i: ${i}`}>
+                  <span class="theme__l">{th.l}</span>
+                  <span class="theme__track"><i></i></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div></div>
+      </article>
     </div>
   </div>
 </section>
@@ -45,10 +137,7 @@ const steps = isDE ? [
     border-top: 1px solid var(--color-border);
   }
 
-  .steps__head {
-    text-align: center;
-    margin-bottom: var(--space-16);
-  }
+  .steps__head { text-align: center; margin-bottom: var(--space-16); }
 
   .steps__heading {
     display: flex;
@@ -63,6 +152,7 @@ const steps = isDE ? [
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-6);
+    align-items: start;
   }
 
   .steps__card {
@@ -70,6 +160,14 @@ const steps = isDE ? [
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
+    transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  }
+  .steps__card:hover,
+  .steps__card:focus-visible,
+  .steps__card:focus-within {
+    border-color: var(--color-accent-muted, rgba(252, 161, 87, 0.36));
+    box-shadow: 0 16px 38px -24px rgba(11, 12, 16, 0.24);
+    outline: none;
   }
 
   .steps__num {
@@ -91,11 +189,149 @@ const steps = isDE ? [
     letter-spacing: -0.02em;
   }
 
-  .steps__body {
-    font-size: var(--text-base);
-    line-height: 1.6;
+  .steps__body { font-size: var(--text-base); line-height: 1.6; color: var(--color-text-secondary); }
+
+  /* ── Hover-Auszug ──────────────────────────────────────────────────── */
+  .steps__reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s var(--ease-out);
+  }
+  .steps__card:hover .steps__reveal,
+  .steps__card:focus-within .steps__reveal { grid-template-rows: 1fr; }
+  .steps__reveal-in { overflow: hidden; min-height: 0; }
+
+  .win {
+    margin-top: var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s var(--ease-out) 0.1s, transform 0.4s var(--ease-out) 0.1s;
+  }
+  .steps__card:hover .win,
+  .steps__card:focus-within .win { opacity: 1; transform: none; }
+
+  .win__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-xs);
+    font-weight: 500;
     color: var(--color-text-secondary);
   }
+  .win__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); }
+
+  .win__body { padding: 14px 13px 13px; }
+  .win__label { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+
+  .win__typed { display: flex; align-items: flex-end; gap: 2px; margin-top: 10px; }
+  .win__q {
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .steps__card:hover .win__q,
+  .steps__card:focus-within .win__q {
+    animation: win-type 1.5s steps(30) 0.3s forwards;
+  }
+  @keyframes win-type { to { max-width: calc(var(--len) * 1ch); } }
+
+  .win__caret {
+    width: 2px;
+    height: 17px;
+    background: var(--color-accent);
+    animation: win-blink 1.05s steps(1) infinite;
+  }
+  @keyframes win-blink { 50% { opacity: 0; } }
+
+  .win__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+  }
+  .win__hint { font-size: 11px; color: var(--color-text-tertiary); }
+  .win__send {
+    display: grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-text-primary);
+  }
+  .win__send svg { width: 15px; height: 15px; }
+
+  /* ── Interview ─────────────────────────────────────────────────────── */
+  .win__body--chat { display: flex; flex-direction: column; gap: 9px; }
+  .chat__row { display: flex; align-items: center; gap: 10px; }
+
+  .orb { position: relative; flex: 0 0 auto; width: 44px; height: 44px; }
+  .orb__ring,
+  .orb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    /* Farben aus orb.js, Basiswerte nach der Standard-Hue-Drehung von 28° */
+    background: conic-gradient(from 210deg, #44d698, #7255ff, #00297c, #7255ff, #44d698);
+    -webkit-mask: radial-gradient(circle, transparent 56%, #000 57%);
+    mask: radial-gradient(circle, transparent 56%, #000 57%);
+    animation: orb-spin 7s linear infinite;
+  }
+  .orb::before { filter: blur(5px); opacity: 0.6; }
+  @keyframes orb-spin { to { transform: rotate(1turn); } }
+
+  .bub {
+    display: inline-block;
+    max-width: 92%;
+    padding: 8px 11px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+  .bub--agent { background: var(--color-bg); color: var(--color-text-primary); align-self: flex-start; }
+  .bub--self { background: var(--brand-blue); color: #fff; align-self: flex-end; }
+  .steps__card:hover .bub,
+  .steps__card:focus-within .bub { opacity: 1; transform: none; }
+  .steps__card:hover .bub--self,
+  .steps__card:focus-within .bub--self { transition-delay: 0.45s; }
+  .steps__card:hover .bub--late,
+  .steps__card:focus-within .bub--late { transition-delay: 0.85s; }
+
+  /* ── Einblicke ─────────────────────────────────────────────────────── */
+  .theme + .theme { margin-top: 11px; }
+  .theme__l { display: block; font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .theme__track {
+    display: block;
+    height: 9px;
+    margin-top: 6px;
+    border-radius: 5px;
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+  .theme__track i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 5px;
+    background: var(--color-accent);
+    transition: width 0.7s var(--ease-out);
+    transition-delay: calc(0.25s + var(--i) * 0.12s);
+  }
+  .steps__card:hover .theme__track i,
+  .steps__card:focus-within .theme__track i { width: var(--w); }
 
   @media (max-width: 1023px) {
     .steps__grid { grid-template-columns: minmax(0, 1fr); }
@@ -103,5 +339,19 @@ const steps = isDE ? [
   @media (max-width: 767px) {
     .steps { padding: var(--space-24) 0; }
     .steps__head { margin-bottom: var(--space-12); }
+    /* Ohne Hover auf dem Handy: Fenster dauerhaft zeigen. */
+    .steps__reveal { grid-template-rows: 1fr; }
+    .win { opacity: 1; transform: none; }
+    .win__q { max-width: none; }
+    .theme__track i { width: var(--w); }
+    .bub { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .steps__reveal { transition: none; }
+    .win, .bub { transition: none; }
+    .win__q { animation: none; max-width: none; }
+    .win__caret { animation: none; }
+    .orb__ring, .orb::before { animation: none; }
   }
 </style>
