@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="Privacy Policy / Datenschutzerklärung - inplicit.ai" description="GDPR-compliant privacy policy for inplicit.ai">
-  <Nav />
+  <Nav solid />
   <main class="legal container">
     <h1>Privacy Policy / Datenschutzerklärung</h1>
 
@@ -157,7 +157,8 @@ import Footer from '../components/Footer.astro';
 
 <style>
   .legal {
-    padding: var(--space-16) var(--space-4);
+    /* space-32 top: clear the fixed nav pill */
+    padding: var(--space-32) var(--space-4) var(--space-16);
     max-width: 720px;
   }
 

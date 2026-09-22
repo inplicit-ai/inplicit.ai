@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="Terms of Service - inplicit.ai" description="Terms of Service for inplicit.ai pilot engagements">
-  <Nav />
+  <Nav solid />
   <main class="legal container">
     <h1>Terms of Service</h1>
     <p class="legal__updated">Last updated: April 2026</p>
@@ -88,7 +88,8 @@ import Footer from '../components/Footer.astro';
 
 <style>
   .legal {
-    padding: var(--space-16) var(--space-4);
+    /* space-32 top: clear the fixed nav pill */
+    padding: var(--space-32) var(--space-4) var(--space-16);
     max-width: 720px;
   }
 

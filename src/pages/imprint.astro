@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="Imprint / Impressum - inplicit.ai" description="Legal imprint for inplicit.ai (§5 TMG)">
-  <Nav />
+  <Nav solid />
   <main class="legal container">
     <h1>Imprint / Impressum</h1>
 
@@ -20,7 +20,7 @@ import Footer from '../components/Footer.astro';
         Deutschland
       </p>
       <p>
-        <strong>Vertretungsberechtigte Gesellschaftler</strong><br />
+        <strong>Vertretungsberechtigte Gesellschafter</strong><br />
         Martin Auer <br />
         Silas Kruckenberg
       </p>
@@ -28,12 +28,14 @@ import Footer from '../components/Footer.astro';
         <strong>Kontakt:</strong><br />
         E-Mail: info@inplicit.ai
       </p>
+      <!-- USt-IdNr. ergaenzen, sobald vergeben:
       <p>
-        <!-- <strong>Umsatzsteuer-Identifikationsnummer:</strong><br />
-        [USt-IdNr., sofern vorhanden]
-      </p> -->
+        <strong>Umsatzsteuer-Identifikationsnummer:</strong><br />
+        [USt-IdNr.]
+      </p>
+      -->
       <p>
-        <strong>Verantwortlich für den Inhalt nach §55 Abs. 2 RStV:</strong><br />
+        <strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br />
         Silas Kruckenberg<br />
         Utopia Lüneburg<br />
         Katzenstraße 1A<br />
@@ -65,7 +67,7 @@ import Footer from '../components/Footer.astro';
         [VAT ID, if applicable]
       </p> -->
       <p>
-        <strong>Responsible for content (§55 Abs. 2 RStV):</strong><br />
+        <strong>Responsible for content (§ 18 (2) MStV):</strong><br />
         Silas Kruckenberg<br />
         Utopia Lüneburg<br />
         Katzenstraße 1A<br />
@@ -79,7 +81,8 @@ import Footer from '../components/Footer.astro';
 
 <style>
   .legal {
-    padding: var(--space-16) var(--space-4);
+    /* space-32 top: clear the fixed nav pill */
+    padding: var(--space-32) var(--space-4) var(--space-16);
     max-width: 720px;
   }
 
