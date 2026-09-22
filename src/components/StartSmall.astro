@@ -1,0 +1,128 @@
+---
+// Der Einwand-Killer direkt nach den Kampagnen: die vier Kampagnentypen klingen
+// nach Grossprojekt, dieser Block macht den Einstieg klein. Bewusst ohne
+// Eyebrow, ohne Grafik, ohne zweite CTA — die Ruhe ist das Argument.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+---
+
+<section class="pilot" id="start-small">
+  <div class="container">
+    <div class="pilot__inner section-fade">
+      <h2 class="pilot__heading">
+        {isDE ? (
+          <>
+            <span class="pilot__line">Starten Sie mit einem Team</span>
+            <span class="pilot__line">und einer Frage.</span>
+          </>
+        ) : (
+          <>
+            <span class="pilot__line">Begin with one team</span>
+            <span class="pilot__line">and one question.</span>
+          </>
+        )}
+      </h2>
+
+      <p class="pilot__sub">
+        {isDE
+          ? 'Die erste Kampagne kann bei einem Prozess ansetzen, bei einer Entscheidung oder bei einem Bereich. Was Sie dabei erfahren, bleibt nutzbar, wenn der Rahmen später wächst.'
+          : 'The first campaign can focus on a single process, a single decision or a single part of the organisation. What you learn stays useful as the scope grows.'}
+      </p>
+
+      <a href="#book-demo" class="pilot__cta">
+        <span class="pilot__cta-label">{isDE ? 'Demo buchen' : 'Book a demo'}</span>
+        <i class="pilot__cta-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.querySelector('.pilot__cta')?.addEventListener('click', function () {
+    window.posthog?.capture('start_small_cta_clicked');
+  });
+</script>
+
+<style>
+  .pilot {
+    padding: clamp(5.5rem, 12vw, 10rem) 0;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+
+  .pilot__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .pilot__heading {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2.5rem, 7vw, 5.25rem);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  .pilot__sub {
+    max-width: 46ch;
+    margin-top: clamp(var(--space-6), 2.4vw, var(--space-10));
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
+  }
+
+  .pilot__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    height: 56px;
+    margin-top: clamp(var(--space-8), 3vw, var(--space-12));
+    padding: 0 6px 0 var(--space-8);
+    background-color: var(--color-cta-bg);
+    color: var(--color-cta-text);
+    font-size: var(--text-base);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: var(--radius-full, 999px);
+    transition: background-color 0.25s var(--ease-out);
+  }
+
+  .pilot__cta:hover { background-color: var(--color-cta-hover); }
+
+  .pilot__cta-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full, 999px);
+    background-color: var(--color-cta-text);
+    color: var(--color-cta-bg);
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  .pilot__cta:hover .pilot__cta-icon { transform: translateX(3px); }
+
+  @media (max-width: 767px) {
+    .pilot__heading { letter-spacing: -0.035em; }
+    .pilot__sub { max-width: 34ch; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pilot__cta,
+    .pilot__cta-icon { transition: none; }
+  }
+</style>
