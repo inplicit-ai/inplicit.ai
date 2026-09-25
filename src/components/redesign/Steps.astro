@@ -1,6 +1,7 @@
 ---
-// Drei Schritte. Beim Hover waechst unter jedem Schritt das passende
-// Produktfenster auf: Chat, Interview mit Orb, Einblicke.
+// Drei Schritte, jeweils mit dem passenden Produktfenster: Chat, Interview
+// mit dem pulsierenden KI-Orb, Einblicke. Die Fenster stehen offen — der
+// Hover veraendert nur die Bewegung, er klappt nichts auf.
 export interface Props {
   lang?: 'en' | 'de';
 }
@@ -12,9 +13,9 @@ const t = isDE ? {
   h1: 'Sie stellen eine Frage.',
   h2: 'Ihre Organisation antwortet.',
   s1: { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie herausfinden wollen, und legen fest, welche Mitarbeitenden dazu befragt werden.' },
-  s2: { n: '02', title: 'Mitarbeitende antworten', body: 'Der Agent führt hunderte Interviews gleichzeitig. Anonym, mit echten Rückfragen, wann es der Person passt.' },
+  s2: { n: '02', title: 'Mitarbeitende antworten', body: 'Die KI führt hunderte Interviews gleichzeitig. Anonym, mit echten Rückfragen, wann es der Person passt.' },
   s3: { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
-  agent: 'Inplicit Agent',
+  agent: 'Inplicit KI',
   prompt: 'Was möchten Sie herausfinden?',
   question: 'Wo verlieren wir die meiste Zeit?',
   typing: 'tippt …',
@@ -33,9 +34,9 @@ const t = isDE ? {
   h1: 'You ask a question.',
   h2: 'Your organisation answers.',
   s1: { n: '01', title: 'Ask one question', body: 'You describe what you want to find out and choose which people should be interviewed.' },
-  s2: { n: '02', title: 'People answer', body: 'The agent runs hundreds of interviews at once. Anonymous, with real follow-ups, whenever it suits the person.' },
+  s2: { n: '02', title: 'People answer', body: 'The AI runs hundreds of interviews at once. Anonymous, with real follow-ups, whenever it suits the person.' },
   s3: { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
-  agent: 'Inplicit Agent',
+  agent: 'Inplicit AI',
   prompt: 'What do you want to find out?',
   question: 'Where do we lose the most time?',
   typing: 'typing …',
@@ -153,7 +154,8 @@ const t = isDE ? {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-6);
-    align-items: start;
+    /* Fenster stehen dauerhaft offen, deshalb gleiche Kartenhoehe */
+    align-items: stretch;
   }
 
   .steps__card {
@@ -192,15 +194,9 @@ const t = isDE ? {
 
   .steps__body { font-size: var(--text-base); line-height: 1.6; color: var(--color-text-secondary); }
 
-  /* ── Hover-Auszug ──────────────────────────────────────────────────── */
-  .steps__reveal {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.45s var(--ease-out);
-  }
-  .steps__card:hover .steps__reveal,
-  .steps__card:focus-within .steps__reveal { grid-template-rows: 1fr; }
-  .steps__reveal-in { overflow: hidden; min-height: 0; }
+  /* ── Produktfenster: steht offen, klappt nicht auf ─────────────────── */
+  .steps__reveal { display: grid; }
+  .steps__reveal-in { min-height: 0; }
 
   .win {
     margin-top: var(--space-6);
@@ -210,10 +206,11 @@ const t = isDE ? {
     overflow: hidden;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.35s var(--ease-out) 0.1s, transform 0.4s var(--ease-out) 0.1s;
+    transition: opacity 0.4s var(--ease-out) 0.1s, transform 0.45s var(--ease-out) 0.1s,
+                box-shadow 0.3s var(--ease-out);
   }
-  .steps__card:hover .win,
-  .steps__card:focus-within .win { opacity: 1; transform: none; }
+  .steps__card.is-visible .win { opacity: 1; transform: none; }
+  .steps__card:hover .win { box-shadow: 0 12px 28px -20px rgba(11, 12, 16, 0.3); }
 
   .win__bar {
     display: flex;
@@ -240,9 +237,8 @@ const t = isDE ? {
     font-size: 0.9375rem;
     line-height: 1.5;
   }
-  .steps__card:hover .win__q,
-  .steps__card:focus-within .win__q {
-    animation: win-type 1.5s steps(30) 0.3s forwards;
+  .steps__card.is-visible .win__q {
+    animation: win-type 1.6s steps(30) 0.5s forwards;
   }
   @keyframes win-type { to { max-width: calc(var(--len) * 1ch); } }
 
@@ -275,7 +271,17 @@ const t = isDE ? {
   .win__body--chat { display: flex; flex-direction: column; gap: 9px; }
   .chat__row { display: flex; align-items: center; gap: 10px; }
 
-  .orb { position: relative; flex: 0 0 auto; width: 44px; height: 44px; }
+  .orb {
+    position: relative;
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    animation: orb-pulse 2.8s ease-in-out infinite;
+  }
+  @keyframes orb-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+  }
   .orb__ring,
   .orb::before {
     content: '';
@@ -288,8 +294,13 @@ const t = isDE ? {
     mask: radial-gradient(circle, transparent 56%, #000 57%);
     animation: orb-spin 7s linear infinite;
   }
-  .orb::before { filter: blur(5px); opacity: 0.6; }
+  .orb::before { filter: blur(7px); opacity: 0.65; }
   @keyframes orb-spin { to { transform: rotate(1turn); } }
+
+  /* Hover aendert nur das Tempo, nichts klappt auf. */
+  .steps__card:hover .orb { animation-duration: 1.9s; }
+  .steps__card:hover .orb__ring,
+  .steps__card:hover .orb::before { animation-duration: 4s; }
 
   .bub {
     display: inline-block;
@@ -304,12 +315,9 @@ const t = isDE ? {
   }
   .bub--agent { background: var(--color-bg); color: var(--color-text-primary); align-self: flex-start; }
   .bub--self { background: var(--brand-blue); color: #fff; align-self: flex-end; }
-  .steps__card:hover .bub,
-  .steps__card:focus-within .bub { opacity: 1; transform: none; }
-  .steps__card:hover .bub--self,
-  .steps__card:focus-within .bub--self { transition-delay: 0.45s; }
-  .steps__card:hover .bub--late,
-  .steps__card:focus-within .bub--late { transition-delay: 0.85s; }
+  .steps__card.is-visible .bub { opacity: 1; transform: none; }
+  .steps__card.is-visible .bub--self { transition-delay: 0.6s; }
+  .steps__card.is-visible .bub--late { transition-delay: 1s; }
 
   /* ── Einblicke ─────────────────────────────────────────────────────── */
   .theme + .theme { margin-top: 11px; }
@@ -331,8 +339,7 @@ const t = isDE ? {
     transition: width 0.7s var(--ease-out);
     transition-delay: calc(0.25s + var(--i) * 0.12s);
   }
-  .steps__card:hover .theme__track i,
-  .steps__card:focus-within .theme__track i { width: var(--w); }
+  .steps__card.is-visible .theme__track i { width: var(--w); }
 
   @media (max-width: 1023px) {
     .steps__grid { grid-template-columns: minmax(0, 1fr); }
@@ -341,17 +348,11 @@ const t = isDE ? {
     .steps { padding: var(--space-24) 0; }
     .steps__head { margin-bottom: var(--space-12); }
     .steps__heading span { text-wrap: balance; }
-    /* Ohne Hover auf dem Handy: Fenster dauerhaft zeigen. */
-    .steps__reveal { grid-template-rows: 1fr; }
-    .win { opacity: 1; transform: none; }
-    .win__q { max-width: none; }
-    .theme__track i { width: var(--w); }
-    .bub { opacity: 1; transform: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .steps__reveal { transition: none; }
-    .win, .bub { transition: none; }
+    .win, .bub { transition: none; opacity: 1; transform: none; }
+    .orb { animation: none; }
     .win__q { animation: none; max-width: none; }
     .win__caret { animation: none; }
     .orb__ring, .orb::before { animation: none; }

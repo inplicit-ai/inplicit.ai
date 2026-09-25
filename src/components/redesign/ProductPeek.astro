@@ -1,113 +1,181 @@
 ---
-// Das Ergebnisfenster. Die Zahlen sind Beispielwerte aus einer Kampagne und
-// als solche gekennzeichnet; sie stammen nicht aus einem echten Piloten.
+// Ausschnitt aus dem echten Dashboard (Figma: Einblicke-Screen). Bewusst kein
+// Balken-und-Torten-Dashboard: die Belege pro Befund und die Zitatnummern im
+// Antworttext sind das, was Inplicit von einer Marktforschungsauswertung
+// unterscheidet. Farben innerhalb des Fensters folgen dem Produkt (Indigo),
+// nicht der Website (Orange).
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
-const tiles = isDE
-  ? [{ v: '128', l: 'Interviews geführt' }, { v: '9', l: 'Themen erkannt' }, { v: '84 %', l: 'Konfidenz' }]
-  : [{ v: '128', l: 'Interviews run' }, { v: '9', l: 'Themes found' }, { v: '84 %', l: 'Confidence' }];
+const PARTICIPANTS = 41;
 
-const bars = isDE ? [
-  { l: 'Freigaben hängen', v: 34 },
-  { l: 'Doppelte Erfassung', v: 28 },
-  { l: 'Übergaben unklar', v: 22 },
-  { l: 'Systemwechsel', v: 17 },
-  { l: 'Wartezeiten', v: 13 },
-  { l: 'Rückfragen', v: 8 },
-] : [
-  { l: 'Approvals stall', v: 34 },
-  { l: 'Duplicate entry', v: 28 },
-  { l: 'Unclear handovers', v: 22 },
-  { l: 'System switching', v: 17 },
-  { l: 'Waiting time', v: 13 },
-  { l: 'Follow-up queries', v: 8 },
-];
-const max = 34;
-
-const slices = isDE
-  ? [{ l: 'Problem', v: 47 }, { l: 'Idee', v: 31 }, { l: 'Chance', v: 22 }]
-  : [{ l: 'Problem', v: 47 }, { l: 'Idea', v: 31 }, { l: 'Opportunity', v: 22 }];
-const hues = ['var(--color-accent-dark)', 'var(--brand-blue)', 'var(--brand-periwinkle)'];
-
-// Der Ring wird als SVG gezeichnet, nicht als conic-gradient: der Verlauf kam
-// in Chromium hier als `none` an, die Bogenlaenge ist zuverlaessiger.
-const R = 54;
-const C = 2 * Math.PI * R;
-const GAP = 3;
-let acc = 0;
-const arcs = slices.map((s, i) => {
-  const start = (acc / 100) * C;
-  acc += s.v;
-  const len = Math.max(1, (s.v / 100) * C - GAP);
-  return { hue: hues[i], dash: `${len} ${C - len}`, offset: -start, delay: 0.15 + i * 0.16 };
-});
+const t = isDE ? {
+  label: 'Das Produkt',
+  heading: 'Und so sieht das Ergebnis aus.',
+  sub: 'Ein Bericht, der auf Gesprächen beruht. Jede Aussage lässt sich bis zur Person zurückverfolgen, die sie gemacht hat.',
+  crumb: ['Kampagnen', 'Angebotserstellung', 'Einblicke'],
+  title: 'Abläufe bei der Angebotserstellung',
+  meta: 'Ausgewertet · DE · 22 Min · 41 von 48 Gesprächen',
+  share: 'Bericht teilen',
+  stats: [
+    { k: 'Teilnehmer', v: '41', s: 'befragt' },
+    { k: 'Befunde', v: '12', s: 'Themen' },
+    { k: 'Breit belegt', v: '4', s: 'von 12' },
+    { k: 'Konfidenz', v: '84 %', s: 'der Befunde', note: true },
+  ],
+  tabs: ['Übersicht', 'Teilnehmer', 'Interviews', 'Einblicke', 'Cross-Validation'],
+  activeTab: 'Einblicke',
+  answerHead: 'Die Antwort auf Ihre Frage',
+  question: 'Wie läuft die Angebotserstellung heute wirklich ab?',
+  answer: [
+    'Angebote entstehen überwiegend in Einzelarbeit und ohne gemeinsame Grundlage',
+    'die Kalkulation hängt an der Erfahrung einzelner Mitarbeitender',
+    'Preise und Textbausteine werden aus alten Angeboten kopiert, die niemand pflegt',
+    'Freigaben laufen je nach Volumen über unterschiedliche Wege',
+  ],
+  costHead: 'Was der Ablauf kostet',
+  themes: [
+    { l: 'Zeitverlust', n: 18, d: 'Suche nach Vorlagen, Rückfragen zur Kalkulation' },
+    { l: 'Uneinheitliche Preise', n: 13, d: 'Gleiche Leistung, unterschiedliche Angebote' },
+    { l: 'Freigaben unklar', n: 9, d: 'Ab welchem Volumen wer zustimmt, ist nicht gesetzt' },
+    { l: 'Nacharbeit', n: 7, d: 'Angebote gehen mehrfach zurück in die Fachabteilung' },
+  ],
+  of: 'von',
+  footnote: 'Konfidenz: Anteil der Befunde, die mehr als eine Person unabhängig voneinander genannt hat. Ausgezählt, nicht geschätzt.',
+} : {
+  label: 'The product',
+  heading: 'And this is what you get.',
+  sub: 'A report built from conversations. Every statement traces back to the person who made it.',
+  crumb: ['Campaigns', 'Quoting process', 'Insights'],
+  title: 'How quotes actually get written',
+  meta: 'Analysed · EN · 22 min · 41 of 48 conversations',
+  share: 'Share report',
+  stats: [
+    { k: 'Participants', v: '41', s: 'interviewed' },
+    { k: 'Findings', v: '12', s: 'themes' },
+    { k: 'Broadly evidenced', v: '4', s: 'of 12' },
+    { k: 'Confidence', v: '84 %', s: 'of findings', note: true },
+  ],
+  tabs: ['Overview', 'Participants', 'Interviews', 'Insights', 'Cross-validation'],
+  activeTab: 'Insights',
+  answerHead: 'The answer to your question',
+  question: 'How does our quoting process actually work today?',
+  answer: [
+    'quotes are written individually, without a shared basis',
+    'pricing depends on the experience of a few people',
+    'prices and text blocks are copied from old quotes nobody maintains',
+    'approvals take different routes depending on deal size',
+  ],
+  costHead: 'What the process costs',
+  themes: [
+    { l: 'Time lost', n: 18, d: 'Hunting for templates, queries about pricing' },
+    { l: 'Inconsistent pricing', n: 13, d: 'Same service, different quotes' },
+    { l: 'Unclear approvals', n: 9, d: 'Who signs off at what value is not set' },
+    { l: 'Rework', n: 7, d: 'Quotes bounce back to the department repeatedly' },
+  ],
+  of: 'of',
+  footnote: 'Confidence: share of findings named independently by more than one person. Counted, not estimated.',
+};
 ---
 
 <section class="peek" id="produkt">
   <div class="container">
     <div class="peek__head section-fade">
-      <p class="rlabel">{isDE ? 'Das Produkt' : 'The product'}</p>
-      <h2 class="peek__heading">{isDE ? 'Und so sieht das Ergebnis aus.' : 'And this is what you get.'}</h2>
-      <p class="peek__sub">
-        {isDE
-          ? 'Ein Bericht, der auf Gesprächen beruht. Jede Zahl lässt sich bis zur Aussage zurückverfolgen.'
-          : 'A report built from conversations. Every number traces back to what someone said.'}
-      </p>
+      <p class="rlabel">{t.label}</p>
+      <h2 class="peek__heading">{t.heading}</h2>
+      <p class="peek__sub">{t.sub}</p>
     </div>
 
     <div class="peek__win section-fade" style="--delay: 90ms">
-      <div class="peek__bar">
-        <span>{isDE ? 'Kampagnen' : 'Campaigns'}</span>
-        <span class="peek__sep">›</span>
-        <span class="peek__here">{isDE ? 'Einblicke' : 'Insights'}</span>
-      </div>
+      <!-- Seitenleiste, stark vereinfacht -->
+      <aside class="dash__side" aria-hidden="true">
+        <div class="dash__brand"><span class="dash__mark"></span>Inplicit</div>
+        <div class="dash__org">
+          <span class="dash__org-badge">I</span>
+          <span class="dash__org-name">Inplicit GmbH</span>
+        </div>
+        <p class="dash__group">{isDE ? 'Kampagnen' : 'Campaigns'}</p>
+        <span class="dash__item is-active">{isDE ? 'Übersicht' : 'Overview'}</span>
+        <span class="dash__item">{isDE ? 'Erstellen' : 'Create'}</span>
+        <p class="dash__group">{isDE ? 'Organisation' : 'Organisation'}</p>
+        <span class="dash__item">{isDE ? 'Belegschaft' : 'Workforce'}</span>
+        <span class="dash__item">{isDE ? 'Kontext' : 'Context'}</span>
+      </aside>
 
-      <div class="peek__body">
-        <div class="peek__tiles">
-          {tiles.map((t) => (
-            <div class="peek__tile">
-              <p class="peek__tile-v">{t.v}</p>
-              <p class="peek__tile-l">{t.l}</p>
-            </div>
+      <div class="dash__main">
+        <div class="dash__top">
+          {t.crumb.map((c, i) => (
+            <>
+              {i > 0 && <span class="dash__sep">›</span>}
+              <span class={i === t.crumb.length - 1 ? 'dash__here' : ''}>{c}</span>
+            </>
           ))}
         </div>
 
-        <div class="peek__charts">
-          <div class="peek__card">
-            <p class="peek__card-t">{isDE ? 'Nennungen je Thema' : 'Mentions per theme'}</p>
-            <ul class="peek__bars">
-              {bars.map((b) => (
-                <li class="peek__row">
-                  <span class="peek__row-l">{b.l}</span>
-                  <span class="peek__track"><i style={`--w:${(b.v / max) * 100}%; --i:${bars.indexOf(b)}`}></i></span>
-                  <span class="peek__row-v">{b.v}</span>
-                </li>
-              ))}
-            </ul>
+        <div class="dash__body">
+          <header class="dash__camp">
+            <span class="dash__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 7h5v5H6zM13 12h5v5h-5zM11 9.5h2M14.5 12V9.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="dash__camp-txt">
+              <h3 class="dash__title">{t.title}</h3>
+              <p class="dash__meta"><i class="dash__dot"></i>{t.meta}</p>
+            </div>
+            <span class="dash__share">{t.share}</span>
+          </header>
+
+          <div class="dash__stats">
+            {t.stats.map((s) => (
+              <div class="dash__stat">
+                <p class="dash__stat-k">{s.k}{s.note && <sup class="dash__sup">1</sup>}</p>
+                <p class="dash__stat-v">{s.v}</p>
+                <p class="dash__stat-s">{s.s}</p>
+              </div>
+            ))}
           </div>
 
-          <div class="peek__card peek__card--donut">
-            <p class="peek__card-t">{isDE ? 'Art der Einblicke' : 'Type of insight'}</p>
-            <svg class="peek__donut" viewBox="0 0 140 140" role="img" aria-label={slices.map((s) => `${s.l} ${s.v} Prozent`).join(', ')}>
-              <g transform="rotate(-90 70 70)" fill="none" stroke-width="20">
-                {arcs.map((a) => (
-                  <circle cx="70" cy="70" r={R} stroke={a.hue} stroke-dashoffset={a.offset} style={`--dash:${a.dash}; --d:${a.delay}s`} />
+          <nav class="dash__tabs">
+            {t.tabs.map((tab) => (
+              <span class:list={['dash__tab', { 'is-on': tab === t.activeTab }]}>{tab}</span>
+            ))}
+          </nav>
+
+          <div class="dash__cols">
+            <div class="dash__col">
+              <h4 class="dash__h">{t.answerHead}</h4>
+              <p class="dash__q">{t.question}</p>
+              <p class="dash__a">
+                {t.answer.map((part, i) => (
+                  <>
+                    {i === 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part}
+                    <span class="dash__cite">({i + 1})</span>
+                    {i < t.answer.length - 1 ? ', ' : '.'}
+                  </>
                 ))}
-              </g>
-            </svg>
-            <ul class="peek__legend">
-              {slices.map((s, i) => (
-                <li>
-                  <span class="peek__key"><i style={`background:${hues[i]}`}></i>{s.l}</span>
-                  <span class="peek__pct">{s.v} %</span>
-                </li>
-              ))}
-            </ul>
+              </p>
+            </div>
+
+            <div class="dash__col">
+              <h4 class="dash__h">{t.costHead}</h4>
+              <ul class="dash__themes">
+                {t.themes.map((th, i) => (
+                  <li class="dash__theme" style={`--w:${Math.round((th.n / PARTICIPANTS) * 100)}%; --i:${i}`}>
+                    <div class="dash__theme-row">
+                      <span class="dash__theme-l">{th.l}</span>
+                      <span class="dash__theme-n">{th.n} {t.of} {PARTICIPANTS}</span>
+                    </div>
+                    <span class="dash__bar"><i></i></span>
+                    <p class="dash__theme-d">{th.d}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
+          <p class="dash__foot"><sup class="dash__sup">1</sup>{t.footnote}</p>
         </div>
       </div>
     </div>
@@ -120,130 +188,166 @@ const arcs = slices.map((s, i) => {
     background: var(--color-surface);
     border-top: 1px solid var(--color-border);
   }
-
   .peek__head { text-align: center; margin-bottom: var(--space-12); }
-  .peek__heading { margin-top: var(--space-4); }
-
   .peek__heading {
+    margin-top: var(--space-4);
     font-size: clamp(2rem, 3.6vw, 3rem);
     font-weight: 400;
     line-height: 1.1;
     letter-spacing: -0.035em;
   }
-
   .peek__sub {
-    max-width: 56ch;
+    max-width: 60ch;
     margin: var(--space-5) auto 0;
     font-size: var(--text-lg);
     line-height: 1.6;
     color: var(--color-text-secondary);
+    text-wrap: pretty;
   }
 
+  /* ── Fensterrahmen ─────────────────────────────────────────────────── */
   .peek__win {
+    display: grid;
+    grid-template-columns: 178px minmax(0, 1fr);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     overflow: hidden;
-    background: var(--color-surface);
+    background: #fff;
     box-shadow: 0 22px 54px -26px rgba(11, 12, 16, 0.22);
   }
 
-  .peek__bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: var(--space-4) var(--space-6);
-    background: var(--color-bg);
+  .dash__side {
+    background: #f5f5f7;
+    border-right: 1px solid var(--color-border);
+    padding: 16px 14px;
+    font-size: 11.5px;
+    color: #3c3c43;
+  }
+  .dash__brand { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13px; color: #0b0c10; }
+  .dash__mark { width: 14px; height: 14px; border-radius: 4px; background: #0b0c10; }
+  .dash__org {
+    display: flex; align-items: center; gap: 7px;
+    margin: 14px 0 18px; padding: 7px 8px;
+    background: #fff; border: 1px solid #e6e6ea; border-radius: 7px;
+  }
+  .dash__org-badge {
+    display: grid; place-items: center;
+    width: 17px; height: 17px; border-radius: 4px;
+    background: #e6e6ea; font-size: 9px; font-weight: 600;
+  }
+  .dash__org-name { font-size: 11px; font-weight: 500; }
+  .dash__group {
+    margin: 14px 0 6px;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #8e8e93;
+  }
+  .dash__item { display: block; padding: 5px 7px; border-radius: 6px; color: #3c3c43; }
+  .dash__item.is-active { background: #eaeafa; color: #5856d6; font-weight: 500; }
+
+  .dash__main { min-width: 0; }
+  .dash__top {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 20px;
     border-bottom: 1px solid var(--color-border);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    font-size: 11.5px; color: #6e6e73;
   }
-  .peek__sep { color: var(--color-text-tertiary); }
-  .peek__here { color: var(--color-text-primary); font-weight: 500; }
+  .dash__sep { color: #c7c7cc; }
+  .dash__here { color: #0b0c10; font-weight: 500; }
 
-  .peek__body { padding: var(--space-8) var(--space-8) var(--space-10); }
+  .dash__body { padding: 22px 24px 20px; }
 
-  .peek__tiles {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-5);
-    margin-bottom: var(--space-6);
+  .dash__camp { display: flex; align-items: center; gap: 14px; }
+  .dash__icon {
+    display: grid; place-items: center;
+    width: 42px; height: 42px; flex: 0 0 auto;
+    border-radius: 11px;
+    background: linear-gradient(160deg, #3b8cf0 0%, #1a72e0 60%, #1358b8 100%);
   }
-  .peek__tile {
-    padding: var(--space-6);
-    background: var(--color-bg);
-    border-radius: var(--radius-card);
-  }
-  .peek__tile-v { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; }
-  .peek__tile-l { margin-top: 2px; font-size: var(--text-sm); color: var(--color-text-secondary); }
-
-  .peek__charts {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-    gap: var(--space-5);
-    align-items: stretch;
+  .dash__icon svg { width: 22px; height: 22px; }
+  .dash__camp-txt { flex: 1 1 auto; min-width: 0; }
+  .dash__title { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; color: #0b0c10; }
+  .dash__meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 11.5px; color: #6e6e73; }
+  .dash__dot { width: 6px; height: 6px; border-radius: 50%; background: #34c759; }
+  .dash__share {
+    flex: 0 0 auto;
+    padding: 6px 12px; border-radius: 999px;
+    background: #5856d6; color: #fff;
+    font-size: 11.5px; font-weight: 500;
   }
 
-  .peek__card {
-    padding: var(--space-6);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
+  .dash__stats {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 20px 0 0;
+    border: 1px solid var(--color-border); border-radius: 10px;
+    overflow: hidden;
   }
-  .peek__card-t { margin-bottom: var(--space-5); font-size: var(--text-sm); font-weight: 500; }
+  .dash__stat { padding: 12px 14px; text-align: center; }
+  .dash__stat + .dash__stat { border-left: 1px solid var(--color-border); }
+  .dash__stat-k { font-size: 9px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8e8e93; }
+  .dash__stat-v { margin-top: 4px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; color: #0b0c10; }
+  .dash__stat-s { font-size: 10.5px; color: #8e8e93; }
+  .dash__sup { font-size: 8px; color: #5856d6; margin-left: 2px; vertical-align: super; }
 
-  .peek__bars { display: flex; flex-direction: column; gap: var(--space-4); }
-  .peek__row {
-    display: grid;
-    grid-template-columns: 150px minmax(0, 1fr) 28px;
-    align-items: center;
-    gap: var(--space-4);
+  .dash__tabs {
+    display: flex; gap: 18px;
+    margin: 18px 0 0; padding-bottom: 9px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 11.5px; color: #6e6e73;
+    overflow: hidden;
   }
-  .peek__row-l { font-size: var(--text-sm); color: var(--color-text-secondary); text-align: right; }
-  .peek__track { display: block; height: 20px; }
-  .peek__track i {
-    display: block;
-    width: 0;
-    height: 100%;
-    border-radius: 5px;
-    background: var(--color-accent-dark);
-    transition: width 0.75s var(--ease-out);
-    transition-delay: calc(0.15s + var(--i, 0) * 0.07s);
+  .dash__tab.is-on {
+    color: #0b0c10; font-weight: 500;
+    box-shadow: inset 0 -2px 0 #5856d6;
+    padding-bottom: 9px; margin-bottom: -9px;
   }
-  .peek__win.is-visible .peek__track i { width: var(--w); }
-  .peek__row-v { font-size: var(--text-sm); font-weight: 500; }
 
-  .peek__card--donut { display: flex; flex-direction: column; align-items: center; }
-  .peek__donut {
-    width: 190px;
-    height: 190px;
-    margin: var(--space-2) 0 var(--space-6);
+  .dash__cols {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 18px;
   }
-  /* Die Boegen zeichnen sich nacheinander, sobald das Fenster sichtbar wird. */
-  .peek__donut circle {
-    stroke-dasharray: 0 400;
-    transition: stroke-dasharray 0.8s var(--ease-out);
-    transition-delay: var(--d, 0s);
-  }
-  .peek__win.is-visible .peek__donut circle { stroke-dasharray: var(--dash); }
+  .dash__h { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: #0b0c10; }
+  .dash__q { margin-top: 8px; font-size: 12.5px; font-weight: 600; color: #0b0c10; }
+  .dash__a { margin-top: 8px; font-size: 12px; line-height: 1.65; color: #3c3c43; }
+  .dash__cite { color: #5856d6; font-weight: 500; margin-left: 2px; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .peek__donut circle { stroke-dasharray: var(--dash); transition: none; }
-    .peek__track i { width: var(--w); transition: none; }
+  .dash__themes { margin-top: 10px; list-style: none; }
+  .dash__theme { padding: 9px 0; border-bottom: 1px solid #ededf0; }
+  .dash__theme-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .dash__theme-l { font-size: 12px; font-weight: 600; color: #0b0c10; }
+  .dash__theme-n { font-size: 10.5px; color: #8e8e93; white-space: nowrap; }
+  .dash__bar { display: block; height: 3px; margin-top: 6px; border-radius: 2px; background: #f2f2f7; }
+  .dash__bar i {
+    display: block; width: 0; height: 100%;
+    border-radius: 2px; background: #5856d6;
+    transition: width 0.7s var(--ease-out);
+    transition-delay: calc(0.2s + var(--i, 0) * 0.09s);
   }
-  .peek__legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  .peek__legend li { display: flex; align-items: center; justify-content: space-between; font-size: var(--text-sm); }
-  .peek__key { display: inline-flex; align-items: center; gap: 10px; color: var(--color-text-secondary); }
-  .peek__key i { width: 11px; height: 11px; border-radius: 3px; }
-  .peek__pct { font-weight: 500; }
+  .peek__win.is-visible .dash__bar i { width: var(--w); }
+  .dash__theme-d { margin-top: 5px; font-size: 11px; color: #6e6e73; }
+
+  .dash__foot {
+    margin-top: 18px; padding-top: 12px;
+    border-top: 1px solid #ededf0;
+    font-size: 10.5px; line-height: 1.55; color: #8e8e93;
+  }
 
   @media (max-width: 1023px) {
-    .peek__charts { grid-template-columns: minmax(0, 1fr); }
-    .peek__row { grid-template-columns: 120px minmax(0, 1fr) 24px; }
+    .peek__win { grid-template-columns: minmax(0, 1fr); }
+    .dash__side { display: none; }
+    .dash__cols { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   }
   @media (max-width: 767px) {
     .peek { padding: var(--space-24) 0; }
-    .peek__body { padding: var(--space-5); }
-    .peek__tiles { grid-template-columns: minmax(0, 1fr); }
-    .peek__row { grid-template-columns: 96px minmax(0, 1fr) 22px; gap: var(--space-3); }
-    .peek__row-l { font-size: var(--text-xs); }
+    .dash__body { padding: 16px 14px 14px; }
+    .dash__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dash__stat:nth-child(3) { border-left: none; }
+    .dash__stat:nth-child(n + 3) { border-top: 1px solid var(--color-border); }
+    .dash__tabs { gap: 14px; }
+    .dash__title { font-size: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dash__bar i { width: var(--w); transition: none; }
   }
 </style>
