@@ -84,6 +84,9 @@ const t = isDE ? {
                 </span>
               </div>
             </div>
+            <span class="win__pointer" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5.5 3.5l13.5 7.8-6.1 1.3-2.7 5.9z" fill="#0b0c10" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </span>
           </div>
         </div></div>
       </article>
@@ -98,7 +101,10 @@ const t = isDE ? {
             <div class="win__bar"><i class="win__dot"></i>{t.interview}</div>
             <div class="win__body win__body--chat">
               <div class="chat__row">
-                <span class="orb" aria-hidden="true"><span class="orb__ring"></span></span>
+                <span class="orb" aria-hidden="true">
+                  <canvas class="orb__canvas" data-orb></canvas>
+                  <span class="orb__ring"></span>
+                </span>
                 <span class="bub bub--agent">{t.ask}</span>
               </div>
               <span class="bub bub--self">{t.answer}</span>
@@ -130,6 +136,26 @@ const t = isDE ? {
     </div>
   </div>
 </section>
+
+<script>
+  // Der echte Orb aus dem Produkt (WebGL), nicht die CSS-Nachbildung.
+  // Die Nachbildung bleibt als Rueckfall, falls WebGL fehlt.
+  import { createImplicitOrb } from '../../scripts/orb.js';
+
+  const host = document.querySelector<HTMLElement>('.orb');
+  const canvas = host?.querySelector<HTMLCanvasElement>('canvas[data-orb]');
+  if (host && canvas) {
+    const orb = createImplicitOrb(canvas, { level: 0.38 });
+    if (orb.supported) {
+      host.classList.add('is-live');
+      const io = new IntersectionObserver(
+        (entries) => { entries[0].isIntersecting ? orb.start() : orb.stop(); },
+        { threshold: 0.1 }
+      );
+      io.observe(host);
+    }
+  }
+</script>
 
 <style>
   .steps {
@@ -212,6 +238,52 @@ const t = isDE ? {
   .steps__card.is-visible .win { opacity: 1; transform: none; }
   .steps__card:hover .win { box-shadow: 0 12px 28px -20px rgba(11, 12, 16, 0.3); }
 
+  /* Der Zeiger faehrt beim Hover zum Senden-Knopf und klickt. */
+  .win { position: relative; }
+  .win__pointer {
+    position: absolute;
+    left: 22%;
+    bottom: 2px;
+    width: 15px;
+    height: 15px;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 4px rgba(11, 12, 16, 0.3));
+  }
+  .steps__card:hover .win__pointer { animation: win-point 2.4s var(--ease-out) both; }
+  @keyframes win-point {
+    0%   { opacity: 0; left: 22%; bottom: -10px; }
+    22%  { opacity: 1; left: 30%; bottom: 6px; }
+    58%  { opacity: 1; left: calc(100% - 34px); bottom: 15px; }
+    66%  { opacity: 1; left: calc(100% - 34px); bottom: 11px; }
+    74%  { opacity: 1; left: calc(100% - 34px); bottom: 15px; }
+    100% { opacity: 0; left: calc(100% - 34px); bottom: 15px; }
+  }
+  .win__send { position: relative; }
+  .steps__card:hover .win__send::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    animation: win-click 0.55s var(--ease-out) 1.56s both;
+  }
+  @keyframes win-click {
+    from { opacity: 0.85; transform: scale(0.65); }
+    to { opacity: 0; transform: scale(1.3); }
+  }
+
+  .orb__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+  }
+  .orb.is-live .orb__canvas { display: block; }
+  .orb.is-live .orb__ring,
+  .orb.is-live::before { display: none; }
+
   .win__bar {
     display: flex;
     align-items: center;
@@ -231,16 +303,14 @@ const t = isDE ? {
   .win__typed { display: flex; align-items: flex-end; gap: 2px; margin-top: 10px; }
   .win__q {
     display: inline-block;
-    max-width: 0;
+    max-width: calc(var(--len) * 1ch);
     overflow: hidden;
     white-space: nowrap;
     font-size: 0.9375rem;
     line-height: 1.5;
   }
-  .steps__card.is-visible .win__q {
-    animation: win-type 1.6s steps(30) 0.5s forwards;
-  }
-  @keyframes win-type { to { max-width: calc(var(--len) * 1ch); } }
+  .steps__card:hover .win__q { animation: win-type 1.25s steps(30) 0.15s both; }
+  @keyframes win-type { from { max-width: 0; } to { max-width: calc(var(--len) * 1ch); } }
 
   .win__caret {
     width: 2px;
@@ -274,8 +344,8 @@ const t = isDE ? {
   .orb {
     position: relative;
     flex: 0 0 auto;
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     animation: orb-pulse 2.8s ease-in-out infinite;
   }
   @keyframes orb-pulse {
@@ -309,15 +379,17 @@ const t = isDE ? {
     border-radius: 10px;
     font-size: 0.78rem;
     line-height: 1.45;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
   }
   .bub--agent { background: var(--color-bg); color: var(--color-text-primary); align-self: flex-start; }
   .bub--self { background: var(--brand-blue); color: #fff; align-self: flex-end; }
-  .steps__card.is-visible .bub { opacity: 1; transform: none; }
-  .steps__card.is-visible .bub--self { transition-delay: 0.6s; }
-  .steps__card.is-visible .bub--late { transition-delay: 1s; }
+  .steps__card:hover .bub { animation: bub-in 0.4s var(--ease-out) backwards; }
+  .steps__card:hover .chat__row .bub { animation-delay: 0.15s; }
+  .steps__card:hover .bub--self { animation-delay: 0.8s; }
+  .steps__card:hover .bub--late { animation-delay: 1.45s; }
+  @keyframes bub-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: none; }
+  }
 
   /* ── Einblicke ─────────────────────────────────────────────────────── */
   .theme + .theme { margin-top: 11px; }
@@ -332,14 +404,16 @@ const t = isDE ? {
   }
   .theme__track i {
     display: block;
-    width: 0;
+    width: var(--w);
     height: 100%;
     border-radius: 5px;
     background: var(--color-accent);
-    transition: width 0.7s var(--ease-out);
-    transition-delay: calc(0.25s + var(--i) * 0.12s);
   }
-  .steps__card.is-visible .theme__track i { width: var(--w); }
+  .steps__card:hover .theme__track i {
+    animation: bar-grow 0.75s var(--ease-out) backwards;
+    animation-delay: calc(0.15s + var(--i) * 0.13s);
+  }
+  @keyframes bar-grow { from { width: 0; } to { width: var(--w); } }
 
   @media (max-width: 1023px) {
     .steps__grid { grid-template-columns: minmax(0, 1fr); }
@@ -351,8 +425,14 @@ const t = isDE ? {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .win, .bub { transition: none; opacity: 1; transform: none; }
+    .win { transition: none; opacity: 1; transform: none; }
     .orb { animation: none; }
+    .steps__card:hover .win__q,
+    .steps__card:hover .bub,
+    .steps__card:hover .theme__track i,
+    .steps__card:hover .win__pointer,
+    .steps__card:hover .win__send::after { animation: none; }
+    .win__pointer { display: none; }
     .win__q { animation: none; max-width: none; }
     .win__caret { animation: none; }
     .orb__ring, .orb::before { animation: none; }
