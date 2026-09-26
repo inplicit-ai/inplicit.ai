@@ -29,6 +29,19 @@ const t = isDE ? {
     { l: 'Doppelte Erfassung', v: 78 },
     { l: 'Übergaben unklar', v: 58 },
   ],
+  slices: [
+    { l: 'Problem', v: 47 },
+    { l: 'Idee', v: 31 },
+    { l: 'Chance', v: 22 },
+  ],
+  planHead: 'Kampagne fertig konzipiert',
+  planItems: [
+    'Abstimmungen und Rückfragen',
+    'Freigaben und Wartezeiten',
+    'Doppelte Erfassung',
+    'Werkzeug- und Systemwechsel',
+    'Übergaben zwischen Teams',
+  ],
 } : {
   eyebrow: 'How it works',
   h1: 'You ask a question.',
@@ -50,7 +63,34 @@ const t = isDE ? {
     { l: 'Duplicate entry', v: 78 },
     { l: 'Unclear handovers', v: 58 },
   ],
+  slices: [
+    { l: 'Problem', v: 47 },
+    { l: 'Idea', v: 31 },
+    { l: 'Opportunity', v: 22 },
+  ],
+  planHead: 'Campaign ready',
+  planItems: [
+    'Coordination and follow-up queries',
+    'Approvals and waiting time',
+    'Duplicate entry',
+    'Switching tools and systems',
+    'Handovers between teams',
+  ],
 };
+
+// Ring in Karte 3: Boegen als Kreisumfang gerechnet, damit sie sich beim
+// Sichtbarwerden und beim Hover zeichnen lassen.
+const RING_R = 27;
+const RING_C = 2 * Math.PI * RING_R;
+const RING_GAP = 3;
+const HUES = ['var(--color-accent-dark)', '#5856d6', 'var(--brand-periwinkle)'];
+let ringAcc = 0;
+const arcs = t.slices.map((sl, i) => {
+  const start = (ringAcc / 100) * RING_C;
+  ringAcc += sl.v;
+  const len = Math.max(1, (sl.v / 100) * RING_C - RING_GAP);
+  return { hue: HUES[i], dash: `${len} ${RING_C - len}`, offset: -start, delay: 0.2 + i * 0.16 };
+});
 ---
 
 <section class="steps" id="so-gehts">
@@ -87,6 +127,18 @@ const t = isDE ? {
             <span class="win__pointer" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M5.5 3.5l13.5 7.8-6.1 1.3-2.7 5.9z" fill="#0b0c10" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
             </span>
+
+            <div class="plan"><div class="plan__in">
+              <p class="plan__head">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {t.planHead}
+              </p>
+              <ul class="plan__list">
+                {t.planItems.map((item, i) => (
+                  <li style={`--i:${i}`}>{item}</li>
+                ))}
+              </ul>
+            </div></div>
           </div>
         </div></div>
       </article>
@@ -107,9 +159,30 @@ const t = isDE ? {
                 </span>
                 <span class="chat__who">{t.agent}</span>
               </div>
-              <span class="bub bub--agent">{t.ask}</span>
-              <span class="bub bub--self">{t.answer}</span>
-              <span class="bub bub--agent bub--late">{t.followup}</span>
+              <div class="msg">
+                <span class="msg__mark" aria-hidden="true">
+                  <svg viewBox="5 5 34 34" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z" fill="#0B0C10"/>
+                    <circle cx="20.41" cy="20.38" r="5.23" fill="#FFFFFF"/>
+                    <circle cx="23.59" cy="23.90" r="5.23" fill="#FCA157"/>
+                  </svg>
+                </span>
+                <span class="bub bub--agent">{t.ask}</span>
+              </div>
+              <div class="msg msg--self">
+                <span class="bub bub--self">{t.answer}</span>
+                <img class="msg__face" src="/people/s7.png" alt="" width="52" height="52" loading="lazy" decoding="async" />
+              </div>
+              <div class="msg msg--late">
+                <span class="msg__mark" aria-hidden="true">
+                  <svg viewBox="5 5 34 34" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M37.71 33.80 L10.24 37.71 L6.31 10.24 L33.80 6.31 Z" fill="#0B0C10"/>
+                    <circle cx="20.41" cy="20.38" r="5.23" fill="#FFFFFF"/>
+                    <circle cx="23.59" cy="23.90" r="5.23" fill="#FCA157"/>
+                  </svg>
+                </span>
+                <span class="bub bub--agent bub--late">{t.followup}</span>
+              </div>
             </div>
           </div>
         </div></div>
@@ -130,6 +203,21 @@ const t = isDE ? {
                   <span class="theme__track"><i></i></span>
                 </div>
               ))}
+
+              <div class="ring">
+                <svg class="ring__svg" viewBox="0 0 72 72" role="img" aria-label={t.slices.map((x) => `${x.l} ${x.v} Prozent`).join(', ')}>
+                  <g transform="rotate(-90 36 36)" fill="none" stroke-width="9">
+                    {arcs.map((a) => (
+                      <circle cx="36" cy="36" r={RING_R} stroke={a.hue} stroke-dashoffset={a.offset} style={`--dash:${a.dash}; --d:${a.delay}s`} />
+                    ))}
+                  </g>
+                </svg>
+                <ul class="ring__legend">
+                  {t.slices.map((x, i) => (
+                    <li><span class="ring__key"><i style={`background:${HUES[i]}`}></i>{x.l}</span><span class="ring__pct">{x.v} %</span></li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div></div>
@@ -398,8 +486,91 @@ const t = isDE ? {
     font-size: 0.78rem;
     line-height: 1.45;
   }
-  .bub--agent { background: var(--color-bg); color: var(--color-text-primary); align-self: flex-start; }
-  .bub--self { background: #5856d6; color: #fff; align-self: flex-end; }
+  .bub--agent { background: var(--color-bg); color: var(--color-text-primary); }
+  .bub--self { background: #5856d6; color: #fff; }
+
+  /* Zeile im Gespraech: links die Bildmarke, rechts das Profilbild. */
+  .msg { display: flex; align-items: flex-end; gap: 8px; }
+  .msg--self { justify-content: flex-end; }
+  .msg .bub { max-width: calc(100% - 32px); }
+  .msg__mark {
+    flex: 0 0 auto;
+    width: 22px; height: 22px;
+    display: grid; place-items: center;
+  }
+  .msg__mark svg { width: 22px; height: 22px; overflow: visible; }
+  .msg__face {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+  }
+
+  /* Karte 1: nach dem simulierten Klick waechst der Plan auf. */
+  .plan { display: grid; grid-template-rows: 0fr; }
+  .plan__in { overflow: hidden; min-height: 0; padding: 0 13px; }
+  .steps__card:hover .plan { animation: plan-open 0.5s var(--ease-out) 1.85s both; }
+  @keyframes plan-open { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
+
+  .plan__head {
+    display: flex; align-items: center; gap: 7px;
+    padding: 12px 0 9px;
+    border-top: 1px solid var(--color-border);
+    font-size: 12px; font-weight: 600;
+    color: var(--color-accent-dark);
+  }
+  .plan__head svg { width: 14px; height: 14px; flex: 0 0 auto; }
+  .plan__list { list-style: none; padding-bottom: 13px; }
+  .plan__list li {
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid rgba(252, 161, 87, 0.45);
+    margin-bottom: 4px;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: var(--color-text-secondary);
+    opacity: 0;
+  }
+  .steps__card:hover .plan__list li {
+    animation: plan-item 0.34s var(--ease-out) backwards;
+    animation-delay: calc(2.1s + var(--i) * 0.09s);
+    animation-fill-mode: forwards;
+  }
+  @keyframes plan-item {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Karte 3: Ring unter den Balken, nur auf dem Desktop. */
+  .ring { display: none; }
+  .ring__svg { width: 76px; height: 76px; flex: 0 0 auto; }
+  .ring__svg circle {
+    stroke-dasharray: 0 400;
+    transition: stroke-dasharray 0.8s var(--ease-out);
+    transition-delay: var(--d, 0s);
+  }
+  .steps__card.is-visible .ring__svg circle { stroke-dasharray: var(--dash); }
+  .steps__card:hover .ring__svg circle {
+    animation: ring-draw 0.8s var(--ease-out) backwards;
+    animation-delay: var(--d, 0s);
+  }
+  @keyframes ring-draw { from { stroke-dasharray: 0 400; } to { stroke-dasharray: var(--dash); } }
+  .ring__legend { flex: 1 1 auto; display: flex; flex-direction: column; gap: 5px; list-style: none; }
+  .ring__legend li { display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+  .ring__key { display: inline-flex; align-items: center; gap: 7px; color: var(--color-text-secondary); }
+  .ring__key i { width: 9px; height: 9px; border-radius: 2px; }
+  .ring__pct { font-weight: 500; }
+
+  @media (min-width: 1024px) {
+    .ring {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--color-border);
+    }
+  }
   .steps__card:hover .bub { animation: bub-in 0.4s var(--ease-out) backwards; }
   .steps__card:hover .chat__head { animation: bub-in 0.4s var(--ease-out) backwards; }
   .steps__card:hover .bub--self { animation-delay: 0.8s; }
@@ -440,6 +611,10 @@ const t = isDE ? {
     .steps { padding: var(--space-24) 0; }
     .steps__head { margin-bottom: var(--space-12); }
     .steps__heading span { text-wrap: balance; }
+    /* Ohne Hover laeuft die Klick-Animation nie, deshalb steht der Plan offen. */
+    .plan { grid-template-rows: 1fr; }
+    .plan__list li { opacity: 1; }
+    .win__pointer { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -449,7 +624,13 @@ const t = isDE ? {
     .steps__card:hover .bub,
     .steps__card:hover .theme__track i,
     .steps__card:hover .win__pointer,
-    .steps__card:hover .win__send::after { animation: none; }
+    .steps__card:hover .win__send::after,
+    .steps__card:hover .plan,
+    .steps__card:hover .plan__list li,
+    .steps__card:hover .ring__svg circle { animation: none; }
+    .plan { grid-template-rows: 1fr; }
+    .plan__list li { opacity: 1; }
+    .ring__svg circle { stroke-dasharray: var(--dash); transition: none; }
     .win__pointer { display: none; }
     .win__q { animation: none; max-width: none; }
     .win__caret { animation: none; }
