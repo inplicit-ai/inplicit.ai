@@ -8,11 +8,9 @@ const year = new Date().getFullYear();
 
 const mainLinks = lang === 'de'
   ? [
-      { href: '/de/#how-it-works', label: 'Wie es funktioniert' },
       { href: '/de/call', label: 'Demo buchen' },
     ]
   : [
-      { href: '/#how-it-works', label: 'How it works' },
       { href: '/call', label: 'Book demo' },
     ];
 
@@ -55,7 +53,7 @@ const legalLinks = lang === 'de'
     </div>
 
     <div class="footer__bottom">
-      <p class="footer__copy">© {year} inplicit.ai</p>
+      <p class="footer__copy">© {year} Inplicit</p>
 
       <nav class="footer__nav" aria-label={lang === 'de' ? 'Hauptnavigation' : 'Main navigation'}>
         {mainLinks.map((link) => (

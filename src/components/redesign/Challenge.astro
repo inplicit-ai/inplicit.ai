@@ -40,6 +40,10 @@ for (let r = 0; r < ROWS; r++) {
     </div>
 
     <div class="chal__viz section-fade" style="--delay: 90ms" aria-hidden="true">
+      <div class="chal__legend">
+        <span class="chal__key"><i class="chal__dot is-on"></i>{isDE ? 'dokumentiert' : 'documented'}</span>
+        <span class="chal__key"><i class="chal__dot"></i>{isDE ? 'nur in Köpfen' : 'only in people’s heads'}</span>
+      </div>
       <div class="chal__field">
         {dots.map((d, i) => (
           d === null
@@ -47,10 +51,12 @@ for (let r = 0; r < ROWS; r++) {
             : <span class:list={['chal__dot', { 'is-on': d }]} style={`--n: ${i}`}></span>
         ))}
       </div>
-      <div class="chal__legend">
-        <span class="chal__key"><i class="chal__dot is-on"></i>{isDE ? 'dokumentiert' : 'documented'}</span>
-        <span class="chal__key"><i class="chal__dot"></i>{isDE ? 'nur in Köpfen' : 'only in people’s heads'}</span>
-      </div>
+      <p class="chal__source">
+        {isDE
+          ? '42 % des Wissens einer Organisation liegen ausschließlich bei einzelnen Personen.'
+          : '42 % of an organisation’s knowledge sits with individual people alone.'}
+        <span class="chal__source-ref">Panopto / YouGov, 1.001 Beschäftigte, 2018</span>
+      </p>
     </div>
   </div>
 </section>
@@ -113,13 +119,30 @@ for (let r = 0; r < ROWS; r++) {
   }
   .chal__viz.is-visible .chal__dot { opacity: 1; transform: none; }
 
+  /* Legende steht ueber der Grafik, sonst liest man die Punkte zuerst
+     und erfaehrt erst danach, wofuer sie stehen. */
   .chal__legend {
     display: flex;
     justify-content: flex-end;
     gap: var(--space-6);
-    margin-top: var(--space-8);
+    margin-bottom: var(--space-6);
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
+  }
+
+  .chal__source {
+    max-width: 430px;
+    margin: var(--space-8) 0 0 auto;
+    text-align: right;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
+  .chal__source-ref {
+    display: block;
+    margin-top: 3px;
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
   }
   .chal__key { display: inline-flex; align-items: center; gap: 8px; }
   .chal__key .chal__dot { width: 11px; height: 11px; opacity: 1; transform: none; transition: none; }
@@ -128,6 +151,7 @@ for (let r = 0; r < ROWS; r++) {
     .chal__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
     .chal__field { margin: 0 auto; }
     .chal__legend { justify-content: center; }
+    .chal__source { margin-left: auto; margin-right: auto; text-align: center; }
   }
 
   @media (max-width: 767px) {

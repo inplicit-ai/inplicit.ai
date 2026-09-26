@@ -125,7 +125,7 @@ const arcs = t.slices.map((sl, i) => {
               </div>
             </div>
             <span class="win__pointer" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5.5 3.5l13.5 7.8-6.1 1.3-2.7 5.9z" fill="#0b0c10" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M6 2.4V19.9l4.3-4.1 2.8 5.8 2.8-1.3-2.7-5.7H19z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
             </span>
 
             <div class="plan"><div class="plan__in">
@@ -333,8 +333,8 @@ const arcs = t.slices.map((sl, i) => {
     position: absolute;
     left: 22%;
     bottom: 2px;
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     opacity: 0;
     pointer-events: none;
     filter: drop-shadow(0 2px 4px rgba(11, 12, 16, 0.3));
@@ -571,10 +571,12 @@ const arcs = t.slices.map((sl, i) => {
       border-top: 1px solid var(--color-border);
     }
   }
-  .steps__card:hover .bub { animation: bub-in 0.4s var(--ease-out) backwards; }
+  /* Die ganze Zeile animieren, sonst steht die Bildmarke schon da,
+     bevor ihre Blase erscheint. */
   .steps__card:hover .chat__head { animation: bub-in 0.4s var(--ease-out) backwards; }
-  .steps__card:hover .bub--self { animation-delay: 0.8s; }
-  .steps__card:hover .bub--late { animation-delay: 1.45s; }
+  .steps__card:hover .msg { animation: bub-in 0.4s var(--ease-out) backwards; }
+  .steps__card:hover .msg--self { animation-delay: 0.8s; }
+  .steps__card:hover .msg--late { animation-delay: 1.45s; }
   @keyframes bub-in {
     from { opacity: 0; transform: translateY(7px); }
     to { opacity: 1; transform: none; }
