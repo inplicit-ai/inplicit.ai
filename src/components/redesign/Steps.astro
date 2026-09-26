@@ -100,13 +100,14 @@ const t = isDE ? {
           <div class="win">
             <div class="win__bar"><i class="win__dot"></i>{t.interview}</div>
             <div class="win__body win__body--chat">
-              <div class="chat__row">
+              <div class="chat__head">
                 <span class="orb" aria-hidden="true">
                   <canvas class="orb__canvas" data-orb></canvas>
                   <span class="orb__ring"></span>
                 </span>
-                <span class="bub bub--agent">{t.ask}</span>
+                <span class="chat__who">{t.agent}</span>
               </div>
+              <span class="bub bub--agent">{t.ask}</span>
               <span class="bub bub--self">{t.answer}</span>
               <span class="bub bub--agent bub--late">{t.followup}</span>
             </div>
@@ -339,7 +340,24 @@ const t = isDE ? {
 
   /* ── Interview ─────────────────────────────────────────────────────── */
   .win__body--chat { display: flex; flex-direction: column; gap: 9px; }
-  .chat__row { display: flex; align-items: center; gap: 10px; }
+
+  /* Der Orb sitzt ueber dem Gespraech, nicht neben der ersten Blase:
+     er ist der Absender des ganzen Interviews, nicht einer Zeile. */
+  .chat__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 13px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .chat__who {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--color-text-secondary);
+  }
 
   .orb {
     position: relative;
@@ -381,9 +399,9 @@ const t = isDE ? {
     line-height: 1.45;
   }
   .bub--agent { background: var(--color-bg); color: var(--color-text-primary); align-self: flex-start; }
-  .bub--self { background: var(--brand-blue); color: #fff; align-self: flex-end; }
+  .bub--self { background: #5856d6; color: #fff; align-self: flex-end; }
   .steps__card:hover .bub { animation: bub-in 0.4s var(--ease-out) backwards; }
-  .steps__card:hover .chat__row .bub { animation-delay: 0.15s; }
+  .steps__card:hover .chat__head { animation: bub-in 0.4s var(--ease-out) backwards; }
   .steps__card:hover .bub--self { animation-delay: 0.8s; }
   .steps__card:hover .bub--late { animation-delay: 1.45s; }
   @keyframes bub-in {
