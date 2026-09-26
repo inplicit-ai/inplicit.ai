@@ -51,12 +51,6 @@ for (let r = 0; r < ROWS; r++) {
             : <span class:list={['chal__dot', { 'is-on': d }]} style={`--n: ${i}`}></span>
         ))}
       </div>
-      <p class="chal__source">
-        {isDE
-          ? '42 % des Wissens einer Organisation liegen ausschließlich bei einzelnen Personen.'
-          : '42 % of an organisation’s knowledge sits with individual people alone.'}
-        <span class="chal__source-ref">Panopto / YouGov, 1.001 Beschäftigte, 2018</span>
-      </p>
     </div>
   </div>
 </section>
@@ -130,20 +124,6 @@ for (let r = 0; r < ROWS; r++) {
     color: var(--color-text-secondary);
   }
 
-  .chal__source {
-    max-width: 430px;
-    margin: var(--space-8) 0 0 auto;
-    text-align: right;
-    font-size: var(--text-sm);
-    line-height: 1.5;
-    color: var(--color-text-secondary);
-  }
-  .chal__source-ref {
-    display: block;
-    margin-top: 3px;
-    font-size: var(--text-xs);
-    color: var(--color-text-tertiary);
-  }
   .chal__key { display: inline-flex; align-items: center; gap: 8px; }
   .chal__key .chal__dot { width: 11px; height: 11px; opacity: 1; transform: none; transition: none; }
 
@@ -151,7 +131,6 @@ for (let r = 0; r < ROWS; r++) {
     .chal__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
     .chal__field { margin: 0 auto; }
     .chal__legend { justify-content: center; }
-    .chal__source { margin-left: auto; margin-right: auto; text-align: center; }
   }
 
   @media (max-width: 767px) {
