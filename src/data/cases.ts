@@ -97,7 +97,7 @@ export const casesDe: Case[] = [
     ask: 'Welcher Ablauf läuft bei Ihnen anders als auf der anderen Seite?',
     answer: '„Wir geben Rabatte bis zehn Prozent selbst frei, drüben muss das immer die Leitung machen."',
     followup: 'Was passiert, wenn ein Kunde beide Wege kennt?',
-    themes: [{ l: 'Doppelte Zuständigkeit', v: 100, k: 'p' }, { l: 'Systeme nebeneinander', v: 79, k: 'p' }, { l: 'Ein System pro Schritt', v: 55, k: 'i' }, { l: 'Beste Praxis übernehmen', v: 41, k: 'c' }],
+    themes: [{ l: 'Doppelte Zuständigkeit', v: 100, k: 'p' }, { l: 'Systeme nebeneinander', v: 79, k: 'p' }, { l: 'Ein System pro Schritt', v: 55, k: 'i' }, { l: 'Bewährtes übernehmen', v: 41, k: 'c' }],
     slices: [{ l: 'Problem', v: 49 }, { l: 'Idee', v: 28 }, { l: 'Chance', v: 23 }],
     dash: {
       crumb: 'Post-Merger',

@@ -88,7 +88,7 @@ const arcs = c.slices.map((sl, i) => {
             <div class="win__body">
               <p class="win__label">{t.prompt}</p>
               <p class="win__typed">
-                <span class="win__q" data-q style={`--len: ${c.question.length}`}>{c.question}</span><i class="win__caret"></i>
+                <span class="win__q" data-q>{c.question}</span><i class="win__caret"></i>
               </p>
               <div class="win__foot">
                 <span class="win__hint">{t.typing}</span>
@@ -226,8 +226,8 @@ const arcs = c.slices.map((sl, i) => {
   function apply(c: any) {
     const q = document.querySelector<HTMLElement>('[data-q]');
     if (q) {
+      q.dataset.full = c.question;
       q.textContent = c.question;
-      q.style.setProperty('--len', String(c.question.length));
     }
     document.querySelectorAll('[data-plan] li').forEach((li, i) => {
       if (c.plan[i]) li.textContent = c.plan[i];
@@ -301,6 +301,31 @@ const arcs = c.slices.map((sl, i) => {
       if (l) l.textContent = th.l;
       if (n) n.textContent = `${th.n} ${ofWord} ${c.dash.participants}`;
       if (d) d.textContent = th.d;
+    });
+  }
+
+  // Schreibmaschine: Zeichen fuer Zeichen ueber den Textinhalt, damit der
+  // Text normal umbrechen kann.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const qEl = document.querySelector<HTMLElement>('[data-q]');
+  const firstCard = document.querySelector<HTMLElement>('.steps__card');
+  if (qEl && firstCard && !reduced) {
+    if (!qEl.dataset.full) qEl.dataset.full = qEl.textContent || '';
+    let timer: number | undefined;
+    firstCard.addEventListener('mouseenter', () => {
+      const full = qEl.dataset.full || '';
+      window.clearInterval(timer);
+      let i = 0;
+      qEl.textContent = '';
+      timer = window.setInterval(() => {
+        i += 1;
+        qEl.textContent = full.slice(0, i);
+        if (i >= full.length) window.clearInterval(timer);
+      }, 36);
+    });
+    firstCard.addEventListener('mouseleave', () => {
+      window.clearInterval(timer);
+      qEl.textContent = qEl.dataset.full || '';
     });
   }
 
@@ -521,23 +546,26 @@ const arcs = c.slices.map((sl, i) => {
   .win__body { padding: 14px 13px 13px; }
   .win__label { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 
-  .win__typed { display: flex; align-items: flex-end; gap: 2px; margin-top: 10px; min-width: 0; }
+  /* Kein Flex: der Cursor soll der letzten Zeile folgen, nicht in eine
+     eigene Zeile rutschen, sobald die Frage umbricht. */
+  .win__typed { margin-top: 10px; }
+  /* Die Frage bricht um. Die Schreibmaschine laeuft deshalb in JS ueber
+     den Textinhalt statt ueber die Breite: eine Breitenanimation setzt
+     white-space: nowrap voraus, und genau das liess lange Fragen aus dem
+     Kasten laufen. */
   .win__q {
-    display: inline-block;
-    /* Der Kasten begrenzt, nicht die Textlaenge: sonst laeuft eine lange
-       Frage bis an die Kartenkante. */
-    max-width: min(calc(var(--len) * 1ch), 100%);
-    overflow: hidden;
-    white-space: nowrap;
+    display: inline;
     font-size: 0.875rem;
     line-height: 1.5;
+    overflow-wrap: anywhere;
   }
-  .steps__card:hover .win__q { animation: win-type 1.25s steps(30) 0.15s both; }
-  @keyframes win-type { from { max-width: 0; } to { max-width: min(calc(var(--len) * 1ch), 100%); } }
 
   .win__caret {
+    display: inline-block;
+    vertical-align: text-bottom;
+    margin-left: 2px;
     width: 2px;
-    height: 17px;
+    height: 15px;
     background: var(--color-accent);
     animation: win-blink 1.05s steps(1) infinite;
   }
@@ -771,7 +799,6 @@ const arcs = c.slices.map((sl, i) => {
   @media (prefers-reduced-motion: reduce) {
     .win { transition: none; opacity: 1; transform: none; }
     .orb { animation: none; }
-    .steps__card:hover .win__q,
     .steps__card:hover .bub,
     .steps__card:hover .msg,
     .steps__card:hover .theme__track i,
