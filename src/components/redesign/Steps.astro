@@ -18,7 +18,7 @@ const t = isDE ? {
   h1: 'Sie stellen eine Frage.',
   h2: 'Ihre Organisation antwortet.',
   s1: { n: '01', title: 'Frage stellen', body: 'Sie beschreiben, was Sie herausfinden wollen, und legen fest, welche Mitarbeitenden dazu befragt werden.' },
-  s2: { n: '02', title: 'Mitarbeitende antworten', body: 'Die KI führt hunderte Interviews gleichzeitig. Anonym, mit Rückfragen, die das Erfahrungswissen erfassen, das in keinem Wiki steht.' },
+  s2: { n: '02', title: 'Mitarbeitende antworten', body: 'Die KI kann hunderte Interviews gleichzeitig führen. Anonym, mit Rückfragen, die das Erfahrungswissen erfassen, das in keinem Wiki steht.' },
   s3: { n: '03', title: 'Einblick erhalten', body: 'Aus den Gesprächen entsteht ein belastbares Bild: Muster, Widersprüche, Prioritäten. Mit Belegen.' },
   agent: 'Inplicit KI',
   prompt: 'Was möchten Sie herausfinden?',
@@ -32,7 +32,7 @@ const t = isDE ? {
   h1: 'You ask a question.',
   h2: 'Your organisation answers.',
   s1: { n: '01', title: 'Ask one question', body: 'You describe what you want to find out and choose which people should be interviewed.' },
-  s2: { n: '02', title: 'People answer', body: 'The AI runs hundreds of interviews at once. Anonymous, with follow-up questions that capture the experience no wiki holds.' },
+  s2: { n: '02', title: 'People answer', body: 'The AI can run hundreds of interviews at once. Anonymous, with follow-up questions that capture the experience no wiki holds.' },
   s3: { n: '03', title: 'Get the picture', body: 'The conversations turn into solid evidence: patterns, contradictions, priorities. Traceable to the source.' },
   agent: 'Inplicit AI',
   prompt: 'What do you want to find out?',
@@ -47,6 +47,8 @@ const t = isDE ? {
 const RING_R = 27;
 const RING_C = 2 * Math.PI * RING_R;
 const HUES = ['var(--color-accent-dark)', '#5856d6', 'var(--brand-periwinkle)'];
+// Balken tragen die Farbe ihrer Befundart, passend zum Ring darunter.
+const BAR: Record<string, string> = { p: 'var(--color-accent-dark)', i: '#5856d6', c: 'var(--brand-periwinkle)' };
 let ringAcc = 0;
 const arcs = c.slices.map((sl, i) => {
   const start = (ringAcc / 100) * RING_C;
@@ -170,7 +172,7 @@ const arcs = c.slices.map((sl, i) => {
             <div class="win__body">
               <div data-themes>
                 {c.themes.map((th, i) => (
-                  <div class="theme" style={`--w: ${th.v}%; --i: ${i}`}>
+                  <div class="theme" style={`--w: ${th.v}%; --i: ${i}; --bar: ${BAR[th.k]}`}>
                     <span class="theme__l">{th.l}</span>
                     <span class="theme__track"><i></i></span>
                   </div>
@@ -211,6 +213,7 @@ const arcs = c.slices.map((sl, i) => {
   const RING_R = 27;
   const RING_C = 2 * Math.PI * RING_R;
   const HUES = ['var(--color-accent-dark)', '#5856d6', 'var(--brand-periwinkle)'];
+  const BAR: Record<string, string> = { p: 'var(--color-accent-dark)', i: '#5856d6', c: 'var(--brand-periwinkle)' };
 
   const setText = (sel: string, value: string) => {
     const el = document.querySelector(sel);
@@ -238,6 +241,7 @@ const arcs = c.slices.map((sl, i) => {
       const th = c.themes[i];
       if (!th) return;
       row.style.setProperty('--w', th.v + '%');
+      row.style.setProperty('--bar', BAR[th.k] || BAR.p);
       const label = row.querySelector('.theme__l');
       if (label) label.textContent = th.l;
     });
@@ -637,11 +641,12 @@ const arcs = c.slices.map((sl, i) => {
     border: 1px solid var(--color-border);
   }
 
-  /* Karte 1: nach dem simulierten Klick waechst der Plan auf. */
-  .plan { display: grid; grid-template-rows: 0fr; }
-  .plan__in { overflow: hidden; min-height: 0; padding: 0 13px; }
-  .steps__card:hover .plan { animation: plan-open 0.5s var(--ease-out) 1.85s both; }
-  @keyframes plan-open { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
+  /* Karte 1: der Plan erscheint nach dem simulierten Klick. Sein Platz ist
+     dauerhaft reserviert — im Subgrid steht die Zeilenhoehe fest, eine
+     wachsende Karte liefe sonst ueber ihren eigenen Rand hinaus. */
+  .plan { opacity: 0; transition: opacity 0.35s var(--ease-out); }
+  .plan__in { padding: 0 13px; }
+  .steps__card:hover .plan { opacity: 1; transition-delay: 1.8s; }
 
   .plan__head {
     display: flex; align-items: center; gap: 7px;
@@ -728,7 +733,7 @@ const arcs = c.slices.map((sl, i) => {
     width: var(--w);
     height: 100%;
     border-radius: 5px;
-    background: var(--color-accent);
+    background: var(--bar, var(--color-accent-dark));
   }
   .steps__card:hover .theme__track i {
     animation: bar-grow 0.75s var(--ease-out) backwards;
@@ -758,7 +763,7 @@ const arcs = c.slices.map((sl, i) => {
     .picker__btn { white-space: nowrap; flex: 0 0 auto; }
 
     /* Ohne Hover laeuft die Klick-Animation nie, deshalb steht der Plan offen. */
-    .plan { grid-template-rows: 1fr; }
+    .plan { opacity: 1; }
     .plan__list li { opacity: 1; }
     .win__pointer { display: none; }
   }
@@ -768,13 +773,15 @@ const arcs = c.slices.map((sl, i) => {
     .orb { animation: none; }
     .steps__card:hover .win__q,
     .steps__card:hover .bub,
+    .steps__card:hover .msg,
     .steps__card:hover .theme__track i,
     .steps__card:hover .win__pointer,
     .steps__card:hover .win__send::after,
-    .steps__card:hover .plan,
     .steps__card:hover .plan__list li,
     .steps__card:hover .ring__svg circle { animation: none; }
-    .plan { grid-template-rows: 1fr; }
+    .plan { opacity: 1; transition: none; }
+    .plan__list li { opacity: 1; }
+    .plan { opacity: 1; }
     .plan__list li { opacity: 1; }
     .ring__svg circle { stroke-dasharray: var(--dash); transition: none; }
     .win__pointer { display: none; }
