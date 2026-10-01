@@ -2,82 +2,44 @@
 // Ausschnitt aus dem echten Dashboard (Figma: Einblicke-Screen). Bewusst kein
 // Balken-und-Torten-Dashboard: die Belege pro Befund und die Zitatnummern im
 // Antworttext sind das, was Inplicit von einer Marktforschungsauswertung
-// unterscheidet. Farben innerhalb des Fensters folgen dem Produkt (Indigo),
-// nicht der Website (Orange).
+// unterscheidet. Farben im Fenster folgen dem Produkt (Indigo), nicht der
+// Website. Der gezeigte Fall haengt an den Umschaltern in der Loesung.
+import { casesDe, casesEn, type Case } from '../../data/cases';
+
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
-
-const PARTICIPANTS = 41;
+const cases: Case[] = isDE ? casesDe : casesEn;
+const c = cases[0];
 
 const t = isDE ? {
   label: 'Das Produkt',
   heading: 'Und so sieht das Ergebnis aus.',
   sub: 'Ein Bericht, der auf Gesprächen beruht. Jede Zahl lässt sich bis zum Zitat zurückverfolgen, das sie belegt.',
-  crumb: ['Kampagnen', 'Angebotserstellung', 'Einblicke'],
-  title: 'Abläufe bei der Angebotserstellung',
-  meta: 'Ausgewertet · DE · 22 Min · 41 von 48 Gesprächen',
+  campaigns: 'Kampagnen',
   share: 'Bericht teilen',
-  stats: [
-    { k: 'Teilnehmer', v: '41', s: 'befragt' },
-    { k: 'Befunde', v: '12', s: 'Themen' },
-    { k: 'Breit belegt', v: '7', s: 'von 12' },
-    { k: 'Konfidenz', v: '91 %', s: 'der Befunde', note: true },
-  ],
   tabs: ['Übersicht', 'Teilnehmer', 'Interviews', 'Einblicke', 'Fragen'],
   activeTab: 'Einblicke',
   answerHead: 'Die Antwort auf Ihre Frage',
-  question: 'Wie läuft die Angebotserstellung heute wirklich ab?',
-  answer: [
-    'Angebote entstehen überwiegend in Einzelarbeit und ohne gemeinsame Grundlage',
-    'die Kalkulation hängt an der Erfahrung einzelner Mitarbeitender',
-    'Preise und Textbausteine werden aus alten Angeboten kopiert, die niemand pflegt',
-    'Freigaben laufen je nach Volumen über unterschiedliche Wege',
-  ],
   costHead: 'Was der Ablauf kostet',
-  themes: [
-    { l: 'Zeitverlust', n: 34, d: 'Suche nach Vorlagen, Rückfragen zur Kalkulation' },
-    { l: 'Uneinheitliche Preise', n: 29, d: 'Gleiche Leistung, unterschiedliche Angebote' },
-    { l: 'Freigaben unklar', n: 23, d: 'Ab welchem Volumen wer zustimmt, ist nicht gesetzt' },
-    { l: 'Nacharbeit', n: 17, d: 'Angebote gehen mehrfach zurück in die Fachabteilung' },
-  ],
   of: 'von',
   footnote: 'Konfidenz: Anteil der Befunde, die mehr als eine Person unabhängig voneinander genannt hat. Ausgezählt, nicht geschätzt.',
+  side: { overview: 'Übersicht', create: 'Erstellen', workforce: 'Belegschaft', context: 'Kontext', campaigns: 'Kampagnen', org: 'Organisation' },
 } : {
   label: 'The product',
   heading: 'And this is what you get.',
   sub: 'A report built from conversations. Every number traces back to the quote behind it.',
-  crumb: ['Campaigns', 'Quoting process', 'Insights'],
-  title: 'How quotes actually get written',
-  meta: 'Analysed · EN · 22 min · 41 of 48 conversations',
+  campaigns: 'Campaigns',
   share: 'Share report',
-  stats: [
-    { k: 'Participants', v: '41', s: 'interviewed' },
-    { k: 'Findings', v: '12', s: 'themes' },
-    { k: 'Broadly evidenced', v: '7', s: 'of 12' },
-    { k: 'Confidence', v: '91 %', s: 'of findings', note: true },
-  ],
   tabs: ['Overview', 'Participants', 'Interviews', 'Insights', 'Questions'],
   activeTab: 'Insights',
   answerHead: 'The answer to your question',
-  question: 'How does our quoting process actually work today?',
-  answer: [
-    'quotes are written individually, without a shared basis',
-    'pricing depends on the experience of a few people',
-    'prices and text blocks are copied from old quotes nobody maintains',
-    'approvals take different routes depending on deal size',
-  ],
   costHead: 'What the process costs',
-  themes: [
-    { l: 'Time lost', n: 34, d: 'Hunting for templates, queries about pricing' },
-    { l: 'Inconsistent pricing', n: 29, d: 'Same service, different quotes' },
-    { l: 'Unclear approvals', n: 23, d: 'Who signs off at what value is not set' },
-    { l: 'Rework', n: 17, d: 'Quotes bounce back to the department repeatedly' },
-  ],
   of: 'of',
   footnote: 'Confidence: share of findings named independently by more than one person. Counted, not estimated.',
+  side: { overview: 'Overview', create: 'Create', workforce: 'Workforce', context: 'Context', campaigns: 'Campaigns', org: 'Organisation' },
 };
 ---
 
@@ -105,34 +67,33 @@ const t = isDE ? {
           <span class="dash__org-badge">T</span>
           <span class="dash__org-name">Test GmbH</span>
         </div>
-        <p class="dash__group">{isDE ? 'Kampagnen' : 'Campaigns'}</p>
+        <p class="dash__group">{t.side.campaigns}</p>
         <span class="dash__item is-active">
           <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          {isDE ? 'Übersicht' : 'Overview'}
+          {t.side.overview}
         </span>
         <span class="dash__item">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v16M4 12h16"/></svg>
-          {isDE ? 'Erstellen' : 'Create'}
+          {t.side.create}
         </span>
-        <p class="dash__group">{isDE ? 'Organisation' : 'Organisation'}</p>
+        <p class="dash__group">{t.side.org}</p>
         <span class="dash__item">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 7.5a3 3 0 0 1 0 6M17 19c0-2-.6-3.5-1.6-4.6"/></svg>
-          {isDE ? 'Belegschaft' : 'Workforce'}
+          {t.side.workforce}
         </span>
         <span class="dash__item">
           <svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
-          {isDE ? 'Kontext' : 'Context'}
+          {t.side.context}
         </span>
       </aside>
 
       <div class="dash__main">
         <div class="dash__top">
-          {t.crumb.map((c, i) => (
-            <>
-              {i > 0 && <span class="dash__sep">›</span>}
-              <span class={i === t.crumb.length - 1 ? 'dash__here' : ''}>{c}</span>
-            </>
-          ))}
+          <span>{t.campaigns}</span>
+          <span class="dash__sep">›</span>
+          <span data-dash-crumb>{c.dash.crumb}</span>
+          <span class="dash__sep">›</span>
+          <span class="dash__here">{t.activeTab}</span>
         </div>
 
         <div class="dash__body">
@@ -141,14 +102,14 @@ const t = isDE ? {
               <svg viewBox="0 0 24 24" fill="none"><path d="M6 7h5v5H6zM13 12h5v5h-5zM11 9.5h2M14.5 12V9.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <div class="dash__camp-txt">
-              <h3 class="dash__title">{t.title}</h3>
-              <p class="dash__meta"><i class="dash__dot"></i>{t.meta}</p>
+              <h3 class="dash__title" data-dash-title>{c.dash.title}</h3>
+              <p class="dash__meta"><i class="dash__dot"></i><span data-dash-meta>{c.dash.meta}</span></p>
             </div>
             <span class="dash__share">{t.share}</span>
           </header>
 
-          <div class="dash__stats">
-            {t.stats.map((s) => (
+          <div class="dash__stats" data-dash-stats>
+            {c.dash.stats.map((s) => (
               <div class="dash__stat">
                 <p class="dash__stat-k">{s.k}{s.note && <sup class="dash__sup">1</sup>}</p>
                 <p class="dash__stat-v">{s.v}</p>
@@ -166,13 +127,13 @@ const t = isDE ? {
           <div class="dash__cols">
             <div class="dash__col">
               <h4 class="dash__h">{t.answerHead}</h4>
-              <p class="dash__q">{t.question}</p>
+              <p class="dash__q" data-dash-q>{c.dash.q}</p>
               <p class="dash__a">
-                {t.answer.map((part, i) => (
+                {c.dash.a.map((part, i) => (
                   <>
-                    {i === 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part}
+                    <span data-a-part>{i === 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part}</span>
                     <span class="dash__cite">({i + 1})</span>
-                    {i < t.answer.length - 1 ? ', ' : '.'}
+                    {i < c.dash.a.length - 1 ? ', ' : '.'}
                   </>
                 ))}
               </p>
@@ -180,12 +141,12 @@ const t = isDE ? {
 
             <div class="dash__col">
               <h4 class="dash__h">{t.costHead}</h4>
-              <ul class="dash__themes">
-                {t.themes.map((th, i) => (
-                  <li class="dash__theme" style={`--w:${Math.round((th.n / PARTICIPANTS) * 100)}%; --i:${i}`}>
+              <ul class="dash__themes" data-dash-themes>
+                {c.dash.themes.map((th, i) => (
+                  <li class="dash__theme" style={`--w:${Math.round((th.n / c.dash.participants) * 100)}%; --i:${i}`}>
                     <div class="dash__theme-row">
                       <span class="dash__theme-l">{th.l}</span>
-                      <span class="dash__theme-n">{th.n} {t.of} {PARTICIPANTS}</span>
+                      <span class="dash__theme-n">{th.n} {t.of} {c.dash.participants}</span>
                     </div>
                     <span class="dash__bar"><i></i></span>
                     <p class="dash__theme-d">{th.d}</p>
