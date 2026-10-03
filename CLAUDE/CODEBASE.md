@@ -18,7 +18,7 @@ Website/
     ├── package.json
     ├── astro.config.mjs
     ├── tsconfig.json
-    ├── public/                  ← static assets (favicon, images)
+    ├── public/                  ← static assets (favicon, images; og.png = link preview with logo)
     └── src/
         ├── styles/
         │   └── design.css       ← ALL design tokens — edit here, nowhere else

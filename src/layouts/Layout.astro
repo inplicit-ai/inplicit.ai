@@ -5,7 +5,7 @@ export interface Props {
   lang?: string;
   /** Absolute canonical URL. Omitted (no tag) unless a page passes one. */
   canonical?: string;
-  /** Absolute og:image URL. Omitted unless a page passes one. */
+  /** Absolute og:image URL. Defaults to the logo card (public/og.png). */
   ogImage?: string;
 }
 
@@ -14,7 +14,7 @@ const {
   description = 'inplicit.ai gives every voice in your organisation a place to be heard. Surface hidden knowledge, map what your workforce knows, and act on it.',
   lang = 'en',
   canonical,
-  ogImage,
+  ogImage = 'https://inplicit.ai/og.png',
 } = Astro.props;
 
 import '../styles/design.css';
