@@ -12,6 +12,11 @@ const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 const cases: Case[] = isDE ? casesDe : casesEn;
 const c = cases[0];
+// Profilbild der befragten Person, passend zum gewaehlten Fall.
+const FACES: Record<string, string> = {
+  nachfolge: '/people/s15.png', ausbildung: '/people/s13.png', merger: '/people/s8.png',
+  angebot: '/people/s12.png', ki: '/people/s10.png', zeit: '/people/s16.png', training: '/people/s11.png',
+};
 
 const t = isDE ? {
   eyebrow: 'Die Lösung',
@@ -27,6 +32,7 @@ const t = isDE ? {
   insights: 'Einblicke',
   planHead: 'Kampagne fertig konzipiert',
   pick: 'Kampagne wählen',
+  controls: ['Untertitel', 'Tippen', 'Stumm', 'Pause', 'Beenden'],
 } : {
   eyebrow: 'How it works',
   h1: 'You ask a question.',
@@ -41,7 +47,18 @@ const t = isDE ? {
   insights: 'Insights',
   planHead: 'Campaign ready',
   pick: 'Pick a campaign',
+  controls: ['Captions', 'Type', 'Mute', 'Pause', 'End'],
 };
+
+// Die Steuerung aus dem echten Interviewraum (VoiceControls im Dashboard):
+// Untertitel, Tippen, Stumm, Pause, Beenden. Lucide-Pfade wie dort.
+const CONTROL_ICONS = [
+  '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',
+  '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>',
+  '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+  '<path d="M18 6 6 18M6 6l12 12"/>',
+];
 
 // Ring in Karte 3
 const RING_R = 27;
@@ -96,10 +113,10 @@ const arcs = c.slices.map((sl, i) => {
                   <svg viewBox="0 0 16 16" fill="none"><path d="M8 12.5V4M4.5 7.5L8 4l3.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
               </div>
+              <span class="win__pointer" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 2.4V19.9l4.3-4.1 2.8 5.8 2.8-1.3-2.7-5.7H19z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </span>
             </div>
-            <span class="win__pointer" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6 2.4V19.9l4.3-4.1 2.8 5.8 2.8-1.3-2.7-5.7H19z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
-            </span>
 
             <div class="plan"><div class="plan__in">
               <p class="plan__head">
@@ -144,7 +161,7 @@ const arcs = c.slices.map((sl, i) => {
               </div>
               <div class="msg msg--self">
                 <span class="bub bub--self" data-answer>{c.answer}</span>
-                <img class="msg__face" src="/people/s7.png" alt="" width="52" height="52" loading="lazy" decoding="async" />
+                <img class="msg__face" src={FACES[c.id]} data-face alt="" width="52" height="52" loading="lazy" decoding="async" />
               </div>
               <div class="msg msg--late">
                 <span class="msg__mark" aria-hidden="true">
@@ -155,6 +172,16 @@ const arcs = c.slices.map((sl, i) => {
                   </svg>
                 </span>
                 <span class="bub bub--agent bub--late" data-followup>{c.followup}</span>
+              </div>
+              <div class="calls" aria-hidden="true">
+                {t.controls.map((label, i) => (
+                  <span class:list={['call', { 'call--end': i === 4 }]}>
+                    <span class="call__disc">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={CONTROL_ICONS[i]} />
+                    </span>
+                    {label}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -201,7 +228,7 @@ const arcs = c.slices.map((sl, i) => {
   </div>
 </section>
 
-<script type="application/json" id="case-data" set:html={JSON.stringify(cases)}></script>
+<script type="application/json" id="case-data" set:html={JSON.stringify(cases.map((x) => ({ ...x, face: FACES[x.id] })))}></script>
 
 <script>
   // Fallumschaltung. Ein Skript, zwei Sektionen: die Karten hier und das
@@ -236,6 +263,8 @@ const arcs = c.slices.map((sl, i) => {
     setText('[data-ask]', c.ask);
     setText('[data-answer]', c.answer);
     setText('[data-followup]', c.followup);
+    const face = document.querySelector<HTMLImageElement>('[data-face]');
+    if (face && c.face) face.src = c.face;
 
     document.querySelectorAll<HTMLElement>('[data-themes] .theme').forEach((row, i) => {
       const th = c.themes[i];
@@ -352,7 +381,7 @@ const arcs = c.slices.map((sl, i) => {
   const host = document.querySelector<HTMLElement>('.orb');
   const canvas = host?.querySelector<HTMLCanvasElement>('canvas[data-orb]');
   if (host && canvas) {
-    const orb = createImplicitOrb(canvas, { level: 0.38 });
+    const orb = createImplicitOrb(canvas, { round: true });
     if (orb.supported) {
       host.classList.add('is-live');
       const io = new IntersectionObserver(
@@ -484,8 +513,9 @@ const arcs = c.slices.map((sl, i) => {
   .steps__card.is-visible .win { opacity: 1; transform: none; }
   .steps__card:hover .win { box-shadow: 0 12px 28px -20px rgba(11, 12, 16, 0.3); }
 
-  /* Der Zeiger faehrt beim Hover zum Senden-Knopf und klickt. */
-  .win { position: relative; }
+  /* Der Zeiger faehrt beim Hover zum Senden-Knopf und klickt. Er haengt
+     am Eingabefeld, nicht am ganzen Fenster: darunter folgt noch der Plan. */
+  .win__body { position: relative; }
   .win__pointer {
     position: absolute;
     left: 22%;
@@ -498,12 +528,12 @@ const arcs = c.slices.map((sl, i) => {
   }
   .steps__card:hover .win__pointer { animation: win-point 2.4s var(--ease-out) both; }
   @keyframes win-point {
-    0%   { opacity: 0; left: 22%; bottom: -10px; }
-    22%  { opacity: 1; left: 30%; bottom: 6px; }
-    58%  { opacity: 1; left: calc(100% - 34px); bottom: 15px; }
-    66%  { opacity: 1; left: calc(100% - 34px); bottom: 11px; }
-    74%  { opacity: 1; left: calc(100% - 34px); bottom: 15px; }
-    100% { opacity: 0; left: calc(100% - 34px); bottom: 15px; }
+    0%   { opacity: 0; left: 22%; bottom: -6px; }
+    22%  { opacity: 1; left: 30%; bottom: 4px; }
+    58%  { opacity: 1; left: calc(100% - 31px); bottom: 12px; }
+    66%  { opacity: 1; left: calc(100% - 31px); bottom: 9px; }
+    74%  { opacity: 1; left: calc(100% - 31px); bottom: 12px; }
+    100% { opacity: 0; left: calc(100% - 31px); bottom: 12px; }
   }
   .win__send { position: relative; }
   .steps__card:hover .win__send::after {
@@ -668,6 +698,38 @@ const arcs = c.slices.map((sl, i) => {
     object-fit: cover;
     border: 1px solid var(--color-border);
   }
+
+  /* Steuerleiste wie im Interviewraum: runde Knoepfe mit Wort darunter,
+     Beenden als einziger roter Knopf. */
+  .calls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  .call {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    font-size: 9.5px;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+  .call__disc {
+    display: grid;
+    place-items: center;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    box-shadow: 0 1px 2px rgba(11, 12, 16, 0.05), 0 0 0 0.5px rgba(11, 12, 16, 0.08);
+  }
+  .call--end .call__disc { background: var(--color-danger); color: #fff; }
 
   /* Karte 1: der Plan erscheint nach dem simulierten Klick. Sein Platz ist
      dauerhaft reserviert — im Subgrid steht die Zeilenhoehe fest, eine

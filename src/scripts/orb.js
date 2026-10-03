@@ -47,6 +47,9 @@ function createImplicitOrb(canvas, options) {
   // breathe: 0.12 + 0.05 * sin(t / 900) (PreflightCard.tsx:24).
   var constantLevel = typeof opts.level === "number" ? opts.level : 0;
   var breathe = opts.breathe === true;
+  // { round: true } freezes the simplex-noise rim so the orb stays a clean
+  // circle (colors and the orbiting highlight still move). Website-only.
+  var wobble = opts.round === true ? 0 : 1;
 
   var BASE_ROTATION = 0.3; // rad/s, AgentOrb.tsx:269
 
@@ -71,6 +74,7 @@ function createImplicitOrb(canvas, options) {
     "uniform float hover;",
     "uniform float rot;",
     "uniform float hoverIntensity;",
+    "uniform float wobble;",
     "varying vec2 vUv;",
     "",
     "vec3 rgb2yiq(vec3 c) {",
@@ -152,7 +156,7 @@ function createImplicitOrb(canvas, options) {
     "  float len = length(uv);",
     "  float invLen = len > 0.0 ? 1.0 / len : 0.0;",
     "",
-    "  float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5;",
+    "  float n0 = mix(0.5, snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5, wobble);",
     "  float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);",
     "  float d0 = distance(uv, (r0 * invLen) * uv);",
     "  float v0 = light1(1.0, 10.0, d0);",
@@ -304,6 +308,7 @@ function createImplicitOrb(canvas, options) {
       hover: gl.getUniformLocation(program, "hover"),
       rot: gl.getUniformLocation(program, "rot"),
       hoverIntensity: gl.getUniformLocation(program, "hoverIntensity"),
+      wobble: gl.getUniformLocation(program, "wobble"),
     };
 
     // GL state exactly as OGL leaves it at draw time (Program.applyState):
@@ -387,6 +392,7 @@ function createImplicitOrb(canvas, options) {
     gl.useProgram(program);
     gl.uniform1f(loc.iTime, t * 0.001);
     gl.uniform1f(loc.hue, hue);
+    gl.uniform1f(loc.wobble, wobble);
     gl.uniform1f(loc.rot, currentRot);
     gl.uniform1f(loc.hover, Math.min(level * 2.0, 1.0));
     gl.uniform1f(
