@@ -1,9 +1,8 @@
 ---
 // Campaign-page variant of the context diagram: every campaign feeds the
-// implicit half of the Company Brain, which hands the whole context on to the
-// AI tools via MCP. Drawn as one SVG so the flow lines can converge and fan
-// out. The main landing page keeps UspViz type="context" unchanged.
-import logos from './aiToolLogos.html?raw';
+// implicit half of the Company Brain. Drawn as one SVG so the flow lines can
+// converge. No hand-off to AI tools: the MCP surface was removed from the
+// product on 2026-09-01, and the site shows only what is built.
 
 export interface Props {
   campaigns: { label: string; people: number[] }[];
@@ -18,19 +17,11 @@ const cardMid = (i: number) => cardY(i) + CARD.h / 2;
 // Where every campaign line converges: the left edge of the implicit box
 const SINK = { x: 302, y: 211 };
 
-const tools = [
-  { id: 'viz-claude', label: 'Claude', y: 42 },
-  { id: 'viz-gemini', label: 'Gemini', y: 114 },
-  { id: 'viz-chatgpt', label: 'ChatGPT', y: 186 },
-  { id: 'viz-copilot', label: 'Copilot', y: 258 },
-];
-const MCP = { cx: 576, cy: 150, r: 17 };
 ---
 
 <div class="bviz" aria-hidden="true">
   <div class="bviz__scroll">
-    <svg class="bviz__svg" viewBox="0 0 748 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs set:html={logos} />
+    <svg class="bviz__svg" viewBox="0 0 548 300" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         {campaigns.map((c, ci) => c.people.map((n, pi) => (
           <clipPath id={`bviz-c${ci}-${pi}`}>
@@ -41,7 +32,6 @@ const MCP = { cx: 576, cy: 150, r: 17 };
 
       <!-- ── Column labels ── -->
       <text x="2" y="10" class="bviz__label">KAMPAGNEN</text>
-      <text x="612" y="10" class="bviz__label">KI-ANWENDUNGEN</text>
 
       <!-- ── Campaign cards: who was interviewed in each round ── -->
       {campaigns.map((c, ci) => (
@@ -81,8 +71,8 @@ const MCP = { cx: 576, cy: 150, r: 17 };
 
       <text x="417" y="70" text-anchor="middle" class="bviz__zone-label">EXPLIZITER KONTEXT</text>
       <text x="417" y="90" text-anchor="middle" class="bviz__item">Dokumente</text>
-      <text x="417" y="108" text-anchor="middle" class="bviz__item">Systeme</text>
-      <text x="417" y="126" text-anchor="middle" class="bviz__item">Besprechungen</text>
+      <text x="417" y="108" text-anchor="middle" class="bviz__item">Richtlinien</text>
+      <text x="417" y="126" text-anchor="middle" class="bviz__item">Prozessbeschreibungen</text>
 
       <line x1="306" y1="140" x2="528" y2="140" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 3" />
 
@@ -94,23 +84,6 @@ const MCP = { cx: 576, cy: 150, r: 17 };
       <text x="417" y="234" text-anchor="middle" class="bviz__item bviz__item--acc">Erfahrungswissen</text>
       <text x="417" y="257" text-anchor="middle" class="bviz__source">aus den Kampagnen</text>
 
-      <!-- ── MCP hands the context on ── -->
-      <line x1="542" y1="150" x2={MCP.cx - MCP.r} y2="150" stroke="var(--color-border)" stroke-width="1" />
-      <circle cx={MCP.cx} cy={MCP.cy} r={MCP.r} fill="var(--color-text-primary)" />
-      <text x={MCP.cx} y={MCP.cy + 3} text-anchor="middle" class="bviz__mcp">MCP</text>
-
-      <g class="bviz__spokes">
-        {tools.map((t) => (
-          <line x1={MCP.cx + MCP.r + 2} y1={MCP.cy} x2="610" y2={t.y} />
-        ))}
-      </g>
-
-      {tools.map((t) => (
-        <>
-          <use href={`#${t.id}`} x="616" y={t.y - 7} width="14" height="14" />
-          <text x="638" y={t.y + 4} class="bviz__tool">{t.label}</text>
-        </>
-      ))}
     </svg>
   </div>
 </div>
@@ -118,16 +91,14 @@ const MCP = { cx: 576, cy: 150, r: 17 };
 <style>
   .bviz__scroll { overflow-x: auto; scrollbar-width: none; }
   .bviz__scroll::-webkit-scrollbar { display: none; }
-  .bviz__svg { display: block; width: 100%; min-width: 680px; height: auto; }
+  .bviz__svg { display: block; width: 100%; min-width: 500px; height: auto; }
 
   .bviz__label,
   .bviz__zone-label,
   .bviz__card-title,
   .bviz__brain-title,
   .bviz__item,
-  .bviz__source,
-  .bviz__mcp,
-  .bviz__tool { font-family: var(--font-family); }
+  .bviz__source { font-family: var(--font-family); }
 
   .bviz__label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.09em; fill: var(--color-text-tertiary); }
   .bviz__card-title { font-size: 12px; font-weight: 500; fill: var(--color-text-primary); }
@@ -137,13 +108,10 @@ const MCP = { cx: 576, cy: 150, r: 17 };
   .bviz__item { font-size: 11px; fill: var(--color-text-tertiary); }
   .bviz__item--acc { fill: var(--color-text-secondary); }
   .bviz__source { font-size: 9px; fill: var(--color-text-tertiary); }
-  .bviz__mcp { font-size: 8px; font-weight: 700; fill: var(--color-bg); }
-  .bviz__tool { font-size: 12px; fill: var(--color-text-primary); }
 
   /* Thin orange dashes travelling from the campaigns into the implicit
-     context, and from MCP out to the tools. Same cadence as UspViz. */
-  .bviz__feed line,
-  .bviz__spokes line {
+     context. Same cadence as UspViz. */
+  .bviz__feed line {
     stroke: var(--color-accent);
     stroke-width: 0.9;
     stroke-dasharray: 3 5;
@@ -152,6 +120,6 @@ const MCP = { cx: 576, cy: 150, r: 17 };
   @keyframes bvizFlow { to { stroke-dashoffset: -8; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .bviz__feed line, .bviz__spokes line { animation: none; }
+    .bviz__feed line { animation: none; }
   }
 </style>

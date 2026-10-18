@@ -80,7 +80,6 @@ export interface KampagneContent {
 // (Hero meta line, TrustSecurity section).
 const TRUST = ['DSGVO-konform', 'Anonymes Feedback', 'Betriebsrat früh einbindbar'];
 
-const MCP_POINT = 'Anschlussfähig an Claude, Gemini, ChatGPT und Copilot über MCP';
 const SOURCE_POINT = 'Antworten mit Beleg zur anonymen Quelle statt generischer Auskünfte';
 
 export const wissensbasis: KampagneContent = {
@@ -193,10 +192,10 @@ export const wissensbasis: KampagneContent = {
     ],
   },
   aiLayer: {
-    eyebrow: 'KI-Anbindung',
-    heading: 'Die menschliche Kontext-Ebene, auf die auch Ihre KI-Tools zugreifen können.',
-    sub: 'Das meiste Wissen einer Organisation steht in keinem Dokument. Das Company Brain macht dieses Erfahrungswissen strukturiert verfügbar und übergibt es per MCP an die KI-Tools, mit denen Ihre Teams ohnehin arbeiten.',
-    points: ['Erfahrungswissen aus Gesprächen, nicht nur Dokumente und Systeme', MCP_POINT, SOURCE_POINT],
+    eyebrow: 'Company Brain',
+    heading: 'Die menschliche Kontext-Ebene Ihrer Organisation.',
+    sub: 'Das meiste Wissen einer Organisation steht in keinem Dokument. Das Company Brain macht dieses Erfahrungswissen strukturiert und mit Beleg verfügbar.',
+    points: ['Erfahrungswissen aus Gesprächen, nicht nur aus Dokumenten', SOURCE_POINT],
     campaigns: [
       { label: 'Wissensbasis', people: [2, 5, 9] },
       { label: 'Wissenstransfer', people: [6, 3, 12] },
@@ -413,10 +412,9 @@ export const readiness: KampagneContent = {
   aiLayer: {
     eyebrow: 'Anschluss',
     heading: 'Die Kampagne ist bereits die erste Schicht Ihres Company Brains.',
-    sub: 'Was in den Gesprächen entsteht, ist strukturiertes Wissen, das über MCP anschlussfähig ist. Der Ausbau besteht danach darin, die als tragfähig bewerteten Quellen anzubinden, nicht darin, noch einmal von vorn zu beginnen.',
+    sub: 'Was in den Gesprächen entsteht, ist strukturiertes Wissen mit Beleg. Jede weitere Kampagne baut darauf auf, statt noch einmal von vorn zu beginnen.',
     points: [
       'Jede weitere Kampagne vertieft den Kontext im Company Brain',
-      MCP_POINT,
       SOURCE_POINT,
     ],
     campaigns: [
@@ -591,10 +589,10 @@ export const wissenstransfer: KampagneContent = {
     ],
   },
   aiLayer: {
-    eyebrow: 'KI-Anbindung',
-    heading: 'Gesichertes Wissen, auf das auch Ihre KI-Tools zugreifen können.',
-    sub: 'Das Wissen einer ausscheidenden Rolle bleibt nicht in einem Übergabedokument liegen. Es wird strukturiert verfügbar und per MCP an die KI-Tools übergeben, mit denen Ihre Teams ohnehin arbeiten.',
-    points: ['Erfahrungswissen aus Gesprächen, nicht nur Übergabeprotokolle', MCP_POINT, SOURCE_POINT],
+    eyebrow: 'Company Brain',
+    heading: 'Gesichertes Wissen, das bleibt.',
+    sub: 'Das Wissen einer ausscheidenden Rolle bleibt nicht in einem Übergabedokument liegen. Es wird strukturiert und mit Beleg verfügbar.',
+    points: ['Erfahrungswissen aus Gesprächen, nicht nur Übergabeprotokolle', SOURCE_POINT],
     campaigns: [
       { label: 'Wissenstransfer', people: [6, 5, 3] },
       { label: 'Wissensbasis', people: [2, 9, 12] },
