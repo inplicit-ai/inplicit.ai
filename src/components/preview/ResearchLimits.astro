@@ -1,0 +1,106 @@
+---
+// Der ehrliche Teil, nach Zeitgeist Labs ("Grenzen"), aber mit der Folgerung
+// fuer uns. Grundlage: docs/research/wettbewerb-research-seiten.md (2026-10-13).
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const gaps = isDE ? [
+  { n: '01', h: 'Meist Text, selten Stimme', b: 'Viele Studien testen Chats. Inplicit führt Sprachinterviews, für die es weniger Belege gibt.' },
+  { n: '02', h: 'Panels und Hörsäle', b: 'Teilnehmende kommen oft aus Online-Panels oder Lehrveranstaltungen, nicht aus Betrieben.' },
+  { n: '03', h: 'Nie im eigenen Unternehmen', b: 'Keine der Studien misst Mitarbeitende in ihrer eigenen Organisation, wo Hierarchie und die Sorge um Folgen mitsprechen.' },
+] : [
+  { n: '01', h: 'Mostly text, rarely voice', b: 'Many studies test chat. Inplicit runs voice interviews, where there is less evidence.' },
+  { n: '02', h: 'Panels and lecture halls', b: 'Participants often come from online panels or courses, not from workplaces.' },
+  { n: '03', h: 'Never inside one’s own company', b: 'None of the studies measures employees inside their own organisation, where hierarchy and fear of consequences have a say.' },
+];
+---
+
+<section class="rlim" id="grenzen">
+  <div class="container rlim__inner">
+    <div class="rlim__copy section-fade">
+      <p class="rlabel">{isDE ? 'Die Grenzen' : 'The limits'}</p>
+      <h2 class="rlim__heading">
+        <span>{isDE ? 'Was die Forschung' : 'What research'}</span>
+        <span class="rlim__focus">{isDE ? 'noch nicht zeigt.' : 'does not show yet.'}</span>
+      </h2>
+      <p class="rlim__body">
+        {isDE
+          ? 'Die Richtung ist eindeutig, die Belege haben Lücken. Wir nennen sie, damit Sie die Zahlen richtig einordnen. Und wir werten unsere eigenen Interviews laufend aus, genau dort, wo die Forschung noch nicht hinschaut.'
+          : 'The direction is clear, the evidence has gaps. We name them so you can weigh the numbers properly. And we keep analysing our own interviews, exactly where research has not looked yet.'}
+      </p>
+    </div>
+
+    <ol class="rlim__list">
+      {gaps.map((g, i) => (
+        <li class="section-fade" style={`--delay: ${i * 70}ms`}>
+          <span class="rlim__n">{g.n}</span>
+          <div>
+            <h3>{g.h}</h3>
+            <p>{g.b}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .rlim {
+    padding: var(--space-section) 0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+  .rlim__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+  .rlim__heading {
+    display: flex;
+    flex-direction: column;
+    margin: var(--space-4) 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.16;
+    letter-spacing: -0.03em;
+  }
+  .rlim__focus { color: var(--color-accent-dark); }
+  .rlim__body {
+    max-width: 52ch;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    color: var(--color-text-secondary);
+  }
+  .rlim__list { display: grid; list-style: none; border-top: 1px solid var(--color-border); }
+  .rlim__list li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .rlim__n {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    font-variant-numeric: tabular-nums;
+  }
+  .rlim__list h3 { font-size: var(--text-base); font-weight: 500; letter-spacing: -0.01em; }
+  .rlim__list p {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1023px) {
+    .rlim__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
+  }
+  @media (max-width: 767px) {
+    .rlim { padding: var(--space-24) 0; }
+  }
+</style>

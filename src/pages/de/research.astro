@@ -1,27 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Nav from '../../components/Nav.astro';
-import PageIntro from '../../components/preview/PageIntro.astro';
-import ResearchProof from '../../components/preview/ResearchProof.astro';
-import NavStyleToggle from '../../components/preview/NavStyleToggle.astro';
-import Footer from '../../components/Footer.astro';
-
-const lang = 'de';
-const isDE = lang === 'de';
+import ResearchPage from '../../components/preview/ResearchPage.astro';
 ---
 
-<Layout title={isDE ? 'Forschung · inplicit.ai' : 'Research · inplicit.ai'} lang={lang} noindex>
-  <Nav lang={lang} solid preview ctaHref="/de/call" langToggleHref="/research" />
-  <main>
-    <PageIntro
-      eyebrow={isDE ? 'Forschung' : 'Research'}
-      title={isDE ? 'Warum KI-Interviews funktionieren.' : 'Why AI interviews work.'}
-      lead={isDE
-        ? 'Menschen öffnen sich im Gespräch mit einer KI, und die Antworten sind tiefer als im Fragebogen. Das zeigen Studien führender Universitäten.'
-        : 'People open up when they talk to an AI, and their answers go deeper than in a survey. Studies from leading universities show it.'}
-    />
-    <ResearchProof lang={lang} />
-  </main>
-  <Footer lang={lang} />
-  <NavStyleToggle />
-</Layout>
+<ResearchPage lang="de" />

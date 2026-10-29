@@ -1,0 +1,202 @@
+---
+// Der eine Partnertarif. Konditionen aus dem Perplexity-Partnermodell
+// (Startangebot "Certified Consultant Partner", 2026-09-29): 25 % auf das erste
+// Lizenzjahr, 10 % auf Verlaengerungen bei aktiver Betreuung, Services rechnet
+// der Partner selbst ab, 90 Tage Deal-Registrierung. Vor Livegang bestaetigen.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const terms = isDE ? [
+  { v: '10 %', l: 'auf jede Verlängerung, solange Sie den Kunden betreuen' },
+  { v: '100 %', l: 'Ihrer Beratungsleistung rechnen Sie selbst ab' },
+  { v: '90 Tage', l: 'Kundenschutz ab Registrierung des Projekts' },
+] : [
+  { v: '10%', l: 'on every renewal, as long as you look after the client' },
+  { v: '100%', l: 'of your consulting is billed by you' },
+  { v: '90 days', l: 'client protection from project registration' },
+];
+
+const cols = isDE ? [
+  { h: 'Das liefern wir', items: ['Plattform und KI-Interviewer, auf Deutsch und Englisch', 'Einarbeitung in Methode und Gesprächsleitfaden', 'Begleitung im ersten Kundenprojekt', 'Auftragsverarbeitung und Verschlüsselung je Organisation'] },
+  { h: 'Das übernehmen Sie', items: ['Kundenbeziehung und Projektleitung', 'Fragestellung und Deutung der Ergebnisse', 'Betreuung des Kunden nach dem Projekt'] },
+] : [
+  { h: 'What we provide', items: ['Platform and AI interviewer, in German and English', 'Onboarding to the method and interview guide', 'Support in your first client project', 'Data processing agreement and per-organisation encryption'] },
+  { h: 'What you own', items: ['Client relationship and project lead', 'The question and the interpretation of results', 'Looking after the client after the project'] },
+];
+---
+
+<section class="plic" id="lizenz">
+  <div class="container">
+    <div class="plic__head section-fade">
+      <p class="rlabel">{isDE ? 'Die Partnerlizenz' : 'The partner licence'}</p>
+      <h2 class="plic__heading">
+        <span>{isDE ? 'Ein Tarif.' : 'One licence.'}</span>
+        <span>{isDE ? 'Klare Konditionen.' : 'Clear terms.'}</span>
+      </h2>
+    </div>
+
+    <div class="plic__card section-fade" style="--delay: 70ms">
+      <div class="plic__main">
+        <p class="plic__tag">{isDE ? 'Partnerlizenz' : 'Partner licence'}</p>
+        <p class="plic__big">25 %</p>
+        <p class="plic__biglabel">{isDE ? 'auf das erste Lizenzjahr jedes Kunden, den Sie mitbringen' : 'of the first licence year for every client you bring'}</p>
+        <ul class="plic__terms">
+          {terms.map((t) => <li><b>{t.v}</b><span>{t.l}</span></li>)}
+        </ul>
+        <a href={isDE ? '/de/call' : '/call'} class="plic__cta">{isDE ? 'Partnergespräch vereinbaren' : 'Book a partner call'}</a>
+      </div>
+
+      <div class="plic__side">
+        {cols.map((c) => (
+          <div class="plic__col">
+            <h3>{c.h}</h3>
+            <ul>{c.items.map((it) => <li>{it}</li>)}</ul>
+          </div>
+        ))}
+        <p class="plic__note">
+          {isDE
+            ? 'Den Lizenzpreis für Ihren Kunden legen wir gemeinsam nach Umfang fest. Ohne Mindestumsatz, ohne Exklusivität.'
+            : 'We set the licence price for your client together, based on scope. No minimum revenue, no exclusivity.'}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .plic {
+    padding: var(--space-section) 0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+  .plic__head { text-align: center; margin-bottom: var(--space-16); }
+  .plic__heading {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-4);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .plic__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+  }
+  .plic__main {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-10);
+    background: var(--color-canvas-dark);
+    color: var(--color-on-dark);
+  }
+  .plic__tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .plic__big {
+    margin-top: var(--space-6);
+    font-size: clamp(4rem, 8vw, 6rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  .plic__biglabel {
+    max-width: 30ch;
+    margin-top: var(--space-3);
+    font-size: var(--text-base);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.64);
+  }
+  .plic__terms {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-8) 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    list-style: none;
+  }
+  .plic__terms li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .plic__terms b { font-size: var(--text-base); font-weight: 500; color: #fff; }
+  .plic__cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    margin-top: auto;
+    padding: 0 var(--space-6);
+    background: var(--color-cta-bg);
+    color: var(--color-cta-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    transition: background-color 0.2s var(--ease-out);
+  }
+  .plic__cta:hover { background: var(--color-cta-hover); }
+
+  .plic__side {
+    display: grid;
+    gap: var(--space-8);
+    align-content: start;
+    padding: var(--space-10);
+  }
+  .plic__col h3 {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-base);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .plic__col ul { display: grid; gap: var(--space-3); list-style: none; }
+  .plic__col li {
+    position: relative;
+    padding-left: var(--space-6);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+  .plic__col li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+  .plic__note {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-tertiary);
+  }
+
+  @media (max-width: 1023px) {
+    .plic__card { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .plic { padding: var(--space-24) 0; }
+    .plic__head { margin-bottom: var(--space-12); }
+    .plic__main, .plic__side { padding: var(--space-6); }
+  }
+</style>

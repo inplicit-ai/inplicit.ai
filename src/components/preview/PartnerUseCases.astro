@@ -1,0 +1,112 @@
+---
+// Wo Inplicit in ein Beratungsprojekt passt. Gebaut wie Audience.astro:
+// Foto oben, oranges Versalien-Tag, Titel, Text.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const cases = isDE ? [
+  { tag: 'Transformation', title: 'Die Ist-Aufnahme vor dem Umbau', body: 'Statt zwanzig ausgewählter Gespräche hören Sie die ganze Organisation. Sie starten das Projekt mit einem Bild, das die Belegschaft wiedererkennt.', img: '/audience/transformation.jpg' },
+  { tag: 'Strategie', title: 'Stakeholder-Interviews in der ganzen Breite', body: 'Führungskreis, Standorte und Schichtbetrieb in einer Woche. Ihr Team arbeitet mit Befunden und Zitaten statt mit Gesprächsnotizen.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'HR & Wissen', title: 'Erfahrungswissen vor dem Ruhestand sichern', body: 'Was erfahrene Mitarbeitende wissen, wird zu einem Bestand, auf dem Ihr Kunde nach dem Projekt weiterarbeitet.', img: '/audience/belegschaft.jpg' },
+] : [
+  { tag: 'Transformation', title: 'The baseline before the change', body: 'Instead of twenty selected conversations you hear the whole organisation. You start the project with a picture the workforce recognises.', img: '/audience/transformation.jpg' },
+  { tag: 'Strategy', title: 'Stakeholder interviews at full breadth', body: 'Leadership team, sites and shift work in one week. Your team works with findings and quotes instead of interview notes.', img: '/audience/geschaeftsfuehrung.jpg' },
+  { tag: 'HR & knowledge', title: 'Capture experience before retirement', body: 'What experienced people know becomes a body of knowledge your client keeps building on after the project.', img: '/audience/belegschaft.jpg' },
+];
+---
+
+<section class="puse" id="einsatz">
+  <div class="container">
+    <div class="puse__head section-fade">
+      <p class="rlabel">{isDE ? 'Im Projekt' : 'In your projects'}</p>
+      <h2 class="puse__heading">
+        <span>{isDE ? 'Wo Inplicit in Ihre' : 'Where Inplicit fits'}</span>
+        <span>{isDE ? 'Projekte passt.' : 'into your projects.'}</span>
+      </h2>
+    </div>
+
+    <div class="puse__grid">
+      {cases.map((c, i) => (
+        <article class="puse__card section-fade" style={`--delay: ${i * 70}ms`}>
+          <div class="puse__media">
+            <img src={c.img} alt="" loading="lazy" decoding="async" width="820" height="380" />
+            <span class="puse__tint" aria-hidden="true"></span>
+          </div>
+          <div class="puse__body">
+            <p class="puse__tag">{c.tag}</p>
+            <h3 class="puse__title">{c.title}</h3>
+            <p class="puse__text">{c.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .puse {
+    padding: var(--space-section) 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+  .puse__head { text-align: center; margin-bottom: var(--space-16); }
+  .puse__heading {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-4);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+  .puse__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .puse__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .puse__media { position: relative; aspect-ratio: 820 / 380; }
+  .puse__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .puse__tint {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 12, 16, 0.06) 0%, rgba(11, 12, 16, 0.22) 55%, rgba(11, 12, 16, 0.48) 100%);
+  }
+  .puse__body { padding: var(--space-6) var(--space-6) var(--space-8); }
+  .puse__tag {
+    margin-bottom: var(--space-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-dark);
+  }
+  .puse__title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .puse__text { font-size: var(--text-base); line-height: 1.6; color: var(--color-text-secondary); }
+
+  @media (max-width: 1023px) {
+    .puse__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .puse { padding: var(--space-24) 0; }
+    .puse__head { margin-bottom: var(--space-12); }
+    .puse__heading { display: block; text-wrap: balance; }
+    .puse__heading span { display: inline; }
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+// Partners-Seite (Preview, noindex). Aufbau wie die Startseite: Video-Hero,
+// Sektionen mit Label und zweizeiliger Headline, Foto-Karten, Produktausschnitt,
+// dunkler Abschluss.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../Nav.astro';
+import PageHero from './PageHero.astro';
+import PartnerSplit from './PartnerSplit.astro';
+import PartnerLicense from './PartnerLicense.astro';
+import PartnerUseCases from './PartnerUseCases.astro';
+import ProductPeek from '../redesign/ProductPeek.astro';
+import ClosingCta from '../redesign/ClosingCta.astro';
+import NavStyleToggle from './NavStyleToggle.astro';
+import Footer from '../Footer.astro';
+
+export interface Props {
+  lang: 'en' | 'de';
+}
+const { lang } = Astro.props;
+const isDE = lang === 'de';
+---
+
+<Layout
+  title={isDE ? 'Partner · inplicit.ai' : 'Partners · inplicit.ai'}
+  description={isDE
+    ? 'Beratungen setzen Inplicit in Kundenprojekten ein und verdienen an jeder Lizenz mit.'
+    : 'Consultancies use Inplicit in client projects and earn on every licence.'}
+  lang={lang}
+  noindex
+>
+  <Nav lang={lang} preview ctaHref={isDE ? '/de/call' : '/call'} langToggleHref={isDE ? '/partners' : '/de/partners'} />
+  <main>
+    <PageHero
+      lines={isDE ? ['Ihre Beratung.', 'Hunderte Stimmen mehr.'] : ['Your consulting.', 'Hundreds more voices.']}
+      lead={isDE
+        ? 'Mit Inplicit führen Sie in Kundenprojekten hunderte Interviews in Tagen statt in Wochen. Sie behalten Kunde und Deutung und verdienen an jeder Lizenz mit.'
+        : 'With Inplicit you run hundreds of interviews in client projects in days instead of weeks. You keep the client and the interpretation, and earn on every licence.'}
+      video="/company-brain-hero.mp4"
+      poster="/company-brain-poster.jpg"
+    />
+    <PartnerSplit lang={lang} />
+    <PartnerLicense lang={lang} />
+    <PartnerUseCases lang={lang} />
+    <ProductPeek lang={lang} />
+    <ClosingCta
+      lang={lang}
+      lines={isDE ? ['Bringen Sie Inplicit', 'in Ihr nächstes Projekt.'] : ['Bring Inplicit', 'into your next project.']}
+      sub={isDE
+        ? 'Im ersten Gespräch klären wir Konditionen, Ablauf und einen gemeinsamen Pilot bei einem Ihrer Kunden.'
+        : 'In a first call we agree terms, process and a joint pilot with one of your clients.'}
+      label={isDE ? 'Partnergespräch vereinbaren' : 'Book a partner call'}
+    />
+  </main>
+  <Footer lang={lang} />
+  <NavStyleToggle />
+</Layout>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); }
+    }),
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.section-fade').forEach((el) => observer.observe(el));
+</script>

@@ -1,0 +1,103 @@
+---
+// Hero fuer Unterseiten, gebaut wie HeroVideo auf der Startseite: Vollbild-
+// Video mit Poster, dunkler Verlauf, zweizeilige weisse Headline, kurzer Lead.
+export interface Props {
+  lines: [string, string];
+  lead: string;
+  video: string;
+  poster: string;
+}
+const { lines, lead, video, poster } = Astro.props;
+---
+
+<section class="phero">
+  <div class="phero__bg" aria-hidden="true" style={`background-image: url(${poster})`}>
+    <video class="phero__video" autoplay muted loop playsinline preload="auto" poster={poster}>
+      <source src={video} type="video/mp4" />
+    </video>
+    <span class="phero__scrim"></span>
+  </div>
+
+  <div class="phero__inner container">
+    <h1 class="phero__headline">
+      <span class="phero__line">{lines[0]}</span>
+      <span class="phero__line">{lines[1]}</span>
+    </h1>
+    <p class="phero__sub">{lead}</p>
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: clamp(4rem, 12vh, 8rem);
+    height: 86svh;
+    min-height: 560px;
+    max-height: 820px;
+    overflow: hidden;
+  }
+  .phero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-canvas-dark) center / cover no-repeat;
+  }
+  .phero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .phero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(11, 12, 16, 0.55) 0%, rgba(11, 12, 16, 0) 20%),
+      linear-gradient(90deg, rgba(11, 12, 16, 0.62) 0%, rgba(11, 12, 16, 0.24) 46%, rgba(11, 12, 16, 0) 70%),
+      linear-gradient(0deg, rgba(11, 12, 16, 0.76) 0%, rgba(11, 12, 16, 0.22) 56%, rgba(11, 12, 16, 0.1) 100%);
+  }
+  .phero__inner { position: relative; width: 100%; }
+
+  .phero__headline {
+    display: flex;
+    flex-direction: column;
+    max-width: 18ch;
+    color: #fff;
+    font-size: clamp(2.5rem, 5.8vw, 5rem);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+  }
+  .phero__sub {
+    max-width: 58ch;
+    margin-top: var(--space-6);
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+    text-wrap: pretty;
+    text-shadow: 0 1px 12px rgba(11, 12, 16, 0.45);
+  }
+
+  .phero__line,
+  .phero__sub {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: phero-in 0.85s var(--ease-out) forwards;
+  }
+  .phero__line:nth-child(2) { animation-delay: 0.09s; }
+  .phero__sub { animation-delay: 0.2s; }
+  @keyframes phero-in { to { opacity: 1; transform: none; } }
+
+  @media (max-width: 767px) {
+    .phero { height: 82svh; min-height: 520px; }
+    .phero__headline { max-width: 100%; letter-spacing: -0.035em; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .phero__line, .phero__sub { animation: none; opacity: 1; transform: none; }
+    .phero__video { display: none; }
+  }
+</style>

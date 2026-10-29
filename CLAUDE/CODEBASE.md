@@ -37,21 +37,27 @@ Website/
         │   ├── ConsentBanner.astro ← GDPR cookie consent gate for PostHog (bilingual)
         │   ├── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
         │   └── preview/         ← preview-only pieces (noindex pages, not linked from live nav)
-        │       ├── PageIntro.astro      ← eyebrow + h1 + lead + optional CTA for subpages
-        │       ├── PartnerModel.astro   ← 3 partner tiers + 4-step flow ⚠ [XX] % placeholder terms
-        │       ├── ResearchProof.astro  ← institution wordmarks + 5 cited AI-interview studies
+        │       ├── PartnersPage.astro   ← whole /partners page (lang prop), used by pages/partners + de/partners
+        │       ├── ResearchPage.astro   ← whole /research page (lang prop), used by pages/research + de/research
+        │       ├── PageHero.astro       ← full-bleed video hero like HeroVideo (lines, lead, video, poster)
+        │       ├── PartnerSplit.astro   ← "Das Modell": worked example, project split into consulting + licence ⚠ example numbers
+        │       ├── PartnerLicense.astro ← the ONE partner licence: 25 % year 1, 10 % renewals, 90 days protection ⚠ confirm terms
+        │       ├── PartnerUseCases.astro← 3 photo cards (Audience style) for consulting use cases
+        │       ├── ResearchLogos.astro  ← grey institution logos + "no endorsement" note (public/research-logos/)
+        │       ├── ResearchFindings.astro ← study cards from data/studies.ts (stat / bars, peer-review badge)
+        │       ├── ResearchLimits.astro ← honest "what research does not show yet" section
         │       └── NavStyleToggle.astro ← floating Glass/Solid switch to compare nav looks
         └── pages/
             ├── index.astro      ← EN landing (composes all components)
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
             ├── privacy.astro    ← GDPR Datenschutzerklärung (DE + EN) ⚠ placeholders
             ├── terms.astro      ← Terms of Service (EN only)
-            ├── partners.astro   ← PREVIEW: partner programme (Nav preview), noindex
-            ├── research.astro   ← PREVIEW: research citations (Nav preview), noindex
+            ├── partners.astro   ← PREVIEW: renders PartnersPage lang="en", noindex
+            ├── research.astro   ← PREVIEW: renders ResearchPage lang="en", noindex
             └── de/
                 ├── index.astro  ← DE landing (same components, lang="de")
-                ├── partners.astro ← PREVIEW DE
-                └── research.astro ← PREVIEW DE
+                ├── partners.astro ← PREVIEW DE (PartnersPage lang="de")
+                └── research.astro ← PREVIEW DE (ResearchPage lang="de")
 ```
 
 ---
@@ -70,6 +76,7 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `ValidationLoop.astro` | Stages array in frontmatter; arrow separators hidden on mobile |
 | `USP.astro` | Strikethrough on "not" statement; accent divider between blocks |
 | `DemoCTA.astro` | Deliverables array in frontmatter; CTA links to `mailto:hello@implicit.ai` |
+| `ClosingCta.astro` | Optional `lines`, `sub`, `label` override the copy (preview pages); defaults = live home page |
 | `Footer.astro` | Copyright year is `new Date().getFullYear()` — always current |
 | `Layout.astro` | Props: `title`, `description`, `lang`, `noindex` — all optional with sensible defaults |
 
@@ -84,6 +91,8 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `/imprint` | `pages/imprint.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/privacy` | `pages/privacy.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/terms` | `pages/terms.astro` | EN only; ⚠ city placeholder in governing law clause |
+| `/partners`, `/de/partners` | `preview/PartnersPage.astro` | PREVIEW, noindex, Nav `preview` (rect bar + tabs) |
+| `/research`, `/de/research` | `preview/ResearchPage.astro` | PREVIEW, noindex; studies in `src/data/studies.ts` ⚠ check numbers at source before go-live |
 
 ---
 

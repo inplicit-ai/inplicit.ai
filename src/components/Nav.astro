@@ -343,6 +343,10 @@ const tabs = [
   }
   .nav__tab:hover { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.04); }
   .nav__tab.is-active { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.06); }
+  /* Ueber dem dunklen Hero, bevor die Leiste erscheint: Tabs weiss wie das Logo */
+  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab { color: rgba(255, 255, 255, 0.78); }
+  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab:hover,
+  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab.is-active { color: #fff; background: rgba(255, 255, 255, 0.14); }
 
   @media (max-width: 767px) {
     .nav__tabs { display: none; }
