@@ -9,18 +9,33 @@ export interface Props {
   /** Landing pages that have no #book-demo section point the CTA elsewhere. */
   ctaHref?: string;
   ctaLabel?: string;
+  /** Preview only: rounded-rectangle glass bar with Research / Partners tabs. */
+  preview?: boolean;
 }
-const { lang = 'en', langToggleHref, solid = false, ctaHref = '#book-demo', ctaLabel } = Astro.props;
+const { lang = 'en', langToggleHref, solid = false, ctaHref = '#book-demo', ctaLabel, preview = false } = Astro.props;
 const cta = ctaLabel ?? (lang === 'de' ? 'Demo buchen' : 'Book demo');
 const toggleHref = langToggleHref ?? (lang === 'de' ? '/' : '/de/');
 const toggleLabel = lang === 'de' ? 'EN' : 'DE';
+const base = lang === 'de' ? '/de' : '';
+const path = Astro.url.pathname.replace(/\/$/, '');
+const tabs = [
+  { href: `${base}/research`, label: lang === 'de' ? 'Forschung' : 'Research' },
+  { href: `${base}/partners`, label: 'Partners' },
+];
 ---
 
-<nav class:list={['nav', { 'is-solid': solid }]} id="nav">
+<nav class:list={['nav', { 'is-solid': solid, 'is-preview': preview }]} id="nav">
   <div class="nav__pill">
     <a href={lang === 'de' ? '/de/' : '/'} class="nav__logo" aria-label="inplicit.ai home">
       <Logo />
     </a>
+    {preview && (
+      <div class="nav__tabs">
+        {tabs.map((t) => (
+          <a href={t.href} class:list={['nav__tab', { 'is-active': path === t.href }]} aria-current={path === t.href ? 'page' : undefined}>{t.label}</a>
+        ))}
+      </div>
+    )}
     <div class="nav__actions">
       <a href={toggleHref} class="nav__lang" aria-label={`Switch to ${toggleLabel}`}>
         {toggleLabel}
@@ -52,6 +67,7 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
       </svg>
     </button>
     <div class="nav__menu-inner">
+      {preview && tabs.map((t) => <a href={t.href} class="nav__menu-link">{t.label}</a>)}
       <a href={toggleHref} class="nav__menu-link">{lang === 'de' ? 'English' : 'Deutsch'}</a>
       <a href="https://app.inplicit.ai/login" class="nav__menu-link" target="_blank" rel="noopener noreferrer">Login</a>
       <a href={ctaHref} class="nav__menu-cta">{cta}</a>
@@ -278,7 +294,58 @@ const toggleLabel = lang === 'de' ? 'EN' : 'DE';
     margin-top: var(--space-2);
   }
 
+  /* ── Preview: rounded rectangle, glass, centre tabs ── */
+  .nav.is-preview .nav__pill {
+    position: relative;
+    border-radius: var(--radius-xl);
+    padding-left: var(--space-4);
+  }
+  .nav.is-preview.scrolled .nav__pill,
+  .nav.is-preview.is-solid .nav__pill {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 32px -12px rgba(11, 12, 16, 0.22), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  }
+  /* "Solid" comparison mode, toggled on the preview pages */
+  .nav.is-preview.no-glass .nav__pill {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+  .nav.is-preview .nav__lang,
+  .nav.is-preview .nav__login,
+  .nav.is-preview .nav__cta,
+  .nav.is-preview .nav__cta-icon { border-radius: var(--radius-ui); }
+  .nav.is-preview .nav__burger { border-radius: var(--radius-ui); }
+
+  .nav__tabs {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: var(--space-1);
+    pointer-events: auto;
+  }
+  .nav__tab {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 var(--space-4);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-ui);
+    transition: color 0.15s var(--ease-smooth), background 0.15s var(--ease-smooth);
+  }
+  .nav__tab:hover { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.04); }
+  .nav__tab.is-active { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.06); }
+
   @media (max-width: 767px) {
+    .nav__tabs { display: none; }
     .nav__actions { display: none; }
     .nav__burger { display: inline-flex; }
     .nav__pill { padding-left: var(--space-4); }

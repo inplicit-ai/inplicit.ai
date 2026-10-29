@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import PageIntro from '../components/preview/PageIntro.astro';
+import PartnerModel from '../components/preview/PartnerModel.astro';
+import NavStyleToggle from '../components/preview/NavStyleToggle.astro';
+import Footer from '../components/Footer.astro';
+
+const lang = 'en';
+const isDE = lang === 'de';
+---
+
+<Layout title={isDE ? 'Partner · inplicit.ai' : 'Partners · inplicit.ai'} lang={lang} noindex>
+  <Nav lang={lang} solid preview ctaHref="/call" langToggleHref="/de/partners" />
+  <main>
+    <PageIntro
+      eyebrow="Partners"
+      title={isDE ? 'Inplicit in Ihren Beratungsprojekten.' : 'Inplicit in your consulting projects.'}
+      lead={isDE
+        ? 'Hunderte Interviews in Tagen statt Wochen. Sie behalten Kunde und Interpretation und verdienen an jeder Lizenz mit.'
+        : 'Hundreds of interviews in days instead of weeks. You keep the client and the interpretation, and earn on every licence.'}
+      ctaHref="/call"
+      ctaLabel={isDE ? 'Partner werden' : 'Become a partner'}
+    />
+    <PartnerModel lang={lang} />
+  </main>
+  <Footer lang={lang} />
+  <NavStyleToggle />
+</Layout>

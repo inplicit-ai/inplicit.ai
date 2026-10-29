@@ -1,0 +1,30 @@
+---
+// Preview helper: switch the nav between glass and solid to compare both looks.
+---
+
+<div class="nst" role="group" aria-label="Nav style">
+  <button type="button" class="nst__btn is-active" data-style="glass">Glass</button>
+  <button type="button" class="nst__btn" data-style="solid">Solid</button>
+</div>
+
+<style>
+  .nst {
+    position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 150;
+    display: flex; gap: var(--space-1); padding: var(--space-1);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-lg);
+  }
+  .nst__btn {
+    height: 32px; padding: 0 var(--space-3); border: none; border-radius: var(--radius-ui);
+    font: inherit; font-size: var(--text-sm); color: var(--color-text-secondary); background: transparent; cursor: pointer;
+  }
+  .nst__btn.is-active { color: var(--color-text-primary); background: var(--color-surface-elevated); }
+</style>
+
+<script>
+  const nav = document.getElementById('nav');
+  const btns = document.querySelectorAll<HTMLButtonElement>('.nst__btn');
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.classList.toggle('is-active', x === b));
+    nav?.classList.toggle('no-glass', b.dataset.style === 'solid');
+  }));
+</script>

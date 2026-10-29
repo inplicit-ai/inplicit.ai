@@ -7,6 +7,8 @@ export interface Props {
   canonical?: string;
   /** Absolute og:image URL. Defaults to the logo card (public/og.png). */
   ogImage?: string;
+  /** Keep preview pages out of search engines. */
+  noindex?: boolean;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   lang = 'en',
   canonical,
   ogImage = 'https://inplicit.ai/og.png',
+  noindex = false,
 } = Astro.props;
 
 import '../styles/design.css';
@@ -38,6 +41,7 @@ const posthogHost = import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />

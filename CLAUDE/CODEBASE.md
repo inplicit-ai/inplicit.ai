@@ -35,14 +35,23 @@ Website/
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)
         │   ├── ConsentBanner.astro ← GDPR cookie consent gate for PostHog (bilingual)
-        │   └── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
+        │   ├── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
+        │   └── preview/         ← preview-only pieces (noindex pages, not linked from live nav)
+        │       ├── PageIntro.astro      ← eyebrow + h1 + lead + optional CTA for subpages
+        │       ├── PartnerModel.astro   ← 3 partner tiers + 4-step flow ⚠ [XX] % placeholder terms
+        │       ├── ResearchProof.astro  ← institution wordmarks + 5 cited AI-interview studies
+        │       └── NavStyleToggle.astro ← floating Glass/Solid switch to compare nav looks
         └── pages/
             ├── index.astro      ← EN landing (composes all components)
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
             ├── privacy.astro    ← GDPR Datenschutzerklärung (DE + EN) ⚠ placeholders
             ├── terms.astro      ← Terms of Service (EN only)
+            ├── partners.astro   ← PREVIEW: partner programme (Nav preview), noindex
+            ├── research.astro   ← PREVIEW: research citations (Nav preview), noindex
             └── de/
-                └── index.astro  ← DE landing (same components, lang="de")
+                ├── index.astro  ← DE landing (same components, lang="de")
+                ├── partners.astro ← PREVIEW DE
+                └── research.astro ← PREVIEW DE
 ```
 
 ---
@@ -53,7 +62,7 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 
 | Component | Key behaviour |
 |-----------|--------------|
-| `Nav.astro` | `lang` toggles CTA label + EN↔DE link href |
+| `Nav.astro` | `lang` toggles CTA label + EN↔DE link href; `preview` = rounded-rect glass bar with Research/Partners tabs |
 | `Hero.astro` | Fade-up CSS animation on load (disabled via `prefers-reduced-motion`) |
 | `HowItWorks.astro` | 4 steps (connect knowledge, interviews, synthesis, results); bilingual |
 | `Applications.astro` | 4 use-case cards with icons; bilingual |
@@ -62,7 +71,7 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `USP.astro` | Strikethrough on "not" statement; accent divider between blocks |
 | `DemoCTA.astro` | Deliverables array in frontmatter; CTA links to `mailto:hello@implicit.ai` |
 | `Footer.astro` | Copyright year is `new Date().getFullYear()` — always current |
-| `Layout.astro` | Props: `title`, `description`, `lang` — all optional with sensible defaults |
+| `Layout.astro` | Props: `title`, `description`, `lang`, `noindex` — all optional with sensible defaults |
 
 ---
 
