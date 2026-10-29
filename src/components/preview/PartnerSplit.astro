@@ -29,15 +29,15 @@ const isDE = lang === 'de';
         <p class="psplit__kicker">{isDE ? 'Ein Kundenprojekt' : 'One client project'}</p>
 
         <div class="psplit__bar" aria-hidden="true">
-          <span class="psplit__seg is-ink" style="flex: 6"></span>
-          <span class="psplit__seg is-lic" style="flex: 3"></span>
-          <span class="psplit__seg is-share" style="flex: 1"></span>
+          <span class="psplit__seg is-ink" style="flex: 7"></span>
+          <span class="psplit__seg is-share" style="flex: 0.6"></span>
+          <span class="psplit__seg is-lic" style="flex: 1.4"></span>
         </div>
 
         <ul class="psplit__legend">
           <li><i class="is-ink"></i>{isDE ? 'Ihre Beratung' : 'Your consulting'}<b>{isDE ? 'rechnen Sie selbst ab' : 'billed by you'}</b></li>
-          <li><i class="is-lic"></i>{isDE ? 'Inplicit-Lizenz' : 'Inplicit licence'}<b>{isDE ? 'Preis auf Anfrage' : 'price on request'}</b></li>
           <li><i class="is-share"></i>{isDE ? 'Ihr Anteil an der Lizenz' : 'Your share of the licence'}<b>{isDE ? 'fest vereinbart' : 'fixed by contract'}</b></li>
+          <li><i class="is-lic"></i>{isDE ? 'Inplicit-Lizenz' : 'Inplicit licence'}<b>{isDE ? 'Preis auf Anfrage' : 'price on request'}</b></li>
         </ul>
 
         <div class="psplit__sum">
