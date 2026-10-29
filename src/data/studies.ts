@@ -53,7 +53,6 @@ export const studiesDe: Study[] = [
     venue: 'Computers in Human Behavior',
     reviewed: true,
     title: 'Wer glaubt, mit einer Maschine zu sprechen, öffnet sich mehr.',
-    stat: { v: 'Weniger', l: 'Eindrucksmanagement und weniger Angst, etwas Persönliches preiszugeben' },
     body: 'Im Experiment sprachen alle mit derselben virtuellen Person. Wer glaubte, sie werde von einem Computer gesteuert, sprach offener als wer einen Menschen dahinter vermutete.',
     ours: 'Bei Themen wie Überlastung, Führung oder Fehlern ist das der Unterschied zum Workshop.',
     href: 'https://doi.org/10.1016/j.chb.2014.04.043',
@@ -77,7 +76,6 @@ export const studiesDe: Study[] = [
     venue: 'arXiv',
     reviewed: false,
     title: 'KI-Interviewer liefern Daten in vergleichbarer Qualität wie Menschen.',
-    stat: { v: 'Gleichauf', l: 'Antwortqualität von KI- und Menschen-Interviews im direkten Vergleich' },
     body: 'Die Stichprobe war klein und bestand aus Studierenden. Menschen hörten nicht immer aktiv zu, die KI fragte nicht immer passend nach.',
     ours: 'Gutes Nachfragen ist der schwierige Teil. Genau daran arbeitet unsere Gesprächssteuerung.',
     href: 'https://arxiv.org/abs/2410.01824',
@@ -121,7 +119,6 @@ export const studiesEn: Study[] = [
   {
     ...studiesDe[2],
     title: 'People who think they are talking to a machine open up more.',
-    stat: { v: 'Less', l: 'impression management and less fear of disclosing something personal' },
     body: 'Everyone spoke to the same virtual human. Those who believed a computer was running it spoke more openly than those who thought a person was behind it.',
     ours: 'On topics like overload, leadership or mistakes, that is the difference from a workshop.',
   },
@@ -135,7 +132,6 @@ export const studiesEn: Study[] = [
   {
     ...studiesDe[4],
     title: 'AI interviewers deliver data of comparable quality to human interviewers.',
-    stat: { v: 'On par', l: 'response quality of AI and human interviews in a direct comparison' },
     body: 'The sample was small and made up of students. Humans did not always listen actively, the AI did not always follow up well.',
     ours: 'Following up well is the hard part. It is exactly what our conversation steering works on.',
   },
