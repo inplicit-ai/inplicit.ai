@@ -1,18 +1,12 @@
 ---
 // Das Modell in einem Bild: ein Kundenprojekt, aufgeteilt in Ihre Leistung
-// und die Lizenz. Zahlen sind eine Beispielrechnung (Perplexity-Partnermodell,
-// 2026-09-29), kein Preis.
+// und die Lizenz. Bewusst ohne Euro-Betraege: Preise nur auf Anfrage
+// (Gruender 2026-10-29). Die Balkenanteile sind illustrativ.
 export interface Props {
   lang?: 'en' | 'de';
 }
 const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
-const eur = (n: number) => (isDE ? `${n.toLocaleString('de-DE')} €` : `€${n.toLocaleString('en-GB')}`);
-
-const SERVICES = 15000;
-const LICENCE = 10000;
-const SHARE = LICENCE * 0.25;
-const total = SERVICES + LICENCE;
 ---
 
 <section class="psplit" id="modell">
@@ -32,27 +26,22 @@ const total = SERVICES + LICENCE;
 
     <div class="psplit__viz section-fade" style="--delay: 90ms">
       <div class="psplit__card">
-        <p class="psplit__kicker">{isDE ? 'Beispielrechnung' : 'Worked example'}</p>
-        <div class="psplit__row">
-          <span>{isDE ? 'Kundenprojekt' : 'Client project'}</span>
-          <strong>{eur(total)}</strong>
-        </div>
+        <p class="psplit__kicker">{isDE ? 'Ein Kundenprojekt' : 'One client project'}</p>
 
         <div class="psplit__bar" aria-hidden="true">
-          <span class="psplit__seg is-ink" style={`flex: ${SERVICES}`}></span>
-          <span class="psplit__seg is-lic" style={`flex: ${LICENCE - SHARE}`}></span>
-          <span class="psplit__seg is-share" style={`flex: ${SHARE}`}></span>
+          <span class="psplit__seg is-ink" style="flex: 6"></span>
+          <span class="psplit__seg is-lic" style="flex: 3"></span>
+          <span class="psplit__seg is-share" style="flex: 1"></span>
         </div>
 
         <ul class="psplit__legend">
-          <li><i class="is-ink"></i>{isDE ? 'Ihre Beratung, von Ihnen abgerechnet' : 'Your consulting, billed by you'}<b>{eur(SERVICES)}</b></li>
-          <li><i class="is-lic"></i>{isDE ? 'Inplicit-Lizenz' : 'Inplicit licence'}<b>{eur(LICENCE)}</b></li>
-          <li><i class="is-share"></i>{isDE ? 'davon Ihr Anteil, 25 %' : 'of which your share, 25%'}<b>{eur(SHARE)}</b></li>
+          <li><i class="is-ink"></i>{isDE ? 'Ihre Beratung' : 'Your consulting'}<b>{isDE ? 'rechnen Sie selbst ab' : 'billed by you'}</b></li>
+          <li><i class="is-lic"></i>{isDE ? 'Inplicit-Lizenz' : 'Inplicit licence'}<b>{isDE ? 'Preis auf Anfrage' : 'price on request'}</b></li>
+          <li><i class="is-share"></i>{isDE ? 'Ihr Anteil an der Lizenz' : 'Your share of the licence'}<b>{isDE ? 'fest vereinbart' : 'fixed by contract'}</b></li>
         </ul>
 
         <div class="psplit__sum">
-          <span>{isDE ? 'Ihr Umsatz im Projekt' : 'Your revenue from the project'}</span>
-          <strong>{eur(SERVICES + SHARE)}</strong>
+          <span>{isDE ? 'Sie verdienen an beidem.' : 'You earn on both.'}</span>
         </div>
       </div>
     </div>
@@ -103,20 +92,12 @@ const total = SERVICES + LICENCE;
     text-transform: uppercase;
     color: var(--color-text-tertiary);
   }
-  .psplit__row, .psplit__sum {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--space-4);
-  }
-  .psplit__row { font-size: var(--text-sm); color: var(--color-text-secondary); }
-  .psplit__row strong { font-size: var(--text-lg); font-weight: 500; color: var(--color-text-primary); }
 
   .psplit__bar {
     display: flex;
     gap: 3px;
     height: 14px;
-    margin: var(--space-4) 0 var(--space-6);
+    margin: 0 0 var(--space-6);
   }
   .psplit__seg { border-radius: 4px; }
   .is-ink { background: var(--color-text-primary); }
@@ -139,13 +120,9 @@ const total = SERVICES + LICENCE;
     margin-top: var(--space-6);
     padding-top: var(--space-5);
     border-top: 1px solid var(--color-border);
-    font-size: var(--text-base);
+    font-size: var(--text-lg);
     font-weight: 500;
-  }
-  .psplit__sum strong {
-    font-size: var(--text-xl);
-    font-weight: 400;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--color-accent-dark);
   }
 

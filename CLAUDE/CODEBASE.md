@@ -40,7 +40,7 @@ Website/
         │       ├── PartnersPage.astro   ← whole /partners page (lang prop), used by pages/partners + de/partners
         │       ├── ResearchPage.astro   ← whole /research page (lang prop), used by pages/research + de/research
         │       ├── PageHero.astro       ← full-bleed video hero like HeroVideo (lines, lead, video, poster)
-        │       ├── PartnerSplit.astro   ← "Das Modell": worked example, project split into consulting + licence ⚠ example numbers
+        │       ├── PartnerSplit.astro   ← "Das Modell": project split into consulting + licence, no prices (on request)
         │       ├── PartnerLicense.astro ← the ONE partner licence: 25 % year 1, 10 % renewals, 90 days protection ⚠ confirm terms
         │       ├── PartnerUseCases.astro← 3 photo cards (Audience style) for consulting use cases
         │       ├── ResearchLogos.astro  ← grey institution logos + "no endorsement" note (public/research-logos/)
