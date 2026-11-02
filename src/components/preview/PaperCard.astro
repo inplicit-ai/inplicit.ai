@@ -1,0 +1,63 @@
+---
+// Stilisierte Titelseite eines Papers (nach Simile): Logo der Einrichtung,
+// Titel, Autoren, Platzhalterzeilen. Kein Abbild des Originals.
+export interface Props {
+  logo: string;
+  org: string;
+  paper: string;
+  authors: string;
+  venue: string;
+  year: number;
+  href: string;
+}
+const { logo, org, paper, authors, venue, year, href } = Astro.props;
+const lines = [96, 100, 88, 100, 94, 72, 100, 90, 60];
+---
+
+<a class="paper" href={href} target="_blank" rel="noopener noreferrer" aria-label={paper}>
+  <span class="paper__back" aria-hidden="true"></span>
+  <span class="paper__front">
+    <img class="paper__logo" src={logo} alt={org} loading="lazy" decoding="async" />
+    <span class="paper__venue">{venue} · {year}</span>
+    <span class="paper__title">{paper}</span>
+    <span class="paper__authors">{authors}</span>
+    <span class="paper__abs">Abstract</span>
+    {lines.map((w) => <span class="paper__line" style={`width: ${w}%`}></span>)}
+  </span>
+</a>
+
+<style>
+  .paper {
+    position: relative;
+    display: block;
+    width: min(100%, 300px);
+    aspect-ratio: 0.78;
+    margin: var(--space-4) auto var(--space-2);
+  }
+  .paper__back,
+  .paper__front {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-shadow: var(--shadow-md);
+  }
+  .paper__back { transform: translate(18px, -12px) rotate(4deg); }
+  .paper__front {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 22px 18px;
+    transform: rotate(-2deg);
+    transition: transform 0.3s var(--ease-out);
+  }
+  .paper:hover .paper__front { transform: rotate(0deg) translateY(-4px); }
+  .paper__logo { height: 18px; width: auto; max-width: 120px; object-fit: contain; object-position: left; filter: grayscale(1); opacity: 0.7; }
+  .paper__venue { margin-top: 8px; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+  .paper__title { font-size: 13px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-text-primary); }
+  .paper__authors { font-size: 10px; color: var(--color-text-secondary); }
+  .paper__abs { margin-top: 8px; font-size: 9px; font-weight: 600; color: var(--color-text-secondary); }
+  .paper__line { display: block; height: 5px; border-radius: 2px; background: var(--color-surface-elevated); }
+</style>

@@ -42,9 +42,11 @@ Website/
         │       ├── PageHero.astro       ← full-bleed video hero like HeroVideo (lines, lead, video, poster)
         │       ├── PartnerSplit.astro   ← "Das Modell": project split into consulting + licence, no prices (on request)
         │       ├── PartnerLicense.astro ← the ONE partner licence: 25 % year 1, 10 % renewals, 90 days protection ⚠ confirm terms
-        │       ├── PartnerUseCases.astro← 3 photo cards (Audience style) for consulting use cases
+        │       ├── PartnerUseCases.astro← 3 consulting engagements (sentiment, process, experience): client question, what Inplicit delivers, your consulting part
         │       ├── ResearchLogos.astro  ← grey institution logos + "no endorsement" note (public/research-logos/)
-        │       ├── ResearchFindings.astro ← study cards from data/studies.ts (stat / bars, peer-review badge)
+        │       ├── ResearchTimeline.astro ← studies as a Simile-style timeline (year, claim, study / at Inplicit, paper + graphic)
+        │       ├── PaperCard.astro      ← stylised paper title page (institution logo, title, authors), links to the study
+        │       ├── StudyVisual.astro    ← one graphic per study: bars / stats from the paper, or a sketch marked "Illustration"
         │       ├── ResearchLimits.astro ← honest "what research does not show yet" section
         │       └── NavStyleToggle.astro ← floating Glass/Solid switch to compare nav looks
         └── pages/

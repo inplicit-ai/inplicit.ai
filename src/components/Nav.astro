@@ -310,12 +310,17 @@ const tabs = [
   }
   /* "Solid" comparison mode, toggled on the preview pages */
   .nav.is-preview.no-glass .nav__pill {
+    pointer-events: auto;
     background: var(--color-surface);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-color: var(--color-border);
     box-shadow: var(--shadow-sm);
   }
+  /* Solid zeigt die Leiste schon ueber dem Hero: dunkles Logo, Aktionen sichtbar */
+  .nav.is-preview.no-glass .nav__logo { --logo-ink: var(--color-text-primary); --logo-hole: #fff; }
+  .nav.is-preview.no-glass .nav__actions,
+  .nav.is-preview.no-glass .nav__burger { opacity: 1; transform: none; pointer-events: auto; }
   .nav.is-preview .nav__lang,
   .nav.is-preview .nav__login,
   .nav.is-preview .nav__cta,
@@ -344,15 +349,17 @@ const tabs = [
   .nav__tab:hover { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.04); }
   .nav__tab.is-active { color: var(--color-text-primary); background: rgba(11, 12, 16, 0.06); }
   /* Ueber dem dunklen Hero, bevor die Leiste erscheint: Tabs weiss wie das Logo */
-  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab { color: rgba(255, 255, 255, 0.78); }
-  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab:hover,
-  .nav.is-preview:not(.scrolled):not(.is-solid) .nav__tab.is-active { color: #fff; background: rgba(255, 255, 255, 0.14); }
+  .nav.is-preview:not(.scrolled):not(.is-solid):not(.no-glass) .nav__tab { color: rgba(255, 255, 255, 0.78); }
+  .nav.is-preview:not(.scrolled):not(.is-solid):not(.no-glass) .nav__tab:hover,
+  .nav.is-preview:not(.scrolled):not(.is-solid):not(.no-glass) .nav__tab.is-active { color: #fff; background: rgba(255, 255, 255, 0.14); }
 
   @media (max-width: 767px) {
     .nav__tabs { display: none; }
     .nav__actions { display: none; }
     .nav__burger { display: inline-flex; }
     .nav__pill { padding-left: var(--space-4); }
+    /* Preview: Tabs leben nur im Burger-Menue, also Burger schon ueber dem Hero */
+    .nav.is-preview .nav__burger { opacity: 1; transform: none; pointer-events: auto; }
   }
 </style>
 
