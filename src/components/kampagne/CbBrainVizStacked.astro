@@ -1,9 +1,9 @@
 ---
-// Phone layout of the Company Brain diagram: campaigns on top, brain below,
-// tools at the bottom. The implicit zone sits at the top of the brain card
-// here because the flow arrives from above. Wide screens use CbBrainViz.
-import logos from './aiToolLogos.html?raw';
-import { BRAIN, TOOLS } from './brainLabels';
+// Phone layout of the Company Brain diagram: campaigns on top, brain below.
+// The implicit zone sits at the top of the brain card here because the flow
+// arrives from above. Wide screens use CbBrainViz. No AI-tool hand-off (see
+// CbBrainViz).
+import { BRAIN } from './brainLabels';
 
 export interface Props {
   campaigns: { label: string; people: number[] }[];
@@ -16,15 +16,9 @@ const cardMid = (i: number) => cardY(i) + CARD.h / 2;
 
 // All campaign lines converge on the top edge of the implicit box
 const SINK = { x: 300, y: 302 };
-const MCP = { cx: 180, cy: 588, r: 17 };
-const TOOL_POS = [
-  { x: 44, y: 652 }, { x: 214, y: 652 },
-  { x: 44, y: 690 }, { x: 214, y: 690 },
-];
 ---
 
-<svg class="bvs" viewBox="0 0 360 716" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs set:html={logos} />
+<svg class="bvs" viewBox="0 0 360 560" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     {campaigns.map((c, ci) => c.people.map((n, pi) => (
       <clipPath id={`bvs-c${ci}-${pi}`}>
@@ -81,28 +75,13 @@ const TOOL_POS = [
     <text x="180" y={484 + i * 20} text-anchor="middle" class="bvs__item">{item}</text>
   ))}
 
-  <line x1="180" y1="554" x2="180" y2={MCP.cy - MCP.r} stroke="var(--color-border)" stroke-width="1" />
-  <circle cx={MCP.cx} cy={MCP.cy} r={MCP.r} fill="var(--color-text-primary)" />
-  <text x={MCP.cx} y={MCP.cy + 3} text-anchor="middle" class="bvs__mcp">MCP</text>
-
-  <g class="bvs__feed">
-    {TOOL_POS.map((p) => (
-      <line x1={MCP.cx} y1={MCP.cy + MCP.r + 2} x2={p.x + 6} y2={p.y - 10} />
-    ))}
-  </g>
-  {TOOLS.map((t, i) => (
-    <>
-      <use href={`#${t.id}`} x={TOOL_POS[i].x} y={TOOL_POS[i].y - 7} width="14" height="14" />
-      <text x={TOOL_POS[i].x + 20} y={TOOL_POS[i].y + 4} class="bvs__tool">{t.label}</text>
-    </>
-  ))}
 </svg>
 
 <style>
   .bvs { display: block; width: 100%; height: auto; }
 
   .bvs__label, .bvs__card-title, .bvs__brain-title, .bvs__zone-label,
-  .bvs__item, .bvs__source, .bvs__mcp, .bvs__tool { font-family: var(--font-family); }
+  .bvs__item, .bvs__source { font-family: var(--font-family); }
 
   .bvs__label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.09em; fill: var(--color-text-tertiary); }
   .bvs__card-title { font-size: 12px; font-weight: 500; fill: var(--color-text-primary); }
@@ -112,8 +91,6 @@ const TOOL_POS = [
   .bvs__item { font-size: 11px; fill: var(--color-text-tertiary); }
   .bvs__item--acc { fill: var(--color-text-secondary); }
   .bvs__source { font-size: 9px; fill: var(--color-text-tertiary); }
-  .bvs__mcp { font-size: 8px; font-weight: 700; fill: var(--color-bg); }
-  .bvs__tool { font-size: 12px; fill: var(--color-text-primary); }
 
   .bvs__feed line {
     stroke: var(--color-accent);

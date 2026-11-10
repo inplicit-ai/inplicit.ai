@@ -8,12 +8,12 @@ const { lang = 'en' } = Astro.props;
 const isDE = lang === 'de';
 
 const pillars = isDE ? [
-  { kind: 'de' as const, label: 'Deutschlandflagge', t: 'Daten in Deutschland gehostet', b: 'Alle Gesprächsdaten liegen auf deutschen Servern. Kein Transfer in Drittstaaten für Kernprozesse.' },
-  { kind: 'gdpr' as const, label: 'DSGVO-Signet', t: 'DSGVO-konform', b: 'Auftragsverarbeitungsvertrag, klare Rechtsgrundlagen, Betriebsrat-ready. Mitarbeitende entscheiden selbst, was sie teilen, ausgewertet wird nur anonymisiert.' },
+  { kind: 'de' as const, label: 'Deutschlandflagge', t: 'Daten in Frankfurt gespeichert', b: 'Gespeicherte Gesprächsdaten liegen auf Servern in Frankfurt. Welche Dienstleister an der Verarbeitung beteiligt sind, steht vollständig im Auftragsverarbeitungsvertrag.' },
+  { kind: 'gdpr' as const, label: 'DSGVO-Signet', t: 'DSGVO-konform', b: 'Auftragsverarbeitungsvertrag, klare Rechtsgrundlagen, Betriebsrat früh einbindbar. Mitarbeitende entscheiden selbst, was sie teilen, ausgewertet wird nur anonymisiert.' },
   { kind: 'eu' as const, label: 'Europaflagge', t: 'EU AI Act konform', b: 'Transparenzpflichten erfüllt, Zweckbindung dokumentiert. Alles, was Ihr Unternehmen für den rechtssicheren Einsatz braucht.' },
 ] : [
-  { kind: 'de' as const, label: 'German flag', t: 'Hosted in Germany', b: 'All conversation data sits on German servers. No third-country transfer for core processes.' },
-  { kind: 'gdpr' as const, label: 'GDPR badge', t: 'GDPR compliant', b: 'Data processing agreement, clear legal basis, works-council ready. People decide what they share, and only anonymised data is analysed.' },
+  { kind: 'de' as const, label: 'German flag', t: 'Data stored in Frankfurt', b: 'Stored conversation data sits on servers in Frankfurt. Every service provider involved in processing is listed in the data processing agreement.' },
+  { kind: 'gdpr' as const, label: 'GDPR badge', t: 'GDPR compliant', b: 'Data processing agreement, clear legal basis, works council can be involved early. People decide what they share, and only anonymised data is analysed.' },
   { kind: 'eu' as const, label: 'European flag', t: 'EU AI Act compliant', b: 'Transparency obligations met, purpose limitation documented. Everything your company needs for compliant use.' },
 ];
 ---
