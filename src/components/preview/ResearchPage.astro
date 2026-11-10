@@ -1,0 +1,63 @@
+---
+// Research-Seite (Preview, noindex). Karten nach Sona8, Grenzen nach
+// Zeitgeist Labs, Aufbau wie die Startseite.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../Nav.astro';
+import PageHero from './PageHero.astro';
+import ResearchLogos from './ResearchLogos.astro';
+import ResearchTimeline from './ResearchTimeline.astro';
+import ResearchLimits from './ResearchLimits.astro';
+import ClosingCta from '../redesign/ClosingCta.astro';
+import NavStyleToggle from './NavStyleToggle.astro';
+import Footer from '../Footer.astro';
+
+export interface Props {
+  lang: 'en' | 'de';
+}
+const { lang } = Astro.props;
+const isDE = lang === 'de';
+---
+
+<Layout
+  title={isDE ? 'Forschung · inplicit.ai' : 'Research · inplicit.ai'}
+  description={isDE
+    ? 'Was Studien über KI-geführte Interviews zeigen, mit Quelle, Zahl und ihren Grenzen.'
+    : 'What studies show about AI-led interviews, with source, number and their limits.'}
+  lang={lang}
+  noindex
+>
+  <Nav lang={lang} preview ctaHref={isDE ? '/de/call' : '/call'} langToggleHref={isDE ? '/research' : '/de/research'} />
+  <main>
+    <PageHero
+      lines={isDE ? ['Was die Forschung', 'über KI-Interviews weiß.'] : ['What research knows', 'about AI interviews.']}
+      lead={isDE
+        ? 'Im Gespräch mit einer KI sagen Menschen oft mehr als im Fragebogen oder vor einem Menschen. Hier sind die Studien dazu, mit Quelle, Zahl und ihren Grenzen.'
+        : 'Talking to an AI, people often say more than in a survey or in front of a person. Here are the studies, with source, number and their limits.'}
+      video="/hero-people.mp4"
+      poster="/hero-people-poster.jpg"
+    />
+    <ResearchLogos lang={lang} />
+    <ResearchTimeline lang={lang} />
+    <ResearchLimits lang={lang} />
+    <ClosingCta
+      lang={lang}
+      lines={isDE ? ['Forschen Sie', 'mit uns.'] : ['Research', 'with us.']}
+      sub={isDE
+        ? 'Sie forschen zu Befragungen, Organisationen oder KI-Interviews? Sprechen Sie mit uns über eine gemeinsame Studie.'
+        : 'You research surveys, organisations or AI interviews? Talk to us about a joint study.'}
+      label={isDE ? 'Gespräch vereinbaren' : 'Book a call'}
+    />
+  </main>
+  <Footer lang={lang} />
+  <NavStyleToggle />
+</Layout>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); }
+    }),
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.section-fade').forEach((el) => observer.observe(el));
+</script>

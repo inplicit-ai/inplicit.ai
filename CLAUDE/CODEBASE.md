@@ -35,14 +35,31 @@ Website/
         │   ├── USP.astro        ← 6-card icon-facts grid (incl. MCP mention)
         │   ├── DemoCTA.astro    ← deliverables list, mailto CTA (no founder quote)
         │   ├── ConsentBanner.astro ← GDPR cookie consent gate for PostHog (bilingual)
-        │   └── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
+        │   ├── Footer.astro     ← legal links + copyright year (dynamic) + "Cookie settings"
+        │   └── preview/         ← preview-only pieces (noindex pages, not linked from live nav)
+        │       ├── PartnersPage.astro   ← whole /partners page (lang prop), used by pages/partners + de/partners
+        │       ├── ResearchPage.astro   ← whole /research page (lang prop), used by pages/research + de/research
+        │       ├── PageHero.astro       ← full-bleed video hero like HeroVideo (lines, lead, video, poster)
+        │       ├── PartnerSplit.astro   ← "Das Modell": project split into consulting + licence, no prices (on request)
+        │       ├── PartnerLicense.astro ← the ONE partner licence: 25 % year 1, 10 % renewals, 90 days protection ⚠ confirm terms
+        │       ├── PartnerUseCases.astro← 3 consulting engagements (sentiment, process, experience): client question, what Inplicit delivers, your consulting part
+        │       ├── ResearchLogos.astro  ← grey institution logos + "no endorsement" note (public/research-logos/)
+        │       ├── ResearchTimeline.astro ← studies as a Simile-style timeline (year, claim, study / at Inplicit, paper + graphic)
+        │       ├── PaperCard.astro      ← stylised paper title page (institution logo, title, authors), links to the study
+        │       ├── StudyVisual.astro    ← one graphic per study: bars / stats from the paper, or a sketch marked "Illustration"
+        │       ├── ResearchLimits.astro ← honest "what research does not show yet" section
+        │       └── NavStyleToggle.astro ← floating Glass/Solid switch to compare nav looks
         └── pages/
             ├── index.astro      ← EN landing (composes all components)
             ├── imprint.astro    ← Impressum (§5 TMG, DE + EN) ⚠ placeholders
             ├── privacy.astro    ← GDPR Datenschutzerklärung (DE + EN) ⚠ placeholders
             ├── terms.astro      ← Terms of Service (EN only)
+            ├── partners.astro   ← PREVIEW: renders PartnersPage lang="en", noindex
+            ├── research.astro   ← PREVIEW: renders ResearchPage lang="en", noindex
             └── de/
-                └── index.astro  ← DE landing (same components, lang="de")
+                ├── index.astro  ← DE landing (same components, lang="de")
+                ├── partners.astro ← PREVIEW DE (PartnersPage lang="de")
+                └── research.astro ← PREVIEW DE (ResearchPage lang="de")
 ```
 
 ---
@@ -53,7 +70,7 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 
 | Component | Key behaviour |
 |-----------|--------------|
-| `Nav.astro` | `lang` toggles CTA label + EN↔DE link href |
+| `Nav.astro` | `lang` toggles CTA label + EN↔DE link href; `preview` = rounded-rect glass bar with Research/Partners tabs |
 | `Hero.astro` | Fade-up CSS animation on load (disabled via `prefers-reduced-motion`) |
 | `HowItWorks.astro` | 4 steps (connect knowledge, interviews, synthesis, results); bilingual |
 | `Applications.astro` | 4 use-case cards with icons; bilingual |
@@ -61,8 +78,9 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `ValidationLoop.astro` | Stages array in frontmatter; arrow separators hidden on mobile |
 | `USP.astro` | Strikethrough on "not" statement; accent divider between blocks |
 | `DemoCTA.astro` | Deliverables array in frontmatter; CTA links to `mailto:hello@implicit.ai` |
+| `ClosingCta.astro` | Optional `lines`, `sub`, `label` override the copy (preview pages); defaults = live home page |
 | `Footer.astro` | Copyright year is `new Date().getFullYear()` — always current |
-| `Layout.astro` | Props: `title`, `description`, `lang` — all optional with sensible defaults |
+| `Layout.astro` | Props: `title`, `description`, `lang`, `noindex` — all optional with sensible defaults |
 
 ---
 
@@ -75,6 +93,8 @@ Every component accepts `lang?: 'en' | 'de'` (default `'en'`). No other external
 | `/imprint` | `pages/imprint.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/privacy` | `pages/privacy.astro` | DE + EN; ⚠ address/VAT placeholders |
 | `/terms` | `pages/terms.astro` | EN only; ⚠ city placeholder in governing law clause |
+| `/partners`, `/de/partners` | `preview/PartnersPage.astro` | PREVIEW, noindex, Nav `preview` (rect bar + tabs) |
+| `/research`, `/de/research` | `preview/ResearchPage.astro` | PREVIEW, noindex; studies in `src/data/studies.ts` ⚠ check numbers at source before go-live |
 
 ---
 

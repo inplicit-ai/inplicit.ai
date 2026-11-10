@@ -1,0 +1,109 @@
+---
+// Studien als Zeitleiste nach dem Muster von Simile: Jahr, Aussage, Paper,
+// zwei Spalten (was die Studie zeigt / was wir daraus machen), darunter das
+// Paper und eine Grafik zum Befund.
+import { studiesDe, studiesEn } from '../../data/studies';
+import PaperCard from './PaperCard.astro';
+import StudyVisual from './StudyVisual.astro';
+
+export interface Props {
+  lang: 'en' | 'de';
+}
+const { lang } = Astro.props;
+const isDE = lang === 'de';
+const studies = isDE ? studiesDe : studiesEn;
+const t = isDE
+  ? { study: 'Die Studie', ours: 'Bei Inplicit', reviewed: 'Begutachtet', open: 'Nicht begutachtet' }
+  : { study: 'The study', ours: 'At Inplicit', reviewed: 'Peer reviewed', open: 'Not peer reviewed' };
+---
+
+<section class="rtl" id="studien">
+  <div class="container">
+    <div class="rtl__head section-fade">
+      <p class="rlabel">{isDE ? 'Was Studien zeigen' : 'What studies show'}</p>
+      <h2 class="rtl__heading">
+        <span>{isDE ? 'Zwölf Jahre Forschung,' : 'Twelve years of research,'}</span>
+        <span>{isDE ? 'eine Richtung.' : 'one direction.'}</span>
+      </h2>
+    </div>
+
+    <ol class="rtl__list">
+      {studies.map((s) => (
+        <li class="rtl__row section-fade">
+          <p class="rtl__year">{s.year}</p>
+          <div class="rtl__main">
+            <h3 class="rtl__title">{s.title}</h3>
+            <p class="rtl__src">
+              <a href={s.href} target="_blank" rel="noopener noreferrer">{s.org}, {s.venue} ↗</a>
+              <span class:list={['rtl__badge', { 'is-reviewed': s.reviewed }]}>{s.reviewed ? t.reviewed : t.open}</span>
+            </p>
+            <div class="rtl__cols">
+              <div>
+                <p class="rtl__label">{t.study}</p>
+                <p class="rtl__text">{s.body}</p>
+              </div>
+              <div>
+                <p class="rtl__label">{t.ours}</p>
+                <p class="rtl__text">{s.ours}</p>
+              </div>
+            </div>
+            <div class="rtl__cols rtl__visuals">
+              <PaperCard logo={s.logo} org={s.org} paper={s.paper} authors={s.authors} venue={s.venue} year={s.year} href={s.href} />
+              <StudyVisual study={s} lang={lang} />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .rtl { padding: var(--space-section) 0; background: var(--color-bg); }
+  .rtl__head { text-align: center; margin-bottom: var(--space-16); }
+  .rtl__heading {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-4);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+  .rtl__list { list-style: none; }
+  .rtl__row {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: var(--space-6);
+    padding: var(--space-12) 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .rtl__year { font-size: var(--text-lg); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+  .rtl__title { font-size: var(--text-lg); font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; }
+  .rtl__src { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-3); font-size: var(--text-sm); }
+  .rtl__src a { color: var(--color-text-secondary); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--color-border); }
+  .rtl__src a:hover { color: var(--color-text-primary); }
+  .rtl__badge {
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-surface-elevated);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+  }
+  .rtl__badge.is-reviewed { background: var(--brand-blue-weak); color: var(--brand-blue); }
+  .rtl__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-10); margin-top: var(--space-8); }
+  .rtl__label { margin-bottom: var(--space-2); font-size: var(--text-sm); font-weight: 500; color: var(--color-accent-dark); }
+  .rtl__text { font-size: var(--text-base); line-height: 1.6; color: var(--color-text-secondary); }
+  .rtl__visuals { align-items: stretch; }
+
+  @media (max-width: 1023px) {
+    .rtl__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  }
+  @media (max-width: 767px) {
+    .rtl { padding: var(--space-24) 0; }
+    .rtl__head { margin-bottom: var(--space-12); }
+    .rtl__row { padding: var(--space-10) 0; }
+    .rtl__cols { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+// Logos der Einrichtungen, deren Studien wir zitieren. Bewusst grau und mit
+// Hinweis darunter: Zitat, keine Partnerschaft und keine Empfehlung. Quelle der
+// Dateien: Wikimedia Commons (Marken der jeweiligen Einrichtung).
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const logos = [
+  { src: '/research-logos/stanford.svg', alt: 'Stanford University', h: 30 },
+  { src: '/research-logos/mit.svg', alt: 'MIT', h: 30 },
+  { src: '/research-logos/harvard.svg', alt: 'Harvard University', h: 36 },
+  { src: '/research-logos/lmu.svg', alt: 'LMU München', h: 44 },
+  { src: '/research-logos/usc.svg', alt: 'University of Southern California', h: 30 },
+  { src: '/research-logos/illinois.svg', alt: 'University of Illinois Urbana-Champaign', h: 32 },
+];
+---
+
+<section class="rlogos">
+  <div class="container section-fade">
+    <p class="rlogos__intro">
+      {isDE ? 'Die Studien auf dieser Seite stammen von Forschenden an' : 'The studies on this page come from researchers at'}
+    </p>
+    <ul class="rlogos__row">
+      {logos.map((l) => (
+        <li><img src={l.src} alt={l.alt} style={`height: ${l.h}px`} loading="lazy" decoding="async" /></li>
+      ))}
+    </ul>
+    <p class="rlogos__note">
+      {isDE
+        ? 'Wir zitieren veröffentlichte Arbeiten. Eine Zusammenarbeit mit den Einrichtungen oder eine Empfehlung ist damit nicht verbunden.'
+        : 'We cite published work. This implies no collaboration with or endorsement by these institutions.'}
+    </p>
+  </div>
+</section>
+
+<style>
+  .rlogos {
+    padding: var(--space-16) 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+  }
+  .rlogos__intro { font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .rlogos__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-8) var(--space-12);
+    margin: var(--space-8) 0;
+    list-style: none;
+  }
+  .rlogos__row img {
+    display: block;
+    width: auto;
+    max-width: 180px;
+    filter: grayscale(1) contrast(1.1);
+    opacity: 0.62;
+    transition: opacity 0.2s var(--ease-out);
+  }
+  .rlogos__row img:hover { opacity: 0.9; }
+  .rlogos__note {
+    max-width: 60ch;
+    margin: 0 auto;
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    color: var(--color-text-tertiary);
+  }
+  @media (max-width: 767px) {
+    .rlogos__row { gap: var(--space-6) var(--space-8); }
+    .rlogos__row img { max-width: 130px; }
+  }
+</style>

@@ -2,25 +2,30 @@
 export interface Props {
   lang?: 'en' | 'de';
   href?: string;
+  /** Unterseiten (Preview) setzen eigene Texte; ohne Angabe bleibt die Startseite gleich. */
+  lines?: [string, string];
+  sub?: string;
+  label?: string;
 }
-const { lang = 'en', href } = Astro.props;
+const { lang = 'en', href, lines, sub, label } = Astro.props;
 const isDE = lang === 'de';
 const target = href ?? (isDE ? '/de/call' : '/call');
+const heading = lines ?? (isDE ? ['Starten Sie mit einem Team', 'und einer Frage.'] : ['Start with one team', 'and one question.']);
 ---
 
 <section class="close">
   <div class="container close__inner section-fade">
     <h2 class="close__heading">
-      <span>{isDE ? 'Starten Sie mit einem Team' : 'Start with one team'}</span>
-      <span>{isDE ? 'und einer Frage.' : 'and one question.'}</span>
+      <span>{heading[0]}</span>
+      <span>{heading[1]}</span>
     </h2>
     <p class="close__sub">
-      {isDE
+      {sub ?? (isDE
         ? 'Die erste Kampagne kann bei einem Prozess ansetzen, bei einer Entscheidung oder bei einem Bereich. Was Sie dabei erfahren, bleibt nutzbar, wenn der Rahmen später wächst.'
-        : 'The first campaign can focus on a single process, a single decision or a single part of the organisation. What you learn stays useful as the scope grows.'}
+        : 'The first campaign can focus on a single process, a single decision or a single part of the organisation. What you learn stays useful as the scope grows.')}
     </p>
     <a href={target} class="close__cta">
-      <span>{isDE ? 'Demo buchen' : 'Book a demo'}</span>
+      <span>{label ?? (isDE ? 'Demo buchen' : 'Book a demo')}</span>
       <i aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>

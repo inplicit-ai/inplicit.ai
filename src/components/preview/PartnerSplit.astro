@@ -1,0 +1,136 @@
+---
+// Das Modell in einem Bild: ein Kundenprojekt, aufgeteilt in Ihre Leistung
+// und die Lizenz. Bewusst ohne Euro-Betraege: Preise nur auf Anfrage
+// (Gruender 2026-10-29). Die Balkenanteile sind illustrativ.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+---
+
+<section class="psplit" id="modell">
+  <div class="container psplit__inner">
+    <div class="psplit__copy section-fade">
+      <p class="rlabel">{isDE ? 'Das Modell' : 'The model'}</p>
+      <h2 class="psplit__heading">
+        <span>{isDE ? 'Sie führen das Projekt.' : 'You lead the project.'}</span>
+        <span class="psplit__focus">{isDE ? 'Wir führen die Interviews.' : 'We run the interviews.'}</span>
+      </h2>
+      <p class="psplit__body">
+        {isDE
+          ? 'Inplicit wird Teil Ihres Angebots. Sie stellen die Frage, deuten die Ergebnisse und rechnen Ihre Beratung selbst ab. Wir stellen Plattform, Interviewer und Auswertung. Für jede Lizenz, die über Sie zustande kommt, erhalten Sie einen festen Anteil.'
+          : 'Inplicit becomes part of your offer. You set the question, interpret the results and bill your consulting yourself. We provide the platform, the interviewer and the analysis. For every licence that comes through you, you receive a fixed share.'}
+      </p>
+    </div>
+
+    <div class="psplit__viz section-fade" style="--delay: 90ms">
+      <div class="psplit__card">
+        <p class="psplit__kicker">{isDE ? 'Ein Kundenprojekt' : 'One client project'}</p>
+
+        <div class="psplit__bar" aria-hidden="true">
+          <span class="psplit__seg is-ink" style="flex: 7"></span>
+          <span class="psplit__seg is-share" style="flex: 0.6"></span>
+          <span class="psplit__seg is-lic" style="flex: 1.4"></span>
+        </div>
+
+        <ul class="psplit__legend">
+          <li><i class="is-ink"></i>{isDE ? 'Ihre Beratung' : 'Your consulting'}<b>{isDE ? 'rechnen Sie selbst ab' : 'billed by you'}</b></li>
+          <li><i class="is-share"></i>{isDE ? 'Ihr Anteil an der Lizenz' : 'Your share of the licence'}<b>{isDE ? 'fest vereinbart' : 'fixed by contract'}</b></li>
+          <li><i class="is-lic"></i>{isDE ? 'Inplicit-Lizenz' : 'Inplicit licence'}<b>{isDE ? 'Preis auf Anfrage' : 'price on request'}</b></li>
+        </ul>
+
+        <div class="psplit__sum">
+          <span>{isDE ? 'Sie verdienen an beidem.' : 'You earn on both.'}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .psplit {
+    padding: var(--space-section) 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+  .psplit__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+  .psplit__heading {
+    display: flex;
+    flex-direction: column;
+    margin: var(--space-4) 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.16;
+    letter-spacing: -0.03em;
+  }
+  .psplit__focus { color: var(--color-accent-dark); }
+  .psplit__body {
+    max-width: 54ch;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    color: var(--color-text-secondary);
+  }
+
+  .psplit__card {
+    padding: var(--space-8);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+  }
+  .psplit__kicker {
+    margin-bottom: var(--space-5);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .psplit__bar {
+    display: flex;
+    gap: 3px;
+    height: 14px;
+    margin: 0 0 var(--space-6);
+  }
+  .psplit__seg { border-radius: 4px; }
+  .is-ink { background: var(--color-text-primary); }
+  .is-lic { background: var(--color-accent-muted); }
+  .is-share { background: var(--color-accent); }
+
+  .psplit__legend { display: grid; gap: var(--space-3); list-style: none; }
+  .psplit__legend li {
+    display: grid;
+    grid-template-columns: 12px 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+  .psplit__legend i { width: 12px; height: 12px; border-radius: 3px; }
+  .psplit__legend b { font-weight: 500; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+
+  .psplit__sum {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-accent-dark);
+  }
+
+  @media (max-width: 1023px) {
+    .psplit__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
+  }
+  @media (max-width: 767px) {
+    .psplit { padding: var(--space-24) 0; }
+    .psplit__card { padding: var(--space-6); }
+  }
+</style>

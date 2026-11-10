@@ -1,0 +1,165 @@
+---
+// Drei Auftraege aus dem Beratungsalltag, in denen Inplicit die Interviews
+// fuehrt. Je Fall: die Frage des Kunden, was Inplicit liefert, was Sie daraus
+// machen. Gebaut wie Audience.astro: Foto oben, oranges Versalien-Tag.
+export interface Props {
+  lang?: 'en' | 'de';
+}
+const { lang = 'en' } = Astro.props;
+const isDE = lang === 'de';
+
+const t = isDE
+  ? { ask: 'Die Frage Ihres Kunden', get: 'Inplicit liefert', you: 'Ihr Beratungsteil' }
+  : { ask: 'Your client’s question', get: 'Inplicit delivers', you: 'Your consulting' };
+
+const cases = isDE ? [
+  {
+    tag: 'Stimmungsbild',
+    title: 'Wie die Belegschaft zu einem Thema steht',
+    ask: '„Tragen unsere Leute die Umstellung auf das neue Schichtmodell mit?“',
+    get: 'Haltung je Bereich und Standort, mit den Gründen und Zitaten dahinter.',
+    you: 'Einordnen, Handlungsfelder ableiten, Kommunikation planen.',
+    img: '/audience/transformation.jpg',
+  },
+  {
+    tag: 'Prozesswissen',
+    title: 'Wie ein Prozess wirklich läuft',
+    ask: '„Warum dauert die Auftragsabwicklung drei Wochen, wenn sie drei Tage dauern sollte?“',
+    get: 'Den Ist-Ablauf aus Sicht aller Beteiligten, mit Umwegen, Wartezeiten und Brüchen.',
+    you: 'Soll-Prozess entwerfen, Maßnahmen priorisieren, Umsetzung begleiten.',
+    img: '/audience/geschaeftsfuehrung.jpg',
+  },
+  {
+    tag: 'Erfahrungswissen',
+    title: 'Was erfahrene Leute wissen, bevor sie gehen',
+    ask: '„Was wissen unsere Meister, die in drei Jahren in Rente gehen?“',
+    get: 'Gesichertes Wissen je Rolle, durchsuchbar und mit Quelle.',
+    you: 'Übergaben planen, Einarbeitung neu aufsetzen, Nachfolge vorbereiten.',
+    img: '/audience/belegschaft.jpg',
+  },
+] : [
+  {
+    tag: 'Sentiment',
+    title: 'Where the workforce stands on a topic',
+    ask: '“Will our people get behind the new shift model?”',
+    get: 'Stance by area and site, with the reasons and quotes behind it.',
+    you: 'Interpret, derive fields of action, plan communication.',
+    img: '/audience/transformation.jpg',
+  },
+  {
+    tag: 'Process knowledge',
+    title: 'How a process really runs',
+    ask: '“Why does order processing take three weeks when it should take three days?”',
+    get: 'The actual flow as everyone involved sees it, with detours, waiting times and breaks.',
+    you: 'Design the target process, prioritise measures, support the rollout.',
+    img: '/audience/geschaeftsfuehrung.jpg',
+  },
+  {
+    tag: 'Experience',
+    title: 'What experienced people know before they leave',
+    ask: '“What do our foremen know who retire in three years?”',
+    get: 'Captured knowledge per role, searchable and sourced.',
+    you: 'Plan handovers, rebuild onboarding, prepare succession.',
+    img: '/audience/belegschaft.jpg',
+  },
+];
+---
+
+<section class="puse" id="einsatz">
+  <div class="container">
+    <div class="puse__head section-fade">
+      <p class="rlabel">{isDE ? 'Ihre Aufträge' : 'Your engagements'}</p>
+      <h2 class="puse__heading">
+        <span>{isDE ? 'Drei Aufträge,' : 'Three engagements'}</span>
+        <span>{isDE ? 'in denen Inplicit die Interviews führt.' : 'where Inplicit runs the interviews.'}</span>
+      </h2>
+    </div>
+
+    <div class="puse__grid">
+      {cases.map((c, i) => (
+        <article class="puse__card section-fade" style={`--delay: ${i * 70}ms`}>
+          <div class="puse__media">
+            <img src={c.img} alt="" loading="lazy" decoding="async" width="820" height="380" />
+            <span class="puse__tint" aria-hidden="true"></span>
+          </div>
+          <div class="puse__body">
+            <p class="puse__tag">{c.tag}</p>
+            <h3 class="puse__title">{c.title}</h3>
+            <p class="puse__ask">{c.ask}</p>
+            <dl class="puse__rows">
+              <dt>{t.get}</dt><dd>{c.get}</dd>
+              <dt>{t.you}</dt><dd>{c.you}</dd>
+            </dl>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .puse {
+    padding: var(--space-section) 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+  .puse__head { text-align: center; margin-bottom: var(--space-16); }
+  .puse__heading {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-4);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+  .puse__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .puse__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .puse__media { position: relative; aspect-ratio: 820 / 380; }
+  .puse__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .puse__tint {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 12, 16, 0.06) 0%, rgba(11, 12, 16, 0.22) 55%, rgba(11, 12, 16, 0.48) 100%);
+  }
+  .puse__body { display: flex; flex-direction: column; flex: 1; padding: var(--space-6) var(--space-6) var(--space-8); }
+  .puse__tag {
+    margin-bottom: var(--space-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-dark);
+  }
+  .puse__title { font-size: var(--text-lg); font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; }
+  .puse__ask {
+    margin: var(--space-4) 0 var(--space-6);
+    font-size: var(--text-base);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+  }
+  .puse__rows { display: grid; gap: var(--space-2); margin-top: auto; padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
+  .puse__rows dt { font-size: var(--text-xs); font-weight: 600; color: var(--color-text-tertiary); }
+  .puse__rows dd { margin-bottom: var(--space-3); font-size: var(--text-sm); line-height: 1.55; color: var(--color-text-secondary); }
+
+  @media (max-width: 1023px) {
+    .puse__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .puse { padding: var(--space-24) 0; }
+    .puse__head { margin-bottom: var(--space-12); }
+    .puse__heading { display: block; text-wrap: balance; }
+    .puse__heading span { display: inline; }
+  }
+</style>
